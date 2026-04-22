@@ -1,0 +1,210 @@
+name: Build Windows .eop
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows-eop:
+    name: Build Windows .eop (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: windows-latest
+            msvc_arch: x64
+            msystem: CLANG64
+            msys2_prefix: mingw-w64-clang-x86_64
+            lib_machine: x64
+            rust_target: x86_64-pc-windows-msvc
+            ntldd_filter: clang64
+          - arch: arm64
+            runner: windows-11-arm
+            msvc_arch: arm64
+            msystem: CLANGARM64
+            msys2_prefix: mingw-w64-clang-aarch64
+            lib_machine: arm64
+            rust_target: aarch64-pc-windows-msvc
+            ntldd_filter: clangarm64
+
+    env:
+      OPENSLIDE_COMMIT: "615670d924d6dddce3d407d1a6440a32cf5350c7"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+        with:
+          submodules: recursive
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust_target }}
+
+      - name: Set up MSVC dev environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.msvc_arch }}
+
+      - name: Cache Rust build outputs
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: windows-${{ matrix.arch }}
+
+      - name: Set up MSYS2 (${{ matrix.msystem }})
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.msystem }}
+          update: true
+          install: >-
+            ${{ matrix.msys2_prefix }}-clang
+            ${{ matrix.msys2_prefix }}-meson
+            ${{ matrix.msys2_prefix }}-ninja
+            ${{ matrix.msys2_prefix }}-pkg-config
+            ${{ matrix.msys2_prefix }}-cairo
+            ${{ matrix.msys2_prefix }}-gdk-pixbuf2
+            ${{ matrix.msys2_prefix }}-glib2
+            ${{ matrix.msys2_prefix }}-libjpeg-turbo
+            ${{ matrix.msys2_prefix }}-libpng
+            ${{ matrix.msys2_prefix }}-libtiff
+            ${{ matrix.msys2_prefix }}-libxml2
+            ${{ matrix.msys2_prefix }}-openjpeg2
+            ${{ matrix.msys2_prefix }}-zlib
+            ${{ matrix.msys2_prefix }}-ntldd
+            ${{ matrix.msys2_prefix }}-tools
+            git
+
+      - name: Derive release metadata
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cargo_version="$(sed -n 's/^version = "\([^"]*\)"$/\1/p' Cargo.toml | head -n 1)"
+          manifest_version="$(sed -n 's/^version = "\([^"]*\)"$/\1/p' plugin.toml | head -n 1)"
+          tag="${GITHUB_REF_NAME}"
+
+          if [[ -z "$cargo_version" || -z "$manifest_version" ]]; then
+            echo "failed to derive version from Cargo.toml or plugin.toml" >&2
+            exit 1
+          fi
+
+          if [[ "$cargo_version" != "$manifest_version" ]]; then
+            echo "Cargo.toml version '$cargo_version' does not match plugin.toml version '$manifest_version'" >&2
+            exit 1
+          fi
+
+          if [[ "$tag" =~ ^v?([0-9]+)\.([0-9]+)\.([0-9]+)([-+][0-9A-Za-z.-]+)?$ ]]; then
+            version="${tag#v}"
+            if [[ "$version" != "$cargo_version" ]]; then
+              echo "Tag version '$version' does not match Cargo.toml version '$cargo_version'" >&2
+              exit 1
+            fi
+          else
+            version="$cargo_version"
+            tag="v${version}"
+          fi
+
+          artifact_name="annotations-${tag}-windows-${{ matrix.arch }}.eop"
+          checksum_name="${artifact_name}.sha256"
+
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+            echo "artifact_name=$artifact_name"
+            echo "checksum_name=$checksum_name"
+            echo "library_name=annotations.dll"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Install uthash headers
+        shell: msys2 {0}
+        run: |
+          set -euo pipefail
+          curl -fsSL https://github.com/troydhanson/uthash/archive/v2.3.0.tar.gz | tar xz --exclude='uthash-2.3.0/include'
+          install -Dm644 uthash-2.3.0/src/uthash.h "$MSYSTEM_PREFIX/include/uthash.h"
+          install -Dm644 uthash-2.3.0/src/utarray.h "$MSYSTEM_PREFIX/include/utarray.h"
+          install -Dm644 uthash-2.3.0/src/utlist.h "$MSYSTEM_PREFIX/include/utlist.h"
+          install -Dm644 uthash-2.3.0/src/utringbuffer.h "$MSYSTEM_PREFIX/include/utringbuffer.h"
+          install -Dm644 uthash-2.3.0/src/utstack.h "$MSYSTEM_PREFIX/include/utstack.h"
+          rm -rf uthash-2.3.0
+
+      - name: Build libdicom
+        shell: msys2 {0}
+        run: |
+          set -euo pipefail
+          curl -fsSL https://github.com/ImagingDataCommons/libdicom/releases/download/v1.2.0/libdicom-1.2.0.tar.xz | tar xJ
+          cd libdicom-1.2.0
+          meson setup _build \
+            --prefix="$MSYSTEM_PREFIX" \
+            --libdir=lib \
+            -Dtests=false \
+            --wrap-mode=nofallback
+          meson compile -C _build
+          meson install -C _build
+
+      - name: Build OpenSlide from source
+        shell: msys2 {0}
+        run: |
+          set -euo pipefail
+          git clone https://github.com/openslide/openslide.git openslide-src
+          cd openslide-src
+          git checkout "$OPENSLIDE_COMMIT"
+          meson setup _build \
+            --prefix="$MSYSTEM_PREFIX" \
+            --libdir=lib \
+            -Dtest=disabled \
+            --wrap-mode=nofallback
+          meson compile -C _build
+          meson install -C _build
+
+      - name: Generate OpenSlide .def file
+        shell: msys2 {0}
+        run: |
+          set -euo pipefail
+          dll=$(find "$MSYSTEM_PREFIX/bin" -maxdepth 1 -name 'libopenslide-*.dll' -type f | head -1)
+          [[ -n "$dll" ]] || { echo "No OpenSlide DLL found in $MSYSTEM_PREFIX/bin" >&2; exit 1; }
+
+          mkdir -p openslide-msvc
+          gendef - "$dll" > openslide-msvc/openslide.def
+
+          export_count=$(grep -c '^openslide_' openslide-msvc/openslide.def || true)
+          if [[ "$export_count" -lt 1 ]]; then
+            echo "ERROR: .def contains no openslide exports" >&2
+            exit 1
+          fi
+
+      - name: Create MSVC import library for OpenSlide
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          lib /def:openslide-msvc\openslide.def /out:openslide-msvc\openslide.lib /machine:${{ matrix.lib_machine }}
+
+      - name: Build plugin library
+        shell: pwsh
+        run: |
+          $libDir = Join-Path (Get-Location) "openslide-msvc"
+          $env:RUSTFLAGS = "-L native=$libDir"
+          cargo build --release --target ${{ matrix.rust_target }}
+
+      - name: Package .eop
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          python scripts/package_eop.py --plugin-root "$env:GITHUB_WORKSPACE" --library "target/${{ matrix.rust_target }}/release/${{ steps.meta.outputs.library_name }}" --output "dist/${{ steps.meta.outputs.artifact_name }}"
+
+          $hash = (Get-FileHash "dist\${{ steps.meta.outputs.artifact_name }}" -Algorithm SHA256).Hash.ToLower()
+          "$hash  ${{ steps.meta.outputs.artifact_name }}" | Set-Content "dist\${{ steps.meta.outputs.checksum_name }}" -Encoding ASCII -NoNewline
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.meta.outputs.artifact_name }}
+          path: |
+            dist/${{ steps.meta.outputs.artifact_name }}
+            dist/${{ steps.meta.outputs.checksum_name }}

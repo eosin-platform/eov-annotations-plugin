@@ -1,0 +1,119 @@
+name: Build Linux .eop
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  build-linux-eop:
+    name: Build Linux .eop (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-24.04
+            rust_target: x86_64-unknown-linux-gnu
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+            rust_target: aarch64-unknown-linux-gnu
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+        with:
+          submodules: recursive
+
+      - name: Install system dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            libopenslide-dev \
+            pkg-config \
+            python3
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust_target }}
+
+      - name: Cache Rust build outputs
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: linux-${{ matrix.arch }}
+
+      - name: Derive release metadata
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cargo_version="$(sed -n 's/^version = "\([^"]*\)"$/\1/p' Cargo.toml | head -n 1)"
+          manifest_version="$(sed -n 's/^version = "\([^"]*\)"$/\1/p' plugin.toml | head -n 1)"
+          tag="${GITHUB_REF_NAME}"
+
+          if [[ -z "$cargo_version" || -z "$manifest_version" ]]; then
+            echo "failed to derive version from Cargo.toml or plugin.toml" >&2
+            exit 1
+          fi
+
+          if [[ "$cargo_version" != "$manifest_version" ]]; then
+            echo "Cargo.toml version '$cargo_version' does not match plugin.toml version '$manifest_version'" >&2
+            exit 1
+          fi
+
+          if [[ "$tag" =~ ^v?([0-9]+)\.([0-9]+)\.([0-9]+)([-+][0-9A-Za-z.-]+)?$ ]]; then
+            version="${tag#v}"
+            if [[ "$version" != "$cargo_version" ]]; then
+              echo "Tag version '$version' does not match Cargo.toml version '$cargo_version'" >&2
+              exit 1
+            fi
+          else
+            version="$cargo_version"
+            tag="v${version}"
+          fi
+
+          artifact_name="annotations-${tag}-linux-${{ matrix.arch }}.eop"
+          checksum_name="${artifact_name}.sha256"
+
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+            echo "artifact_name=$artifact_name"
+            echo "checksum_name=$checksum_name"
+            echo "library_name=libannotations.so"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Build plugin library
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo build --release --target ${{ matrix.rust_target }}
+
+      - name: Package .eop
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/package_eop.py \
+            --plugin-root "$GITHUB_WORKSPACE" \
+            --library "target/${{ matrix.rust_target }}/release/${{ steps.meta.outputs.library_name }}" \
+            --output "dist/${{ steps.meta.outputs.artifact_name }}"
+
+          cd dist
+          sha256sum "${{ steps.meta.outputs.artifact_name }}" > "${{ steps.meta.outputs.checksum_name }}"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.meta.outputs.artifact_name }}
+          path: |
+            dist/${{ steps.meta.outputs.artifact_name }}
+            dist/${{ steps.meta.outputs.checksum_name }}

@@ -1,8 +1,16 @@
 # Annotations Plugin for eov
 
+[![Linux Build](https://github.com/eosin-platform/eov-annotations-plugin/actions/workflows/build-linux-eop.yml/badge.svg)](https://github.com/eosin-platform/eov-annotations-plugin/actions/workflows/build-linux-eop.yml)
+[![macOS Build](https://github.com/eosin-platform/eov-annotations-plugin/actions/workflows/build-macos-eop.yml/badge.svg)](https://github.com/eosin-platform/eov-annotations-plugin/actions/workflows/build-macos-eop.yml)
+[![Windows Build](https://github.com/eosin-platform/eov-annotations-plugin/actions/workflows/build-windows-eop.yml/badge.svg)](https://github.com/eosin-platform/eov-annotations-plugin/actions/workflows/build-windows-eop.yml)
+[![Release Status](https://github.com/eosin-platform/eov-annotations-plugin/actions/workflows/release.yml/badge.svg)](https://github.com/eosin-platform/eov-annotations-plugin/actions/workflows/release.yml)
+[![License: MIT OR Apache-2.0 OR GPL-3.0](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0%20OR%20GPL--3.0-0366d6)](https://github.com/eosin-platform/eov-annotations-plugin#license)
+
 This repository contains the Annotations plugin for [eov](https://github.com/eosin-platform/eov), the lightweight whole-slide image viewer. The plugin adds local point and polygon annotation tools, a slide-scoped annotation sidebar, and JSON export for annotation data.
 
 The host application is documented in the main eov repository. This README covers the plugin itself: what it does, how it behaves today, and how to build and package it for eov.
+
+Prebuilt `.eop` release artifacts are published for Linux, macOS, and Windows across `x86_64` and `arm64` where GitHub-hosted runners are available.
 
 ## What It Does
 

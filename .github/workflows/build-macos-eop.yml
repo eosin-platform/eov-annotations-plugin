@@ -1,0 +1,114 @@
+name: Build macOS .eop
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  build-macos-eop:
+    name: Build macOS .eop (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            runner: macos-latest
+            rust_target: aarch64-apple-darwin
+          - arch: x86_64
+            runner: macos-15-intel
+            rust_target: x86_64-apple-darwin
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+        with:
+          submodules: recursive
+
+      - name: Install system dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          brew install openslide
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust_target }}
+
+      - name: Cache Rust build outputs
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: macos-${{ matrix.arch }}
+
+      - name: Derive release metadata
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cargo_version="$(sed -n 's/^version = "\([^"]*\)"$/\1/p' Cargo.toml | head -n 1)"
+          manifest_version="$(sed -n 's/^version = "\([^"]*\)"$/\1/p' plugin.toml | head -n 1)"
+          tag="${GITHUB_REF_NAME}"
+
+          if [[ -z "$cargo_version" || -z "$manifest_version" ]]; then
+            echo "failed to derive version from Cargo.toml or plugin.toml" >&2
+            exit 1
+          fi
+
+          if [[ "$cargo_version" != "$manifest_version" ]]; then
+            echo "Cargo.toml version '$cargo_version' does not match plugin.toml version '$manifest_version'" >&2
+            exit 1
+          fi
+
+          if [[ "$tag" =~ ^v?([0-9]+)\.([0-9]+)\.([0-9]+)([-+][0-9A-Za-z.-]+)?$ ]]; then
+            version="${tag#v}"
+            if [[ "$version" != "$cargo_version" ]]; then
+              echo "Tag version '$version' does not match Cargo.toml version '$cargo_version'" >&2
+              exit 1
+            fi
+          else
+            version="$cargo_version"
+            tag="v${version}"
+          fi
+
+          artifact_name="annotations-${tag}-macos-${{ matrix.arch }}.eop"
+          checksum_name="${artifact_name}.sha256"
+
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+            echo "artifact_name=$artifact_name"
+            echo "checksum_name=$checksum_name"
+            echo "library_name=libannotations.dylib"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Build plugin library
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo build --release --target ${{ matrix.rust_target }}
+
+      - name: Package .eop
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/package_eop.py \
+            --plugin-root "$GITHUB_WORKSPACE" \
+            --library "target/${{ matrix.rust_target }}/release/${{ steps.meta.outputs.library_name }}" \
+            --output "dist/${{ steps.meta.outputs.artifact_name }}"
+
+          cd dist
+          shasum -a 256 "${{ steps.meta.outputs.artifact_name }}" > "${{ steps.meta.outputs.checksum_name }}"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.meta.outputs.artifact_name }}
+          path: |
+            dist/${{ steps.meta.outputs.artifact_name }}
+            dist/${{ steps.meta.outputs.checksum_name }}
