@@ -12,6 +12,12 @@ The host application is documented in the main eov repository. This README cover
 
 Prebuilt `.eop` release artifacts are published for Linux, macOS, and Windows across `x86_64` and `arm64` where GitHub-hosted runners are available.
 
+## Screenshots
+
+<p align="center">
+	<img src="images/screenshot-3.webp" width="512">
+</p>
+
 ## What It Does
 
 The plugin extends eov with:
