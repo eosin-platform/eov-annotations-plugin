@@ -41,6 +41,21 @@ jobs:
           set -euo pipefail
           brew install openslide
 
+      - name: Configure OpenSlide linker path
+        shell: bash
+        run: |
+          set -euo pipefail
+          openslide_prefix="$(brew --prefix openslide)"
+          openslide_lib_dir="$openslide_prefix/lib"
+
+          [[ -d "$openslide_lib_dir" ]] || {
+            echo "OpenSlide library directory not found: $openslide_lib_dir" >&2
+            exit 1
+          }
+
+          echo "OPENSLIDE_LIB_DIR=$openslide_lib_dir" >> "$GITHUB_ENV"
+          echo "RUSTFLAGS=-L native=$openslide_lib_dir ${RUSTFLAGS:-}" >> "$GITHUB_ENV"
+
       - name: Link eov workspace crates
         shell: bash
         run: |
