@@ -29,11 +29,25 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Check out eov dependency
+        uses: actions/checkout@v5
+        with:
+          repository: eosin-platform/eov
+          path: eov-src
+
       - name: Install system dependencies
         shell: bash
         run: |
           set -euo pipefail
           brew install openslide
+
+      - name: Link eov workspace crates
+        shell: bash
+        run: |
+          set -euo pipefail
+          work_root="$(cd "$GITHUB_WORKSPACE/../.." && pwd)"
+          ln -sfn "$GITHUB_WORKSPACE/eov-src/common" "$work_root/common"
+          ln -sfn "$GITHUB_WORKSPACE/eov-src/plugin_api" "$work_root/plugin_api"
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable

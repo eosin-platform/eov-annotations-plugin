@@ -42,6 +42,12 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Check out eov dependency
+        uses: actions/checkout@v5
+        with:
+          repository: eosin-platform/eov
+          path: eov-src
+
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -51,6 +57,24 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: ${{ matrix.msvc_arch }}
+
+      - name: Link eov workspace crates
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $workRoot = (Resolve-Path (Join-Path $env:GITHUB_WORKSPACE "..\..")).Path
+          $commonLink = Join-Path $workRoot "common"
+          $pluginApiLink = Join-Path $workRoot "plugin_api"
+
+          if (Test-Path $commonLink) {
+            Remove-Item $commonLink -Force -Recurse
+          }
+          if (Test-Path $pluginApiLink) {
+            Remove-Item $pluginApiLink -Force -Recurse
+          }
+
+          New-Item -ItemType SymbolicLink -Path $commonLink -Target (Join-Path $env:GITHUB_WORKSPACE "eov-src\common") | Out-Null
+          New-Item -ItemType SymbolicLink -Path $pluginApiLink -Target (Join-Path $env:GITHUB_WORKSPACE "eov-src\plugin_api") | Out-Null
 
       - name: Cache Rust build outputs
         uses: Swatinem/rust-cache@v2
