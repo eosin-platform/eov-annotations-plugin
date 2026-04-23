@@ -31,7 +31,7 @@ const ACTION_CREATE_POLYGON: &str = "create_polygon_annotation";
 const VIEWPORT_MENU_CREATE_POINT: &str = "create_point";
 const VIEWPORT_MENU_CREATE_POLYGON: &str = "create_polygon";
 
-const SIDEBAR_ICON_SVG: &str = include_str!("../../../app/ui/icons/annotations.svg");
+const SIDEBAR_ICON_SVG: &str = include_str!("../ui/icons/annotations.svg");
 const POINT_ICON_SVG: &str = r#"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5" fill="currentColor"/></svg>"#;
 const POLYGON_ICON_SVG: &str = include_str!("../ui/icons/polygon_annotation.svg");
 
