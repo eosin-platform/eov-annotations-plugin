@@ -2,9 +2,10 @@ use abi_stable::std_types::{ROption, RString};
 use plugin_api::ffi::{
     HostApiVTable, HostLogLevelFFI, HostSnapshotFFI, OpenFileInfoFFI, ViewportSnapshotFFI,
 };
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap, HashSet, VecDeque};
 use std::sync::{Mutex, OnceLock};
 
+use crate::history::Action;
 use crate::model::{AnnotationExportMetadata, ExportAnnotationLayer, LoadedFileAnnotations};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -36,6 +37,7 @@ pub(crate) struct PendingImport {
     pub(crate) next_index: usize,
     pub(crate) apply_to_all: Option<ImportConflictStrategy>,
     pub(crate) next_conflict_resolution: Option<ImportConflictStrategy>,
+    pub(crate) recorded_actions: Vec<Action>,
 }
 
 #[derive(Default)]
@@ -52,6 +54,8 @@ pub(crate) struct PluginState {
     pub(crate) pending_delete_layer: Option<PendingDeleteLayer>,
     pub(crate) pending_import: Option<PendingImport>,
     pub(crate) pending_import_dialog: PendingImportDialog,
+    pub(crate) undo_buffer: VecDeque<Action>,
+    pub(crate) redo_buffer: VecDeque<Action>,
 }
 
 static HOST_API: Mutex<Option<HostApiVTable>> = Mutex::new(None);

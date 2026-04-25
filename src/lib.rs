@@ -1,10 +1,12 @@
 mod db;
+mod history;
 mod model;
 mod operations;
 mod sidebar;
 mod state;
 
 use abi_stable::std_types::{ROption, RString, RVec};
+use history::{perform_redo, perform_undo, publish_undo_redo_state};
 use model::{Annotation, hex_color_to_rgb};
 use operations::{
     ensure_loaded_for_viewport, move_point_annotation, move_polygon_annotation,
@@ -37,6 +39,7 @@ const POLYGON_ICON_SVG: &str = include_str!("../ui/icons/polygon_annotation.svg"
 
 extern "C" fn set_host_api_ffi(host_api: HostApiVTable) {
     set_host_api(host_api);
+    publish_undo_redo_state();
 }
 
 extern "C" fn get_toolbar_buttons_ffi() -> RVec<ToolbarButtonFFI> {
@@ -294,6 +297,26 @@ extern "C" fn on_polygon_annotation_placed_ffi(
     }
 }
 
+extern "C" fn on_undo_ffi() -> ActionResponseFFI {
+    if let Err(err) = perform_undo() {
+        log_message(HostLogLevelFFI::Error, err);
+    } else {
+        refresh_sidebar_if_available();
+        request_render_if_available();
+    }
+    ActionResponseFFI { open_window: false }
+}
+
+extern "C" fn on_redo_ffi() -> ActionResponseFFI {
+    if let Err(err) = perform_redo() {
+        log_message(HostLogLevelFFI::Error, err);
+    } else {
+        refresh_sidebar_if_available();
+        request_render_if_available();
+    }
+    ActionResponseFFI { open_window: false }
+}
+
 extern "C" fn on_polygon_annotation_moved_ffi(
     viewport: ViewportSnapshotFFI,
     annotation_id: RString,
@@ -343,6 +366,8 @@ pub extern "C" fn eov_get_plugin_vtable() -> PluginVTable {
         get_viewport_overlay_polygons: get_viewport_overlay_polygons_ffi,
         on_point_annotation_placed: on_point_annotation_placed_ffi,
         on_polygon_annotation_placed: on_polygon_annotation_placed_ffi,
+        on_undo: on_undo_ffi,
+        on_redo: on_redo_ffi,
         on_point_annotation_moved: on_point_annotation_moved_ffi,
         on_polygon_annotation_moved: on_polygon_annotation_moved_ffi,
         get_viewport_filters: get_viewport_filters_ffi,

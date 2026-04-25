@@ -10,6 +10,12 @@ use crate::db::{
     fingerprint_for_file, full_sha256_for_file, load_annotation_layers, load_export_metadata,
     open_database, save_export_metadata,
 };
+use crate::history::{
+    Action, CreateAnnotationLayer, CreatePointAnnotation, CreatePolygonAnnotation,
+    DeleteAnnotationLayer, DeletePointAnnotation, DeletePolygonAnnotation, MultiAction,
+    UpdateAnnotationLayer, file_action_context, point_annotation_as_polygon_vertices,
+    push_undo_action,
+};
 use crate::model::{
     Annotation, AnnotationExportMetadata, AnnotationLayer, ExportAnnotation, ExportAnnotationLayer,
     ExportFile, ExportPolygonVertex, LoadedFileAnnotations, PointAnnotation, PolygonAnnotation,
@@ -34,7 +40,7 @@ enum ImportStep {
     Complete,
 }
 
-fn ensure_loaded_for_file(
+pub(crate) fn ensure_loaded_for_file(
     state: &mut PluginState,
     file_path: &str,
     filename: &str,
@@ -57,6 +63,30 @@ fn ensure_loaded_for_file(
         },
     );
     Ok(())
+}
+
+fn annotation_snapshot_for_file(
+    loaded: &LoadedFileAnnotations,
+    annotation_id: &str,
+) -> Option<(String, Annotation, i64)> {
+    loaded.annotation_layers.iter().find_map(|layer| {
+        layer
+            .annotations
+            .iter()
+            .find_map(|annotation| match annotation {
+                Annotation::Point(point) if point.id == annotation_id => Some((
+                    layer.id.clone(),
+                    Annotation::Point(point.clone()),
+                    layer.updated_at,
+                )),
+                Annotation::Polygon(polygon) if polygon.id == annotation_id => Some((
+                    layer.id.clone(),
+                    Annotation::Polygon(polygon.clone()),
+                    layer.updated_at,
+                )),
+                _ => None,
+            })
+    })
 }
 
 pub(crate) fn sync_active_file() -> Result<(), String> {
@@ -446,7 +476,7 @@ fn merge_into_existing_layer(
     connection: &rusqlite::Connection,
     target_layer: &mut AnnotationLayer,
     imported_layer: &ExportAnnotationLayer,
-) -> Result<(), String> {
+) -> Result<Vec<Action>, String> {
     let existing_ids = target_layer
         .annotations
         .iter()
@@ -455,16 +485,38 @@ fn merge_into_existing_layer(
             Annotation::Polygon(polygon) => polygon.id.clone(),
         })
         .collect::<HashSet<_>>();
+    let layer_updated_at_before = target_layer.updated_at;
+    let updated_at = target_layer.updated_at.max(imported_layer.updated_at);
+    let mut recorded_actions = Vec::new();
 
     for annotation in &imported_layer.annotations {
         if let Some(annotation) =
             insert_annotation_record(connection, &target_layer.id, annotation, &existing_ids)?
         {
+            match &annotation {
+                Annotation::Point(point) => {
+                    recorded_actions.push(Action::CreatePointAnnotation(CreatePointAnnotation {
+                        file: file_action_context("", ""),
+                        annotation_layer_id: target_layer.id.clone(),
+                        annotation: point.clone(),
+                        layer_updated_at_before,
+                        layer_updated_at_after: updated_at,
+                    }))
+                }
+                Annotation::Polygon(polygon) => recorded_actions.push(
+                    Action::CreatePolygonAnnotation(CreatePolygonAnnotation {
+                        file: file_action_context("", ""),
+                        annotation_layer_id: target_layer.id.clone(),
+                        annotation: polygon.clone(),
+                        layer_updated_at_before,
+                        layer_updated_at_after: updated_at,
+                    }),
+                ),
+            }
             target_layer.annotations.push(annotation);
         }
     }
 
-    let updated_at = target_layer.updated_at.max(imported_layer.updated_at);
     connection
         .execute(
             "UPDATE annotation_layers SET updated_at = ?2 WHERE id = ?1",
@@ -477,7 +529,7 @@ fn merge_into_existing_layer(
             )
         })?;
     target_layer.updated_at = updated_at;
-    Ok(())
+    Ok(recorded_actions)
 }
 
 fn apply_import_step(step: ImportStep) -> Result<(), String> {
@@ -498,6 +550,12 @@ fn apply_import_step(step: ImportStep) -> Result<(), String> {
                 return Err("pending import state is missing".to_string());
             }
 
+            let file = state
+                .files
+                .get(&active_file_path)
+                .map(|loaded| file_action_context(&loaded.file_path, &loaded.filename))
+                .ok_or_else(|| format!("active file '{}' is not loaded", active_file_path))?;
+
             if let Some(strategy) = conflict_strategy {
                 match strategy {
                     ImportConflictStrategy::Skip => {
@@ -510,6 +568,14 @@ fn apply_import_step(step: ImportStep) -> Result<(), String> {
                     }
                     ImportConflictStrategy::Replace => {
                         if let Some(existing_layer_id) = existing_layer_id.as_deref() {
+                            let deleted_layer =
+                                state.files.get(&active_file_path).and_then(|loaded| {
+                                    loaded
+                                        .annotation_layers
+                                        .iter()
+                                        .find(|layer| layer.id == existing_layer_id)
+                                        .cloned()
+                                });
                             connection
                                 .execute(
                                     "DELETE FROM annotation_layers WHERE id = ?1",
@@ -521,6 +587,16 @@ fn apply_import_step(step: ImportStep) -> Result<(), String> {
                                         imported_layer.name
                                     )
                                 })?;
+                            if let Some(deleted_layer) = deleted_layer
+                                && let Some(pending) = state.pending_import.as_mut()
+                            {
+                                pending.recorded_actions.push(Action::DeleteAnnotationLayer(
+                                    DeleteAnnotationLayer {
+                                        file: file.clone(),
+                                        layer: deleted_layer,
+                                    },
+                                ));
+                            }
                         }
                     }
                     ImportConflictStrategy::Merge => {}
@@ -546,7 +622,20 @@ fn apply_import_step(step: ImportStep) -> Result<(), String> {
                                     existing_layer_id
                                 )
                             })?;
-                        merge_into_existing_layer(&connection, target_layer, &imported_layer)?;
+                        let mut recorded_actions =
+                            merge_into_existing_layer(&connection, target_layer, &imported_layer)?;
+                        for recorded_action in &mut recorded_actions {
+                            match recorded_action {
+                                Action::CreatePointAnnotation(action) => action.file = file.clone(),
+                                Action::CreatePolygonAnnotation(action) => {
+                                    action.file = file.clone()
+                                }
+                                _ => {}
+                            }
+                        }
+                        if let Some(pending) = state.pending_import.as_mut() {
+                            pending.recorded_actions.extend(recorded_actions);
+                        }
                     }
                 }
                 Some(ImportConflictStrategy::Replace) => {
@@ -563,6 +652,14 @@ fn apply_import_step(step: ImportStep) -> Result<(), String> {
                     state
                         .selected_layer_by_file
                         .insert(active_file_path.clone(), imported_runtime_layer.id.clone());
+                    if let Some(pending) = state.pending_import.as_mut() {
+                        pending.recorded_actions.push(Action::CreateAnnotationLayer(
+                            CreateAnnotationLayer {
+                                file: file.clone(),
+                                layer: imported_runtime_layer.clone(),
+                            },
+                        ));
+                    }
                     let loaded = state.files.get_mut(&active_file_path).ok_or_else(|| {
                         format!("active file '{}' is not loaded", active_file_path)
                     })?;
@@ -576,6 +673,14 @@ fn apply_import_step(step: ImportStep) -> Result<(), String> {
                     state
                         .selected_layer_by_file
                         .insert(active_file_path.clone(), imported_runtime_layer.id.clone());
+                    if let Some(pending) = state.pending_import.as_mut() {
+                        pending.recorded_actions.push(Action::CreateAnnotationLayer(
+                            CreateAnnotationLayer {
+                                file: file.clone(),
+                                layer: imported_runtime_layer.clone(),
+                            },
+                        ));
+                    }
                     let loaded = state.files.get_mut(&active_file_path).ok_or_else(|| {
                         format!("active file '{}' is not loaded", active_file_path)
                     })?;
@@ -621,7 +726,6 @@ fn next_import_step() -> Result<ImportStep, String> {
     }
 
     if pending.next_index >= pending.layers.len() {
-        clear_pending_import(&mut state);
         return Ok(ImportStep::Complete);
     }
 
@@ -681,9 +785,26 @@ fn continue_pending_import() -> Result<(), String> {
     loop {
         match next_import_step()? {
             step @ ImportStep::Apply { .. } => apply_import_step(step)?,
-            ImportStep::WaitForShaMismatchConfirmation
-            | ImportStep::WaitForLayerConflict
-            | ImportStep::Complete => return Ok(()),
+            ImportStep::WaitForShaMismatchConfirmation | ImportStep::WaitForLayerConflict => {
+                return Ok(());
+            }
+            ImportStep::Complete => {
+                let recorded_actions = {
+                    let mut state = plugin_state().lock().unwrap();
+                    let pending = state.pending_import.take();
+                    state.pending_import_dialog = PendingImportDialog::None;
+                    pending
+                        .map(|pending| pending.recorded_actions)
+                        .unwrap_or_default()
+                };
+                if !recorded_actions.is_empty() {
+                    push_undo_action(Action::MultiAction(MultiAction {
+                        title: "Import Annotations".to_string(),
+                        actions: recorded_actions,
+                    }));
+                }
+                return Ok(());
+            }
         }
     }
 }
@@ -722,6 +843,7 @@ pub(crate) fn import_active_file_annotations() -> Result<(), String> {
         next_index: 0,
         apply_to_all: None,
         next_conflict_resolution: None,
+        recorded_actions: Vec::new(),
     });
     state.pending_import_dialog = if sha_matches {
         PendingImportDialog::None
@@ -885,6 +1007,19 @@ pub(crate) fn create_annotation_layer_for_active_file() -> Result<(), String> {
 		)
 		.map_err(|err| format!("failed to create annotation layer '{name}': {err}"))?;
 
+    let action = Action::CreateAnnotationLayer(CreateAnnotationLayer {
+        file: file_action_context(&loaded.file_path, &loaded.filename),
+        layer: AnnotationLayer {
+            id: id.clone(),
+            name: name.clone(),
+            notes: None,
+            color_hex: color_hex.clone(),
+            created_at: timestamp,
+            updated_at: timestamp,
+            annotations: Vec::new(),
+        },
+    });
+
     let loaded_entry = state
         .files
         .get_mut(&active_file_path)
@@ -903,6 +1038,8 @@ pub(crate) fn create_annotation_layer_for_active_file() -> Result<(), String> {
         .selected_layer_by_file
         .insert(active_file_path.clone(), id.clone());
     state.editing_layer_by_file.insert(active_file_path, id);
+    drop(state);
+    push_undo_action(action);
     Ok(())
 }
 
@@ -939,6 +1076,24 @@ pub(crate) fn set_annotation_layer_color_for_active_file(
         return Ok(());
     };
     state.editing_layer_by_file.remove(&active_file_path);
+    let Some((file, layer_before)) = state.files.get(&active_file_path).map(|loaded_entry| {
+        (
+            file_action_context(&loaded_entry.file_path, &loaded_entry.filename),
+            loaded_entry
+                .annotation_layers
+                .iter()
+                .find(|set| set.id == set_id)
+                .cloned(),
+        )
+    }) else {
+        return Ok(());
+    };
+    let Some(layer_before) = layer_before else {
+        return Ok(());
+    };
+    if layer_before.color_hex == color_hex {
+        return Ok(());
+    }
 
     let timestamp = now_unix_secs();
     let connection = open_database()?;
@@ -959,6 +1114,19 @@ pub(crate) fn set_annotation_layer_color_for_active_file(
         set.updated_at = timestamp;
     }
 
+    let action = Action::UpdateAnnotationLayer(UpdateAnnotationLayer {
+        file,
+        layer_id: set_id.to_string(),
+        old_name: layer_before.name.clone(),
+        old_color_hex: layer_before.color_hex.clone(),
+        old_updated_at: layer_before.updated_at,
+        new_name: layer_before.name,
+        new_color_hex: color_hex.to_string(),
+        new_updated_at: timestamp,
+    });
+    drop(state);
+    push_undo_action(action);
+
     Ok(())
 }
 
@@ -976,6 +1144,25 @@ pub(crate) fn rename_annotation_layer_for_active_file(
 
     let trimmed_name = new_name.trim();
     if trimmed_name.is_empty() {
+        return Ok(());
+    }
+
+    let Some((file, layer_before)) = state.files.get(&active_file_path).map(|loaded_entry| {
+        (
+            file_action_context(&loaded_entry.file_path, &loaded_entry.filename),
+            loaded_entry
+                .annotation_layers
+                .iter()
+                .find(|set| set.id == set_id)
+                .cloned(),
+        )
+    }) else {
+        return Ok(());
+    };
+    let Some(layer_before) = layer_before else {
+        return Ok(());
+    };
+    if layer_before.name == trimmed_name {
         return Ok(());
     }
 
@@ -1001,6 +1188,18 @@ pub(crate) fn rename_annotation_layer_for_active_file(
         set.updated_at = timestamp;
         sort_annotation_layers(&mut loaded_entry.annotation_layers);
     }
+    let action = Action::UpdateAnnotationLayer(UpdateAnnotationLayer {
+        file,
+        layer_id: set_id.to_string(),
+        old_name: layer_before.name.clone(),
+        old_color_hex: layer_before.color_hex.clone(),
+        old_updated_at: layer_before.updated_at,
+        new_name: trimmed_name.to_string(),
+        new_color_hex: layer_before.color_hex,
+        new_updated_at: timestamp,
+    });
+    drop(state);
+    push_undo_action(action);
     Ok(())
 }
 
@@ -1020,6 +1219,21 @@ pub(crate) fn delete_annotation_layer_for_active_file(set_id: &str) -> Result<()
 
     let mut state = plugin_state().lock().unwrap();
     let Some(active_file_path) = state.active_file_path.clone() else {
+        return Ok(());
+    };
+    let Some((file, layer_snapshot)) = state.files.get(&active_file_path).map(|loaded_entry| {
+        (
+            file_action_context(&loaded_entry.file_path, &loaded_entry.filename),
+            loaded_entry
+                .annotation_layers
+                .iter()
+                .find(|set| set.id == set_id)
+                .cloned(),
+        )
+    }) else {
+        return Ok(());
+    };
+    let Some(layer_snapshot) = layer_snapshot else {
         return Ok(());
     };
     let connection = open_database()?;
@@ -1065,6 +1279,12 @@ pub(crate) fn delete_annotation_layer_for_active_file(set_id: &str) -> Result<()
             state.selected_layer_by_file.remove(&active_file_path);
         }
     }
+    let action = Action::DeleteAnnotationLayer(DeleteAnnotationLayer {
+        file,
+        layer: layer_snapshot,
+    });
+    drop(state);
+    push_undo_action(action);
     Ok(())
 }
 
@@ -1077,6 +1297,35 @@ pub(crate) fn delete_annotation_for_active_file(annotation_id: &str) -> Result<(
     };
     let timestamp = now_unix_secs();
     let connection = open_database()?;
+
+    let file = state
+        .files
+        .get(&active_file_path)
+        .map(|loaded| file_action_context(&loaded.file_path, &loaded.filename))
+        .ok_or_else(|| format!("active file '{}' is not loaded", active_file_path))?;
+
+    let annotation_snapshot = state
+        .files
+        .get(&active_file_path)
+        .and_then(|loaded| annotation_snapshot_for_file(loaded, annotation_id))
+        .ok_or_else(|| format!("annotation '{}' is not loaded", annotation_id))?;
+
+    let delete_action = match annotation_snapshot.1 {
+        Annotation::Point(point) => Action::DeletePointAnnotation(DeletePointAnnotation {
+            file,
+            annotation_layer_id: annotation_snapshot.0.clone(),
+            annotation: point,
+            layer_updated_at_before: annotation_snapshot.2,
+            layer_updated_at_after: timestamp,
+        }),
+        Annotation::Polygon(polygon) => Action::DeletePolygonAnnotation(DeletePolygonAnnotation {
+            file,
+            annotation_layer_id: annotation_snapshot.0.clone(),
+            annotation: polygon,
+            layer_updated_at_before: annotation_snapshot.2,
+            layer_updated_at_after: timestamp,
+        }),
+    };
 
     let updated_set_id = state.files.get(&active_file_path).and_then(|loaded| {
         loaded.annotation_layers.iter().find_map(|set| {
@@ -1122,6 +1371,9 @@ pub(crate) fn delete_annotation_for_active_file(annotation_id: &str) -> Result<(
         }
     }
 
+    drop(state);
+    push_undo_action(delete_action);
+
     Ok(())
 }
 
@@ -1148,6 +1400,17 @@ pub(crate) fn move_point_annotation(
     let mut state = plugin_state().lock().unwrap();
     state.active_file_path = Some(file_path.clone());
     state.active_filename = Some(viewport.filename.to_string());
+
+    let file = state
+        .files
+        .get(&file_path)
+        .map(|loaded| file_action_context(&loaded.file_path, &loaded.filename))
+        .ok_or_else(|| format!("file '{}' is not loaded", file_path))?;
+    let (annotation_layer_id, annotation_before, layer_updated_at_before) = state
+        .files
+        .get(&file_path)
+        .and_then(|loaded| annotation_snapshot_for_file(loaded, annotation_id))
+        .ok_or_else(|| format!("annotation '{}' is not loaded", annotation_id))?;
 
     let timestamp = now_unix_secs();
     let connection = open_database()?;
@@ -1199,6 +1462,42 @@ pub(crate) fn move_point_annotation(
             })?;
     }
 
+    let annotation_after = PointAnnotation {
+        id: annotation_id.to_string(),
+        created_at: match annotation_before {
+            Annotation::Point(ref point) => point.created_at,
+            Annotation::Polygon(_) => {
+                return Err(format!("annotation '{}' is not a point", annotation_id));
+            }
+        },
+        updated_at: timestamp,
+        x_level0,
+        y_level0,
+    };
+    drop(state);
+    push_undo_action(Action::MultiAction(MultiAction {
+        title: "Move Annotation".to_string(),
+        actions: vec![
+            Action::DeletePointAnnotation(DeletePointAnnotation {
+                file: file.clone(),
+                annotation_layer_id: annotation_layer_id.clone(),
+                annotation: match annotation_before {
+                    Annotation::Point(point) => point,
+                    Annotation::Polygon(_) => unreachable!(),
+                },
+                layer_updated_at_before,
+                layer_updated_at_after: timestamp,
+            }),
+            Action::CreatePointAnnotation(CreatePointAnnotation {
+                file,
+                annotation_layer_id,
+                annotation: annotation_after,
+                layer_updated_at_before,
+                layer_updated_at_after: timestamp,
+            }),
+        ],
+    }));
+
     Ok(())
 }
 
@@ -1216,6 +1515,17 @@ pub(crate) fn move_polygon_annotation(
     let mut state = plugin_state().lock().unwrap();
     state.active_file_path = Some(file_path.clone());
     state.active_filename = Some(viewport.filename.to_string());
+
+    let file = state
+        .files
+        .get(&file_path)
+        .map(|loaded| file_action_context(&loaded.file_path, &loaded.filename))
+        .ok_or_else(|| format!("file '{}' is not loaded", file_path))?;
+    let (annotation_layer_id, annotation_before, layer_updated_at_before) = state
+        .files
+        .get(&file_path)
+        .and_then(|loaded| annotation_snapshot_for_file(loaded, annotation_id))
+        .ok_or_else(|| format!("annotation '{}' is not loaded", annotation_id))?;
 
     let timestamp = now_unix_secs();
     let connection = open_database()?;
@@ -1279,6 +1589,41 @@ pub(crate) fn move_polygon_annotation(
                 format!("failed to update annotation layer timestamp after polygon move: {err}")
             })?;
     }
+
+    let annotation_after = PolygonAnnotation {
+        id: annotation_id.to_string(),
+        created_at: match annotation_before {
+            Annotation::Polygon(ref polygon) => polygon.created_at,
+            Annotation::Point(_) => {
+                return Err(format!("annotation '{}' is not a polygon", annotation_id));
+            }
+        },
+        updated_at: timestamp,
+        vertices: point_annotation_as_polygon_vertices(vertices),
+    };
+    drop(state);
+    push_undo_action(Action::MultiAction(MultiAction {
+        title: "Move Annotation".to_string(),
+        actions: vec![
+            Action::DeletePolygonAnnotation(DeletePolygonAnnotation {
+                file: file.clone(),
+                annotation_layer_id: annotation_layer_id.clone(),
+                annotation: match annotation_before {
+                    Annotation::Polygon(polygon) => polygon,
+                    Annotation::Point(_) => unreachable!(),
+                },
+                layer_updated_at_before,
+                layer_updated_at_after: timestamp,
+            }),
+            Action::CreatePolygonAnnotation(CreatePolygonAnnotation {
+                file,
+                annotation_layer_id,
+                annotation: annotation_after,
+                layer_updated_at_before,
+                layer_updated_at_after: timestamp,
+            }),
+        ],
+    }));
 
     Ok(())
 }
@@ -1419,6 +1764,22 @@ pub(crate) fn persist_point_annotation(
     let Some(annotation_layer_id) = ensure_selected_layer_for_active_file(&mut state)? else {
         return Ok(());
     };
+    let file = state
+        .files
+        .get(&file_path)
+        .map(|loaded| file_action_context(&loaded.file_path, &loaded.filename))
+        .ok_or_else(|| format!("file '{}' is not loaded in plugin state", file_path))?;
+    let layer_updated_at_before = state
+        .files
+        .get(&file_path)
+        .and_then(|loaded| {
+            loaded
+                .annotation_layers
+                .iter()
+                .find(|set| set.id == annotation_layer_id)
+                .map(|set| set.updated_at)
+        })
+        .ok_or_else(|| format!("annotation layer '{}' is not loaded", annotation_layer_id))?;
 
     let annotation_id = Uuid::new_v4().to_string();
     let timestamp = now_unix_secs();
@@ -1455,13 +1816,27 @@ pub(crate) fn persist_point_annotation(
     set.annotations.insert(
         0,
         Annotation::Point(PointAnnotation {
-            id: annotation_id,
+            id: annotation_id.clone(),
             created_at: timestamp,
             updated_at: timestamp,
             x_level0,
             y_level0,
         }),
     );
+    drop(state);
+    push_undo_action(Action::CreatePointAnnotation(CreatePointAnnotation {
+        file,
+        annotation_layer_id,
+        annotation: PointAnnotation {
+            id: annotation_id,
+            created_at: timestamp,
+            updated_at: timestamp,
+            x_level0,
+            y_level0,
+        },
+        layer_updated_at_before,
+        layer_updated_at_after: timestamp,
+    }));
     Ok(())
 }
 
@@ -1481,6 +1856,22 @@ pub(crate) fn persist_polygon_annotation(
     let Some(annotation_layer_id) = ensure_selected_layer_for_active_file(&mut state)? else {
         return Ok(());
     };
+    let file = state
+        .files
+        .get(&file_path)
+        .map(|loaded| file_action_context(&loaded.file_path, &loaded.filename))
+        .ok_or_else(|| format!("file '{}' is not loaded in plugin state", file_path))?;
+    let layer_updated_at_before = state
+        .files
+        .get(&file_path)
+        .and_then(|loaded| {
+            loaded
+                .annotation_layers
+                .iter()
+                .find(|set| set.id == annotation_layer_id)
+                .map(|set| set.updated_at)
+        })
+        .ok_or_else(|| format!("annotation layer '{}' is not loaded", annotation_layer_id))?;
 
     let annotation_id = Uuid::new_v4().to_string();
     let timestamp = now_unix_secs();
@@ -1525,7 +1916,7 @@ pub(crate) fn persist_polygon_annotation(
     set.annotations.insert(
         0,
         Annotation::Polygon(PolygonAnnotation {
-            id: annotation_id,
+            id: annotation_id.clone(),
             created_at: timestamp,
             updated_at: timestamp,
             vertices: vertices
@@ -1537,5 +1928,18 @@ pub(crate) fn persist_polygon_annotation(
                 .collect(),
         }),
     );
+    drop(state);
+    push_undo_action(Action::CreatePolygonAnnotation(CreatePolygonAnnotation {
+        file,
+        annotation_layer_id,
+        annotation: PolygonAnnotation {
+            id: annotation_id,
+            created_at: timestamp,
+            updated_at: timestamp,
+            vertices: point_annotation_as_polygon_vertices(vertices),
+        },
+        layer_updated_at_before,
+        layer_updated_at_after: timestamp,
+    }));
     Ok(())
 }
