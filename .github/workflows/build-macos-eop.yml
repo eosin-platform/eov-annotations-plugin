@@ -42,22 +42,25 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          brew install openslide
+          brew install cairo gdk-pixbuf glib jpeg-turbo libpng libtiff libxml2 meson ninja openjpeg pkg-config sqlite
 
-      - name: Configure OpenSlide linker path
+      - name: Build OpenSlide from source
         shell: bash
         run: |
           set -euo pipefail
-          openslide_prefix="$(brew --prefix openslide)"
-          openslide_lib_dir="$openslide_prefix/lib"
+          openslide_prefix="$RUNNER_TEMP/openslide-prefix"
+          OPENSLIDE_PREFIX="$openslide_prefix" \
+          OPENSLIDE_BUILD_ROOT="$RUNNER_TEMP/openslide-build" \
+            bash eov-src/packaging/shared/build-openslide.sh
 
-          [[ -d "$openslide_lib_dir" ]] || {
-            echo "OpenSlide library directory not found: $openslide_lib_dir" >&2
-            exit 1
-          }
-
-          echo "OPENSLIDE_LIB_DIR=$openslide_lib_dir" >> "$GITHUB_ENV"
-          echo "RUSTFLAGS=-L native=$openslide_lib_dir ${RUSTFLAGS:-}" >> "$GITHUB_ENV"
+          {
+            echo "OPENSLIDE_PREFIX=$openslide_prefix"
+            echo "OPENSLIDE_LIB_DIR=$openslide_prefix/lib"
+            echo "PKG_CONFIG_PATH=$openslide_prefix/lib/pkgconfig${PKG_CONFIG_PATH+:$PKG_CONFIG_PATH}"
+            echo "DYLD_LIBRARY_PATH=$openslide_prefix/lib${DYLD_LIBRARY_PATH+:$DYLD_LIBRARY_PATH}"
+            echo "LIBRARY_PATH=$openslide_prefix/lib${LIBRARY_PATH+:$LIBRARY_PATH}"
+            echo "RUSTFLAGS=-L native=$openslide_prefix/lib ${RUSTFLAGS:-}"
+          } >> "$GITHUB_ENV"
 
       - name: Link eov workspace crates
         shell: bash

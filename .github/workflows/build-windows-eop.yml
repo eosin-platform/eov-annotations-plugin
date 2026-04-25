@@ -37,7 +37,8 @@ jobs:
             ntldd_filter: clangarm64
 
     env:
-      OPENSLIDE_COMMIT: "615670d924d6dddce3d407d1a6440a32cf5350c7"
+      OPENSLIDE_REPO_URL: "https://github.com/Yanstart/openslide.git"
+      OPENSLIDE_COMMIT: "00bebfb6a412485f7fbfe7fdb5919a3868594c13"
 
     steps:
       - name: Check out repository
@@ -179,9 +180,11 @@ jobs:
         shell: msys2 {0}
         run: |
           set -euo pipefail
-          git clone https://github.com/openslide/openslide.git openslide-src
+          git init openslide-src
+          git -C openslide-src remote add origin "$OPENSLIDE_REPO_URL"
+          git -C openslide-src fetch --depth 1 origin "$OPENSLIDE_COMMIT"
+          git -C openslide-src checkout --detach FETCH_HEAD
           cd openslide-src
-          git checkout "$OPENSLIDE_COMMIT"
           meson setup _build \
             --prefix="$MSYSTEM_PREFIX" \
             --libdir=lib \

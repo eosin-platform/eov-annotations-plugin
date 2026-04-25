@@ -45,9 +45,40 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             build-essential \
-            libopenslide-dev \
+            curl \
+            git \
+            libcairo2-dev \
+            libgdk-pixbuf-2.0-dev \
+            libglib2.0-dev \
+            libjpeg-turbo8-dev \
+            libopenjp2-7-dev \
+            libpng-dev \
+            libsqlite3-dev \
+            libtiff-dev \
+            libxml2-dev \
+            meson \
+            ninja-build \
             pkg-config \
-            python3
+            python3 \
+            zlib1g-dev
+
+      - name: Build OpenSlide from source
+        shell: bash
+        run: |
+          set -euo pipefail
+          openslide_prefix="$RUNNER_TEMP/openslide-prefix"
+          OPENSLIDE_PREFIX="$openslide_prefix" \
+          OPENSLIDE_BUILD_ROOT="$RUNNER_TEMP/openslide-build" \
+            bash eov-src/packaging/shared/build-openslide.sh
+
+          {
+            echo "OPENSLIDE_PREFIX=$openslide_prefix"
+            echo "OPENSLIDE_LIB_DIR=$openslide_prefix/lib"
+            echo "PKG_CONFIG_PATH=$openslide_prefix/lib/pkgconfig${PKG_CONFIG_PATH+:$PKG_CONFIG_PATH}"
+            echo "LD_LIBRARY_PATH=$openslide_prefix/lib${LD_LIBRARY_PATH+:$LD_LIBRARY_PATH}"
+            echo "LIBRARY_PATH=$openslide_prefix/lib${LIBRARY_PATH+:$LIBRARY_PATH}"
+            echo "RUSTFLAGS=-L native=$openslide_prefix/lib ${RUSTFLAGS:-}"
+          } >> "$GITHUB_ENV"
 
       - name: Link eov workspace crates
         shell: bash
