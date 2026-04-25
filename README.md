@@ -24,11 +24,11 @@ The plugin extends eov with:
 
 - Point annotations
 - Polygon annotations
-- Per-slide annotation sets
+- Per-slide annotation layers
 - A docked annotations sidebar
-- Per-set color selection
-- Per-set visibility toggles
-- Set rename and delete actions
+- Per-layer color selection
+- Per-layer visibility toggles
+- Layer rename and delete actions
 - Annotation delete actions
 - JSON export for the active slide's annotations
 - Persistent local storage backed by SQLite
@@ -50,7 +50,7 @@ It also adds two viewport context menu actions for an open slide:
 
 ### Point Annotations
 
-Point annotations are rendered as colored rings in the viewport. When a point is placed, the plugin stores it immediately in the selected annotation set and refreshes both the sidebar and the viewport.
+Point annotations are rendered as colored rings in the viewport. When a point is placed, the plugin stores it immediately in the selected annotation layer and refreshes both the sidebar and the viewport.
 
 Placed points can be dragged to a new location. Moving a point updates both the in-memory plugin state and the persistent SQLite store.
 
@@ -60,16 +60,16 @@ Polygon annotations are rendered as colored filled polygons. The plugin persists
 
 Placed polygons can be moved, and polygon vertices can be edited through the host application's polygon editing support. The plugin persists updated vertices back to SQLite whenever the polygon changes.
 
-### Annotation Sets
+### Annotation Layers
 
-Annotations are organized into sets per slide.
+Annotations are organized into layers per slide.
 
-- If you place an annotation on a slide with no selected set, the plugin creates or selects an `Untitled` set automatically.
-- Creating a new set from the sidebar starts inline rename mode immediately.
-- Sets can be renamed, recolored, collapsed, hidden, and deleted.
-- Visibility is controlled per set. Hidden sets disappear from both the viewport overlays and the sidebar's rendered state.
+- If you place an annotation on a slide with no selected layer, the plugin creates or selects an `Untitled` layer automatically.
+- Creating a new layer from the sidebar starts inline rename mode immediately.
+- Layers can be renamed, recolored, collapsed, hidden, and deleted.
+- Visibility is controlled per layer. Hidden layers disappear from both the viewport overlays and the sidebar's rendered state.
 
-Set colors are chosen from a built-in palette and are reused as evenly as possible across sets.
+Layer colors are chosen from a built-in palette and are reused as evenly as possible across layers.
 
 ### Sidebar
 
@@ -77,7 +77,7 @@ The sidebar is a runtime-loaded Slint UI hosted by eov. It currently exposes a s
 
 - `Local`
 
-The tree shows annotation sets and their child annotations for the active slide. Clicking a set selects it. Clicking an annotation focuses it in the viewport by framing the corresponding image-space region.
+The tree shows annotation layers and their child annotations for the active slide. Clicking a layer selects it. Clicking an annotation focuses it in the viewport by framing the corresponding image-space region.
 
 If no slide is open, the sidebar shows an empty-state message. If a slide is open but has no annotations yet, it shows a slide-specific empty state instead.
 
@@ -89,8 +89,8 @@ The exported payload includes:
 
 - Slide file path
 - Slide fingerprint as hex
-- Annotation sets
-- Set metadata including name, notes, color, and timestamps
+- Annotation layers
+- Layer metadata including name, notes, color, and timestamps
 - Point annotations with coordinates and timestamps
 - Polygon annotations with vertices and timestamps
 
@@ -111,7 +111,7 @@ You can override the database path with:
 export EOV_ANNOTATIONS_DB=/path/to/annotations.db
 ```
 
-The plugin computes a fingerprint for each slide and uses that fingerprint to load the matching annotation sets. This is the key reason annotations are slide-scoped rather than just path-scoped.
+The plugin computes a fingerprint for each slide and uses that fingerprint to load the matching annotation layers. This is the key reason annotations are slide-scoped rather than just path-scoped.
 
 ## Scope and Limitations
 
@@ -196,7 +196,7 @@ That script packages the plugin into `~/.eov/plugins/annotations.eop` and then s
 3. Click `Annotations` to open the sidebar.
 4. Click the point tool or press `1` to place point annotations.
 5. Click the polygon tool or press `2` to place polygon annotations.
-6. Use the sidebar to create sets, rename them, change colors, hide or show sets, and export the active slide's annotations.
+6. Use the sidebar to create layers, rename them, change colors, hide or show layers, and export the active slide's annotations.
 
 You can also start annotation placement from the viewport context menu.
 

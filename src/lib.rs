@@ -170,10 +170,10 @@ extern "C" fn get_viewport_overlay_points_ffi(
     let Some(loaded) = state.files.get(viewport.file_path.as_str()) else {
         return RVec::new();
     };
-    let hidden_sets = state.hidden_sets_by_file.get(viewport.file_path.as_str());
+    let hidden_sets = state.hidden_layers_by_file.get(viewport.file_path.as_str());
 
     let points = loaded
-        .annotation_sets
+        .annotation_layers
         .iter()
         .filter(|set| !hidden_sets.is_some_and(|hidden| hidden.contains(&set.id)))
         .flat_map(|set| {
@@ -221,10 +221,10 @@ extern "C" fn get_viewport_overlay_polygons_ffi(
     let Some(loaded) = state.files.get(viewport.file_path.as_str()) else {
         return RVec::new();
     };
-    let hidden_sets = state.hidden_sets_by_file.get(viewport.file_path.as_str());
+    let hidden_sets = state.hidden_layers_by_file.get(viewport.file_path.as_str());
 
     let polygons = loaded
-        .annotation_sets
+        .annotation_layers
         .iter()
         .filter(|set| !hidden_sets.is_some_and(|hidden| hidden.contains(&set.id)))
         .flat_map(|set| {

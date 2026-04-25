@@ -3,11 +3,11 @@ use plugin_api::ffi::{HostLogLevelFFI, UiPropertyFFI};
 
 use crate::model::{Annotation, SidebarTreeRow, annotation_label, hex_color_to_rgb};
 use crate::operations::{
-    create_annotation_set_for_active_file, delete_annotation_for_active_file,
-    delete_annotation_set_for_active_file, export_active_file_annotations,
-    refresh_sidebar_if_available, rename_annotation_set_for_active_file,
-    request_delete_annotation_set, request_render_if_available,
-    set_annotation_set_color_for_active_file, set_annotation_set_visibility_for_active_file,
+    create_annotation_layer_for_active_file, delete_annotation_for_active_file,
+    delete_annotation_layer_for_active_file, export_active_file_annotations,
+    refresh_sidebar_if_available, rename_annotation_layer_for_active_file,
+    request_delete_annotation_layer, request_render_if_available,
+    set_annotation_layer_color_for_active_file, set_annotation_layer_visibility_for_active_file,
     sync_active_file,
 };
 use crate::state::{
@@ -22,24 +22,24 @@ fn sidebar_rows(state: &PluginState) -> Vec<SidebarTreeRow> {
     let Some(loaded) = state.files.get(active_path) else {
         return Vec::new();
     };
-    let selected_set_id = state.selected_set_by_file.get(active_path);
-    let collapsed_sets = state.collapsed_sets_by_file.get(active_path);
-    let hidden_sets = state.hidden_sets_by_file.get(active_path);
+    let selected_layer_id = state.selected_layer_by_file.get(active_path);
+    let collapsed_layers = state.collapsed_layers_by_file.get(active_path);
+    let hidden_layers = state.hidden_layers_by_file.get(active_path);
 
     let mut rows = Vec::new();
-    for set in &loaded.annotation_sets {
-        let is_collapsed = collapsed_sets.is_some_and(|collapsed| collapsed.contains(&set.id));
-        let is_visible = !hidden_sets.is_some_and(|hidden| hidden.contains(&set.id));
-        let (color_r, color_g, color_b) = hex_color_to_rgb(&set.color_hex);
+    for layer in &loaded.annotation_layers {
+        let is_collapsed = collapsed_layers.is_some_and(|collapsed| collapsed.contains(&layer.id));
+        let is_visible = !hidden_layers.is_some_and(|hidden| hidden.contains(&layer.id));
+        let (color_r, color_g, color_b) = hex_color_to_rgb(&layer.color_hex);
         rows.push(SidebarTreeRow {
-            row_id: set.id.clone(),
-            parent_set_id: set.id.clone(),
-            label: set.name.clone(),
-            annotation_count: set.annotations.len() as i32,
+            row_id: layer.id.clone(),
+            parent_layer_id: layer.id.clone(),
+            label: layer.name.clone(),
+            annotation_count: layer.annotations.len() as i32,
             indent: 0,
-            is_set: true,
+            is_layer: true,
             is_collapsed,
-            is_selected: selected_set_id.is_some_and(|selected| selected == &set.id),
+            is_selected: selected_layer_id.is_some_and(|selected| selected == &layer.id),
             visible: is_visible,
             color_r: color_r as i32,
             color_g: color_g as i32,
@@ -47,18 +47,18 @@ fn sidebar_rows(state: &PluginState) -> Vec<SidebarTreeRow> {
         });
 
         if !is_collapsed {
-            for annotation in &set.annotations {
+            for annotation in &layer.annotations {
                 let annotation_id = match annotation {
                     Annotation::Point(point) => point.id.clone(),
                     Annotation::Polygon(polygon) => polygon.id.clone(),
                 };
                 rows.push(SidebarTreeRow {
                     row_id: annotation_id,
-                    parent_set_id: set.id.clone(),
+                    parent_layer_id: layer.id.clone(),
                     label: annotation_label(annotation),
                     annotation_count: 0,
                     indent: 1,
-                    is_set: false,
+                    is_layer: false,
                     is_collapsed: false,
                     is_selected: false,
                     visible: is_visible,
@@ -79,15 +79,15 @@ fn parse_callback_args(args_json: &str) -> Vec<serde_json::Value> {
     }
 }
 
-fn selected_set_name(state: &PluginState) -> String {
+fn selected_layer_name(state: &PluginState) -> String {
     state
         .active_file_path
         .as_deref()
         .and_then(|path| {
-            let selected_id = state.selected_set_by_file.get(path)?;
+            let selected_id = state.selected_layer_by_file.get(path)?;
             state.files.get(path).and_then(|loaded| {
                 loaded
-                    .annotation_sets
+                    .annotation_layers
                     .iter()
                     .find(|set| &set.id == selected_id)
                     .map(|set| set.name.clone())
@@ -105,19 +105,19 @@ fn focus_sidebar_row(row_id: &str) -> Result<(), String> {
             return Ok(());
         };
 
-        let is_set = state
+        let is_layer = state
             .files
             .get(&active_path)
-            .is_some_and(|loaded| loaded.annotation_sets.iter().any(|set| set.id == row_id));
-        if is_set {
+            .is_some_and(|loaded| loaded.annotation_layers.iter().any(|layer| layer.id == row_id));
+        if is_layer {
             state
-                .selected_set_by_file
+                .selected_layer_by_file
                 .insert(active_path, row_id.to_string());
             return Ok(());
         }
 
         let target = state.files.get(&active_path).and_then(|loaded| {
-            loaded.annotation_sets.iter().find_map(|set| {
+            loaded.annotation_layers.iter().find_map(|set| {
                 set.annotations
                     .iter()
                     .find_map(|annotation| match annotation {
@@ -152,10 +152,10 @@ fn focus_sidebar_row(row_id: &str) -> Result<(), String> {
             })
         });
 
-        if let Some((set_id, _, _)) = target.as_ref() {
+        if let Some((layer_id, _, _)) = target.as_ref() {
             state
-                .selected_set_by_file
-                .insert(active_path, set_id.clone());
+                .selected_layer_by_file
+            .insert(active_path, layer_id.clone());
         }
         target
     };
@@ -191,7 +191,7 @@ fn toggle_set_for_active_file(set_id: &str) -> Result<(), String> {
     let Some(active_path) = active_file_key(&state).map(str::to_string) else {
         return Ok(());
     };
-    let collapsed = state.collapsed_sets_by_file.entry(active_path).or_default();
+    let collapsed = state.collapsed_layers_by_file.entry(active_path).or_default();
     if !collapsed.insert(set_id.to_string()) {
         collapsed.remove(set_id);
     }
@@ -203,37 +203,37 @@ pub(crate) fn on_sidebar_callback(callback_name: &str, args_json: &str) {
 
     let result = match callback_name {
         "export-clicked" => export_active_file_annotations(),
-        "create-set-clicked" => create_annotation_set_for_active_file().map(|_| {
+        "create-layer-clicked" => create_annotation_layer_for_active_file().map(|_| {
             refresh_sidebar_if_available();
         }),
-        "rename-set-committed" => {
+        "rename-layer-committed" => {
             let Some(serde_json::Value::String(set_id)) = args.first() else {
                 return;
             };
             let Some(serde_json::Value::String(new_name)) = args.get(1) else {
                 return;
             };
-            rename_annotation_set_for_active_file(set_id, new_name).map(|_| {
+            rename_annotation_layer_for_active_file(set_id, new_name).map(|_| {
                 refresh_sidebar_if_available();
             })
         }
-        "delete-set-confirmed" => {
+        "delete-layer-confirmed" => {
             let Some(serde_json::Value::String(set_id)) = args.first() else {
                 return;
             };
-            delete_annotation_set_for_active_file(set_id).map(|_| {
+            delete_annotation_layer_for_active_file(set_id).map(|_| {
                 refresh_sidebar_if_available();
                 request_render_if_available();
             })
         }
-        "request-delete-set" => {
+        "request-delete-layer" => {
             let Some(serde_json::Value::String(set_id)) = args.first() else {
                 return;
             };
             let Some(serde_json::Value::String(set_name)) = args.get(1) else {
                 return;
             };
-            request_delete_annotation_set(set_id, set_name)
+            request_delete_annotation_layer(set_id, set_name)
         }
         "delete-annotation-clicked" => {
             let Some(serde_json::Value::String(annotation_id)) = args.first() else {
@@ -251,7 +251,7 @@ pub(crate) fn on_sidebar_callback(callback_name: &str, args_json: &str) {
             };
             focus_sidebar_row(row_id)
         }
-        "toggle-set" => {
+        "toggle-layer" => {
             let Some(serde_json::Value::String(set_id)) = args.first() else {
                 return;
             };
@@ -259,26 +259,26 @@ pub(crate) fn on_sidebar_callback(callback_name: &str, args_json: &str) {
                 refresh_sidebar_if_available();
             })
         }
-        "toggle-set-visibility" => {
+        "toggle-layer-visibility" => {
             let Some(serde_json::Value::String(set_id)) = args.first() else {
                 return;
             };
             let Some(serde_json::Value::Bool(visible)) = args.get(1) else {
                 return;
             };
-            set_annotation_set_visibility_for_active_file(set_id, *visible).map(|_| {
+            set_annotation_layer_visibility_for_active_file(set_id, *visible).map(|_| {
                 refresh_sidebar_if_available();
                 request_render_if_available();
             })
         }
-        "set-set-color" => {
+        "set-layer-color" => {
             let Some(serde_json::Value::String(set_id)) = args.first() else {
                 return;
             };
             let Some(serde_json::Value::String(color_hex)) = args.get(1) else {
                 return;
             };
-            set_annotation_set_color_for_active_file(set_id, color_hex).map(|_| {
+            set_annotation_layer_color_for_active_file(set_id, color_hex).map(|_| {
                 refresh_sidebar_if_available();
                 request_render_if_available();
             })
@@ -298,15 +298,15 @@ pub(crate) fn get_sidebar_properties() -> RVec<UiPropertyFFI> {
 
     let state = plugin_state().lock().unwrap();
     let rows = sidebar_rows(&state);
-    let editing_set_id = state
+    let editing_layer_id = state
         .active_file_path
         .as_deref()
-        .and_then(|path| state.editing_set_by_file.get(path).cloned())
+        .and_then(|path| state.editing_layer_by_file.get(path).cloned())
         .unwrap_or_default();
     let empty_state = if state.active_file_path.is_none() {
-        "Open a slide to view its annotation sets.".to_string()
+        "Open a slide to view its annotation layers.".to_string()
     } else if rows.is_empty() {
-        "No annotation sets for this slide yet.".to_string()
+        "No annotation layers for this slide yet.".to_string()
     } else {
         String::new()
     };
@@ -341,32 +341,32 @@ pub(crate) fn get_sidebar_properties() -> RVec<UiPropertyFFI> {
             json_value: state
                 .active_file_path
                 .as_deref()
-                .and_then(|path| state.selected_set_by_file.get(path))
+                .and_then(|path| state.selected_layer_by_file.get(path))
                 .is_some()
                 .to_string()
                 .into(),
         },
         UiPropertyFFI {
-            name: "selected-set-id".into(),
+            name: "selected-layer-id".into(),
             json_value: serde_json::to_string(
                 &state
                     .active_file_path
                     .as_deref()
-                    .and_then(|path| state.selected_set_by_file.get(path).cloned())
+                    .and_then(|path| state.selected_layer_by_file.get(path).cloned())
                     .unwrap_or_default(),
             )
             .unwrap_or_else(|_| "\"\"".to_string())
             .into(),
         },
         UiPropertyFFI {
-            name: "editing-set-id".into(),
-            json_value: serde_json::to_string(&editing_set_id)
+            name: "editing-layer-id".into(),
+            json_value: serde_json::to_string(&editing_layer_id)
                 .unwrap_or_else(|_| "\"\"".to_string())
                 .into(),
         },
         UiPropertyFFI {
-            name: "selected-set-name".into(),
-            json_value: serde_json::to_string(&selected_set_name(&state))
+            name: "selected-layer-name".into(),
+            json_value: serde_json::to_string(&selected_layer_name(&state))
                 .unwrap_or_else(|_| "\"\"".to_string())
                 .into(),
         },

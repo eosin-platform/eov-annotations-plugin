@@ -4,7 +4,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use crate::model::{
-    Annotation, AnnotationSet, PointAnnotation, PolygonAnnotation, PolygonVertex, annotation_label,
+    Annotation, AnnotationLayer, PointAnnotation, PolygonAnnotation, PolygonVertex, annotation_label,
 };
 
 fn annotations_db_path() -> Result<PathBuf, String> {
@@ -42,7 +42,7 @@ pub(crate) fn open_database() -> Result<Connection, String> {
             r#"
             PRAGMA foreign_keys = ON;
 
-            CREATE TABLE IF NOT EXISTS annotation_sets (
+            CREATE TABLE IF NOT EXISTS annotation_layers (
                 id TEXT PRIMARY KEY,
                 fingerprint BLOB NOT NULL CHECK(length(fingerprint) = 32),
                 name TEXT NOT NULL CHECK(length(name) <= 255),
@@ -54,11 +54,11 @@ pub(crate) fn open_database() -> Result<Connection, String> {
 
             CREATE TABLE IF NOT EXISTS annotations (
                 id TEXT PRIMARY KEY,
-                annotation_set_id TEXT NOT NULL,
+                annotation_layer_id TEXT NOT NULL,
                 type TEXT NOT NULL CHECK(type IN ('point', 'ellipse', 'polygon', 'bitmask')),
                 created_at INTEGER NOT NULL,
                 updated_at INTEGER NOT NULL,
-                FOREIGN KEY (annotation_set_id) REFERENCES annotation_sets(id) ON DELETE CASCADE
+                FOREIGN KEY (annotation_layer_id) REFERENCES annotation_layers(id) ON DELETE CASCADE
             );
 
             CREATE TABLE IF NOT EXISTS annotation_points (
@@ -131,15 +131,15 @@ pub(crate) fn fingerprint_for_file(path: &Path) -> Result<[u8; 32], String> {
     })
 }
 
-pub(crate) fn load_annotation_sets(
+pub(crate) fn load_annotation_layers(
     connection: &Connection,
     fingerprint: &[u8; 32],
-) -> Result<Vec<AnnotationSet>, String> {
+) -> Result<Vec<AnnotationLayer>, String> {
     let mut sets_stmt = connection
         .prepare(
-            "SELECT id, name, notes, color, created_at, updated_at FROM annotation_sets WHERE fingerprint = ?1 ORDER BY lower(name) ASC, created_at DESC",
+            "SELECT id, name, notes, color, created_at, updated_at FROM annotation_layers WHERE fingerprint = ?1 ORDER BY lower(name) ASC, created_at DESC",
         )
-        .map_err(|err| format!("failed to prepare annotation set query: {err}"))?;
+        .map_err(|err| format!("failed to prepare annotation layer query: {err}"))?;
 
     let set_rows = sets_stmt
         .query_map(params![fingerprint.as_slice()], |row| {
@@ -152,7 +152,7 @@ pub(crate) fn load_annotation_sets(
                 row.get::<_, i64>(5)?,
             ))
         })
-        .map_err(|err| format!("failed to query annotation sets: {err}"))?;
+        .map_err(|err| format!("failed to query annotation layers: {err}"))?;
 
     let mut annotation_stmt = connection
         .prepare(
@@ -160,7 +160,7 @@ pub(crate) fn load_annotation_sets(
             SELECT a.id, a.created_at, a.updated_at, p.x_level0, p.y_level0
             FROM annotations a
             INNER JOIN annotation_points p ON p.annotation_id = a.id
-            WHERE a.annotation_set_id = ?1 AND a.type = 'point'
+            WHERE a.annotation_layer_id = ?1 AND a.type = 'point'
             ORDER BY a.created_at DESC, a.id DESC
             "#,
         )
@@ -172,7 +172,7 @@ pub(crate) fn load_annotation_sets(
             SELECT a.id, a.created_at, a.updated_at, pv.vertex_index, pv.x_level0, pv.y_level0
             FROM annotations a
             INNER JOIN annotation_polygon_vertices pv ON pv.annotation_id = a.id
-            WHERE a.annotation_set_id = ?1 AND a.type = 'polygon'
+            WHERE a.annotation_layer_id = ?1 AND a.type = 'polygon'
             ORDER BY a.created_at DESC, a.id DESC, pv.vertex_index ASC
             "#,
         )
@@ -181,7 +181,7 @@ pub(crate) fn load_annotation_sets(
     let mut sets = Vec::new();
     for set_row in set_rows {
         let (id, name, notes, color_hex, created_at, updated_at) =
-            set_row.map_err(|err| format!("failed to read annotation set row: {err}"))?;
+            set_row.map_err(|err| format!("failed to read annotation layer row: {err}"))?;
         let annotation_rows = annotation_stmt
             .query_map(params![&id], |row| {
                 Ok(Annotation::Point(PointAnnotation {
@@ -252,7 +252,7 @@ pub(crate) fn load_annotation_sets(
         }
         annotations.sort_by_key(|annotation| std::cmp::Reverse(annotation_label(annotation)));
 
-        sets.push(AnnotationSet {
+        sets.push(AnnotationLayer {
             id,
             name,
             notes,

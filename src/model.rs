@@ -13,11 +13,11 @@ pub(crate) struct LoadedFileAnnotations {
     pub(crate) file_path: String,
     pub(crate) filename: String,
     pub(crate) fingerprint: [u8; 32],
-    pub(crate) annotation_sets: Vec<AnnotationSet>,
+    pub(crate) annotation_layers: Vec<AnnotationLayer>,
 }
 
 #[derive(Clone)]
-pub(crate) struct AnnotationSet {
+pub(crate) struct AnnotationLayer {
     pub(crate) id: String,
     pub(crate) name: String,
     pub(crate) notes: Option<String>,
@@ -59,11 +59,11 @@ pub(crate) struct PolygonAnnotation {
 #[derive(Serialize)]
 pub(crate) struct SidebarTreeRow {
     pub(crate) row_id: String,
-    pub(crate) parent_set_id: String,
+    pub(crate) parent_layer_id: String,
     pub(crate) label: String,
     pub(crate) annotation_count: i32,
     pub(crate) indent: i32,
-    pub(crate) is_set: bool,
+    pub(crate) is_layer: bool,
     pub(crate) is_collapsed: bool,
     pub(crate) is_selected: bool,
     pub(crate) visible: bool,
@@ -76,11 +76,11 @@ pub(crate) struct SidebarTreeRow {
 pub(crate) struct ExportFile {
     pub(crate) file_path: String,
     pub(crate) fingerprint_hex: String,
-    pub(crate) annotation_sets: Vec<ExportAnnotationSet>,
+    pub(crate) annotation_layers: Vec<ExportAnnotationLayer>,
 }
 
 #[derive(Serialize)]
-pub(crate) struct ExportAnnotationSet {
+pub(crate) struct ExportAnnotationLayer {
     pub(crate) id: String,
     pub(crate) name: String,
     pub(crate) notes: Option<String>,
@@ -144,17 +144,17 @@ fn palette_seed() -> usize {
     seed
 }
 
-pub(crate) fn choose_annotation_set_color(annotation_sets: &[AnnotationSet]) -> String {
+pub(crate) fn choose_annotation_layer_color(annotation_layers: &[AnnotationLayer]) -> String {
     let mut usage_counts: HashMap<&'static str, usize> = SET_COLOR_PALETTE
         .iter()
         .copied()
         .map(|color| (color, 0))
         .collect();
-    let used_colors: HashSet<&str> = annotation_sets
+    let used_colors: HashSet<&str> = annotation_layers
         .iter()
         .map(|set| set.color_hex.as_str())
         .collect();
-    for set in annotation_sets {
+    for set in annotation_layers {
         if let Some(count) = usage_counts.get_mut(set.color_hex.as_str()) {
             *count += 1;
         }
@@ -186,8 +186,8 @@ pub(crate) fn annotation_label(annotation: &Annotation) -> String {
     }
 }
 
-pub(crate) fn sort_annotation_sets(annotation_sets: &mut [AnnotationSet]) {
-    annotation_sets.sort_by(|left, right| {
+pub(crate) fn sort_annotation_layers(annotation_layers: &mut [AnnotationLayer]) {
+    annotation_layers.sort_by(|left, right| {
         left.name
             .to_ascii_lowercase()
             .cmp(&right.name.to_ascii_lowercase())
@@ -196,8 +196,8 @@ pub(crate) fn sort_annotation_sets(annotation_sets: &mut [AnnotationSet]) {
     });
 }
 
-pub(crate) fn unique_untitled_set_name(annotation_sets: &[AnnotationSet]) -> String {
-    let existing = annotation_sets
+pub(crate) fn unique_untitled_set_name(annotation_layers: &[AnnotationLayer]) -> String {
+    let existing = annotation_layers
         .iter()
         .map(|set| set.name.as_str())
         .collect::<HashSet<_>>();

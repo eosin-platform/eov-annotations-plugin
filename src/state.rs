@@ -12,10 +12,10 @@ pub(crate) struct PluginState {
     pub(crate) files: HashMap<String, LoadedFileAnnotations>,
     pub(crate) active_file_path: Option<String>,
     pub(crate) active_filename: Option<String>,
-    pub(crate) selected_set_by_file: HashMap<String, String>,
-    pub(crate) editing_set_by_file: HashMap<String, String>,
-    pub(crate) collapsed_sets_by_file: HashMap<String, HashSet<String>>,
-    pub(crate) hidden_sets_by_file: HashMap<String, HashSet<String>>,
+    pub(crate) selected_layer_by_file: HashMap<String, String>,
+    pub(crate) editing_layer_by_file: HashMap<String, String>,
+    pub(crate) collapsed_layers_by_file: HashMap<String, HashSet<String>>,
+    pub(crate) hidden_layers_by_file: HashMap<String, HashSet<String>>,
 }
 
 static HOST_API: Mutex<Option<HostApiVTable>> = Mutex::new(None);
