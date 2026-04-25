@@ -1,5 +1,49 @@
 import { Theme } from "theme.slint";
 
+component MetadataInputField inherits Rectangle {
+    in property <string> label: "";
+    in-out property <string> value: "";
+    out property <bool> has-active-input: input.has-focus;
+
+    width: 100%;
+    height: 64px;
+    background: transparent;
+
+    Text {
+        x: 0px;
+        y: 0px;
+        width: parent.width;
+        text: root.label;
+        color: Theme.text-secondary;
+        font-size: 11px;
+    }
+
+    Rectangle {
+        x: 0px;
+        y: 22px;
+        width: parent.width;
+        height: 36px;
+        background: #101419;
+        border-radius: 6px;
+        border-width: 1px;
+        border-color: input.has-focus ? Theme.accent : Theme.border;
+
+        input := TextInput {
+            x: 10px;
+            y: 0px;
+            width: parent.width - 20px;
+            height: parent.height;
+            text <=> root.value;
+            color: Theme.text-primary;
+            font-size: 12px;
+            selection-background-color: Theme.accent;
+            selection-foreground-color: #ffffff;
+            text-cursor-width: 1px;
+            vertical-alignment: center;
+        }
+    }
+}
+
 export component MetadataSettingsDialog inherits Rectangle {
     in property <string> metadata-author: "";
     in property <string> metadata-organization: "";
@@ -14,140 +58,114 @@ export component MetadataSettingsDialog inherits Rectangle {
     callback metadata-settings-confirmed(string, string, string, string);
     callback metadata-settings-cancelled();
 
-    background: transparent;
+    out property <bool> capture-hotkeys:
+        author-field.has-active-input
+        || organization-field.has-active-input
+        || project-name-field.has-active-input
+        || license-field.has-active-input;
 
-    Rectangle {
-        x: 0px;
-        y: 0px;
-        width: parent.width;
-        height: parent.height;
-        background: Theme.surface;
-        border-radius: 8px;
-        border-width: 1px;
-        border-color: Theme.border;
+    background: Theme.surface;
+    border-radius: 10px;
+    border-width: 1px;
+    border-color: Theme.border;
+    clip: true;
 
-        VerticalLayout {
-            padding: 16px;
-            spacing: 10px;
+    VerticalLayout {
+        x: 20px;
+        y: 20px;
+        width: parent.width - 40px;
+        height: parent.height - 40px;
+        spacing: 12px;
 
-            Text {
-                text: "Metadata Settings";
-                color: Theme.text-primary;
-                font-size: 14px;
-                font-weight: 600;
-                horizontal-alignment: left;
-            }
+        Text {
+            width: parent.width;
+            text: "Metadata Settings";
+            color: Theme.text-primary;
+            font-size: 14px;
+            font-weight: 600;
+            horizontal-alignment: left;
+        }
 
-            for field in [
-                { label: "Author", value: root.metadata-author-draft, index: 1 },
-                { label: "Organization", value: root.metadata-organization-draft, index: 2 },
-                { label: "Project Name", value: root.metadata-project-name-draft, index: 3 },
-                { label: "License", value: root.metadata-license-draft, index: 4 }
-            ]: Rectangle {
-                width: parent.width;
-                height: 62px;
-                background: transparent;
+        author-field := MetadataInputField {
+            label: "Author";
+            value <=> root.metadata-author-draft;
+        }
 
-                Text {
-                    x: 0px;
-                    y: 0px;
-                    text: field.label;
-                    color: Theme.text-secondary;
-                    font-size: 11px;
+        organization-field := MetadataInputField {
+            label: "Organization";
+            value <=> root.metadata-organization-draft;
+        }
+
+        project-name-field := MetadataInputField {
+            label: "Project Name";
+            value <=> root.metadata-project-name-draft;
+        }
+
+        license-field := MetadataInputField {
+            label: "License";
+            value <=> root.metadata-license-draft;
+        }
+
+        Rectangle {
+            vertical-stretch: 1;
+            background: transparent;
+        }
+
+        HorizontalLayout {
+            width: parent.width;
+            spacing: 8px;
+            alignment: end;
+
+            Rectangle {
+                min-width: 72px;
+                height: 32px;
+                border-radius: 6px;
+                background: cancel-touch.has-hover ? Theme.surface-hover : Theme.surface;
+                border-width: 1px;
+                border-color: Theme.border;
+
+                cancel-touch := TouchArea {
+                    clicked => {
+                        root.metadata-settings-cancelled();
+                    }
                 }
 
-                Rectangle {
-                    x: 0px;
-                    y: 20px;
+                Text {
                     width: parent.width;
-                    height: 34px;
-                    background: #101419;
-                    border-radius: 4px;
-                    border-width: 1px;
-                    border-color: input.has-focus ? Theme.accent : Theme.border;
-
-                    input := TextInput {
-                        x: 8px;
-                        y: 6px;
-                        width: parent.width - 16px;
-                        height: parent.height - 12px;
-                        text: field.value;
-                        color: Theme.text-primary;
-                        font-size: 12px;
-                        selection-background-color: Theme.accent;
-                        selection-foreground-color: #ffffff;
-                        text-cursor-width: 1px;
-                        vertical-alignment: center;
-                        changed text => {
-                            if field.index == 1 {
-                                root.metadata-author-draft = self.text;
-                            } else if field.index == 2 {
-                                root.metadata-organization-draft = self.text;
-                            } else if field.index == 3 {
-                                root.metadata-project-name-draft = self.text;
-                            } else {
-                                root.metadata-license-draft = self.text;
-                            }
-                        }
-                    }
+                    height: parent.height;
+                    text: "Cancel";
+                    color: Theme.text-primary;
+                    font-size: 12px;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
                 }
             }
 
             Rectangle {
-                vertical-stretch: 1;
-            }
+                min-width: 80px;
+                height: 32px;
+                border-radius: 6px;
+                background: confirm-touch.has-hover ? #1177bb : Theme.accent;
 
-            HorizontalLayout {
-                spacing: 8px;
-                alignment: end;
-
-                Rectangle {
-                    min-width: 64px;
-                    height: 28px;
-                    border-radius: 4px;
-                    background: cancel-touch.has-hover ? Theme.surface-hover : Theme.surface;
-                    border-width: 1px;
-                    border-color: Theme.border;
-
-                    cancel-touch := TouchArea {
-                        clicked => {
-                            root.metadata-settings-cancelled();
-                        }
-                    }
-
-                    Text {
-                        text: "Cancel";
-                        color: Theme.text-primary;
-                        font-size: 12px;
-                        horizontal-alignment: center;
-                        vertical-alignment: center;
+                confirm-touch := TouchArea {
+                    clicked => {
+                        root.metadata-settings-confirmed(
+                            root.metadata-author-draft,
+                            root.metadata-organization-draft,
+                            root.metadata-project-name-draft,
+                            root.metadata-license-draft,
+                        );
                     }
                 }
 
-                Rectangle {
-                    min-width: 72px;
-                    height: 28px;
-                    border-radius: 4px;
-                    background: confirm-touch.has-hover ? #1177bb : Theme.accent;
-
-                    confirm-touch := TouchArea {
-                        clicked => {
-                            root.metadata-settings-confirmed(
-                                root.metadata-author-draft,
-                                root.metadata-organization-draft,
-                                root.metadata-project-name-draft,
-                                root.metadata-license-draft,
-                            );
-                        }
-                    }
-
-                    Text {
-                        text: "Confirm";
-                        color: white;
-                        font-size: 12px;
-                        horizontal-alignment: center;
-                        vertical-alignment: center;
-                    }
+                Text {
+                    width: parent.width;
+                    height: parent.height;
+                    text: "Confirm";
+                    color: white;
+                    font-size: 12px;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
                 }
             }
         }

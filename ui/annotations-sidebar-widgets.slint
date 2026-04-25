@@ -129,9 +129,12 @@ export component ContextMenuRow inherits Rectangle {
 
     Text {
         x: 12px;
-        y: 9px;
+        y: 0px;
+        width: parent.width - 24px;
+        height: parent.height;
         text: root.label;
         color: root.enabled ? Theme.text-primary : Theme.text-secondary;
         font-size: 12px;
+        vertical-alignment: center;
     }
 }

@@ -152,8 +152,8 @@ pub(crate) fn show_metadata_settings_dialog() -> Result<(), String> {
         ModalDialogRequestFFI {
             ui_path: "ui/metadata-settings-dialog.slint".into(),
             component: "MetadataSettingsDialog".into(),
-            width_px: 520,
-            height_px: 352,
+            width_px: 560,
+            height_px: 432,
         },
     )
     .into_result()

@@ -549,7 +549,7 @@ export component AnnotationsSidebar inherits Rectangle {
             x: min(root.settings-menu-x, max(0px, root.width - self.width - 8px));
             y: min(root.settings-menu-y, max(0px, root.height - self.height - 8px));
             width: 196px;
-            height: 131px;
+            height: 136px;
             background: Theme.surface;
             border-radius: 6px;
             border-width: 1px;
@@ -562,7 +562,9 @@ export component AnnotationsSidebar inherits Rectangle {
             VerticalLayout {
                 width: parent.width;
                 height: parent.height;
-                spacing: 1px;
+                padding-top: 4px;
+                padding-bottom: 4px;
+                spacing: 0px;
 
                 ContextMenuRow {
                     label: "New Annotation Layer";
