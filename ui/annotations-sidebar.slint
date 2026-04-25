@@ -64,6 +64,7 @@ export component AnnotationsSidebar inherits Rectangle {
     callback delete-layer-confirmed(string);
     callback delete-annotation-clicked(string);
     callback rename-layer-committed(string, string);
+    callback rename-layer-cancelled();
     callback row-clicked(string);
     callback toggle-layer(string);
     callback toggle-layer-visibility(string, bool);
@@ -75,6 +76,7 @@ export component AnnotationsSidebar inherits Rectangle {
     property <string> context-target-id: "";
     property <string> context-target-name: "";
     property <bool> context-target-is-layer: false;
+    property <bool> context-target-is-empty-space: false;
     property <string> pending-context-action: "";
     property <string> pending-context-id: "";
     property <string> pending-context-name: "";
@@ -97,6 +99,8 @@ export component AnnotationsSidebar inherits Rectangle {
             self.running = false;
             if root.pending-context-action == "rename-local" {
                 root.editing-layer-id = root.pending-context-id;
+            } else if root.pending-context-action == "create-layer" {
+                root.create-layer-clicked();
             } else if root.pending-context-action == "delete-set" {
                 root.request-delete-layer(root.pending-context-id, root.pending-context-name);
             } else if root.pending-context-action == "delete-annotation" {
@@ -120,8 +124,20 @@ export component AnnotationsSidebar inherits Rectangle {
         root.context-target-id = target-id;
         root.context-target-name = target-name;
         root.context-target-is-layer = is-layer;
+        root.context-target-is-empty-space = false;
         root.context-menu-x = local-x;
         root.context-menu-y = local-y;
+        root.context-menu-visible = true;
+        root.color-menu-visible = false;
+    }
+
+    function open-empty-space-context-menu(local-x: length, local-y: length) {
+        root.context-target-id = "";
+        root.context-target-name = "";
+        root.context-target-is-layer = false;
+        root.context-target-is-empty-space = true;
+        root.context-menu_x = local-x;
+        root.context-menu_y = local-y;
         root.context-menu-visible = true;
         root.color-menu-visible = false;
     }
@@ -132,6 +148,7 @@ export component AnnotationsSidebar inherits Rectangle {
         root.pending-context-name = target-name;
         root.pending-context-is-layer = is-layer;
         root.context-menu-visible = false;
+        root.context-target-is-empty-space = false;
         action-dispatch.start();
     }
 
@@ -339,6 +356,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                     }
                                     key-pressed(e) => {
                                         if e.text == Key.Escape {
+                                            root.rename-layer-cancelled();
                                             root.editing-layer-id = "";
                                             accept
                                         } else {
@@ -458,6 +476,30 @@ export component AnnotationsSidebar inherits Rectangle {
                                     }
                                 }
                             }
+                        }
+                    }
+                }
+            }
+
+            if tree-flick.viewport-height + tree-flick.viewport-y < parent.height: Rectangle {
+                x: 0px;
+                y: max(0px, tree-flick.viewport-height + tree-flick.viewport-y);
+                width: parent.width;
+                height: parent.height - self.y;
+                background: transparent;
+
+                empty-margin-touch := TouchArea {
+                    clicked => {
+                        root.confirm-active-rename();
+                    }
+
+                    pointer-event(e) => {
+                        if e.kind == PointerEventKind.down && e.button == PointerEventButton.right {
+                            root.confirm-active-rename();
+                            root.open-empty-space-context-menu(
+                                self.absolute-position.x + self.mouse-x - root.absolute-position.x,
+                                self.absolute-position.y + self.mouse-y - root.absolute-position.y,
+                            );
                         }
                     }
                 }
@@ -639,8 +681,8 @@ export component AnnotationsSidebar inherits Rectangle {
         Rectangle {
             x: min(root.context-menu-x, max(0px, root.width - self.width - 8px));
             y: min(root.context-menu-y, max(0px, root.height - self.height - 8px));
-            width: root.context-target-is-layer ? 204px : 170px;
-            height: root.context-target-is-layer ? 64px : 32px;
+            width: root.context-target-is-empty-space ? 180px : root.context-target-is-layer ? 204px : 170px;
+            height: root.context-target-is-empty-space ? 32px : root.context-target-is-layer ? 64px : 32px;
             background: Theme.surface;
             border-radius: 6px;
             border-width: 1px;
@@ -655,7 +697,14 @@ export component AnnotationsSidebar inherits Rectangle {
                 height: parent.height;
                 spacing: 1px;
 
-                if root.context-target-is-layer: ContextMenuRow {
+                if root.context-target-is-empty-space: ContextMenuRow {
+                    label: "Create Annotation Layer";
+                    clicked => {
+                        root.queue-context-action("create-layer", "", "", false);
+                    }
+                }
+
+                if root.context-target-is-layer && !root.context-target-is-empty-space: ContextMenuRow {
                     label: "Rename";
                     clicked => {
                         root.queue-context-action(
@@ -667,7 +716,7 @@ export component AnnotationsSidebar inherits Rectangle {
                     }
                 }
 
-                ContextMenuRow {
+                if !root.context-target-is-empty-space: ContextMenuRow {
                     label: root.context-target-is-layer ? "Delete Annotation Layer" : "Delete Annotation";
                     clicked => {
                         root.queue-context-action(
@@ -733,7 +782,7 @@ export component AnnotationsSidebar inherits Rectangle {
 
                     for entry[idx] in root.color-palette: PaletteSwatchButton {
                         x: (Math.mod(idx, 4) * 26) * 1px;
-                        y: ((idx / 4) * 26) * 1px;
+                        y: (Math.floor(idx / 4) * 26) * 1px;
                         hex: entry.hex;
                         swatch-color: entry.swatch;
                         selected(hex) => {

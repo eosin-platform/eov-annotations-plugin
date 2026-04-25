@@ -11,10 +11,10 @@ use crate::db::{
     open_database, save_export_metadata,
 };
 use crate::model::{
-    Annotation, AnnotationExportMetadata, AnnotationLayer, ExportAnnotation,
-    ExportAnnotationLayer, ExportFile, ExportPolygonVertex, LoadedFileAnnotations,
-    PointAnnotation, PolygonAnnotation, PolygonVertex, choose_annotation_layer_color,
-    now_unix_secs, sort_annotation_layers, unique_untitled_set_name,
+    Annotation, AnnotationExportMetadata, AnnotationLayer, ExportAnnotation, ExportAnnotationLayer,
+    ExportFile, ExportPolygonVertex, LoadedFileAnnotations, PointAnnotation, PolygonAnnotation,
+    PolygonVertex, choose_annotation_layer_color, now_unix_secs, sort_annotation_layers,
+    unique_untitled_set_name,
 };
 use crate::state::{
     ImportConflictStrategy, PendingDeleteLayer, PendingImport, PendingImportDialog, PluginState,
@@ -27,7 +27,7 @@ enum ImportStep {
     Apply {
         active_file_path: String,
         fingerprint: [u8; 32],
-        imported_layer: ExportAnnotationLayer,
+        imported_layer: Box<ExportAnnotationLayer>,
         existing_layer_id: Option<String>,
         conflict_strategy: Option<ImportConflictStrategy>,
     },
@@ -424,7 +424,9 @@ fn import_new_layer(
     let mut annotations = Vec::new();
     let skip_existing_ids = HashSet::new();
     for annotation in &imported_layer.annotations {
-        if let Some(annotation) = insert_annotation_record(connection, &layer_id, annotation, &skip_existing_ids)? {
+        if let Some(annotation) =
+            insert_annotation_record(connection, &layer_id, annotation, &skip_existing_ids)?
+        {
             annotations.push(annotation);
         }
     }
@@ -531,10 +533,9 @@ fn apply_import_step(step: ImportStep) -> Result<(), String> {
                         return Err("merge requested without an existing layer".to_string());
                     };
                     {
-                        let loaded = state
-                            .files
-                            .get_mut(&active_file_path)
-                            .ok_or_else(|| format!("active file '{}' is not loaded", active_file_path))?;
+                        let loaded = state.files.get_mut(&active_file_path).ok_or_else(|| {
+                            format!("active file '{}' is not loaded", active_file_path)
+                        })?;
                         let target_layer = loaded
                             .annotation_layers
                             .iter_mut()
@@ -550,22 +551,21 @@ fn apply_import_step(step: ImportStep) -> Result<(), String> {
                 }
                 Some(ImportConflictStrategy::Replace) => {
                     if let Some(existing_layer_id) = existing_layer_id.as_deref() {
-                        let loaded = state
-                            .files
-                            .get_mut(&active_file_path)
-                            .ok_or_else(|| format!("active file '{}' is not loaded", active_file_path))?;
-                        loaded.annotation_layers.retain(|layer| layer.id != existing_layer_id);
+                        let loaded = state.files.get_mut(&active_file_path).ok_or_else(|| {
+                            format!("active file '{}' is not loaded", active_file_path)
+                        })?;
+                        loaded
+                            .annotation_layers
+                            .retain(|layer| layer.id != existing_layer_id);
                     }
                     let imported_runtime_layer =
                         import_new_layer(&connection, &fingerprint, &imported_layer)?;
-                    state.selected_layer_by_file.insert(
-                        active_file_path.clone(),
-                        imported_runtime_layer.id.clone(),
-                    );
-                    let loaded = state
-                        .files
-                        .get_mut(&active_file_path)
-                        .ok_or_else(|| format!("active file '{}' is not loaded", active_file_path))?;
+                    state
+                        .selected_layer_by_file
+                        .insert(active_file_path.clone(), imported_runtime_layer.id.clone());
+                    let loaded = state.files.get_mut(&active_file_path).ok_or_else(|| {
+                        format!("active file '{}' is not loaded", active_file_path)
+                    })?;
                     loaded.annotation_layers.push(imported_runtime_layer);
                     sort_annotation_layers(&mut loaded.annotation_layers);
                 }
@@ -573,14 +573,12 @@ fn apply_import_step(step: ImportStep) -> Result<(), String> {
                 None => {
                     let imported_runtime_layer =
                         import_new_layer(&connection, &fingerprint, &imported_layer)?;
-                    state.selected_layer_by_file.insert(
-                        active_file_path.clone(),
-                        imported_runtime_layer.id.clone(),
-                    );
-                    let loaded = state
-                        .files
-                        .get_mut(&active_file_path)
-                        .ok_or_else(|| format!("active file '{}' is not loaded", active_file_path))?;
+                    state
+                        .selected_layer_by_file
+                        .insert(active_file_path.clone(), imported_runtime_layer.id.clone());
+                    let loaded = state.files.get_mut(&active_file_path).ok_or_else(|| {
+                        format!("active file '{}' is not loaded", active_file_path)
+                    })?;
                     loaded.annotation_layers.push(imported_runtime_layer);
                     sort_annotation_layers(&mut loaded.annotation_layers);
                 }
@@ -615,7 +613,9 @@ fn next_import_step() -> Result<ImportStep, String> {
     };
 
     match dialog_state {
-        PendingImportDialog::ShaMismatchWarning => return Ok(ImportStep::WaitForShaMismatchConfirmation),
+        PendingImportDialog::ShaMismatchWarning => {
+            return Ok(ImportStep::WaitForShaMismatchConfirmation);
+        }
         PendingImportDialog::LayerConflict { .. } => return Ok(ImportStep::WaitForLayerConflict),
         PendingImportDialog::None => {}
     }
@@ -642,7 +642,7 @@ fn next_import_step() -> Result<ImportStep, String> {
             return Ok(ImportStep::Apply {
                 active_file_path,
                 fingerprint,
-                imported_layer,
+                imported_layer: Box::new(imported_layer),
                 existing_layer_id: Some(existing_layer_id),
                 conflict_strategy: Some(strategy),
             });
@@ -656,7 +656,7 @@ fn next_import_step() -> Result<ImportStep, String> {
             return Ok(ImportStep::Apply {
                 active_file_path,
                 fingerprint,
-                imported_layer,
+                imported_layer: Box::new(imported_layer),
                 existing_layer_id: Some(existing_layer_id),
                 conflict_strategy: Some(strategy),
             });
@@ -671,7 +671,7 @@ fn next_import_step() -> Result<ImportStep, String> {
     Ok(ImportStep::Apply {
         active_file_path,
         fingerprint,
-        imported_layer,
+        imported_layer: Box::new(imported_layer),
         existing_layer_id: None,
         conflict_strategy: None,
     })
@@ -694,12 +694,13 @@ pub(crate) fn import_active_file_annotations() -> Result<(), String> {
         return Err("host API is not available".to_string());
     };
 
-    let import_path = match (host_api.open_file_dialog)(host_api.context, "JSON".into(), "json".into())
-        .into_result()
-    {
-        Ok(path) => path.to_string(),
-        Err(_) => return Ok(()),
-    };
+    let import_path =
+        match (host_api.open_file_dialog)(host_api.context, "JSON".into(), "json".into())
+            .into_result()
+        {
+            Ok(path) => path.to_string(),
+            Err(_) => return Ok(()),
+        };
 
     let json = fs::read_to_string(&import_path)
         .map_err(|err| format!("failed to read annotation import '{}': {err}", import_path))?;
@@ -739,7 +740,10 @@ pub(crate) fn import_active_file_annotations() -> Result<(), String> {
 
 pub(crate) fn respond_to_import_sha_mismatch(should_import: bool) -> Result<(), String> {
     let mut state = plugin_state().lock().unwrap();
-    if !matches!(state.pending_import_dialog, PendingImportDialog::ShaMismatchWarning) {
+    if !matches!(
+        state.pending_import_dialog,
+        PendingImportDialog::ShaMismatchWarning
+    ) {
         return Ok(());
     }
     if !should_import {
@@ -964,15 +968,16 @@ pub(crate) fn rename_annotation_layer_for_active_file(
 ) -> Result<(), String> {
     sync_active_file()?;
 
-    let trimmed_name = new_name.trim();
-    if trimmed_name.is_empty() {
-        return Ok(());
-    }
-
     let mut state = plugin_state().lock().unwrap();
     let Some(active_file_path) = state.active_file_path.clone() else {
         return Ok(());
     };
+    state.editing_layer_by_file.remove(&active_file_path);
+
+    let trimmed_name = new_name.trim();
+    if trimmed_name.is_empty() {
+        return Ok(());
+    }
 
     let timestamp = now_unix_secs();
     let connection = open_database()?;
@@ -996,6 +1001,17 @@ pub(crate) fn rename_annotation_layer_for_active_file(
         set.updated_at = timestamp;
         sort_annotation_layers(&mut loaded_entry.annotation_layers);
     }
+    Ok(())
+}
+
+pub(crate) fn cancel_annotation_layer_rename_for_active_file() -> Result<(), String> {
+    sync_active_file()?;
+
+    let mut state = plugin_state().lock().unwrap();
+    let Some(active_file_path) = state.active_file_path.clone() else {
+        return Ok(());
+    };
+    state.editing_layer_by_file.remove(&active_file_path);
     Ok(())
 }
 

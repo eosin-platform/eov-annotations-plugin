@@ -19,7 +19,9 @@ pub(crate) enum PendingImportDialog {
     #[default]
     None,
     ShaMismatchWarning,
-    LayerConflict { layer_name: String },
+    LayerConflict {
+        layer_name: String,
+    },
 }
 
 #[derive(Clone, Default)]

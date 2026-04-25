@@ -3,16 +3,15 @@ use plugin_api::ffi::{HostLogLevelFFI, UiPropertyFFI};
 
 use crate::model::{Annotation, SidebarTreeRow, annotation_label, hex_color_to_rgb};
 use crate::operations::{
-    cancel_pending_delete_annotation_layer, confirm_pending_delete_annotation_layer,
-    create_annotation_layer_for_active_file, delete_annotation_for_active_file,
-    ensure_export_metadata_loaded, export_active_file_annotations,
-    hide_metadata_settings_dialog,
-    import_active_file_annotations, refresh_sidebar_if_available,
-    rename_annotation_layer_for_active_file, request_delete_annotation_layer,
-    request_render_if_available, respond_to_import_layer_conflict,
-    respond_to_import_sha_mismatch,
-    set_annotation_layer_color_for_active_file, set_annotation_layer_visibility_for_active_file,
-    show_metadata_settings_dialog, sync_active_file, update_export_metadata_settings,
+    cancel_annotation_layer_rename_for_active_file, cancel_pending_delete_annotation_layer,
+    confirm_pending_delete_annotation_layer, create_annotation_layer_for_active_file,
+    delete_annotation_for_active_file, ensure_export_metadata_loaded,
+    export_active_file_annotations, hide_metadata_settings_dialog, import_active_file_annotations,
+    refresh_sidebar_if_available, rename_annotation_layer_for_active_file,
+    request_delete_annotation_layer, request_render_if_available, respond_to_import_layer_conflict,
+    respond_to_import_sha_mismatch, set_annotation_layer_color_for_active_file,
+    set_annotation_layer_visibility_for_active_file, show_metadata_settings_dialog,
+    sync_active_file, update_export_metadata_settings,
 };
 use crate::state::{
     PendingImportDialog, PluginState, active_file_key, active_viewport_from_snapshot, host_api,
@@ -230,11 +229,13 @@ pub(crate) fn on_sidebar_callback(callback_name: &str, args_json: &str) {
             let Some(serde_json::Value::String(license)) = args.get(3) else {
                 return;
             };
-            update_export_metadata_settings(author, organization, project_name, license).and_then(|_| {
-                hide_metadata_settings_dialog()?;
-                refresh_sidebar_if_available();
-                Ok(())
-            })
+            update_export_metadata_settings(author, organization, project_name, license).and_then(
+                |_| {
+                    hide_metadata_settings_dialog()?;
+                    refresh_sidebar_if_available();
+                    Ok(())
+                },
+            )
         }
         "metadata-settings-cancelled" => hide_metadata_settings_dialog(),
         "import-sha-warning-decided" => {
@@ -263,6 +264,9 @@ pub(crate) fn on_sidebar_callback(callback_name: &str, args_json: &str) {
                 refresh_sidebar_if_available();
             })
         }
+        "rename-layer-cancelled" => cancel_annotation_layer_rename_for_active_file().map(|_| {
+            refresh_sidebar_if_available();
+        }),
         "delete-layer-confirmed" => confirm_pending_delete_annotation_layer(),
         "delete-layer-cancelled" => cancel_pending_delete_annotation_layer(),
         "request-delete-layer" => {
@@ -360,9 +364,7 @@ pub(crate) fn get_sidebar_properties() -> RVec<UiPropertyFFI> {
         match &state.pending_import_dialog {
             PendingImportDialog::None => (false, false, String::new()),
             PendingImportDialog::ShaMismatchWarning => (true, false, String::new()),
-            PendingImportDialog::LayerConflict { layer_name } => {
-                (false, true, layer_name.clone())
-            }
+            PendingImportDialog::LayerConflict { layer_name } => (false, true, layer_name.clone()),
         };
 
     RVec::from(vec![

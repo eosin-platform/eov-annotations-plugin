@@ -5,8 +5,7 @@ use std::path::{Path, PathBuf};
 
 use crate::model::{
     Annotation, AnnotationExportMetadata, AnnotationLayer, PointAnnotation, PolygonAnnotation,
-    PolygonVertex,
-    annotation_label,
+    PolygonVertex, annotation_label,
 };
 
 fn annotations_db_path() -> Result<PathBuf, String> {
@@ -154,7 +153,9 @@ pub(crate) fn full_sha256_for_file(path: &Path) -> Result<[u8; 32], String> {
         .map_err(|err| format!("failed to compute SHA-256 for '{}': {err}", path.display()))
 }
 
-pub(crate) fn load_export_metadata(connection: &Connection) -> Result<AnnotationExportMetadata, String> {
+pub(crate) fn load_export_metadata(
+    connection: &Connection,
+) -> Result<AnnotationExportMetadata, String> {
     connection
         .query_row(
             "SELECT author, organization, project_name, license FROM export_metadata_settings WHERE id = 1",
