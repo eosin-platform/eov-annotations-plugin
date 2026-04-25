@@ -33,6 +33,7 @@ export component AnnotationsSidebar inherits Rectangle {
     property <bool> settings-menu-visible: false;
     property <length> settings-menu-x: 0px;
     property <length> settings-menu-y: 0px;
+    property <bool> dismiss-popups: false;
     property <bool> import-conflict-apply-all: false;
     property <[ColorPaletteEntry]> color-palette: [
         { hex: "#FF355E", swatch: #FF355E },
@@ -158,6 +159,16 @@ export component AnnotationsSidebar inherits Rectangle {
         root.settings-menu-visible = true;
         root.context-menu-visible = false;
         root.color-menu-visible = false;
+    }
+
+    changed dismiss-popups => {
+        if root.dismiss-popups {
+            root.confirm-active-rename();
+            root.settings-menu-visible = false;
+            root.context-menu-visible = false;
+            root.color-menu-visible = false;
+            root.dismiss-popups = false;
+        }
     }
 
     VerticalLayout {
