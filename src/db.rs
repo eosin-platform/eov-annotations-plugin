@@ -1,10 +1,11 @@
-use common::file_id::compute_fingerprint;
+use common::file_id::{cached_sha256, compute_fingerprint};
 use rusqlite::{Connection, params};
 use std::fs;
 use std::path::{Path, PathBuf};
 
 use crate::model::{
-    Annotation, AnnotationLayer, PointAnnotation, PolygonAnnotation, PolygonVertex,
+    Annotation, AnnotationExportMetadata, AnnotationLayer, PointAnnotation, PolygonAnnotation,
+    PolygonVertex,
     annotation_label,
 };
 
@@ -117,6 +118,22 @@ pub(crate) fn open_database() -> Result<Connection, String> {
                 PRIMARY KEY (stroke_id, point_index),
                 FOREIGN KEY (stroke_id) REFERENCES annotation_bitmask_strokes(id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS export_metadata_settings (
+                id INTEGER PRIMARY KEY CHECK(id = 1),
+                author TEXT NOT NULL DEFAULT '' CHECK(length(author) <= 255),
+                organization TEXT NOT NULL DEFAULT '' CHECK(length(organization) <= 255),
+                project_name TEXT NOT NULL DEFAULT '' CHECK(length(project_name) <= 255),
+                license TEXT NOT NULL DEFAULT '' CHECK(length(license) <= 255)
+            );
+
+            INSERT OR IGNORE INTO export_metadata_settings (
+                id,
+                author,
+                organization,
+                project_name,
+                license
+            ) VALUES (1, '', '', '', '');
             "#,
         )
         .map_err(|err| format!("failed to initialize annotations db schema: {err}"))?;
@@ -130,6 +147,54 @@ pub(crate) fn fingerprint_for_file(path: &Path) -> Result<[u8; 32], String> {
             path.display()
         )
     })
+}
+
+pub(crate) fn full_sha256_for_file(path: &Path) -> Result<[u8; 32], String> {
+    cached_sha256(path)
+        .map_err(|err| format!("failed to compute SHA-256 for '{}': {err}", path.display()))
+}
+
+pub(crate) fn load_export_metadata(connection: &Connection) -> Result<AnnotationExportMetadata, String> {
+    connection
+        .query_row(
+            "SELECT author, organization, project_name, license FROM export_metadata_settings WHERE id = 1",
+            [],
+            |row| {
+                Ok(AnnotationExportMetadata {
+                    author: row.get(0)?,
+                    organization: row.get(1)?,
+                    project_name: row.get(2)?,
+                    license: row.get(3)?,
+                })
+            },
+        )
+        .map_err(|err| format!("failed to load export metadata settings: {err}"))
+}
+
+pub(crate) fn save_export_metadata(
+    connection: &Connection,
+    metadata: &AnnotationExportMetadata,
+) -> Result<(), String> {
+    connection
+        .execute(
+            r#"
+            INSERT INTO export_metadata_settings (id, author, organization, project_name, license)
+            VALUES (1, ?1, ?2, ?3, ?4)
+            ON CONFLICT(id) DO UPDATE SET
+                author = excluded.author,
+                organization = excluded.organization,
+                project_name = excluded.project_name,
+                license = excluded.license
+            "#,
+            params![
+                &metadata.author,
+                &metadata.organization,
+                &metadata.project_name,
+                &metadata.license,
+            ],
+        )
+        .map_err(|err| format!("failed to save export metadata settings: {err}"))?;
+    Ok(())
 }
 
 pub(crate) fn load_annotation_layers(

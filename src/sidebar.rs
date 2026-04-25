@@ -4,15 +4,18 @@ use plugin_api::ffi::{HostLogLevelFFI, UiPropertyFFI};
 use crate::model::{Annotation, SidebarTreeRow, annotation_label, hex_color_to_rgb};
 use crate::operations::{
     create_annotation_layer_for_active_file, delete_annotation_for_active_file,
-    delete_annotation_layer_for_active_file, export_active_file_annotations,
-    refresh_sidebar_if_available, rename_annotation_layer_for_active_file,
-    request_delete_annotation_layer, request_render_if_available,
+    delete_annotation_layer_for_active_file, ensure_export_metadata_loaded,
+    export_active_file_annotations, hide_metadata_settings_dialog,
+    import_active_file_annotations, refresh_sidebar_if_available,
+    rename_annotation_layer_for_active_file, request_delete_annotation_layer,
+    request_render_if_available, respond_to_import_layer_conflict,
+    respond_to_import_sha_mismatch,
     set_annotation_layer_color_for_active_file, set_annotation_layer_visibility_for_active_file,
-    sync_active_file,
+    show_metadata_settings_dialog, sync_active_file, update_export_metadata_settings,
 };
 use crate::state::{
-    PluginState, active_file_key, active_viewport_from_snapshot, host_api, host_snapshot,
-    log_message, plugin_state,
+    PendingImportDialog, PluginState, active_file_key, active_viewport_from_snapshot, host_api,
+    host_snapshot, log_message, plugin_state,
 };
 
 fn sidebar_rows(state: &PluginState) -> Vec<SidebarTreeRow> {
@@ -208,9 +211,46 @@ pub(crate) fn on_sidebar_callback(callback_name: &str, args_json: &str) {
 
     let result = match callback_name {
         "export-clicked" => export_active_file_annotations(),
+        "import-clicked" => import_active_file_annotations(),
         "create-layer-clicked" => create_annotation_layer_for_active_file().map(|_| {
             refresh_sidebar_if_available();
         }),
+        "metadata-settings-requested" => show_metadata_settings_dialog(),
+        "metadata-settings-confirmed" => {
+            let Some(serde_json::Value::String(author)) = args.first() else {
+                return;
+            };
+            let Some(serde_json::Value::String(organization)) = args.get(1) else {
+                return;
+            };
+            let Some(serde_json::Value::String(project_name)) = args.get(2) else {
+                return;
+            };
+            let Some(serde_json::Value::String(license)) = args.get(3) else {
+                return;
+            };
+            update_export_metadata_settings(author, organization, project_name, license).and_then(|_| {
+                hide_metadata_settings_dialog()?;
+                refresh_sidebar_if_available();
+                Ok(())
+            })
+        }
+        "metadata-settings-cancelled" => hide_metadata_settings_dialog(),
+        "import-sha-warning-decided" => {
+            let Some(serde_json::Value::Bool(should_import)) = args.first() else {
+                return;
+            };
+            respond_to_import_sha_mismatch(*should_import)
+        }
+        "import-conflict-decided" => {
+            let Some(serde_json::Value::String(action)) = args.first() else {
+                return;
+            };
+            let Some(serde_json::Value::Bool(apply_to_all)) = args.get(1) else {
+                return;
+            };
+            respond_to_import_layer_conflict(action, *apply_to_all)
+        }
         "rename-layer-committed" => {
             let Some(serde_json::Value::String(set_id)) = args.first() else {
                 return;
@@ -301,6 +341,13 @@ pub(crate) fn get_sidebar_properties() -> RVec<UiPropertyFFI> {
         log_message(HostLogLevelFFI::Error, err);
     }
 
+    {
+        let mut state = plugin_state().lock().unwrap();
+        if let Err(err) = ensure_export_metadata_loaded(&mut state) {
+            log_message(HostLogLevelFFI::Error, err);
+        }
+    }
+
     let state = plugin_state().lock().unwrap();
     let rows = sidebar_rows(&state);
     let editing_layer_id = state
@@ -315,6 +362,14 @@ pub(crate) fn get_sidebar_properties() -> RVec<UiPropertyFFI> {
     } else {
         String::new()
     };
+    let (show_sha_mismatch_warning, show_import_conflict_dialog, import_conflict_layer_name) =
+        match &state.pending_import_dialog {
+            PendingImportDialog::None => (false, false, String::new()),
+            PendingImportDialog::ShaMismatchWarning => (true, false, String::new()),
+            PendingImportDialog::LayerConflict { layer_name } => {
+                (false, true, layer_name.clone())
+            }
+        };
 
     RVec::from(vec![
         UiPropertyFFI {
@@ -339,6 +394,10 @@ pub(crate) fn get_sidebar_properties() -> RVec<UiPropertyFFI> {
         },
         UiPropertyFFI {
             name: "can-export".into(),
+            json_value: (state.active_file_path.is_some()).to_string().into(),
+        },
+        UiPropertyFFI {
+            name: "can-import".into(),
             json_value: (state.active_file_path.is_some()).to_string().into(),
         },
         UiPropertyFFI {
@@ -372,6 +431,44 @@ pub(crate) fn get_sidebar_properties() -> RVec<UiPropertyFFI> {
         UiPropertyFFI {
             name: "selected-layer-name".into(),
             json_value: serde_json::to_string(&selected_layer_name(&state))
+                .unwrap_or_else(|_| "\"\"".to_string())
+                .into(),
+        },
+        UiPropertyFFI {
+            name: "show-sha-mismatch-warning".into(),
+            json_value: show_sha_mismatch_warning.to_string().into(),
+        },
+        UiPropertyFFI {
+            name: "show-import-conflict-dialog".into(),
+            json_value: show_import_conflict_dialog.to_string().into(),
+        },
+        UiPropertyFFI {
+            name: "import-conflict-layer-name".into(),
+            json_value: serde_json::to_string(&import_conflict_layer_name)
+                .unwrap_or_else(|_| "\"\"".to_string())
+                .into(),
+        },
+        UiPropertyFFI {
+            name: "metadata-author".into(),
+            json_value: serde_json::to_string(&state.export_metadata.author)
+                .unwrap_or_else(|_| "\"\"".to_string())
+                .into(),
+        },
+        UiPropertyFFI {
+            name: "metadata-organization".into(),
+            json_value: serde_json::to_string(&state.export_metadata.organization)
+                .unwrap_or_else(|_| "\"\"".to_string())
+                .into(),
+        },
+        UiPropertyFFI {
+            name: "metadata-project-name".into(),
+            json_value: serde_json::to_string(&state.export_metadata.project_name)
+                .unwrap_or_else(|_| "\"\"".to_string())
+                .into(),
+        },
+        UiPropertyFFI {
+            name: "metadata-license".into(),
+            json_value: serde_json::to_string(&state.export_metadata.license)
                 .unwrap_or_else(|_| "\"\"".to_string())
                 .into(),
         },

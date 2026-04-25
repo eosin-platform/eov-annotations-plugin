@@ -113,13 +113,15 @@ export component PaletteSwatchButton inherits Rectangle {
 
 export component ContextMenuRow inherits Rectangle {
     in property <string> label;
+    in property <bool> enabled: true;
     out property <bool> hovered: row-touch.has-hover;
     callback clicked();
 
     height: 32px;
-    background: row-touch.has-hover ? Theme.surface-hover : transparent;
+    background: row-touch.has-hover && root.enabled ? Theme.surface-hover : transparent;
 
     row-touch := TouchArea {
+        enabled: root.enabled;
         clicked => {
             root.clicked();
         }
@@ -129,7 +131,7 @@ export component ContextMenuRow inherits Rectangle {
         x: 12px;
         y: 9px;
         text: root.label;
-        color: Theme.text-primary;
+        color: root.enabled ? Theme.text-primary : Theme.text-secondary;
         font-size: 12px;
     }
 }

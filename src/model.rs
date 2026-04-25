@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 use std::time::{SystemTime, UNIX_EPOCH};
 use uuid::Uuid;
@@ -72,14 +72,25 @@ pub(crate) struct SidebarTreeRow {
     pub(crate) color_b: i32,
 }
 
-#[derive(Serialize)]
+#[derive(Clone, Default, Serialize, Deserialize)]
+pub(crate) struct AnnotationExportMetadata {
+    pub(crate) author: String,
+    pub(crate) organization: String,
+    pub(crate) project_name: String,
+    pub(crate) license: String,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
 pub(crate) struct ExportFile {
     pub(crate) file_path: String,
-    pub(crate) fingerprint_hex: String,
+    #[serde(alias = "fingerprint_hex")]
+    pub(crate) file_sha256: String,
+    #[serde(default)]
+    pub(crate) metadata: AnnotationExportMetadata,
     pub(crate) annotation_layers: Vec<ExportAnnotationLayer>,
 }
 
-#[derive(Serialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub(crate) struct ExportAnnotationLayer {
     pub(crate) id: String,
     pub(crate) name: String,
@@ -90,7 +101,7 @@ pub(crate) struct ExportAnnotationLayer {
     pub(crate) annotations: Vec<ExportAnnotation>,
 }
 
-#[derive(Serialize)]
+#[derive(Clone, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum ExportAnnotation {
     Point {
@@ -108,7 +119,7 @@ pub(crate) enum ExportAnnotation {
     },
 }
 
-#[derive(Serialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub(crate) struct ExportPolygonVertex {
     pub(crate) x_level0: f64,
     pub(crate) y_level0: f64,

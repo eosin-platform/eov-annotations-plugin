@@ -5,7 +5,30 @@ use plugin_api::ffi::{
 use std::collections::{HashMap, HashSet};
 use std::sync::{Mutex, OnceLock};
 
-use crate::model::LoadedFileAnnotations;
+use crate::model::{AnnotationExportMetadata, ExportAnnotationLayer, LoadedFileAnnotations};
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub(crate) enum ImportConflictStrategy {
+    Merge,
+    Replace,
+    Skip,
+}
+
+#[derive(Clone, Default)]
+pub(crate) enum PendingImportDialog {
+    #[default]
+    None,
+    ShaMismatchWarning,
+    LayerConflict { layer_name: String },
+}
+
+#[derive(Clone, Default)]
+pub(crate) struct PendingImport {
+    pub(crate) layers: Vec<ExportAnnotationLayer>,
+    pub(crate) next_index: usize,
+    pub(crate) apply_to_all: Option<ImportConflictStrategy>,
+    pub(crate) next_conflict_resolution: Option<ImportConflictStrategy>,
+}
 
 #[derive(Default)]
 pub(crate) struct PluginState {
@@ -16,6 +39,10 @@ pub(crate) struct PluginState {
     pub(crate) editing_layer_by_file: HashMap<String, String>,
     pub(crate) collapsed_layers_by_file: HashMap<String, HashSet<String>>,
     pub(crate) hidden_layers_by_file: HashMap<String, HashSet<String>>,
+    pub(crate) export_metadata: AnnotationExportMetadata,
+    pub(crate) export_metadata_loaded: bool,
+    pub(crate) pending_import: Option<PendingImport>,
+    pub(crate) pending_import_dialog: PendingImportDialog,
 }
 
 static HOST_API: Mutex<Option<HostApiVTable>> = Mutex::new(None);

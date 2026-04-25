@@ -15,13 +15,25 @@ export component AnnotationsSidebar inherits Rectangle {
     in property <[AnnotationTreeRow]> tree-items: [];
     in property <string> empty-state-text: "";
     in property <bool> can-export: false;
+    in property <bool> can-import: false;
     in property <bool> can-delete-set: false;
+    in property <bool> show-sha-mismatch-warning: false;
+    in property <bool> show-import-conflict-dialog: false;
+    in property <string> import-conflict-layer-name: "";
+    in property <string> metadata-author: "";
+    in property <string> metadata-organization: "";
+    in property <string> metadata-project-name: "";
+    in property <string> metadata-license: "";
     in-out property <string> selected-layer-id: "";
     in property <string> selected-layer-name: "";
     in-out property <string> editing-layer-id: "";
     out property <bool> capture-hotkeys: editing-layer-id != "";
     property <length> tree-scroll-y: 0px;
     property <string> rename-draft-text: "";
+    property <bool> settings-menu-visible: false;
+    property <length> settings-menu-x: 0px;
+    property <length> settings-menu-y: 0px;
+    property <bool> import-conflict-apply-all: false;
     property <[ColorPaletteEntry]> color-palette: [
         { hex: "#FF355E", swatch: #FF355E },
         { hex: "#FF7A00", swatch: #FF7A00 },
@@ -43,7 +55,11 @@ export component AnnotationsSidebar inherits Rectangle {
 
     callback source-selected(string);
     callback create-layer-clicked();
+    callback import-clicked();
     callback export-clicked();
+    callback metadata-settings-requested();
+    callback import-sha-warning-decided(bool);
+    callback import-conflict-decided(string, bool);
     callback request-delete-layer(string, string);
     callback delete-layer-confirmed(string);
     callback delete-annotation-clicked(string);
@@ -68,9 +84,9 @@ export component AnnotationsSidebar inherits Rectangle {
     property <length> color-menu-y: 0px;
     property <string> color-target-id: "";
     property <string> active-tooltip:
-        source-selector.has-focus ? "Source" : new-set-button.hovered ? new-set-button.tooltip-text : export-button.hovered ? export-button.tooltip-text : "";
+        source-selector.has-focus ? "Source" : settings-button.hovered ? settings-button.tooltip-text : "";
     property <length> tooltip-center-x:
-        source-selector.has-focus ? source-container.x + source-container.width / 2 : new-set-button.hovered ? new-set-button.x + new-set-button.width / 2 : export-button.hovered ? export-button.x + export-button.width / 2 : 0px;
+        source-selector.has-focus ? source-container.x + source-container.width / 2 : settings-button.hovered ? settings-button.x + settings-button.width / 2 : 0px;
 
     background: Theme.surface;
 
@@ -119,6 +135,14 @@ export component AnnotationsSidebar inherits Rectangle {
         action-dispatch.start();
     }
 
+    function open-settings-menu(local-x: length, local-y: length) {
+        root.settings-menu-x = local-x;
+        root.settings-menu-y = local-y;
+        root.settings-menu-visible = true;
+        root.context-menu-visible = false;
+        root.color-menu-visible = false;
+    }
+
     VerticalLayout {
         width: parent.width;
         height: parent.height;
@@ -147,22 +171,16 @@ export component AnnotationsSidebar inherits Rectangle {
                 }
             }
 
-            new-set-button := ExportIconButton {
-                icon-source: @image-url("icons/new_annotation_layer.svg");
-                tooltip-text: "New Annotation Layer";
+            settings-button := ExportIconButton {
+                icon-source: @image-url("icons/settings.svg");
+                tooltip-text: "Settings";
+                enabled: root.can-export || root.can-import;
                 clicked => {
                     root.confirm-active-rename();
-                    root.create-layer-clicked();
-                }
-            }
-
-            export-button := ExportIconButton {
-                icon-source: @image-url("icons/export.svg");
-                tooltip-text: "Export Annotations";
-                enabled: root.can-export;
-                clicked => {
-                    root.confirm-active-rename();
-                    root.export-clicked();
+                    root.open-settings-menu(
+                        self.absolute-position.x - root.absolute-position.x,
+                        self.absolute-position.y - root.absolute-position.y + self.height + 8px,
+                    );
                 }
             }
         }
@@ -510,6 +528,85 @@ export component AnnotationsSidebar inherits Rectangle {
         }
     }
 
+    if root.settings-menu-visible: Rectangle {
+        x: 0px;
+        y: 0px;
+        width: parent.width;
+        height: parent.height;
+        background: transparent;
+        z: 15;
+
+        TouchArea {
+            width: parent.width;
+            height: parent.height;
+            clicked => {
+                root.confirm-active-rename();
+                root.settings-menu-visible = false;
+            }
+        }
+
+        Rectangle {
+            x: min(root.settings-menu-x, max(0px, root.width - self.width - 8px));
+            y: min(root.settings-menu-y, max(0px, root.height - self.height - 8px));
+            width: 196px;
+            height: 131px;
+            background: Theme.surface;
+            border-radius: 6px;
+            border-width: 1px;
+            border-color: Theme.border;
+            drop-shadow-blur: 10px;
+            drop-shadow-color: #00000066;
+            clip: true;
+            z: 16;
+
+            VerticalLayout {
+                width: parent.width;
+                height: parent.height;
+                spacing: 1px;
+
+                ContextMenuRow {
+                    label: "New Annotation Layer";
+                    enabled: root.can-export || root.can-import;
+                    clicked => {
+                        root.settings-menu-visible = false;
+                        root.confirm-active-rename();
+                        root.create-layer-clicked();
+                    }
+                }
+
+                ContextMenuRow {
+                    label: "Import Annotations";
+                    enabled: root.can-import;
+                    clicked => {
+                        root.settings-menu-visible = false;
+                        root.confirm-active-rename();
+                        root.import-clicked();
+                    }
+                }
+
+                ContextMenuRow {
+                    label: "Export Annotations";
+                    enabled: root.can-export;
+                    clicked => {
+                        root.settings-menu-visible = false;
+                        root.confirm-active-rename();
+                        root.export-clicked();
+                    }
+                }
+
+                ContextMenuRow {
+                    label: "Metadata Settings";
+                    enabled: root.can-export || root.can-import;
+                    clicked => {
+                        root.settings-menu-visible = false;
+                        root.confirm-active-rename();
+                        root.metadata-settings-requested();
+                    }
+                }
+            }
+        }
+    }
+
     if root.context-menu-visible: Rectangle {
         x: 0px;
         y: 0px;
@@ -656,4 +753,224 @@ export component AnnotationsSidebar inherits Rectangle {
             font-size: 11px;
         }
     }
+
+    if root.show-sha-mismatch-warning: Rectangle {
+        x: 0px;
+        y: 0px;
+        width: root.width;
+        height: root.height;
+        background: #00000088;
+        z: 30;
+
+        TouchArea { }
+
+        Rectangle {
+            x: 12px;
+            y: max(12px, (parent.height - self.height) / 2);
+            width: parent.width - 24px;
+            height: 186px;
+            background: Theme.surface;
+            border-radius: 8px;
+            border-width: 1px;
+            border-color: Theme.border;
+
+            TouchArea { }
+
+            VerticalLayout {
+                padding: 16px;
+                spacing: 12px;
+
+                Text {
+                    text: "Warning";
+                    color: Theme.text-primary;
+                    font-size: 14px;
+                    font-weight: 600;
+                    horizontal-alignment: left;
+                }
+
+                Text {
+                    text: "Warning: the annotations file being imported is based on a different WSI file. Are you sure you want to continue?";
+                    color: Theme.text-secondary;
+                    font-size: 12px;
+                    wrap: word-wrap;
+                    horizontal-alignment: left;
+                }
+
+                Rectangle {
+                    vertical-stretch: 1;
+                }
+
+                HorizontalLayout {
+                    spacing: 8px;
+                    alignment: end;
+
+                    Rectangle {
+                        min-width: 64px;
+                        height: 28px;
+                        border-radius: 4px;
+                        background: cancel-sha-touch.has-hover ? Theme.surface-hover : Theme.surface;
+                        border-width: 1px;
+                        border-color: Theme.border;
+
+                        cancel-sha-touch := TouchArea {
+                            clicked => {
+                                root.import-sha-warning-decided(false);
+                            }
+                        }
+
+                        Text {
+                            text: "Cancel";
+                            color: Theme.text-primary;
+                            font-size: 12px;
+                            horizontal-alignment: center;
+                            vertical-alignment: center;
+                        }
+                    }
+
+                    Rectangle {
+                        min-width: 64px;
+                        height: 28px;
+                        border-radius: 4px;
+                        background: import-sha-touch.has-hover ? #1177bb : Theme.accent;
+
+                        import-sha-touch := TouchArea {
+                            clicked => {
+                                root.import-sha-warning-decided(true);
+                            }
+                        }
+
+                        Text {
+                            text: "Import";
+                            color: white;
+                            font-size: 12px;
+                            horizontal-alignment: center;
+                            vertical-alignment: center;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if root.show-import-conflict-dialog: Rectangle {
+        x: 0px;
+        y: 0px;
+        width: root.width;
+        height: root.height;
+        background: #00000088;
+        z: 30;
+
+        TouchArea { }
+
+        Rectangle {
+            x: 12px;
+            y: max(12px, (parent.height - self.height) / 2);
+            width: parent.width - 24px;
+            height: 226px;
+            background: Theme.surface;
+            border-radius: 8px;
+            border-width: 1px;
+            border-color: Theme.border;
+
+            TouchArea { }
+
+            VerticalLayout {
+                padding: 16px;
+                spacing: 12px;
+
+                Text {
+                    text: "Import Conflict";
+                    color: Theme.text-primary;
+                    font-size: 14px;
+                    font-weight: 600;
+                    horizontal-alignment: left;
+                }
+
+                Text {
+                    text: "Annotation Layer '" + root.import-conflict-layer-name + "' already exists for the current slide.";
+                    color: Theme.text-secondary;
+                    font-size: 12px;
+                    wrap: word-wrap;
+                    horizontal-alignment: left;
+                }
+
+                Rectangle {
+                    height: 28px;
+                    background: transparent;
+
+                    conflict-apply-all-touch := TouchArea {
+                        clicked => {
+                            root.import-conflict-apply-all = !root.import-conflict-apply-all;
+                        }
+                    }
+
+                    Rectangle {
+                        x: 0px;
+                        y: 6px;
+                        width: 14px;
+                        height: 14px;
+                        border-radius: 3px;
+                        border-width: 1px;
+                        border-color: root.import-conflict-apply-all ? Theme.accent : Theme.border;
+                        background: root.import-conflict-apply-all ? Theme.accent : Theme.surface;
+
+                        Text {
+                            text: root.import-conflict-apply-all ? "✓" : "";
+                            color: white;
+                            font-size: 10px;
+                            horizontal-alignment: center;
+                            vertical-alignment: center;
+                        }
+                    }
+
+                    Text {
+                        x: 22px;
+                        y: 5px;
+                        text: "Apply to all conflicts";
+                        color: Theme.text-primary;
+                        font-size: 12px;
+                    }
+                }
+
+                Rectangle {
+                    vertical-stretch: 1;
+                }
+
+                HorizontalLayout {
+                    spacing: 8px;
+                    alignment: end;
+
+                    for action in [
+                        { label: "Merge", id: "merge", primary: false },
+                        { label: "Replace", id: "replace", primary: false },
+                        { label: "Skip", id: "skip", primary: false },
+                        { label: "Cancel", id: "cancel", primary: true }
+                    ]: Rectangle {
+                        min-width: action.label == "Replace" ? 70px : 62px;
+                        height: 28px;
+                        border-radius: 4px;
+                        background: action.primary ? (action-touch.has-hover ? Theme.surface-hover : Theme.surface) : (action-touch.has-hover ? #1177bb : Theme.accent);
+                        border-width: action.primary ? 1px : 0px;
+                        border-color: Theme.border;
+
+                        action-touch := TouchArea {
+                            clicked => {
+                                root.import-conflict-decided(action.id, root.import-conflict-apply-all);
+                                root.import-conflict-apply-all = false;
+                            }
+                        }
+
+                        Text {
+                            text: action.label;
+                            color: action.primary ? Theme.text-primary : white;
+                            font-size: 12px;
+                            horizontal-alignment: center;
+                            vertical-alignment: center;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
