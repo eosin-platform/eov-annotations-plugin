@@ -1,0 +1,109 @@
+import { Theme } from "theme.slint";
+
+export component DeleteLayerDialog inherits Rectangle {
+    in property <string> pending-delete-layer-name: "";
+
+    callback delete-layer-confirmed();
+    callback delete-layer-cancelled();
+
+    background: transparent;
+
+    panel := Rectangle {
+        x: 0px;
+        y: 0px;
+        width: parent.width;
+        height: parent.height;
+        background: Theme.surface;
+        border-radius: 10px;
+        border-width: 1px;
+        border-color: Theme.border;
+        clip: true;
+
+        VerticalLayout {
+            x: 20px;
+            y: 18px;
+            width: parent.width - 40px;
+            height: parent.height - 36px;
+            spacing: 12px;
+
+            Text {
+                width: parent.width;
+                text: "Delete Annotation Layer";
+                color: Theme.text-primary;
+                font-size: 14px;
+                font-weight: 600;
+                horizontal-alignment: left;
+            }
+
+            Text {
+                width: parent.width;
+                text:
+                    "Are you sure you want to delete annotation layer '"
+                    + root.pending-delete-layer-name
+                    + "'? This action cannot be undone.";
+                color: Theme.text-secondary;
+                font-size: 12px;
+                wrap: word-wrap;
+            }
+
+            Rectangle {
+                vertical-stretch: 1;
+                background: transparent;
+            }
+
+            HorizontalLayout {
+                width: parent.width;
+                spacing: 8px;
+                alignment: end;
+
+                Rectangle {
+                    min-width: 72px;
+                    height: 32px;
+                    border-radius: 6px;
+                    background: cancel-touch.has-hover ? Theme.surface-hover : Theme.surface;
+                    border-width: 1px;
+                    border-color: Theme.border;
+
+                    cancel-touch := TouchArea {
+                        clicked => {
+                            root.delete-layer-cancelled();
+                        }
+                    }
+
+                    Text {
+                        width: parent.width;
+                        height: parent.height;
+                        text: "Cancel";
+                        color: Theme.text-primary;
+                        font-size: 12px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                }
+
+                Rectangle {
+                    min-width: 132px;
+                    height: 32px;
+                    border-radius: 6px;
+                    background: confirm-touch.has-hover ? #a42c31 : #8d2328;
+
+                    confirm-touch := TouchArea {
+                        clicked => {
+                            root.delete-layer-confirmed();
+                        }
+                    }
+
+                    Text {
+                        width: parent.width;
+                        height: parent.height;
+                        text: "Delete Permanently";
+                        color: white;
+                        font-size: 12px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                }
+            }
+        }
+    }
+}

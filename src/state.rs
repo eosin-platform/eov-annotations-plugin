@@ -23,6 +23,12 @@ pub(crate) enum PendingImportDialog {
 }
 
 #[derive(Clone, Default)]
+pub(crate) struct PendingDeleteLayer {
+    pub(crate) layer_id: String,
+    pub(crate) layer_name: String,
+}
+
+#[derive(Clone, Default)]
 pub(crate) struct PendingImport {
     pub(crate) layers: Vec<ExportAnnotationLayer>,
     pub(crate) next_index: usize,
@@ -41,6 +47,7 @@ pub(crate) struct PluginState {
     pub(crate) hidden_layers_by_file: HashMap<String, HashSet<String>>,
     pub(crate) export_metadata: AnnotationExportMetadata,
     pub(crate) export_metadata_loaded: bool,
+    pub(crate) pending_delete_layer: Option<PendingDeleteLayer>,
     pub(crate) pending_import: Option<PendingImport>,
     pub(crate) pending_import_dialog: PendingImportDialog,
 }

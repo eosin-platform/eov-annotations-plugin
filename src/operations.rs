@@ -1,7 +1,5 @@
 use common::file_id::hex_digest;
-use plugin_api::ffi::{
-    ConfirmationDialogRequestFFI, HostToolModeFFI, ModalDialogRequestFFI, ViewportSnapshotFFI,
-};
+use plugin_api::ffi::{HostToolModeFFI, ModalDialogRequestFFI, ViewportSnapshotFFI};
 use rusqlite::params;
 use std::collections::HashSet;
 use std::fs;
@@ -19,7 +17,7 @@ use crate::model::{
     now_unix_secs, sort_annotation_layers, unique_untitled_set_name,
 };
 use crate::state::{
-    ImportConflictStrategy, PendingImport, PendingImportDialog, PluginState,
+    ImportConflictStrategy, PendingDeleteLayer, PendingImport, PendingImportDialog, PluginState,
     active_file_from_snapshot, active_file_key, host_api, host_snapshot, plugin_state,
 };
 
@@ -167,6 +165,65 @@ pub(crate) fn hide_metadata_settings_dialog() -> Result<(), String> {
     (host_api.hide_modal_dialog)(host_api.context)
         .into_result()
         .map_err(|err| format!("failed to hide metadata settings dialog: {err}"))
+}
+
+pub(crate) fn show_delete_annotation_layer_dialog() -> Result<(), String> {
+    let Some(host_api) = host_api() else {
+        return Err("host API is not available".to_string());
+    };
+
+    (host_api.show_modal_dialog)(
+        host_api.context,
+        ModalDialogRequestFFI {
+            ui_path: "ui/delete-layer-dialog.slint".into(),
+            component: "DeleteLayerDialog".into(),
+            width_px: 432,
+            height_px: 196,
+        },
+    )
+    .into_result()
+    .map_err(|err| format!("failed to show delete annotation layer dialog: {err}"))
+}
+
+pub(crate) fn hide_delete_annotation_layer_dialog() -> Result<(), String> {
+    let Some(host_api) = host_api() else {
+        return Err("host API is not available".to_string());
+    };
+    (host_api.hide_modal_dialog)(host_api.context)
+        .into_result()
+        .map_err(|err| format!("failed to hide delete annotation layer dialog: {err}"))
+}
+
+pub(crate) fn confirm_pending_delete_annotation_layer() -> Result<(), String> {
+    let layer_id = {
+        let state = plugin_state().lock().unwrap();
+        state
+            .pending_delete_layer
+            .as_ref()
+            .map(|pending| pending.layer_id.clone())
+            .ok_or_else(|| "no pending annotation layer deletion".to_string())?
+    };
+
+    delete_annotation_layer_for_active_file(&layer_id)?;
+
+    {
+        let mut state = plugin_state().lock().unwrap();
+        state.pending_delete_layer = None;
+    }
+
+    hide_delete_annotation_layer_dialog()?;
+    refresh_sidebar_if_available();
+    request_render_if_available();
+    Ok(())
+}
+
+pub(crate) fn cancel_pending_delete_annotation_layer() -> Result<(), String> {
+    {
+        let mut state = plugin_state().lock().unwrap();
+        state.pending_delete_layer = None;
+    }
+
+    hide_delete_annotation_layer_dialog()
 }
 
 fn clear_pending_import(state: &mut PluginState) {
@@ -1053,29 +1110,15 @@ pub(crate) fn delete_annotation_for_active_file(annotation_id: &str) -> Result<(
 }
 
 pub(crate) fn request_delete_annotation_layer(set_id: &str, set_name: &str) -> Result<(), String> {
-    let Some(host_api) = host_api() else {
-        return Err("host API is not available".to_string());
-    };
-    let request = ConfirmationDialogRequestFFI {
-		title: "Delete Annotation Layer".into(),
-		message: format!(
-			"Are you sure you want to delete annotation layer '{set_name}'? This action cannot be undone."
-		)
-		.into(),
-		confirm_label: "Delete Permanently".into(),
-		cancel_label: "Cancel".into(),
-		confirm_callback: abi_stable::std_types::ROption::RSome("delete-layer-confirmed".into()),
-		confirm_args_json: abi_stable::std_types::ROption::RSome(
-			serde_json::to_string(&vec![set_id])
-				.unwrap_or_else(|_| "[]".to_string())
-				.into(),
-		),
-		cancel_callback: abi_stable::std_types::ROption::RNone,
-		cancel_args_json: abi_stable::std_types::ROption::RNone,
-	};
-    (host_api.show_confirmation_dialog)(host_api.context, request)
-        .into_result()
-        .map_err(|err| format!("failed to show delete annotation layer confirmation: {err}"))
+    {
+        let mut state = plugin_state().lock().unwrap();
+        state.pending_delete_layer = Some(PendingDeleteLayer {
+            layer_id: set_id.to_string(),
+            layer_name: set_name.to_string(),
+        });
+    }
+
+    show_delete_annotation_layer_dialog()
 }
 
 pub(crate) fn move_point_annotation(

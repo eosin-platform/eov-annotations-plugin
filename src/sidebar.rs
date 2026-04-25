@@ -3,9 +3,10 @@ use plugin_api::ffi::{HostLogLevelFFI, UiPropertyFFI};
 
 use crate::model::{Annotation, SidebarTreeRow, annotation_label, hex_color_to_rgb};
 use crate::operations::{
+    cancel_pending_delete_annotation_layer, confirm_pending_delete_annotation_layer,
     create_annotation_layer_for_active_file, delete_annotation_for_active_file,
-    delete_annotation_layer_for_active_file, ensure_export_metadata_loaded,
-    export_active_file_annotations, hide_metadata_settings_dialog,
+    ensure_export_metadata_loaded, export_active_file_annotations,
+    hide_metadata_settings_dialog,
     import_active_file_annotations, refresh_sidebar_if_available,
     rename_annotation_layer_for_active_file, request_delete_annotation_layer,
     request_render_if_available, respond_to_import_layer_conflict,
@@ -262,15 +263,8 @@ pub(crate) fn on_sidebar_callback(callback_name: &str, args_json: &str) {
                 refresh_sidebar_if_available();
             })
         }
-        "delete-layer-confirmed" => {
-            let Some(serde_json::Value::String(set_id)) = args.first() else {
-                return;
-            };
-            delete_annotation_layer_for_active_file(set_id).map(|_| {
-                refresh_sidebar_if_available();
-                request_render_if_available();
-            })
-        }
+        "delete-layer-confirmed" => confirm_pending_delete_annotation_layer(),
+        "delete-layer-cancelled" => cancel_pending_delete_annotation_layer(),
         "request-delete-layer" => {
             let Some(serde_json::Value::String(set_id)) = args.first() else {
                 return;
@@ -471,6 +465,18 @@ pub(crate) fn get_sidebar_properties() -> RVec<UiPropertyFFI> {
             json_value: serde_json::to_string(&state.export_metadata.license)
                 .unwrap_or_else(|_| "\"\"".to_string())
                 .into(),
+        },
+        UiPropertyFFI {
+            name: "pending-delete-layer-name".into(),
+            json_value: serde_json::to_string(
+                &state
+                    .pending_delete_layer
+                    .as_ref()
+                    .map(|pending| pending.layer_name.clone())
+                    .unwrap_or_default(),
+            )
+            .unwrap_or_else(|_| "\"\"".to_string())
+            .into(),
         },
     ])
 }
