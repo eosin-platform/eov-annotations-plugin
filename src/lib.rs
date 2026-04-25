@@ -37,6 +37,12 @@ const SIDEBAR_ICON_SVG: &str = include_str!("../ui/icons/annotations.svg");
 const POINT_ICON_SVG: &str = r#"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5" fill="currentColor"/></svg>"#;
 const POLYGON_ICON_SVG: &str = include_str!("../ui/icons/polygon_annotation.svg");
 
+fn plugin_trace(message: impl AsRef<str>) {
+    if std::env::var_os("EOV_PLUGIN_TRACE").is_some() {
+        eprintln!("[annotations] {}", message.as_ref());
+    }
+}
+
 extern "C" fn set_host_api_ffi(host_api: HostApiVTable) {
     set_host_api(host_api);
     publish_undo_redo_state();
@@ -76,11 +82,14 @@ extern "C" fn get_hud_toolbar_buttons_ffi() -> RVec<HudToolbarButtonFFI> {
 }
 
 extern "C" fn on_action_ffi(action_id: RString) -> ActionResponseFFI {
+    plugin_trace(format!("on_action action_id={}", action_id));
     let result = match action_id.as_str() {
         ACTION_TOGGLE_SIDEBAR => sync_active_file().and_then(|_| {
+            plugin_trace("toggle sidebar after sync_active_file");
             let Some(host_api) = host_api() else {
                 return Err("host API is not available".to_string());
             };
+            plugin_trace("calling host_api.show_sidebar");
             (host_api.show_sidebar)(
                 host_api.context,
                 RString::from(ACTION_TOGGLE_SIDEBAR),
@@ -100,6 +109,8 @@ extern "C" fn on_action_ffi(action_id: RString) -> ActionResponseFFI {
         log_message(HostLogLevelFFI::Error, err);
     }
 
+    plugin_trace(format!("on_action done action_id={}", action_id));
+
     ActionResponseFFI { open_window: false }
 }
 
@@ -111,7 +122,9 @@ extern "C" fn on_hud_action_ffi(
 }
 
 extern "C" fn on_ui_callback_ffi(callback_name: RString, args_json: RString) {
+    plugin_trace(format!("ui_callback name={} args={}", callback_name, args_json));
     on_sidebar_callback(callback_name.as_str(), args_json.as_str());
+    plugin_trace(format!("ui_callback done name={}", callback_name));
 }
 
 extern "C" fn get_sidebar_properties_ffi() -> RVec<UiPropertyFFI> {
