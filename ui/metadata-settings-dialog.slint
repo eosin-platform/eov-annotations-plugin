@@ -64,108 +64,116 @@ export component MetadataSettingsDialog inherits Rectangle {
         || project-name-field.has-active-input
         || license-field.has-active-input;
 
-    background: Theme.surface;
-    border-radius: 10px;
-    border-width: 1px;
-    border-color: Theme.border;
-    clip: true;
+    background: transparent;
 
-    VerticalLayout {
-        x: 20px;
-        y: 20px;
-        width: parent.width - 40px;
-        height: parent.height - 40px;
-        spacing: 12px;
+    panel := Rectangle {
+        x: 0px;
+        y: 0px;
+        width: parent.width;
+        height: parent.height;
+        background: Theme.surface;
+        border-radius: 10px;
+        border-width: 1px;
+        border-color: Theme.border;
+        clip: true;
 
-        Text {
-            width: parent.width;
-            text: "Metadata Settings";
-            color: Theme.text-primary;
-            font-size: 14px;
-            font-weight: 600;
-            horizontal-alignment: left;
-        }
+        VerticalLayout {
+            x: 20px;
+            y: 20px;
+            width: parent.width - 40px;
+            height: parent.height - 40px;
+            spacing: 12px;
 
-        author-field := MetadataInputField {
-            label: "Author";
-            value <=> root.metadata-author-draft;
-        }
+            Text {
+                width: parent.width;
+                text: "Metadata Settings";
+                color: Theme.text-primary;
+                font-size: 14px;
+                font-weight: 600;
+                horizontal-alignment: left;
+            }
 
-        organization-field := MetadataInputField {
-            label: "Organization";
-            value <=> root.metadata-organization-draft;
-        }
+            author-field := MetadataInputField {
+                label: "Author";
+                value <=> root.metadata-author-draft;
+            }
 
-        project-name-field := MetadataInputField {
-            label: "Project Name";
-            value <=> root.metadata-project-name-draft;
-        }
+            organization-field := MetadataInputField {
+                label: "Organization";
+                value <=> root.metadata-organization-draft;
+            }
 
-        license-field := MetadataInputField {
-            label: "License";
-            value <=> root.metadata-license-draft;
-        }
+            project-name-field := MetadataInputField {
+                label: "Project Name";
+                value <=> root.metadata-project-name-draft;
+            }
 
-        Rectangle {
-            vertical-stretch: 1;
-            background: transparent;
-        }
-
-        HorizontalLayout {
-            width: parent.width;
-            spacing: 8px;
-            alignment: end;
-
-            Rectangle {
-                min-width: 72px;
-                height: 32px;
-                border-radius: 6px;
-                background: cancel-touch.has-hover ? Theme.surface-hover : Theme.surface;
-                border-width: 1px;
-                border-color: Theme.border;
-
-                cancel-touch := TouchArea {
-                    clicked => {
-                        root.metadata-settings-cancelled();
-                    }
-                }
-
-                Text {
-                    width: parent.width;
-                    height: parent.height;
-                    text: "Cancel";
-                    color: Theme.text-primary;
-                    font-size: 12px;
-                    horizontal-alignment: center;
-                    vertical-alignment: center;
-                }
+            license-field := MetadataInputField {
+                label: "License";
+                value <=> root.metadata-license-draft;
             }
 
             Rectangle {
-                min-width: 80px;
-                height: 32px;
-                border-radius: 6px;
-                background: confirm-touch.has-hover ? #1177bb : Theme.accent;
+                vertical-stretch: 1;
+                background: transparent;
+            }
 
-                confirm-touch := TouchArea {
-                    clicked => {
-                        root.metadata-settings-confirmed(
-                            root.metadata-author-draft,
-                            root.metadata-organization-draft,
-                            root.metadata-project-name-draft,
-                            root.metadata-license-draft,
-                        );
+            HorizontalLayout {
+                width: parent.width;
+                spacing: 8px;
+                alignment: end;
+
+                Rectangle {
+                    min-width: 72px;
+                    height: 32px;
+                    border-radius: 6px;
+                    background: cancel-touch.has-hover ? Theme.surface-hover : Theme.surface;
+                    border-width: 1px;
+                    border-color: Theme.border;
+
+                    cancel-touch := TouchArea {
+                        clicked => {
+                            root.metadata-settings-cancelled();
+                        }
+                    }
+
+                    Text {
+                        width: parent.width;
+                        height: parent.height;
+                        text: "Cancel";
+                        color: Theme.text-primary;
+                        font-size: 12px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
                     }
                 }
 
-                Text {
-                    width: parent.width;
-                    height: parent.height;
-                    text: "Confirm";
-                    color: white;
-                    font-size: 12px;
-                    horizontal-alignment: center;
-                    vertical-alignment: center;
+                Rectangle {
+                    min-width: 80px;
+                    height: 32px;
+                    border-radius: 6px;
+                    background: confirm-touch.has-hover ? #1177bb : Theme.accent;
+
+                    confirm-touch := TouchArea {
+                        clicked => {
+                            root.metadata-settings-confirmed(
+                                root.metadata-author-draft,
+                                root.metadata-organization-draft,
+                                root.metadata-project-name-draft,
+                                root.metadata-license-draft,
+                            );
+                        }
+                    }
+
+                    Text {
+                        width: parent.width;
+                        height: parent.height;
+                        text: "Confirm";
+                        color: white;
+                        font-size: 12px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
                 }
             }
         }

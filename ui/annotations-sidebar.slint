@@ -171,6 +171,16 @@ export component AnnotationsSidebar inherits Rectangle {
                 }
             }
 
+            create-layer-button := ExportIconButton {
+                icon-source: @image-url("icons/new_annotation_layer.svg");
+                tooltip-text: "Create Annotation Layer";
+                enabled: root.can-export || root.can-import;
+                clicked => {
+                    root.confirm-active-rename();
+                    root.create-layer-clicked();
+                }
+            }
+
             settings-button := ExportIconButton {
                 icon-source: @image-url("icons/settings.svg");
                 tooltip-text: "Settings";
