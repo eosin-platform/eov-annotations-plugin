@@ -105,10 +105,12 @@ fn focus_sidebar_row(row_id: &str) -> Result<(), String> {
             return Ok(());
         };
 
-        let is_layer = state
-            .files
-            .get(&active_path)
-            .is_some_and(|loaded| loaded.annotation_layers.iter().any(|layer| layer.id == row_id));
+        let is_layer = state.files.get(&active_path).is_some_and(|loaded| {
+            loaded
+                .annotation_layers
+                .iter()
+                .any(|layer| layer.id == row_id)
+        });
         if is_layer {
             state
                 .selected_layer_by_file
@@ -155,7 +157,7 @@ fn focus_sidebar_row(row_id: &str) -> Result<(), String> {
         if let Some((layer_id, _, _)) = target.as_ref() {
             state
                 .selected_layer_by_file
-            .insert(active_path, layer_id.clone());
+                .insert(active_path, layer_id.clone());
         }
         target
     };
@@ -191,7 +193,10 @@ fn toggle_set_for_active_file(set_id: &str) -> Result<(), String> {
     let Some(active_path) = active_file_key(&state).map(str::to_string) else {
         return Ok(());
     };
-    let collapsed = state.collapsed_layers_by_file.entry(active_path).or_default();
+    let collapsed = state
+        .collapsed_layers_by_file
+        .entry(active_path)
+        .or_default();
     if !collapsed.insert(set_id.to_string()) {
         collapsed.remove(set_id);
     }

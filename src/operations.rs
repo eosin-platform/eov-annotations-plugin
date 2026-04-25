@@ -291,7 +291,10 @@ pub(crate) fn delete_annotation_layer_for_active_file(set_id: &str) -> Result<()
     };
     let connection = open_database()?;
     connection
-        .execute("DELETE FROM annotation_layers WHERE id = ?1", params![set_id])
+        .execute(
+            "DELETE FROM annotation_layers WHERE id = ?1",
+            params![set_id],
+        )
         .map_err(|err| format!("failed to delete annotation layer '{set_id}': {err}"))?;
 
     let next_selected = {
@@ -299,7 +302,9 @@ pub(crate) fn delete_annotation_layer_for_active_file(set_id: &str) -> Result<()
             Some(entry) => entry,
             None => return Ok(()),
         };
-        loaded_entry.annotation_layers.retain(|set| set.id != set_id);
+        loaded_entry
+            .annotation_layers
+            .retain(|set| set.id != set_id);
         loaded_entry
             .annotation_layers
             .first()
@@ -319,7 +324,9 @@ pub(crate) fn delete_annotation_layer_for_active_file(set_id: &str) -> Result<()
     }
     match next_selected {
         Some(next_id) => {
-            state.selected_layer_by_file.insert(active_file_path, next_id);
+            state
+                .selected_layer_by_file
+                .insert(active_file_path, next_id);
         }
         None => {
             state.selected_layer_by_file.remove(&active_file_path);
