@@ -17,8 +17,8 @@ use operations::{
 use plugin_api::ffi::{
     ActionResponseFFI, GpuFilterContextFFI, HostApiVTable, HostLogLevelFFI, HostToolModeFFI,
     HudToolbarButtonFFI, PluginVTable, ToolbarButtonFFI, UiPropertyFFI, ViewportContextMenuItemFFI,
-    ViewportFilterFFI, ViewportOverlayPointFFI, ViewportOverlayPolygonFFI,
-    ViewportOverlayVertexFFI, ViewportSnapshotFFI,
+    ViewportFilterFFI, ViewportOverlayComponentRequestFFI, ViewportOverlayPointFFI,
+    ViewportOverlayPolygonFFI, ViewportOverlayVertexFFI, ViewportSnapshotFFI,
 };
 use sidebar::{get_sidebar_properties, on_sidebar_callback};
 use state::{host_api, log_message, plugin_state, set_host_api};
@@ -272,6 +272,16 @@ extern "C" fn get_viewport_overlay_polygons_ffi(
     RVec::from(polygons)
 }
 
+extern "C" fn get_viewport_overlay_component_ffi() -> ROption<ViewportOverlayComponentRequestFFI> {
+    ROption::RNone
+}
+
+extern "C" fn get_viewport_overlay_properties_ffi(
+    _viewport: ViewportSnapshotFFI,
+) -> RVec<UiPropertyFFI> {
+    RVec::new()
+}
+
 extern "C" fn on_point_annotation_placed_ffi(
     viewport: ViewportSnapshotFFI,
     x_level0: f64,
@@ -380,6 +390,8 @@ pub extern "C" fn eov_get_plugin_vtable() -> PluginVTable {
         on_viewport_context_menu_action: on_viewport_context_menu_action_ffi,
         get_viewport_overlay_points: get_viewport_overlay_points_ffi,
         get_viewport_overlay_polygons: get_viewport_overlay_polygons_ffi,
+        get_viewport_overlay_component: get_viewport_overlay_component_ffi,
+        get_viewport_overlay_properties: get_viewport_overlay_properties_ffi,
         on_point_annotation_placed: on_point_annotation_placed_ffi,
         on_polygon_annotation_placed: on_polygon_annotation_placed_ffi,
         on_undo: on_undo_ffi,
