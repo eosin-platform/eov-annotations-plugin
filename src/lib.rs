@@ -30,12 +30,15 @@ const SIDEBAR_COMPONENT: &str = "AnnotationsSidebar";
 const ACTION_TOGGLE_SIDEBAR: &str = "toggle_annotations";
 const ACTION_CREATE_POINT: &str = "create_point_annotation";
 const ACTION_CREATE_POLYGON: &str = "create_polygon_annotation";
+const ACTION_TOGGLE_VIEWPORT_VISIBILITY: &str = "toggle_viewport_visibility";
 const VIEWPORT_MENU_CREATE_POINT: &str = "create_point";
 const VIEWPORT_MENU_CREATE_POLYGON: &str = "create_polygon";
 
 const SIDEBAR_ICON_SVG: &str = include_str!("../ui/icons/annotations.svg");
 const POINT_ICON_SVG: &str = r#"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5" fill="currentColor"/></svg>"#;
 const POLYGON_ICON_SVG: &str = include_str!("../ui/icons/polygon_annotation.svg");
+const VISIBLE_TRUE_ICON_SVG: &str = include_str!("../ui/icons/visible-true.svg");
+const VISIBLE_FALSE_ICON_SVG: &str = include_str!("../ui/icons/visible-false.svg");
 
 fn plugin_trace(message: impl AsRef<str>) {
     if std::env::var_os("EOV_PLUGIN_TRACE").is_some() {
@@ -78,7 +81,13 @@ extern "C" fn get_toolbar_buttons_ffi() -> RVec<ToolbarButtonFFI> {
 }
 
 extern "C" fn get_hud_toolbar_buttons_ffi() -> RVec<HudToolbarButtonFFI> {
-    RVec::new()
+    RVec::from(vec![HudToolbarButtonFFI {
+        button_id: ACTION_TOGGLE_VIEWPORT_VISIBILITY.into(),
+        tooltip: "Toggle annotations in this viewport".into(),
+        icon_svg: VISIBLE_TRUE_ICON_SVG.into(),
+        toggled_icon_svg: ROption::RSome(VISIBLE_FALSE_ICON_SVG.into()),
+        action_id: ACTION_TOGGLE_VIEWPORT_VISIBILITY.into(),
+    }])
 }
 
 extern "C" fn on_action_ffi(action_id: RString) -> ActionResponseFFI {
@@ -115,9 +124,22 @@ extern "C" fn on_action_ffi(action_id: RString) -> ActionResponseFFI {
 }
 
 extern "C" fn on_hud_action_ffi(
-    _action_id: RString,
-    _viewport: ViewportSnapshotFFI,
+    action_id: RString,
+    viewport: ViewportSnapshotFFI,
 ) -> ActionResponseFFI {
+    if action_id.as_str() == ACTION_TOGGLE_VIEWPORT_VISIBILITY {
+        let mut state = plugin_state().lock().unwrap();
+        if !state
+            .hidden_viewport_annotations
+            .insert(viewport.pane_index)
+        {
+            state
+                .hidden_viewport_annotations
+                .remove(&viewport.pane_index);
+        }
+        drop(state);
+        request_render_if_available();
+    }
     ActionResponseFFI { open_window: false }
 }
 
@@ -186,6 +208,12 @@ extern "C" fn get_viewport_overlay_points_ffi(
     }
 
     let state = plugin_state().lock().unwrap();
+    if state
+        .hidden_viewport_annotations
+        .contains(&viewport.pane_index)
+    {
+        return RVec::new();
+    }
     let Some(loaded) = state.files.get(viewport.file_path.as_str()) else {
         return RVec::new();
     };
@@ -237,6 +265,12 @@ extern "C" fn get_viewport_overlay_polygons_ffi(
     }
 
     let state = plugin_state().lock().unwrap();
+    if state
+        .hidden_viewport_annotations
+        .contains(&viewport.pane_index)
+    {
+        return RVec::new();
+    }
     let Some(loaded) = state.files.get(viewport.file_path.as_str()) else {
         return RVec::new();
     };
@@ -277,9 +311,16 @@ extern "C" fn get_viewport_overlay_component_ffi() -> ROption<ViewportOverlayCom
 }
 
 extern "C" fn get_viewport_overlay_properties_ffi(
-    _viewport: ViewportSnapshotFFI,
+    viewport: ViewportSnapshotFFI,
 ) -> RVec<UiPropertyFFI> {
-    RVec::new()
+    let state = plugin_state().lock().unwrap();
+    let hidden = state
+        .hidden_viewport_annotations
+        .contains(&viewport.pane_index);
+    RVec::from(vec![UiPropertyFFI {
+        name: format!("hud-button/{ACTION_TOGGLE_VIEWPORT_VISIBILITY}/active").into(),
+        json_value: serde_json::json!(hidden).to_string().into(),
+    }])
 }
 
 extern "C" fn on_point_annotation_placed_ffi(

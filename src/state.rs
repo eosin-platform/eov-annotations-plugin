@@ -45,6 +45,7 @@ pub(crate) struct PluginState {
     pub(crate) files: HashMap<String, LoadedFileAnnotations>,
     pub(crate) active_file_path: Option<String>,
     pub(crate) active_filename: Option<String>,
+    pub(crate) hidden_viewport_annotations: HashSet<u32>,
     pub(crate) selected_layer_by_file: HashMap<String, String>,
     pub(crate) editing_layer_by_file: HashMap<String, String>,
     pub(crate) collapsed_layers_by_file: HashMap<String, HashSet<String>>,
