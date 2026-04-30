@@ -218,9 +218,7 @@ pub(crate) fn replace_annotation_metadata(
             params![annotation_id],
         )
         .map_err(|err| {
-            format!(
-                "failed to clear annotation metadata for '{annotation_id}': {err}"
-            )
+            format!("failed to clear annotation metadata for '{annotation_id}': {err}")
         })?;
 
     for (index, entry) in metadata.iter().enumerate() {
@@ -267,10 +265,8 @@ fn load_annotation_metadata_map(
         })
         .map_err(|err| format!("failed to query annotation metadata rows: {err}"))?;
 
-    let mut metadata_by_annotation = std::collections::HashMap::<
-        String,
-        Vec<AnnotationMetadataEntry>,
-    >::new();
+    let mut metadata_by_annotation =
+        std::collections::HashMap::<String, Vec<AnnotationMetadataEntry>>::new();
     for row in rows {
         let (annotation_id, entry) =
             row.map_err(|err| format!("failed to read annotation metadata row: {err}"))?;

@@ -9,11 +9,10 @@ use abi_stable::std_types::{ROption, RString, RVec};
 use history::{perform_redo, perform_undo, publish_undo_redo_state};
 use model::{Annotation, hex_color_to_rgb};
 use operations::{
-    ensure_loaded_for_viewport, move_point_annotation, move_polygon_annotation,
-    persist_point_annotation, persist_polygon_annotation, refresh_sidebar_if_available,
-    request_render_if_available, select_annotation_for_viewport,
-    ensure_selection_animation_worker_started, start_point_annotation_flow,
-    start_polygon_annotation_flow, sync_active_file,
+    ensure_loaded_for_viewport, ensure_selection_animation_worker_started, move_point_annotation,
+    move_polygon_annotation, persist_point_annotation, persist_polygon_annotation,
+    refresh_sidebar_if_available, request_render_if_available, select_annotation_for_viewport,
+    start_point_annotation_flow, start_polygon_annotation_flow, sync_active_file,
 };
 use plugin_api::ffi::{
     ActionResponseFFI, GpuFilterContextFFI, HostApiVTable, HostLogLevelFFI, HostToolModeFFI,
@@ -220,7 +219,9 @@ extern "C" fn get_viewport_overlay_points_ffi(
         return RVec::new();
     };
     let hidden_sets = state.hidden_layers_by_file.get(viewport.file_path.as_str());
-    let selected_annotation_id = state.selected_annotation_by_file.get(viewport.file_path.as_str());
+    let selected_annotation_id = state
+        .selected_annotation_by_file
+        .get(viewport.file_path.as_str());
 
     let points = loaded
         .annotation_layers
@@ -287,7 +288,9 @@ extern "C" fn get_viewport_overlay_polygons_ffi(
         return RVec::new();
     };
     let hidden_sets = state.hidden_layers_by_file.get(viewport.file_path.as_str());
-    let selected_annotation_id = state.selected_annotation_by_file.get(viewport.file_path.as_str());
+    let selected_annotation_id = state
+        .selected_annotation_by_file
+        .get(viewport.file_path.as_str());
 
     let polygons = loaded
         .annotation_layers

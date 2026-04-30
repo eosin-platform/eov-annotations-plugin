@@ -5,17 +5,16 @@ use crate::model::{
     Annotation, AnnotationMetadataEntry, SidebarTreeRow, annotation_label, hex_color_to_rgb,
 };
 use crate::operations::{
-    add_selected_annotation_metadata_row,
-    cancel_annotation_layer_rename_for_active_file, cancel_pending_delete_annotation_layer,
-    confirm_pending_delete_annotation_layer, create_annotation_layer_for_active_file,
-    delete_annotation_for_active_file, ensure_export_metadata_loaded,
-    export_active_file_annotations, hide_metadata_settings_dialog, import_active_file_annotations,
-    refresh_sidebar_if_available, rename_annotation_layer_for_active_file,
+    add_selected_annotation_metadata_row, cancel_annotation_layer_rename_for_active_file,
+    cancel_pending_delete_annotation_layer, confirm_pending_delete_annotation_layer,
+    create_annotation_layer_for_active_file, delete_annotation_for_active_file,
+    ensure_export_metadata_loaded, export_active_file_annotations, hide_metadata_settings_dialog,
+    import_active_file_annotations, refresh_sidebar_if_available,
+    remove_selected_annotation_metadata_row, rename_annotation_layer_for_active_file,
     request_delete_annotation_layer, request_render_if_available, respond_to_import_layer_conflict,
-    respond_to_import_sha_mismatch, remove_selected_annotation_metadata_row,
-    set_annotation_layer_color_for_active_file, set_annotation_layer_visibility_for_active_file,
-    show_metadata_settings_dialog, sync_active_file, update_export_metadata_settings,
-    update_selected_annotation_metadata_row,
+    respond_to_import_sha_mismatch, set_annotation_layer_color_for_active_file,
+    set_annotation_layer_visibility_for_active_file, show_metadata_settings_dialog,
+    sync_active_file, update_export_metadata_settings, update_selected_annotation_metadata_row,
 };
 use crate::state::{
     PendingImportDialog, PluginState, active_file_key, active_viewport_from_snapshot, host_api,
@@ -61,8 +60,8 @@ fn sidebar_rows(state: &PluginState) -> Vec<SidebarTreeRow> {
                     Annotation::Point(point) => point.id.clone(),
                     Annotation::Polygon(polygon) => polygon.id.clone(),
                 };
-                let is_selected = selected_annotation_id
-                    .is_some_and(|selected| selected == &annotation_id);
+                let is_selected =
+                    selected_annotation_id.is_some_and(|selected| selected == &annotation_id);
                 rows.push(SidebarTreeRow {
                     row_id: annotation_id,
                     parent_layer_id: layer.id.clone(),
@@ -115,15 +114,18 @@ fn selected_annotation_name(state: &PluginState) -> String {
             let selected_id = state.selected_annotation_by_file.get(path)?;
             state.files.get(path).and_then(|loaded| {
                 loaded.annotation_layers.iter().find_map(|layer| {
-                    layer.annotations.iter().find_map(|annotation| match annotation {
-                        Annotation::Point(point) if &point.id == selected_id => {
-                            Some(annotation_label(annotation))
-                        }
-                        Annotation::Polygon(polygon) if &polygon.id == selected_id => {
-                            Some(annotation_label(annotation))
-                        }
-                        _ => None,
-                    })
+                    layer
+                        .annotations
+                        .iter()
+                        .find_map(|annotation| match annotation {
+                            Annotation::Point(point) if &point.id == selected_id => {
+                                Some(annotation_label(annotation))
+                            }
+                            Annotation::Polygon(polygon) if &polygon.id == selected_id => {
+                                Some(annotation_label(annotation))
+                            }
+                            _ => None,
+                        })
                 })
             })
         })
@@ -138,15 +140,18 @@ fn selected_annotation_metadata_rows(state: &PluginState) -> Vec<AnnotationMetad
             let selected_id = state.selected_annotation_by_file.get(path)?;
             state.files.get(path).and_then(|loaded| {
                 loaded.annotation_layers.iter().find_map(|layer| {
-                    layer.annotations.iter().find_map(|annotation| match annotation {
-                        Annotation::Point(point) if &point.id == selected_id => {
-                            Some(point.metadata.clone())
-                        }
-                        Annotation::Polygon(polygon) if &polygon.id == selected_id => {
-                            Some(polygon.metadata.clone())
-                        }
-                        _ => None,
-                    })
+                    layer
+                        .annotations
+                        .iter()
+                        .find_map(|annotation| match annotation {
+                            Annotation::Point(point) if &point.id == selected_id => {
+                                Some(point.metadata.clone())
+                            }
+                            Annotation::Polygon(polygon) if &polygon.id == selected_id => {
+                                Some(polygon.metadata.clone())
+                            }
+                            _ => None,
+                        })
                 })
             })
         })
@@ -282,8 +287,7 @@ fn frame_sidebar_annotation(row_id: &str) -> Result<(), String> {
     let target_zoom = if is_point { 1.9 } else { 1.2 };
     let padding_factor = 1.1;
     let target_visible_width = (active_viewport.width / (target_zoom * padding_factor)).max(1.0);
-    let target_visible_height =
-        (active_viewport.height / (target_zoom * padding_factor)).max(1.0);
+    let target_visible_height = (active_viewport.height / (target_zoom * padding_factor)).max(1.0);
     let frame_width = if is_point {
         target_visible_width
     } else {
@@ -424,10 +428,12 @@ pub(crate) fn on_sidebar_callback(callback_name: &str, args_json: &str) {
             let Some(serde_json::Value::String(row_id)) = args.first() else {
                 return;
             };
-            select_sidebar_row(row_id).and_then(|_| frame_sidebar_annotation(row_id)).map(|_| {
-                refresh_sidebar_if_available();
-                request_render_if_available();
-            })
+            select_sidebar_row(row_id)
+                .and_then(|_| frame_sidebar_annotation(row_id))
+                .map(|_| {
+                    refresh_sidebar_if_available();
+                    request_render_if_available();
+                })
         }
         "row-hovered" => Ok(()),
         "metadata-row-added" => add_selected_annotation_metadata_row().map(|_| {

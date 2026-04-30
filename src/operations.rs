@@ -22,8 +22,7 @@ use crate::model::{
     Annotation, AnnotationExportMetadata, AnnotationLayer, AnnotationMetadataEntry,
     ExportAnnotation, ExportAnnotationLayer, ExportFile, ExportPolygonVertex,
     LoadedFileAnnotations, PointAnnotation, PolygonAnnotation, PolygonVertex,
-    choose_annotation_layer_color, now_unix_secs, sort_annotation_layers,
-    unique_untitled_set_name,
+    choose_annotation_layer_color, now_unix_secs, sort_annotation_layers, unique_untitled_set_name,
 };
 use crate::state::{
     ImportConflictStrategy, PendingDeleteLayer, PendingImport, PendingImportDialog, PluginState,
@@ -47,14 +46,16 @@ static SELECTION_ANIMATION_WORKER: OnceLock<()> = OnceLock::new();
 
 pub(crate) fn ensure_selection_animation_worker_started() {
     SELECTION_ANIMATION_WORKER.get_or_init(|| {
-        std::thread::spawn(|| loop {
-            std::thread::sleep(Duration::from_millis(120));
-            let has_selection = {
-                let state = plugin_state().lock().unwrap();
-                !state.selected_annotation_by_file.is_empty()
-            };
-            if has_selection {
-                request_render_if_available();
+        std::thread::spawn(|| {
+            loop {
+                std::thread::sleep(Duration::from_millis(120));
+                let has_selection = {
+                    let state = plugin_state().lock().unwrap();
+                    !state.selected_annotation_by_file.is_empty()
+                };
+                if has_selection {
+                    request_render_if_available();
+                }
             }
         });
     });
@@ -114,15 +115,18 @@ fn annotation_layer_and_label_for_file(
     annotation_id: &str,
 ) -> Option<(String, String)> {
     loaded.annotation_layers.iter().find_map(|layer| {
-        layer.annotations.iter().find_map(|annotation| match annotation {
-            Annotation::Point(point) if point.id == annotation_id => {
-                Some((layer.id.clone(), "Point".to_string()))
-            }
-            Annotation::Polygon(polygon) if polygon.id == annotation_id => {
-                Some((layer.id.clone(), "Polygon".to_string()))
-            }
-            _ => None,
-        })
+        layer
+            .annotations
+            .iter()
+            .find_map(|annotation| match annotation {
+                Annotation::Point(point) if point.id == annotation_id => {
+                    Some((layer.id.clone(), "Point".to_string()))
+                }
+                Annotation::Polygon(polygon) if polygon.id == annotation_id => {
+                    Some((layer.id.clone(), "Polygon".to_string()))
+                }
+                _ => None,
+            })
     })
 }
 
@@ -152,7 +156,9 @@ pub(crate) fn select_annotation_for_viewport(
         .get(&file_path)
         .and_then(|loaded| annotation_layer_and_label_for_file(loaded, annotation_id))
     {
-        state.selected_layer_by_file.insert(file_path.clone(), layer_id);
+        state
+            .selected_layer_by_file
+            .insert(file_path.clone(), layer_id);
         state
             .selected_annotation_by_file
             .insert(file_path, annotation_id.to_string());
@@ -203,7 +209,9 @@ fn trim_metadata_field(value: &str) -> String {
     value.trim().chars().take(255).collect()
 }
 
-fn annotation_metadata_entries_mut(annotation: &mut Annotation) -> &mut Vec<AnnotationMetadataEntry> {
+fn annotation_metadata_entries_mut(
+    annotation: &mut Annotation,
+) -> &mut Vec<AnnotationMetadataEntry> {
     match annotation {
         Annotation::Point(point) => &mut point.metadata,
         Annotation::Polygon(polygon) => &mut polygon.metadata,
@@ -317,12 +325,7 @@ where
         .annotation_layers
         .iter_mut()
         .find(|layer| layer.id == annotation_layer_id)
-        .ok_or_else(|| {
-            format!(
-                "annotation layer '{}' is not loaded",
-                annotation_layer_id
-            )
-        })?;
+        .ok_or_else(|| format!("annotation layer '{}' is not loaded", annotation_layer_id))?;
     layer.updated_at = timestamp;
     let annotation = layer
         .annotations
@@ -561,6 +564,7 @@ fn next_available_annotation_id(
     Ok(Uuid::new_v4().to_string())
 }
 
+#[allow(clippy::too_many_arguments)]
 fn insert_point_annotation(
     connection: &rusqlite::Connection,
     annotation_layer_id: &str,
@@ -1544,16 +1548,20 @@ pub(crate) fn delete_annotation_layer_for_active_file(set_id: &str) -> Result<()
             state.selected_layer_by_file.remove(&active_file_path);
         }
     }
-    if layer_snapshot.annotations.iter().any(|annotation| match annotation {
-        Annotation::Point(point) => state
-            .selected_annotation_by_file
-            .get(&active_file_path)
-            .is_some_and(|selected| selected == &point.id),
-        Annotation::Polygon(polygon) => state
-            .selected_annotation_by_file
-            .get(&active_file_path)
-            .is_some_and(|selected| selected == &polygon.id),
-    }) {
+    if layer_snapshot
+        .annotations
+        .iter()
+        .any(|annotation| match annotation {
+            Annotation::Point(point) => state
+                .selected_annotation_by_file
+                .get(&active_file_path)
+                .is_some_and(|selected| selected == &point.id),
+            Annotation::Polygon(polygon) => state
+                .selected_annotation_by_file
+                .get(&active_file_path)
+                .is_some_and(|selected| selected == &polygon.id),
+        })
+    {
         state.selected_annotation_by_file.remove(&active_file_path);
     }
     let action = Action::DeleteAnnotationLayer(DeleteAnnotationLayer {

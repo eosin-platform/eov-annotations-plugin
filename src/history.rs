@@ -657,13 +657,21 @@ fn apply_delete_layer(action: &DeleteAnnotationLayer) -> Result<(), String> {
             state.selected_layer_by_file.remove(&action.file.file_path);
         }
     }
-    if let Some(selected_annotation_id) = state.selected_annotation_by_file.get(&action.file.file_path)
-        && action.layer.annotations.iter().any(|annotation| match annotation {
-            Annotation::Point(point) => &point.id == selected_annotation_id,
-            Annotation::Polygon(polygon) => &polygon.id == selected_annotation_id,
-        })
+    if let Some(selected_annotation_id) = state
+        .selected_annotation_by_file
+        .get(&action.file.file_path)
+        && action
+            .layer
+            .annotations
+            .iter()
+            .any(|annotation| match annotation {
+                Annotation::Point(point) => &point.id == selected_annotation_id,
+                Annotation::Polygon(polygon) => &polygon.id == selected_annotation_id,
+            })
     {
-        state.selected_annotation_by_file.remove(&action.file.file_path);
+        state
+            .selected_annotation_by_file
+            .remove(&action.file.file_path);
     }
     Ok(())
 }
