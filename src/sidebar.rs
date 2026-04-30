@@ -240,7 +240,7 @@ fn frame_sidebar_annotation(row_id: &str) -> Result<(), String> {
                     .iter()
                     .find_map(|annotation| match annotation {
                         Annotation::Point(point) if point.id == row_id => {
-                            Some((point.x_level0, point.y_level0, 0.0, 0.0))
+                            Some((point.x_level0, point.y_level0, 0.0, 0.0, true))
                         }
                         Annotation::Polygon(polygon) if polygon.id == row_id => {
                             let min_x = polygon
@@ -263,7 +263,7 @@ fn frame_sidebar_annotation(row_id: &str) -> Result<(), String> {
                                 .iter()
                                 .map(|vertex| vertex.y_level0)
                                 .fold(f64::NEG_INFINITY, f64::max);
-                            Some((min_x, min_y, max_x - min_x, max_y - min_y))
+                            Some((min_x, min_y, max_x - min_x, max_y - min_y, false))
                         }
                         _ => None,
                     })
@@ -271,7 +271,7 @@ fn frame_sidebar_annotation(row_id: &str) -> Result<(), String> {
         })
     };
 
-    let Some((x, y, width, height)) = annotation_bounds else {
+    let Some((x, y, width, height, is_point)) = annotation_bounds else {
         return Ok(());
     };
 
@@ -279,20 +279,25 @@ fn frame_sidebar_annotation(row_id: &str) -> Result<(), String> {
     let Some(active_viewport) = active_viewport_from_snapshot(&snapshot) else {
         return Ok(());
     };
-    let min_width = (active_viewport.width * 0.1).max(64.0);
-    let min_height = (active_viewport.height * 0.1).max(64.0);
-    let frame_width = width.max(min_width);
-    let frame_height = height.max(min_height);
-    let frame_x = if width > 0.0 {
-        x - frame_width * 0.1
+    let target_zoom = if is_point { 1.9 } else { 1.2 };
+    let padding_factor = 1.1;
+    let target_visible_width = (active_viewport.width / (target_zoom * padding_factor)).max(1.0);
+    let target_visible_height =
+        (active_viewport.height / (target_zoom * padding_factor)).max(1.0);
+    let frame_width = if is_point {
+        target_visible_width
     } else {
-        x - frame_width * 0.5
+        width.max(target_visible_width)
     };
-    let frame_y = if height > 0.0 {
-        y - frame_height * 0.1
+    let frame_height = if is_point {
+        target_visible_height
     } else {
-        y - frame_height * 0.5
+        height.max(target_visible_height)
     };
+    let center_x = if is_point { x } else { x + width * 0.5 };
+    let center_y = if is_point { y } else { y + height * 0.5 };
+    let frame_x = center_x - frame_width * 0.5;
+    let frame_y = center_y - frame_height * 0.5;
     let Some(host_api) = host_api() else {
         return Ok(());
     };

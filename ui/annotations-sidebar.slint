@@ -104,6 +104,11 @@ export component AnnotationsSidebar inherits Rectangle {
 
     background: Theme.surface;
 
+    sidebar-focus := FocusScope {
+        width: 0px;
+        height: 0px;
+    }
+
     action-dispatch := Timer {
         interval: 1ms;
         running: false;
@@ -666,6 +671,8 @@ export component AnnotationsSidebar inherits Rectangle {
                                                 vertical-alignment: center;
                                                 accepted => {
                                                     root.metadata-row-key-changed(idx, self.text);
+                                                    value-input.focus();
+                                                    value-input.select-all();
                                                 }
                                                 changed has-focus => {
                                                     root.metadata-focus-count = self.has-focus ? root.metadata-focus-count + 1 : max(0, root.metadata-focus-count - 1);
@@ -697,6 +704,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                                 vertical-alignment: center;
                                                 accepted => {
                                                     root.metadata-row-value-changed(idx, self.text);
+                                                    sidebar-focus.focus();
                                                 }
                                                 changed has-focus => {
                                                     root.metadata-focus-count = self.has-focus ? root.metadata-focus-count + 1 : max(0, root.metadata-focus-count - 1);
