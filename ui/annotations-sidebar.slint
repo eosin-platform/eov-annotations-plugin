@@ -17,6 +17,7 @@ export component AnnotationsSidebar inherits Rectangle {
     in property <bool> can-export: false;
     in property <bool> can-import: false;
     in property <bool> can-delete-set: false;
+    in property <string> hovered-row-id: "";
     in property <bool> show-sha-mismatch-warning: false;
     in property <bool> show-import-conflict-dialog: false;
     in property <string> import-conflict-layer-name: "";
@@ -74,6 +75,7 @@ export component AnnotationsSidebar inherits Rectangle {
     callback rename-layer-cancelled();
     callback row-clicked(string);
     callback row-double-clicked(string);
+    callback row-hovered(string);
     callback toggle-layer(string);
     callback toggle-layer-visibility(string, bool);
     callback set-layer-color(string, string);
@@ -293,9 +295,19 @@ export component AnnotationsSidebar inherits Rectangle {
                         for row[idx] in root.tree-items: Rectangle {
                             width: parent.width;
                             height: 32px;
-                            background: row.is-selected ? #4da3d930 : row-touch.has-hover ? #ffffff10 : transparent;
+                            background: row.is-selected ? #4da3d930 : (row-touch.has-hover || root.hovered-row-id == row.row-id) ? #ffffff10 : transparent;
 
                             row-touch := TouchArea {
+                                changed has-hover => {
+                                    if row.is-layer {
+                                        if self.has-hover || root.hovered-row-id == row.row-id {
+                                            root.row-hovered("");
+                                        }
+                                    } else {
+                                        root.row-hovered(self.has-hover ? row.row-id : "");
+                                    }
+                                }
+
                                 clicked => {
                                     root.confirm-active-rename();
                                     if click-window.running && root.pending-click-row-id == row.row-id {

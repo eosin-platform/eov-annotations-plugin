@@ -429,6 +429,7 @@ pub(crate) fn on_sidebar_callback(callback_name: &str, args_json: &str) {
                 request_render_if_available();
             })
         }
+        "row-hovered" => Ok(()),
         "metadata-row-added" => add_selected_annotation_metadata_row().map(|_| {
             refresh_sidebar_if_available();
         }),
