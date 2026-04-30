@@ -2,7 +2,7 @@ use plugin_api::ffi::PluginUndoRedoStateFFI;
 use rusqlite::params;
 use std::collections::VecDeque;
 
-use crate::db::open_database;
+use crate::db::{open_database, replace_annotation_metadata};
 use crate::model::{
     Annotation, AnnotationLayer, LoadedFileAnnotations, PointAnnotation, PolygonAnnotation,
     PolygonVertex, sort_annotation_layers,
@@ -80,6 +80,16 @@ pub(crate) struct UpdateAnnotationLayer {
 }
 
 #[derive(Clone)]
+pub(crate) struct UpdateAnnotationMetadata {
+    pub(crate) file: FileActionContext,
+    pub(crate) annotation_layer_id: String,
+    pub(crate) annotation_before: Annotation,
+    pub(crate) annotation_after: Annotation,
+    pub(crate) layer_updated_at_before: i64,
+    pub(crate) layer_updated_at_after: i64,
+}
+
+#[derive(Clone)]
 pub(crate) struct MultiAction {
     pub(crate) title: String,
     pub(crate) actions: Vec<Action>,
@@ -94,6 +104,7 @@ pub(crate) enum Action {
     CreateAnnotationLayer(CreateAnnotationLayer),
     DeleteAnnotationLayer(DeleteAnnotationLayer),
     UpdateAnnotationLayer(UpdateAnnotationLayer),
+    UpdateAnnotationMetadata(UpdateAnnotationMetadata),
     MultiAction(MultiAction),
 }
 
@@ -182,6 +193,19 @@ impl InvertAction for UpdateAnnotationLayer {
     }
 }
 
+impl InvertAction for UpdateAnnotationMetadata {
+    fn inverse(&self) -> Action {
+        Action::UpdateAnnotationMetadata(UpdateAnnotationMetadata {
+            file: self.file.clone(),
+            annotation_layer_id: self.annotation_layer_id.clone(),
+            annotation_before: self.annotation_after.clone(),
+            annotation_after: self.annotation_before.clone(),
+            layer_updated_at_before: self.layer_updated_at_after,
+            layer_updated_at_after: self.layer_updated_at_before,
+        })
+    }
+}
+
 impl InvertAction for MultiAction {
     fn inverse(&self) -> Action {
         Action::MultiAction(MultiAction {
@@ -201,6 +225,7 @@ impl InvertAction for Action {
             Action::CreateAnnotationLayer(action) => action.inverse(),
             Action::DeleteAnnotationLayer(action) => action.inverse(),
             Action::UpdateAnnotationLayer(action) => action.inverse(),
+            Action::UpdateAnnotationMetadata(action) => action.inverse(),
             Action::MultiAction(action) => action.inverse(),
         }
     }
@@ -333,6 +358,7 @@ fn insert_point(
                 annotation.id
             )
         })?;
+    replace_annotation_metadata(connection, &annotation.id, &annotation.metadata)?;
     Ok(())
 }
 
@@ -378,6 +404,7 @@ fn insert_polygon(
                 )
             })?;
     }
+    replace_annotation_metadata(connection, &annotation.id, &annotation.metadata)?;
     Ok(())
 }
 
@@ -630,6 +657,14 @@ fn apply_delete_layer(action: &DeleteAnnotationLayer) -> Result<(), String> {
             state.selected_layer_by_file.remove(&action.file.file_path);
         }
     }
+    if let Some(selected_annotation_id) = state.selected_annotation_by_file.get(&action.file.file_path)
+        && action.layer.annotations.iter().any(|annotation| match annotation {
+            Annotation::Point(point) => &point.id == selected_annotation_id,
+            Annotation::Polygon(polygon) => &polygon.id == selected_annotation_id,
+        })
+    {
+        state.selected_annotation_by_file.remove(&action.file.file_path);
+    }
     Ok(())
 }
 
@@ -670,6 +705,67 @@ fn apply_update_layer(action: &UpdateAnnotationLayer) -> Result<(), String> {
     Ok(())
 }
 
+fn apply_update_annotation_metadata(action: &UpdateAnnotationMetadata) -> Result<(), String> {
+    ensure_loaded(&action.file)?;
+
+    let (annotation_id, updated_at, metadata) = match &action.annotation_after {
+        Annotation::Point(point) => (&point.id, point.updated_at, &point.metadata),
+        Annotation::Polygon(polygon) => (&polygon.id, polygon.updated_at, &polygon.metadata),
+    };
+
+    let connection = open_database()?;
+    connection
+        .execute(
+            "UPDATE annotations SET updated_at = ?2 WHERE id = ?1",
+            params![annotation_id, updated_at],
+        )
+        .map_err(|err| {
+            format!(
+                "failed to update annotation metadata timestamp for '{}': {err}",
+                annotation_id
+            )
+        })?;
+    connection
+        .execute(
+            "UPDATE annotation_layers SET updated_at = ?2 WHERE id = ?1",
+            params![&action.annotation_layer_id, action.layer_updated_at_after],
+        )
+        .map_err(|err| {
+            format!(
+                "failed to update annotation layer metadata timestamp '{}': {err}",
+                action.annotation_layer_id
+            )
+        })?;
+    replace_annotation_metadata(&connection, annotation_id, metadata)?;
+
+    let mut state = plugin_state().lock().unwrap();
+    let loaded = state
+        .files
+        .get_mut(&action.file.file_path)
+        .ok_or_else(|| format!("file '{}' is not loaded", action.file.file_path))?;
+    let layer = loaded
+        .annotation_layers
+        .iter_mut()
+        .find(|layer| layer.id == action.annotation_layer_id)
+        .ok_or_else(|| {
+            format!(
+                "annotation layer '{}' is not loaded",
+                action.annotation_layer_id
+            )
+        })?;
+    layer.updated_at = action.layer_updated_at_after;
+    let annotation = layer
+        .annotations
+        .iter_mut()
+        .find(|annotation| match annotation {
+            Annotation::Point(point) => point.id == *annotation_id,
+            Annotation::Polygon(polygon) => polygon.id == *annotation_id,
+        })
+        .ok_or_else(|| format!("annotation '{}' is not loaded", annotation_id))?;
+    *annotation = action.annotation_after.clone();
+    Ok(())
+}
+
 fn apply_action(action: &Action) -> Result<(), String> {
     match action {
         Action::CreatePointAnnotation(action) => apply_create_point(action),
@@ -679,6 +775,7 @@ fn apply_action(action: &Action) -> Result<(), String> {
         Action::CreateAnnotationLayer(action) => apply_create_layer(action),
         Action::DeleteAnnotationLayer(action) => apply_delete_layer(action),
         Action::UpdateAnnotationLayer(action) => apply_update_layer(action),
+        Action::UpdateAnnotationMetadata(action) => apply_update_annotation_metadata(action),
         Action::MultiAction(action) => {
             for subaction in &action.actions {
                 apply_action(subaction)?;

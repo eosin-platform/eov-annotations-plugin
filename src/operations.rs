@@ -4,22 +4,25 @@ use rusqlite::params;
 use std::collections::HashSet;
 use std::fs;
 use std::path::Path;
+use std::sync::OnceLock;
+use std::time::Duration;
 use uuid::Uuid;
 
 use crate::db::{
     fingerprint_for_file, full_sha256_for_file, load_annotation_layers, load_export_metadata,
-    open_database, save_export_metadata,
+    open_database, replace_annotation_metadata, save_export_metadata,
 };
 use crate::history::{
     Action, CreateAnnotationLayer, CreatePointAnnotation, CreatePolygonAnnotation,
     DeleteAnnotationLayer, DeletePointAnnotation, DeletePolygonAnnotation, MultiAction,
-    UpdateAnnotationLayer, file_action_context, point_annotation_as_polygon_vertices,
-    push_undo_action,
+    UpdateAnnotationLayer, UpdateAnnotationMetadata, file_action_context,
+    point_annotation_as_polygon_vertices, push_undo_action,
 };
 use crate::model::{
-    Annotation, AnnotationExportMetadata, AnnotationLayer, ExportAnnotation, ExportAnnotationLayer,
-    ExportFile, ExportPolygonVertex, LoadedFileAnnotations, PointAnnotation, PolygonAnnotation,
-    PolygonVertex, choose_annotation_layer_color, now_unix_secs, sort_annotation_layers,
+    Annotation, AnnotationExportMetadata, AnnotationLayer, AnnotationMetadataEntry,
+    ExportAnnotation, ExportAnnotationLayer, ExportFile, ExportPolygonVertex,
+    LoadedFileAnnotations, PointAnnotation, PolygonAnnotation, PolygonVertex,
+    choose_annotation_layer_color, now_unix_secs, sort_annotation_layers,
     unique_untitled_set_name,
 };
 use crate::state::{
@@ -38,6 +41,23 @@ enum ImportStep {
         conflict_strategy: Option<ImportConflictStrategy>,
     },
     Complete,
+}
+
+static SELECTION_ANIMATION_WORKER: OnceLock<()> = OnceLock::new();
+
+pub(crate) fn ensure_selection_animation_worker_started() {
+    SELECTION_ANIMATION_WORKER.get_or_init(|| {
+        std::thread::spawn(|| loop {
+            std::thread::sleep(Duration::from_millis(120));
+            let has_selection = {
+                let state = plugin_state().lock().unwrap();
+                !state.selected_annotation_by_file.is_empty()
+            };
+            if has_selection {
+                request_render_if_available();
+            }
+        });
+    });
 }
 
 pub(crate) fn ensure_loaded_for_file(
@@ -89,6 +109,58 @@ fn annotation_snapshot_for_file(
     })
 }
 
+fn annotation_layer_and_label_for_file(
+    loaded: &LoadedFileAnnotations,
+    annotation_id: &str,
+) -> Option<(String, String)> {
+    loaded.annotation_layers.iter().find_map(|layer| {
+        layer.annotations.iter().find_map(|annotation| match annotation {
+            Annotation::Point(point) if point.id == annotation_id => {
+                Some((layer.id.clone(), "Point".to_string()))
+            }
+            Annotation::Polygon(polygon) if polygon.id == annotation_id => {
+                Some((layer.id.clone(), "Polygon".to_string()))
+            }
+            _ => None,
+        })
+    })
+}
+
+fn selected_annotation_id_for_active_file(state: &crate::state::PluginState) -> Option<String> {
+    let active_path = state.active_file_path.as_deref()?;
+    state.selected_annotation_by_file.get(active_path).cloned()
+}
+
+pub(crate) fn select_annotation_for_viewport(
+    viewport: &ViewportSnapshotFFI,
+    annotation_id: &str,
+) -> Result<(), String> {
+    ensure_loaded_for_viewport(viewport)?;
+
+    let file_path = viewport.file_path.to_string();
+    let mut state = plugin_state().lock().unwrap();
+    state.active_file_path = Some(file_path.clone());
+    state.active_filename = Some(viewport.filename.to_string());
+
+    if annotation_id.is_empty() {
+        state.selected_annotation_by_file.remove(&file_path);
+        return Ok(());
+    }
+
+    if let Some((layer_id, _)) = state
+        .files
+        .get(&file_path)
+        .and_then(|loaded| annotation_layer_and_label_for_file(loaded, annotation_id))
+    {
+        state.selected_layer_by_file.insert(file_path.clone(), layer_id);
+        state
+            .selected_annotation_by_file
+            .insert(file_path, annotation_id.to_string());
+    }
+
+    Ok(())
+}
+
 pub(crate) fn sync_active_file() -> Result<(), String> {
     let snapshot = host_snapshot()?;
     let mut state = plugin_state().lock().unwrap();
@@ -129,6 +201,189 @@ pub(crate) fn request_render_if_available() {
 
 fn trim_metadata_field(value: &str) -> String {
     value.trim().chars().take(255).collect()
+}
+
+fn annotation_metadata_entries_mut(annotation: &mut Annotation) -> &mut Vec<AnnotationMetadataEntry> {
+    match annotation {
+        Annotation::Point(point) => &mut point.metadata,
+        Annotation::Polygon(polygon) => &mut polygon.metadata,
+    }
+}
+
+fn annotation_metadata_entries(annotation: &Annotation) -> &[AnnotationMetadataEntry] {
+    match annotation {
+        Annotation::Point(point) => &point.metadata,
+        Annotation::Polygon(polygon) => &polygon.metadata,
+    }
+}
+
+fn annotation_identifier(annotation: &Annotation) -> &str {
+    match annotation {
+        Annotation::Point(point) => &point.id,
+        Annotation::Polygon(polygon) => &polygon.id,
+    }
+}
+
+fn set_annotation_updated_at(annotation: &mut Annotation, updated_at: i64) {
+    match annotation {
+        Annotation::Point(point) => point.updated_at = updated_at,
+        Annotation::Polygon(polygon) => polygon.updated_at = updated_at,
+    }
+}
+
+fn update_selected_annotation_metadata<F>(mutate: F) -> Result<(), String>
+where
+    F: FnOnce(&mut Vec<AnnotationMetadataEntry>) -> bool,
+{
+    sync_active_file()?;
+
+    let timestamp = now_unix_secs();
+    let (
+        file,
+        active_file_path,
+        annotation_layer_id,
+        annotation_before,
+        annotation_after,
+        layer_updated_at_before,
+    ) = {
+        let state = plugin_state().lock().unwrap();
+        let Some(active_file_path) = state.active_file_path.clone() else {
+            return Ok(());
+        };
+        let file = state
+            .files
+            .get(&active_file_path)
+            .map(|loaded| file_action_context(&loaded.file_path, &loaded.filename))
+            .ok_or_else(|| format!("active file '{}' is not loaded", active_file_path))?;
+        let Some(annotation_id) = selected_annotation_id_for_active_file(&state) else {
+            return Ok(());
+        };
+        let (annotation_layer_id, annotation_before, layer_updated_at_before) = state
+            .files
+            .get(&active_file_path)
+            .and_then(|loaded| annotation_snapshot_for_file(loaded, &annotation_id))
+            .ok_or_else(|| format!("annotation '{}' is not loaded", annotation_id))?;
+        let mut annotation_after = annotation_before.clone();
+        if !mutate(annotation_metadata_entries_mut(&mut annotation_after)) {
+            return Ok(());
+        }
+        set_annotation_updated_at(&mut annotation_after, timestamp);
+        (
+            file,
+            active_file_path,
+            annotation_layer_id,
+            annotation_before,
+            annotation_after,
+            layer_updated_at_before,
+        )
+    };
+
+    let annotation_id = annotation_identifier(&annotation_after).to_string();
+    let connection = open_database()?;
+    connection
+        .execute(
+            "UPDATE annotations SET updated_at = ?2 WHERE id = ?1",
+            params![&annotation_id, timestamp],
+        )
+        .map_err(|err| {
+            format!(
+                "failed to update annotation metadata timestamp for '{}': {err}",
+                annotation_id
+            )
+        })?;
+    connection
+        .execute(
+            "UPDATE annotation_layers SET updated_at = ?2 WHERE id = ?1",
+            params![&annotation_layer_id, timestamp],
+        )
+        .map_err(|err| {
+            format!(
+                "failed to update annotation layer metadata timestamp for '{}': {err}",
+                annotation_layer_id
+            )
+        })?;
+    replace_annotation_metadata(
+        &connection,
+        &annotation_id,
+        annotation_metadata_entries(&annotation_after),
+    )?;
+
+    let mut state = plugin_state().lock().unwrap();
+    let loaded = state
+        .files
+        .get_mut(&active_file_path)
+        .ok_or_else(|| format!("active file '{}' is not loaded", active_file_path))?;
+    let layer = loaded
+        .annotation_layers
+        .iter_mut()
+        .find(|layer| layer.id == annotation_layer_id)
+        .ok_or_else(|| {
+            format!(
+                "annotation layer '{}' is not loaded",
+                annotation_layer_id
+            )
+        })?;
+    layer.updated_at = timestamp;
+    let annotation = layer
+        .annotations
+        .iter_mut()
+        .find(|annotation| annotation_identifier(annotation) == annotation_id)
+        .ok_or_else(|| format!("annotation '{}' is not loaded", annotation_id))?;
+    *annotation = annotation_after.clone();
+    drop(state);
+
+    push_undo_action(Action::UpdateAnnotationMetadata(UpdateAnnotationMetadata {
+        file,
+        annotation_layer_id,
+        annotation_before,
+        annotation_after,
+        layer_updated_at_before,
+        layer_updated_at_after: timestamp,
+    }));
+    Ok(())
+}
+
+pub(crate) fn add_selected_annotation_metadata_row() -> Result<(), String> {
+    update_selected_annotation_metadata(|metadata| {
+        metadata.push(AnnotationMetadataEntry::default());
+        true
+    })
+}
+
+pub(crate) fn remove_selected_annotation_metadata_row(row_index: usize) -> Result<(), String> {
+    update_selected_annotation_metadata(|metadata| {
+        if row_index >= metadata.len() {
+            return false;
+        }
+        metadata.remove(row_index);
+        true
+    })
+}
+
+pub(crate) fn update_selected_annotation_metadata_row(
+    row_index: usize,
+    key: Option<&str>,
+    value: Option<&str>,
+) -> Result<(), String> {
+    update_selected_annotation_metadata(|metadata| {
+        let Some(entry) = metadata.get_mut(row_index) else {
+            return false;
+        };
+        let mut changed = false;
+        if let Some(key) = key
+            && entry.key != key
+        {
+            entry.key = key.to_string();
+            changed = true;
+        }
+        if let Some(value) = value
+            && entry.value != value
+        {
+            entry.value = value.to_string();
+            changed = true;
+        }
+        changed
+    })
 }
 
 pub(crate) fn ensure_export_metadata_loaded(state: &mut PluginState) -> Result<(), String> {
@@ -314,6 +569,7 @@ fn insert_point_annotation(
     updated_at: i64,
     x_level0: f64,
     y_level0: f64,
+    metadata: &[AnnotationMetadataEntry],
 ) -> Result<(), String> {
     connection
         .execute(
@@ -327,6 +583,7 @@ fn insert_point_annotation(
             params![id, x_level0, y_level0],
         )
         .map_err(|err| format!("failed to insert imported point geometry '{id}': {err}"))?;
+    replace_annotation_metadata(connection, id, metadata)?;
     Ok(())
 }
 
@@ -337,6 +594,7 @@ fn insert_polygon_annotation(
     created_at: i64,
     updated_at: i64,
     vertices: &[ExportPolygonVertex],
+    metadata: &[AnnotationMetadataEntry],
 ) -> Result<(), String> {
     connection
         .execute(
@@ -358,6 +616,7 @@ fn insert_polygon_annotation(
             )
             .map_err(|err| format!("failed to insert imported polygon vertex {index} for '{id}': {err}"))?;
     }
+    replace_annotation_metadata(connection, id, metadata)?;
     Ok(())
 }
 
@@ -374,6 +633,7 @@ fn insert_annotation_record(
             updated_at,
             x_level0,
             y_level0,
+            metadata,
         } => {
             if skip_existing_ids.contains(id) {
                 return Ok(None);
@@ -387,6 +647,7 @@ fn insert_annotation_record(
                 *updated_at,
                 *x_level0,
                 *y_level0,
+                metadata,
             )?;
             Ok(Some(Annotation::Point(PointAnnotation {
                 id: annotation_id,
@@ -394,6 +655,7 @@ fn insert_annotation_record(
                 updated_at: *updated_at,
                 x_level0: *x_level0,
                 y_level0: *y_level0,
+                metadata: metadata.clone(),
             })))
         }
         ExportAnnotation::Polygon {
@@ -401,6 +663,7 @@ fn insert_annotation_record(
             created_at,
             updated_at,
             vertices,
+            metadata,
         } => {
             if skip_existing_ids.contains(id) {
                 return Ok(None);
@@ -413,6 +676,7 @@ fn insert_annotation_record(
                 *created_at,
                 *updated_at,
                 vertices,
+                metadata,
             )?;
             Ok(Some(Annotation::Polygon(PolygonAnnotation {
                 id: annotation_id,
@@ -425,6 +689,7 @@ fn insert_annotation_record(
                         y_level0: vertex.y_level0,
                     })
                     .collect(),
+                metadata: metadata.clone(),
             })))
         }
     }
@@ -1273,11 +1538,23 @@ pub(crate) fn delete_annotation_layer_for_active_file(set_id: &str) -> Result<()
         Some(next_id) => {
             state
                 .selected_layer_by_file
-                .insert(active_file_path, next_id);
+                .insert(active_file_path.clone(), next_id);
         }
         None => {
             state.selected_layer_by_file.remove(&active_file_path);
         }
+    }
+    if layer_snapshot.annotations.iter().any(|annotation| match annotation {
+        Annotation::Point(point) => state
+            .selected_annotation_by_file
+            .get(&active_file_path)
+            .is_some_and(|selected| selected == &point.id),
+        Annotation::Polygon(polygon) => state
+            .selected_annotation_by_file
+            .get(&active_file_path)
+            .is_some_and(|selected| selected == &polygon.id),
+    }) {
+        state.selected_annotation_by_file.remove(&active_file_path);
     }
     let action = Action::DeleteAnnotationLayer(DeleteAnnotationLayer {
         file,
@@ -1369,6 +1646,13 @@ pub(crate) fn delete_annotation_for_active_file(annotation_id: &str) -> Result<(
                 break;
             }
         }
+    }
+    if state
+        .selected_annotation_by_file
+        .get(&active_file_path)
+        .is_some_and(|selected| selected == annotation_id)
+    {
+        state.selected_annotation_by_file.remove(&active_file_path);
     }
 
     drop(state);
@@ -1473,6 +1757,10 @@ pub(crate) fn move_point_annotation(
         updated_at: timestamp,
         x_level0,
         y_level0,
+        metadata: match annotation_before {
+            Annotation::Point(ref point) => point.metadata.clone(),
+            Annotation::Polygon(_) => unreachable!(),
+        },
     };
     drop(state);
     push_undo_action(Action::MultiAction(MultiAction {
@@ -1600,6 +1888,10 @@ pub(crate) fn move_polygon_annotation(
         },
         updated_at: timestamp,
         vertices: point_annotation_as_polygon_vertices(vertices),
+        metadata: match annotation_before {
+            Annotation::Polygon(ref polygon) => polygon.metadata.clone(),
+            Annotation::Point(_) => unreachable!(),
+        },
     };
     drop(state);
     push_undo_action(Action::MultiAction(MultiAction {
@@ -1694,6 +1986,7 @@ pub(crate) fn export_active_file_annotations() -> Result<(), String> {
                                 updated_at: point.updated_at,
                                 x_level0: point.x_level0,
                                 y_level0: point.y_level0,
+                                metadata: point.metadata.clone(),
                             },
                             Annotation::Polygon(polygon) => ExportAnnotation::Polygon {
                                 id: polygon.id.clone(),
@@ -1707,6 +2000,7 @@ pub(crate) fn export_active_file_annotations() -> Result<(), String> {
                                         y_level0: vertex.y_level0,
                                     })
                                     .collect(),
+                                metadata: polygon.metadata.clone(),
                             },
                         })
                         .collect(),
@@ -1821,6 +2115,7 @@ pub(crate) fn persist_point_annotation(
             updated_at: timestamp,
             x_level0,
             y_level0,
+            metadata: Vec::new(),
         }),
     );
     drop(state);
@@ -1833,6 +2128,7 @@ pub(crate) fn persist_point_annotation(
             updated_at: timestamp,
             x_level0,
             y_level0,
+            metadata: Vec::new(),
         },
         layer_updated_at_before,
         layer_updated_at_after: timestamp,
@@ -1926,6 +2222,7 @@ pub(crate) fn persist_polygon_annotation(
                     y_level0: vertex.y_level0,
                 })
                 .collect(),
+            metadata: Vec::new(),
         }),
     );
     drop(state);
@@ -1937,6 +2234,7 @@ pub(crate) fn persist_polygon_annotation(
             created_at: timestamp,
             updated_at: timestamp,
             vertices: point_annotation_as_polygon_vertices(vertices),
+            metadata: Vec::new(),
         },
         layer_updated_at_before,
         layer_updated_at_after: timestamp,

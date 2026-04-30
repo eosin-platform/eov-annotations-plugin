@@ -33,6 +33,12 @@ pub(crate) enum Annotation {
     Polygon(PolygonAnnotation),
 }
 
+#[derive(Clone, Default, Serialize, Deserialize, PartialEq, Eq)]
+pub(crate) struct AnnotationMetadataEntry {
+    pub(crate) key: String,
+    pub(crate) value: String,
+}
+
 #[derive(Clone)]
 pub(crate) struct PointAnnotation {
     pub(crate) id: String,
@@ -40,6 +46,7 @@ pub(crate) struct PointAnnotation {
     pub(crate) updated_at: i64,
     pub(crate) x_level0: f64,
     pub(crate) y_level0: f64,
+    pub(crate) metadata: Vec<AnnotationMetadataEntry>,
 }
 
 #[derive(Clone)]
@@ -54,6 +61,7 @@ pub(crate) struct PolygonAnnotation {
     pub(crate) created_at: i64,
     pub(crate) updated_at: i64,
     pub(crate) vertices: Vec<PolygonVertex>,
+    pub(crate) metadata: Vec<AnnotationMetadataEntry>,
 }
 
 #[derive(Serialize)]
@@ -110,12 +118,16 @@ pub(crate) enum ExportAnnotation {
         updated_at: i64,
         x_level0: f64,
         y_level0: f64,
+        #[serde(default)]
+        metadata: Vec<AnnotationMetadataEntry>,
     },
     Polygon {
         id: String,
         created_at: i64,
         updated_at: i64,
         vertices: Vec<ExportPolygonVertex>,
+        #[serde(default)]
+        metadata: Vec<AnnotationMetadataEntry>,
     },
 }
 

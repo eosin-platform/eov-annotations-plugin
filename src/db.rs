@@ -4,8 +4,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use crate::model::{
-    Annotation, AnnotationExportMetadata, AnnotationLayer, PointAnnotation, PolygonAnnotation,
-    PolygonVertex, annotation_label,
+    Annotation, AnnotationExportMetadata, AnnotationLayer, AnnotationMetadataEntry,
+    PointAnnotation, PolygonAnnotation, PolygonVertex, annotation_label,
 };
 
 fn annotations_db_path() -> Result<PathBuf, String> {
@@ -118,6 +118,15 @@ pub(crate) fn open_database() -> Result<Connection, String> {
                 FOREIGN KEY (stroke_id) REFERENCES annotation_bitmask_strokes(id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS annotation_metadata (
+                annotation_id TEXT NOT NULL,
+                row_index INTEGER NOT NULL,
+                key TEXT NOT NULL DEFAULT '',
+                value TEXT NOT NULL DEFAULT '',
+                PRIMARY KEY (annotation_id, row_index),
+                FOREIGN KEY (annotation_id) REFERENCES annotations(id) ON DELETE CASCADE
+            );
+
             CREATE TABLE IF NOT EXISTS export_metadata_settings (
                 id INTEGER PRIMARY KEY CHECK(id = 1),
                 author TEXT NOT NULL DEFAULT '' CHECK(length(author) <= 255),
@@ -198,6 +207,82 @@ pub(crate) fn save_export_metadata(
     Ok(())
 }
 
+pub(crate) fn replace_annotation_metadata(
+    connection: &Connection,
+    annotation_id: &str,
+    metadata: &[AnnotationMetadataEntry],
+) -> Result<(), String> {
+    connection
+        .execute(
+            "DELETE FROM annotation_metadata WHERE annotation_id = ?1",
+            params![annotation_id],
+        )
+        .map_err(|err| {
+            format!(
+                "failed to clear annotation metadata for '{annotation_id}': {err}"
+            )
+        })?;
+
+    for (index, entry) in metadata.iter().enumerate() {
+        connection
+            .execute(
+                "INSERT INTO annotation_metadata (annotation_id, row_index, key, value) VALUES (?1, ?2, ?3, ?4)",
+                params![annotation_id, index as i64, &entry.key, &entry.value],
+            )
+            .map_err(|err| {
+                format!(
+                    "failed to save annotation metadata row {index} for '{annotation_id}': {err}"
+                )
+            })?;
+    }
+
+    Ok(())
+}
+
+fn load_annotation_metadata_map(
+    connection: &Connection,
+    layer_id: &str,
+) -> Result<std::collections::HashMap<String, Vec<AnnotationMetadataEntry>>, String> {
+    let mut stmt = connection
+        .prepare(
+            r#"
+            SELECT m.annotation_id, m.key, m.value
+            FROM annotation_metadata m
+            INNER JOIN annotations a ON a.id = m.annotation_id
+            WHERE a.annotation_layer_id = ?1
+            ORDER BY m.annotation_id ASC, m.row_index ASC
+            "#,
+        )
+        .map_err(|err| format!("failed to prepare annotation metadata query: {err}"))?;
+
+    let rows = stmt
+        .query_map(params![layer_id], |row| {
+            Ok((
+                row.get::<_, String>(0)?,
+                AnnotationMetadataEntry {
+                    key: row.get(1)?,
+                    value: row.get(2)?,
+                },
+            ))
+        })
+        .map_err(|err| format!("failed to query annotation metadata rows: {err}"))?;
+
+    let mut metadata_by_annotation = std::collections::HashMap::<
+        String,
+        Vec<AnnotationMetadataEntry>,
+    >::new();
+    for row in rows {
+        let (annotation_id, entry) =
+            row.map_err(|err| format!("failed to read annotation metadata row: {err}"))?;
+        metadata_by_annotation
+            .entry(annotation_id)
+            .or_default()
+            .push(entry);
+    }
+
+    Ok(metadata_by_annotation)
+}
+
 pub(crate) fn load_annotation_layers(
     connection: &Connection,
     fingerprint: &[u8; 32],
@@ -249,14 +334,20 @@ pub(crate) fn load_annotation_layers(
     for set_row in set_rows {
         let (id, name, notes, color_hex, created_at, updated_at) =
             set_row.map_err(|err| format!("failed to read annotation layer row: {err}"))?;
+        let metadata_by_annotation = load_annotation_metadata_map(connection, &id)?;
         let annotation_rows = annotation_stmt
             .query_map(params![&id], |row| {
+                let annotation_id = row.get::<_, String>(0)?;
                 Ok(Annotation::Point(PointAnnotation {
-                    id: row.get(0)?,
+                    id: annotation_id.clone(),
                     created_at: row.get(1)?,
                     updated_at: row.get(2)?,
                     x_level0: row.get(3)?,
                     y_level0: row.get(4)?,
+                    metadata: metadata_by_annotation
+                        .get(&annotation_id)
+                        .cloned()
+                        .unwrap_or_default(),
                 }))
             })
             .map_err(|err| format!("failed to query point annotations for set '{id}': {err}"))?;
@@ -298,18 +389,26 @@ pub(crate) fn load_annotation_layers(
                 Some(polygon) => {
                     annotations.push(Annotation::Polygon(polygon.clone()));
                     current_polygon = Some(PolygonAnnotation {
-                        id: annotation_id,
+                        id: annotation_id.clone(),
                         created_at,
                         updated_at,
                         vertices: vec![vertex],
+                        metadata: metadata_by_annotation
+                            .get(&annotation_id)
+                            .cloned()
+                            .unwrap_or_default(),
                     });
                 }
                 None => {
                     current_polygon = Some(PolygonAnnotation {
-                        id: annotation_id,
+                        id: annotation_id.clone(),
                         created_at,
                         updated_at,
                         vertices: vec![vertex],
+                        metadata: metadata_by_annotation
+                            .get(&annotation_id)
+                            .cloned()
+                            .unwrap_or_default(),
                     });
                 }
             }

@@ -11,8 +11,9 @@ use model::{Annotation, hex_color_to_rgb};
 use operations::{
     ensure_loaded_for_viewport, move_point_annotation, move_polygon_annotation,
     persist_point_annotation, persist_polygon_annotation, refresh_sidebar_if_available,
-    request_render_if_available, start_point_annotation_flow, start_polygon_annotation_flow,
-    sync_active_file,
+    request_render_if_available, select_annotation_for_viewport,
+    ensure_selection_animation_worker_started, start_point_annotation_flow,
+    start_polygon_annotation_flow, sync_active_file,
 };
 use plugin_api::ffi::{
     ActionResponseFFI, GpuFilterContextFFI, HostApiVTable, HostLogLevelFFI, HostToolModeFFI,
@@ -48,6 +49,7 @@ fn plugin_trace(message: impl AsRef<str>) {
 
 extern "C" fn set_host_api_ffi(host_api: HostApiVTable) {
     set_host_api(host_api);
+    ensure_selection_animation_worker_started();
     publish_undo_redo_state();
 }
 
@@ -218,33 +220,43 @@ extern "C" fn get_viewport_overlay_points_ffi(
         return RVec::new();
     };
     let hidden_sets = state.hidden_layers_by_file.get(viewport.file_path.as_str());
+    let selected_annotation_id = state.selected_annotation_by_file.get(viewport.file_path.as_str());
 
     let points = loaded
         .annotation_layers
         .iter()
         .filter(|set| !hidden_sets.is_some_and(|hidden| hidden.contains(&set.id)))
         .flat_map(|set| {
-            let (ring_red, ring_green, ring_blue) = hex_color_to_rgb(&set.color_hex);
+            let normal_color = hex_color_to_rgb(&set.color_hex);
             set.annotations
                 .iter()
                 .map(move |annotation| match annotation {
-                    Annotation::Point(point) => ViewportOverlayPointFFI {
-                        annotation_id: point.id.clone().into(),
-                        x_level0: point.x_level0,
-                        y_level0: point.y_level0,
-                        diameter_px: 12.0,
-                        ring_red,
-                        ring_green,
-                        ring_blue,
-                    },
+                    Annotation::Point(point) => {
+                        let (ring_red, ring_green, ring_blue) = if selected_annotation_id
+                            .is_some_and(|selected| selected == &point.id)
+                        {
+                            pulsing_selection_color(normal_color)
+                        } else {
+                            normal_color
+                        };
+                        ViewportOverlayPointFFI {
+                            annotation_id: point.id.clone().into(),
+                            x_level0: point.x_level0,
+                            y_level0: point.y_level0,
+                            diameter_px: 12.0,
+                            ring_red,
+                            ring_green,
+                            ring_blue,
+                        }
+                    }
                     Annotation::Polygon(_) => ViewportOverlayPointFFI {
                         annotation_id: "".into(),
                         x_level0: 0.0,
                         y_level0: 0.0,
                         diameter_px: 0.0,
-                        ring_red,
-                        ring_green,
-                        ring_blue,
+                        ring_red: normal_color.0,
+                        ring_green: normal_color.1,
+                        ring_blue: normal_color.2,
                     },
                 })
         })
@@ -275,35 +287,62 @@ extern "C" fn get_viewport_overlay_polygons_ffi(
         return RVec::new();
     };
     let hidden_sets = state.hidden_layers_by_file.get(viewport.file_path.as_str());
+    let selected_annotation_id = state.selected_annotation_by_file.get(viewport.file_path.as_str());
 
     let polygons = loaded
         .annotation_layers
         .iter()
         .filter(|set| !hidden_sets.is_some_and(|hidden| hidden.contains(&set.id)))
         .flat_map(|set| {
-            let (fill_red, fill_green, fill_blue) = hex_color_to_rgb(&set.color_hex);
+            let normal_color = hex_color_to_rgb(&set.color_hex);
             set.annotations
                 .iter()
                 .filter_map(move |annotation| match annotation {
-                    Annotation::Polygon(polygon) => Some(ViewportOverlayPolygonFFI {
-                        annotation_id: polygon.id.clone().into(),
-                        vertices: polygon
-                            .vertices
-                            .iter()
-                            .map(|vertex| ViewportOverlayVertexFFI {
-                                x_level0: vertex.x_level0,
-                                y_level0: vertex.y_level0,
-                            })
-                            .collect(),
-                        fill_red,
-                        fill_green,
-                        fill_blue,
-                    }),
+                    Annotation::Polygon(polygon) => {
+                        let (fill_red, fill_green, fill_blue) = if selected_annotation_id
+                            .is_some_and(|selected| selected == &polygon.id)
+                        {
+                            pulsing_selection_color(normal_color)
+                        } else {
+                            normal_color
+                        };
+                        Some(ViewportOverlayPolygonFFI {
+                            annotation_id: polygon.id.clone().into(),
+                            vertices: polygon
+                                .vertices
+                                .iter()
+                                .map(|vertex| ViewportOverlayVertexFFI {
+                                    x_level0: vertex.x_level0,
+                                    y_level0: vertex.y_level0,
+                                })
+                                .collect(),
+                            fill_red,
+                            fill_green,
+                            fill_blue,
+                        })
+                    }
                     Annotation::Point(_) => None,
                 })
         })
         .collect::<Vec<_>>();
     RVec::from(polygons)
+}
+
+fn pulsing_selection_color(normal_color: (u8, u8, u8)) -> (u8, u8, u8) {
+    let elapsed = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|duration| duration.as_secs_f32())
+        .unwrap_or(0.0);
+    let blend = ((elapsed * 4.0).sin() + 1.0) * 0.5;
+    let yellow = (255u8, 230u8, 64u8);
+    let lerp = |from: u8, to: u8| -> u8 {
+        ((from as f32 * (1.0 - blend)) + (to as f32 * blend)).round() as u8
+    };
+    (
+        lerp(normal_color.0, yellow.0),
+        lerp(normal_color.1, yellow.1),
+        lerp(normal_color.2, yellow.2),
+    )
 }
 
 extern "C" fn get_viewport_overlay_component_ffi() -> ROption<ViewportOverlayComponentRequestFFI> {
@@ -397,6 +436,19 @@ extern "C" fn on_polygon_annotation_moved_ffi(
     }
 }
 
+extern "C" fn on_viewport_annotation_selected_ffi(
+    viewport: ViewportSnapshotFFI,
+    annotation_id: RString,
+) {
+    match select_annotation_for_viewport(&viewport, annotation_id.as_str()) {
+        Ok(()) => {
+            refresh_sidebar_if_available();
+            request_render_if_available();
+        }
+        Err(err) => log_message(HostLogLevelFFI::Error, err),
+    }
+}
+
 extern "C" fn get_viewport_filters_ffi() -> RVec<ViewportFilterFFI> {
     RVec::new()
 }
@@ -440,6 +492,7 @@ pub extern "C" fn eov_get_plugin_vtable() -> PluginVTable {
         on_redo: on_redo_ffi,
         on_point_annotation_moved: on_point_annotation_moved_ffi,
         on_polygon_annotation_moved: on_polygon_annotation_moved_ffi,
+        on_viewport_annotation_selected: on_viewport_annotation_selected_ffi,
         get_viewport_filters: get_viewport_filters_ffi,
         apply_filter_cpu: apply_filter_cpu_ffi,
         apply_filter_gpu: apply_filter_gpu_ffi,
