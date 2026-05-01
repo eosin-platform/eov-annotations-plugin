@@ -1,6 +1,6 @@
 id = "annotations"
 name = "Annotations"
-version = "0.1.7"
+version = "0.1.9"
 
 [icon]
 kind = "svg"
