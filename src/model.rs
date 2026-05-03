@@ -4,8 +4,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use uuid::Uuid;
 
 pub(crate) const SET_COLOR_PALETTE: [&str; 16] = [
-    "#FF355E", "#FF7A00", "#E7FF00", "#39FF14", "#00F5D4", "#00BBF9", "#4D96FF", "#6C63FF",
-    "#9D4EDD", "#FF4FD8", "#F15BB5", "#FF8A5B", "#43AA8B", "#577590", "#FFD166", "#FFFFFF",
+    "#FF355E", "#FF7A00", "#39FF14", "#0057FF", "#6C63FF", "#9D4EDD", "#FF4FD8", "#F15BB5",
+    "#43AA8B", "#577590", "#FF8A5B", "#FF6B6B", "#C77DFF", "#B8F2E6", "#F4A261", "#FFFFFF",
 ];
 
 #[derive(Clone)]
