@@ -337,8 +337,9 @@ fn pulsing_selection_color(normal_color: (u8, u8, u8)) -> (u8, u8, u8) {
         .map(|duration| duration.as_secs_f32())
         .unwrap_or(0.0);
     let blend = 0.35 + (((elapsed * 4.0).sin() + 1.0) * 0.5) * 0.45;
-    let luminance =
-        0.299 * normal_color.0 as f32 + 0.587 * normal_color.1 as f32 + 0.114 * normal_color.2 as f32;
+    let luminance = 0.299 * normal_color.0 as f32
+        + 0.587 * normal_color.1 as f32
+        + 0.114 * normal_color.2 as f32;
     let emphasis = if luminance >= 160.0 {
         (20u8, 184u8, 255u8)
     } else {
