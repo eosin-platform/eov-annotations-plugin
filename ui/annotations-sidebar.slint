@@ -40,7 +40,7 @@ export component AnnotationsSidebar inherits Rectangle {
     property <bool> settings-menu-visible: false;
     property <length> settings-menu-x: 0px;
     property <length> settings-menu-y: 0px;
-    property <bool> dismiss-popups: false;
+    in-out property <bool> dismiss-popups: false;
     property <bool> import-conflict-apply-all: false;
     property <string> pending-click-row-id: "";
     property <[ColorPaletteEntry]> color-palette: [
