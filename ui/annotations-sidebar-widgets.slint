@@ -90,14 +90,15 @@ export component ColorSwatchButton inherits Rectangle {
 export component PaletteSwatchButton inherits Rectangle {
     in property <string> hex: "#ffffff";
     in property <color> swatch-color: white;
+    in property <bool> is-selected: false;
     out property <bool> hovered: touch.has-hover;
     callback selected(string);
 
     width: 18px;
     height: 18px;
     border-radius: 9px;
-    border-width: 1px;
-    border-color: touch.has-hover ? Theme.accent : #ffffff24;
+    border-width: root.is-selected ? 2px : 1px;
+    border-color: root.is-selected ? #FFE047 : touch.has-hover ? Theme.accent : #ffffff24;
     background: root.swatch-color;
 
     touch := TouchArea {

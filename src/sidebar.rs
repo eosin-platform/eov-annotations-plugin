@@ -49,6 +49,7 @@ fn sidebar_rows(state: &PluginState) -> Vec<SidebarTreeRow> {
             is_selected: selected_annotation_id.is_none()
                 && selected_layer_id.is_some_and(|selected| selected == &layer.id),
             visible: is_visible,
+            color_hex: layer.color_hex.clone(),
             color_r: color_r as i32,
             color_g: color_g as i32,
             color_b: color_b as i32,
@@ -72,6 +73,7 @@ fn sidebar_rows(state: &PluginState) -> Vec<SidebarTreeRow> {
                     is_collapsed: false,
                     is_selected,
                     visible: is_visible,
+                    color_hex: layer.color_hex.clone(),
                     color_r: color_r as i32,
                     color_g: color_g as i32,
                     color_b: color_b as i32,
@@ -101,6 +103,23 @@ fn selected_layer_name(state: &PluginState) -> String {
                     .iter()
                     .find(|set| &set.id == selected_id)
                     .map(|set| set.name.clone())
+            })
+        })
+        .unwrap_or_default()
+}
+
+fn selected_layer_color_hex(state: &PluginState) -> String {
+    state
+        .active_file_path
+        .as_deref()
+        .and_then(|path| {
+            let selected_id = state.selected_layer_by_file.get(path)?;
+            state.files.get(path).and_then(|loaded| {
+                loaded
+                    .annotation_layers
+                    .iter()
+                    .find(|layer| &layer.id == selected_id)
+                    .map(|layer| layer.color_hex.clone())
             })
         })
         .unwrap_or_default()
@@ -609,6 +628,12 @@ pub(crate) fn get_sidebar_properties() -> RVec<UiPropertyFFI> {
         UiPropertyFFI {
             name: "selected-layer-name".into(),
             json_value: serde_json::to_string(&selected_layer_name(&state))
+                .unwrap_or_else(|_| "\"\"".to_string())
+                .into(),
+        },
+        UiPropertyFFI {
+            name: "selected-layer-color-hex".into(),
+            json_value: serde_json::to_string(&selected_layer_color_hex(&state))
                 .unwrap_or_else(|_| "\"\"".to_string())
                 .into(),
         },

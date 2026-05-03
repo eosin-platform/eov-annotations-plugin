@@ -75,6 +75,7 @@ pub(crate) struct SidebarTreeRow {
     pub(crate) is_collapsed: bool,
     pub(crate) is_selected: bool,
     pub(crate) visible: bool,
+    pub(crate) color_hex: String,
     pub(crate) color_r: i32,
     pub(crate) color_g: i32,
     pub(crate) color_b: i32,

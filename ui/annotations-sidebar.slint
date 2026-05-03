@@ -27,6 +27,7 @@ export component AnnotationsSidebar inherits Rectangle {
     in property <string> metadata-license: "";
     in-out property <string> selected-layer-id: "";
     in property <string> selected-layer-name: "";
+    in property <string> selected-layer-color-hex: "";
     in property <bool> has-selected-annotation: false;
     in property <string> selected-annotation-name: "";
     in property <[AnnotationMetadataRow]> annotation-metadata-items: [];
@@ -99,6 +100,7 @@ export component AnnotationsSidebar inherits Rectangle {
     property <length> color-menu-x: 0px;
     property <length> color-menu-y: 0px;
     property <string> color-target-id: "";
+    property <string> color-target-hex: "";
     property <string> active-tooltip:
         source-selector.has-focus ? "Source" : settings-button.hovered ? settings-button.tooltip-text : "";
     property <length> tooltip-center-x:
@@ -194,6 +196,8 @@ export component AnnotationsSidebar inherits Rectangle {
             root.settings-menu-visible = false;
             root.context-menu-visible = false;
             root.color-menu-visible = false;
+            root.color-target-id = "";
+            root.color-target-hex = "";
             root.dismiss-popups = false;
         }
     }
@@ -528,6 +532,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                         clicked => {
                                             root.confirm-active-rename();
                                             root.color-target-id = row.row-id;
+                                            root.color-target-hex = row.color-hex;
                                             root.color-menu-x = self.absolute-position.x - root.absolute-position.x - 4px;
                                             root.color-menu-y = self.absolute-position.y - root.absolute-position.y + self.height + 8px;
                                             root.color-menu-visible = true;
@@ -945,6 +950,8 @@ export component AnnotationsSidebar inherits Rectangle {
             clicked => {
                 root.confirm-active-rename();
                 root.color-menu-visible = false;
+                root.color-target-id = "";
+                root.color-target-hex = "";
             }
         }
 
@@ -985,9 +992,12 @@ export component AnnotationsSidebar inherits Rectangle {
                         y: (Math.floor(idx / 4) * 26) * 1px;
                         hex: entry.hex;
                         swatch-color: entry.swatch;
+                        is-selected: entry.hex == (root.color-target-hex == "" ? root.selected-layer-color-hex : root.color-target-hex);
                         selected(hex) => {
                             root.set-layer-color(root.color-target-id, hex);
                             root.color-menu-visible = false;
+                            root.color-target-id = "";
+                            root.color-target-hex = "";
                         }
                     }
                 }
