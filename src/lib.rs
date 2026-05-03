@@ -336,15 +336,21 @@ fn pulsing_selection_color(normal_color: (u8, u8, u8)) -> (u8, u8, u8) {
         .duration_since(std::time::UNIX_EPOCH)
         .map(|duration| duration.as_secs_f32())
         .unwrap_or(0.0);
-    let blend = ((elapsed * 4.0).sin() + 1.0) * 0.5;
-    let yellow = (255u8, 230u8, 64u8);
+    let blend = 0.35 + (((elapsed * 4.0).sin() + 1.0) * 0.5) * 0.45;
+    let luminance =
+        0.299 * normal_color.0 as f32 + 0.587 * normal_color.1 as f32 + 0.114 * normal_color.2 as f32;
+    let emphasis = if luminance >= 160.0 {
+        (20u8, 184u8, 255u8)
+    } else {
+        (255u8, 224u8, 71u8)
+    };
     let lerp = |from: u8, to: u8| -> u8 {
         ((from as f32 * (1.0 - blend)) + (to as f32 * blend)).round() as u8
     };
     (
-        lerp(normal_color.0, yellow.0),
-        lerp(normal_color.1, yellow.1),
-        lerp(normal_color.2, yellow.2),
+        lerp(normal_color.0, emphasis.0),
+        lerp(normal_color.1, emphasis.1),
+        lerp(normal_color.2, emphasis.2),
     )
 }
 
