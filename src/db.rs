@@ -1,4 +1,4 @@
-use common::file_id::{cached_sha256, compute_fingerprint};
+use eov_common::file_id::{cached_sha256, compute_fingerprint};
 use rusqlite::{Connection, params};
 use std::fs;
 use std::path::{Path, PathBuf};

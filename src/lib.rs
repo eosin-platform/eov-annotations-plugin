@@ -6,6 +6,12 @@ mod sidebar;
 mod state;
 
 use abi_stable::std_types::{ROption, RString, RVec};
+use eov_plugin_api::ffi::{
+    ActionResponseFFI, GpuFilterContextFFI, HostApiVTable, HostLogLevelFFI, HostToolModeFFI,
+    HudToolbarButtonFFI, PluginVTable, ToolbarButtonFFI, UiPropertyFFI, ViewportContextMenuItemFFI,
+    ViewportFilterFFI, ViewportOverlayComponentRequestFFI, ViewportOverlayPointFFI,
+    ViewportOverlayPolygonFFI, ViewportOverlayVertexFFI, ViewportSnapshotFFI,
+};
 use history::{perform_redo, perform_undo, publish_undo_redo_state};
 use model::{Annotation, hex_color_to_rgb};
 use operations::{
@@ -13,12 +19,6 @@ use operations::{
     move_polygon_annotation, persist_point_annotation, persist_polygon_annotation,
     refresh_sidebar_if_available, request_render_if_available, select_annotation_for_viewport,
     start_point_annotation_flow, start_polygon_annotation_flow, sync_active_file,
-};
-use plugin_api::ffi::{
-    ActionResponseFFI, GpuFilterContextFFI, HostApiVTable, HostLogLevelFFI, HostToolModeFFI,
-    HudToolbarButtonFFI, PluginVTable, ToolbarButtonFFI, UiPropertyFFI, ViewportContextMenuItemFFI,
-    ViewportFilterFFI, ViewportOverlayComponentRequestFFI, ViewportOverlayPointFFI,
-    ViewportOverlayPolygonFFI, ViewportOverlayVertexFFI, ViewportSnapshotFFI,
 };
 use sidebar::{get_sidebar_properties, on_sidebar_callback};
 use state::{host_api, log_message, plugin_state, set_host_api};
@@ -450,7 +450,7 @@ extern "C" fn apply_filter_cpu_ffi(
     _len: u32,
     _width: u32,
     _height: u32,
-    _viewport: *const plugin_api::ffi::ViewportSnapshotFFI,
+    _viewport: *const eov_plugin_api::ffi::ViewportSnapshotFFI,
 ) -> bool {
     false
 }

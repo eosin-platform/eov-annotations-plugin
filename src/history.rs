@@ -1,4 +1,4 @@
-use plugin_api::ffi::PluginUndoRedoStateFFI;
+use eov_plugin_api::ffi::PluginUndoRedoStateFFI;
 use rusqlite::params;
 use std::collections::VecDeque;
 
@@ -801,7 +801,7 @@ pub(crate) fn file_action_context(file_path: &str, filename: &str) -> FileAction
 }
 
 pub(crate) fn point_annotation_as_polygon_vertices(
-    vertices: &[plugin_api::ffi::ViewportOverlayVertexFFI],
+    vertices: &[eov_plugin_api::ffi::ViewportOverlayVertexFFI],
 ) -> Vec<PolygonVertex> {
     vertices
         .iter()

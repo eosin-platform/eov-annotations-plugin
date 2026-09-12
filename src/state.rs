@@ -1,5 +1,5 @@
 use abi_stable::std_types::{ROption, RString};
-use plugin_api::ffi::{
+use eov_plugin_api::ffi::{
     HostApiVTable, HostLogLevelFFI, HostSnapshotFFI, OpenFileInfoFFI, ViewportSnapshotFFI,
 };
 use std::collections::{HashMap, HashSet, VecDeque};

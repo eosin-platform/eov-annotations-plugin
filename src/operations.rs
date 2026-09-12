@@ -1,5 +1,5 @@
-use common::file_id::hex_digest;
-use plugin_api::ffi::{HostToolModeFFI, ModalDialogRequestFFI, ViewportSnapshotFFI};
+use eov_common::file_id::hex_digest;
+use eov_plugin_api::ffi::{HostToolModeFFI, ModalDialogRequestFFI, ViewportSnapshotFFI};
 use rusqlite::params;
 use std::collections::HashSet;
 use std::fs;
@@ -1800,7 +1800,7 @@ pub(crate) fn move_point_annotation(
 pub(crate) fn move_polygon_annotation(
     viewport: &ViewportSnapshotFFI,
     annotation_id: &str,
-    vertices: &[plugin_api::ffi::ViewportOverlayVertexFFI],
+    vertices: &[eov_plugin_api::ffi::ViewportOverlayVertexFFI],
 ) -> Result<(), String> {
     if vertices.len() < 3 {
         return Ok(());
@@ -2146,7 +2146,7 @@ pub(crate) fn persist_point_annotation(
 
 pub(crate) fn persist_polygon_annotation(
     viewport: &ViewportSnapshotFFI,
-    vertices: &[plugin_api::ffi::ViewportOverlayVertexFFI],
+    vertices: &[eov_plugin_api::ffi::ViewportOverlayVertexFFI],
 ) -> Result<(), String> {
     if vertices.len() < 3 {
         return Ok(());

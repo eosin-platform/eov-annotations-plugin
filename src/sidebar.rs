@@ -1,5 +1,5 @@
 use abi_stable::std_types::RVec;
-use plugin_api::ffi::{HostLogLevelFFI, UiPropertyFFI};
+use eov_plugin_api::ffi::{HostLogLevelFFI, UiPropertyFFI};
 
 use crate::model::{
     Annotation, AnnotationMetadataEntry, SidebarTreeRow, annotation_label, hex_color_to_rgb,
