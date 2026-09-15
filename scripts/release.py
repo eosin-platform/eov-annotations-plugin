@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import base64
+import binascii
 import json
 import os
 import re
@@ -9,6 +11,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -98,6 +101,85 @@ def fetch_latest_release(gh_path: str) -> dict[str, object]:
     return release
 
 
+def fetch_release_environment(gh_path: str, tag: str) -> str:
+    try:
+        result = subprocess.run(
+            [
+                gh_path,
+                "api",
+                f"repos/{PLUGIN_REPOSITORY}/contents/plugin.toml?ref={tag}",
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except subprocess.CalledProcessError as error:
+        details = "\n".join(
+            output.strip()
+            for output in (error.stderr, error.stdout)
+            if output and output.strip()
+        )
+        if details:
+            raise ReleaseError(
+                f"GitHub API request for {PLUGIN_REPOSITORY}/plugin.toml at "
+                f"ref {tag} failed: {details}"
+            ) from error
+        raise ReleaseError(
+            f"GitHub API request for {PLUGIN_REPOSITORY}/plugin.toml at ref "
+            f"{tag} failed with exit code {error.returncode}."
+        ) from error
+
+    try:
+        response = json.loads(result.stdout)
+    except json.JSONDecodeError as error:
+        raise ReleaseError(
+            f"GitHub API returned malformed plugin.toml metadata for "
+            f"{PLUGIN_REPOSITORY} at ref {tag}: {error}"
+        ) from error
+
+    if not isinstance(response, dict):
+        raise ReleaseError(
+            f"GitHub API returned unexpected plugin.toml metadata for "
+            f"{PLUGIN_REPOSITORY} at ref {tag}; expected an object."
+        )
+
+    encoded_content = response.get("content")
+    if response.get("encoding") != "base64" or not isinstance(
+        encoded_content, str
+    ):
+        raise ReleaseError(
+            f"GitHub API returned plugin.toml for {PLUGIN_REPOSITORY} at ref "
+            f"{tag} without base64 content."
+        )
+
+    try:
+        manifest = tomllib.loads(
+            base64.b64decode(
+                re.sub(r"\s+", "", encoded_content), validate=True
+            ).decode("utf-8")
+        )
+    except (binascii.Error, UnicodeDecodeError, tomllib.TOMLDecodeError) as error:
+        raise ReleaseError(
+            f"GitHub API returned invalid plugin.toml for {PLUGIN_REPOSITORY} "
+            f"at ref {tag}: {error}"
+        ) from error
+
+    environment = manifest.get("environment")
+    if not isinstance(environment, dict):
+        raise ReleaseError(
+            f"plugin.toml for {PLUGIN_REPOSITORY} at ref {tag} has no "
+            "[environment] table."
+        )
+
+    version = environment.get("version")
+    if not isinstance(version, str) or not version.strip():
+        raise ReleaseError(
+            f"plugin.toml for {PLUGIN_REPOSITORY} at ref {tag} has no valid "
+            "[environment].version string."
+        )
+    return version
+
+
 def release_tag_and_version(release: dict[str, object]) -> tuple[str, str]:
     tag = release.get("tag_name")
     if (
@@ -174,7 +256,7 @@ def toml_string(value: str) -> str:
 
 
 def render_release_toml(
-    version: str, platforms: list[tuple[Platform, str, str]]
+    version: str, environment: str, platforms: list[tuple[Platform, str, str]]
 ) -> str:
     lines: list[str] = []
     for platform, sha256, download_url in platforms:
@@ -184,6 +266,7 @@ def render_release_toml(
                 f"version = {toml_string(version)}",
                 f"sha256 = {toml_string(sha256)}",
                 f"url = {toml_string(download_url)}",
+                f"environment = {toml_string(environment)}",
                 "",
             )
         )
@@ -231,7 +314,8 @@ def main() -> int:
         release = fetch_latest_release(gh_path)
         tag, version = release_tag_and_version(release)
         platforms = platform_releases(release, tag)
-        content = render_release_toml(version, platforms)
+        environment = fetch_release_environment(gh_path, tag)
+        content = render_release_toml(version, environment, platforms)
         write_atomically(OUTPUT_PATH, content)
     except ReleaseError as error:
         print(f"error: {error}", file=sys.stderr)
