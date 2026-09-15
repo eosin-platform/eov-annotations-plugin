@@ -1,0 +1,30 @@
+[platform.windows.x86_64]
+version = "0.2.0"
+sha256 = "121de01ebb4a015f6de77ebe2aa4ffd7bfc95f8c7067a2ec67b6cf3e64d25f55"
+url = "https://github.com/eosin-platform/eov-annotations-plugin/releases/download/v0.2.0/annotations-v0.2.0-windows-x86_64.eop"
+
+[platform.windows.arm64]
+version = "0.2.0"
+sha256 = "990bb07ff6c9cdec0775c3a1ece105edcc5c0998a00b40b3f2a2762a3471b4c6"
+url = "https://github.com/eosin-platform/eov-annotations-plugin/releases/download/v0.2.0/annotations-v0.2.0-windows-arm64.eop"
+
+[platform.linux.arm64]
+version = "0.2.0"
+sha256 = "e4d02c5f9a6dc162cbe218199a99f41d336c7cbbf669123860b9b112d82a3990"
+url = "https://github.com/eosin-platform/eov-annotations-plugin/releases/download/v0.2.0/annotations-v0.2.0-linux-arm64.eop"
+
+[platform.linux.x86_64]
+version = "0.2.0"
+sha256 = "90233dd5316cbfc7e496e172316b9262292ffb443cd7c23e3181152a2b696b0e"
+url = "https://github.com/eosin-platform/eov-annotations-plugin/releases/download/v0.2.0/annotations-v0.2.0-linux-x86_64.eop"
+
+[platform.macos.arm64]
+version = "0.2.0"
+sha256 = "eeaf8ac919d67d67a8443c2fd700d15e3117eaf2e6ffb59d23b8751ff97f9edf"
+url = "https://github.com/eosin-platform/eov-annotations-plugin/releases/download/v0.2.0/annotations-v0.2.0-macos-arm64.eop"
+
+[platform.macos.x86_64]
+version = "0.2.0"
+sha256 = "8583102fc29709ab001b917c4eecfc1b1e88659d03f86a6f4f7a4ace499f8cbc"
+url = "https://github.com/eosin-platform/eov-annotations-plugin/releases/download/v0.2.0/annotations-v0.2.0-macos-x86_64.eop"
+
