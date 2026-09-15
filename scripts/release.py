@@ -144,9 +144,7 @@ def fetch_release_environment(gh_path: str, tag: str) -> str:
         )
 
     encoded_content = response.get("content")
-    if response.get("encoding") != "base64" or not isinstance(
-        encoded_content, str
-    ):
+    if response.get("encoding") != "base64" or not isinstance(encoded_content, str):
         raise ReleaseError(
             f"GitHub API returned plugin.toml for {PLUGIN_REPOSITORY} at ref "
             f"{tag} without base64 content."
@@ -154,9 +152,9 @@ def fetch_release_environment(gh_path: str, tag: str) -> str:
 
     try:
         manifest = tomllib.loads(
-            base64.b64decode(
-                re.sub(r"\s+", "", encoded_content), validate=True
-            ).decode("utf-8")
+            base64.b64decode(re.sub(r"\s+", "", encoded_content), validate=True).decode(
+                "utf-8"
+            )
         )
     except (binascii.Error, UnicodeDecodeError, tomllib.TOMLDecodeError) as error:
         raise ReleaseError(
