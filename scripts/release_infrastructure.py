@@ -138,11 +138,19 @@ def stage_artifacts(
         digest = hashlib.sha256(source.read_bytes()).hexdigest()
         sidecar = sidecars.get(name)
         if sidecar is not None:
-            lines = [line.strip() for line in sidecar.read_text(encoding="ascii").splitlines() if line.strip()]
+            lines = [
+                line.strip()
+                for line in sidecar.read_text(encoding="ascii").splitlines()
+                if line.strip()
+            ]
             if len(lines) != 1:
                 raise ReleaseError(f"checksum sidecar {sidecar} must contain one entry")
             match = re.fullmatch(r"([0-9a-fA-F]{64})\s+(.+)", lines[0])
-            if match is None or match.group(1).lower() != digest or match.group(2).removeprefix("*") != name:
+            if (
+                match is None
+                or match.group(1).lower() != digest
+                or match.group(2).removeprefix("*") != name
+            ):
                 raise ReleaseError(f"checksum sidecar {sidecar} does not match {name}")
         destination = staging_dir / name
         if destination.exists():
@@ -167,7 +175,9 @@ def validate_source(root: Path, version: str) -> str:
             f"Cargo.toml={cargo_version!r}, plugin.toml={manifest_version!r}"
         )
     environment = plugin_data.get("environment")
-    if not isinstance(environment, dict) or not isinstance(environment.get("version"), str):
+    if not isinstance(environment, dict) or not isinstance(
+        environment.get("version"), str
+    ):
         raise ReleaseError("plugin.toml has no valid [environment].version")
     return environment["version"]
 
@@ -209,12 +219,16 @@ def validate_manifest(
     for spec in specs:
         entry = nested_table(data, spec.section)
         if entry.get("version") != version or entry.get("environment") != environment:
-            raise ReleaseError(f"[{spec.section}] has inconsistent version or environment")
+            raise ReleaseError(
+                f"[{spec.section}] has inconsistent version or environment"
+            )
         digest = entry.get("sha256")
         if not isinstance(digest, str) or SHA256_RE.fullmatch(digest) is None:
             raise ReleaseError(f"[{spec.section}] has an invalid SHA-256")
         if entry.get("url") != immutable_url(repository, version, spec.filename):
-            raise ReleaseError(f"[{spec.section}] does not use an immutable release URL")
+            raise ReleaseError(
+                f"[{spec.section}] does not use an immutable release URL"
+            )
 
 
 def command_manifest(args: argparse.Namespace) -> None:
@@ -243,16 +257,22 @@ def command_verify_assets(args: argparse.Namespace) -> None:
     validate_manifest(data, args.repository, version, environment, specs)
     for spec in specs:
         entry = nested_table(data, spec.section)
-        request = urllib.request.Request(entry["url"], headers={"User-Agent": "eov-plugin-release-verifier"})
+        request = urllib.request.Request(
+            entry["url"], headers={"User-Agent": "eov-plugin-release-verifier"}
+        )
         digest = hashlib.sha256()
         try:
             with urllib.request.urlopen(request, timeout=60) as response:
                 if response.status != 200:
-                    raise ReleaseError(f"asset URL returned HTTP {response.status}: {entry['url']}")
+                    raise ReleaseError(
+                        f"asset URL returned HTTP {response.status}: {entry['url']}"
+                    )
                 while chunk := response.read(1024 * 1024):
                     digest.update(chunk)
         except (OSError, urllib.error.URLError) as error:
-            raise ReleaseError(f"could not verify release asset {entry['url']}: {error}") from error
+            raise ReleaseError(
+                f"could not verify release asset {entry['url']}: {error}"
+            ) from error
         if digest.hexdigest() != entry["sha256"]:
             raise ReleaseError(f"release asset hash mismatch for {entry['url']}")
     print(f"verified {len(specs)} published assets")
@@ -265,11 +285,15 @@ def build_parser() -> argparse.ArgumentParser:
     validate = subparsers.add_parser("validate-source")
     validate.add_argument("--root", type=Path, required=True)
     validate.add_argument("--version", required=True)
-    validate.set_defaults(function=lambda args: validate_source(args.root, args.version))
+    validate.set_defaults(
+        function=lambda args: validate_source(args.root, args.version)
+    )
 
     manifest = subparsers.add_parser("manifest")
     manifest.add_argument("--root", type=Path, required=True)
-    manifest.add_argument("--plugin-name", choices=("annotations", "gamepad"), required=True)
+    manifest.add_argument(
+        "--plugin-name", choices=("annotations", "gamepad"), required=True
+    )
     manifest.add_argument("--version", required=True)
     manifest.add_argument("--repository", required=True)
     manifest.add_argument("--artifacts-dir", type=Path, required=True)
@@ -279,7 +303,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     verify = subparsers.add_parser("verify-assets")
     verify.add_argument("--root", type=Path, required=True)
-    verify.add_argument("--plugin-name", choices=("annotations", "gamepad"), required=True)
+    verify.add_argument(
+        "--plugin-name", choices=("annotations", "gamepad"), required=True
+    )
     verify.add_argument("--version", required=True)
     verify.add_argument("--repository", required=True)
     verify.add_argument("--manifest", type=Path, required=True)
