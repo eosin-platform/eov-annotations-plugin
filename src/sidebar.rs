@@ -568,7 +568,15 @@ pub(crate) fn get_sidebar_properties() -> RVec<UiPropertyFFI> {
     let selected_annotation_name = selected_annotation_name(&state);
     let selected_annotation_metadata = selected_annotation_metadata_rows(&state);
 
+    let density_text = crate::density::summary(&state);
+
     RVec::from(vec![
+        UiPropertyFFI {
+            name: "density-text".into(),
+            json_value: serde_json::to_string(&density_text)
+                .unwrap_or_else(|_| "\"\"".to_string())
+                .into(),
+        },
         UiPropertyFFI {
             name: "source-options".into(),
             json_value: "[\"Local\"]".into(),

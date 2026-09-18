@@ -14,6 +14,7 @@ export component AnnotationsSidebar inherits Rectangle {
     in property <int> source-index: 0;
     in property <[AnnotationTreeRow]> tree-items: [];
     in property <string> empty-state-text: "";
+    in property <string> density-text: "";
     in property <bool> can-export: false;
     in property <bool> can-import: false;
     in property <bool> can-delete-set: false;
@@ -566,6 +567,34 @@ export component AnnotationsSidebar inherits Rectangle {
                                 );
                             }
                         }
+                    }
+                }
+            }
+
+            Rectangle {
+                background: #0f1419;
+                border-radius: 4px;
+                border-width: 1px;
+                border-color: Theme.border;
+                height: density-box.preferred-height;
+
+                density-box := VerticalLayout {
+                    width: parent.width;
+                    padding: 10px;
+                    spacing: 6px;
+
+                    Text {
+                        text: "Density";
+                        color: Theme.text-primary;
+                        font-size: 12px;
+                        font-weight: 600;
+                    }
+
+                    Text {
+                        text: root.density-text;
+                        color: Theme.text-secondary;
+                        font-size: 11px;
+                        wrap: word-wrap;
                     }
                 }
             }

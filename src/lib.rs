@@ -1,4 +1,5 @@
 mod db;
+mod density;
 mod history;
 mod model;
 mod operations;
