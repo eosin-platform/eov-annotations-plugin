@@ -1,6 +1,6 @@
 id = "annotations"
 name = "Annotations"
-version = "0.2.2"
+version = "0.2.3"
 description = "Official annotations plugin"
 repository = "https://github.com/eosin-platform/eov-annotations-plugin"
 license = "MIT OR Apache-2.0 OR GPL-3.0"
