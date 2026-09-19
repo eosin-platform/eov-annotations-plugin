@@ -78,6 +78,20 @@ The tree shows annotation layers and their child annotations for the active slid
 
 If no slide is open, the sidebar shows an empty-state message. If a slide is open but has no annotations yet, it shows a slide-specific empty state instead.
 
+### Density
+
+Selecting a polygon annotation shows the area it encloses and the points inside it, per layer.
+
+- Area in mm², from the slide's pixel size.
+- Points per mm² and per 10 HPF, each with a 95% range. Small counts are noisy.
+- 10 HPF assumes field number 22 at 40x, 0.2376 mm². Field size varies between microscopes.
+- Layers with no points inside are not listed. Without a pixel size, no area is reported.
+
+<p align="center">
+	<img src="images/density-layers.webp" width="512">
+	<img src="images/density-outside.webp" width="512">
+</p>
+
 ### Export
 
 The export action writes the active slide's annotations to a JSON file chosen through the host save dialog. The default file name is based on the active slide name and ends with `_annotations.json`.
