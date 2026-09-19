@@ -41,6 +41,9 @@ class AnnotationsReleaseInfrastructureTests(unittest.TestCase):
                 ">=0.4.1",
                 specs,
                 staged,
+                "annotations",
+                "Annotations",
+                "Official annotations plugin",
             )
             manifest = root / "release.toml"
             manifest.write_text(content, encoding="utf-8")
@@ -55,6 +58,9 @@ class AnnotationsReleaseInfrastructureTests(unittest.TestCase):
                 specs,
             )
             self.assertNotIn("/latest/", content)
+            self.assertIn("[manifest]", content)
+            self.assertIn("[plugin]", content)
+            self.assertIn('id = "annotations"', content)
             self.assertEqual(len(manifest.read_text(encoding="utf-8")), len(content))
 
     def test_missing_artifact_fails(self) -> None:

@@ -179,6 +179,18 @@ def validate_source(root: Path, version: str) -> str:
         environment.get("version"), str
     ):
         raise ReleaseError("plugin.toml has no valid [environment].version")
+    if (
+        plugin_data.get("repository")
+        != "https://github.com/eosin-platform/eov-annotations-plugin"
+    ):
+        raise ReleaseError(
+            "plugin.toml repository does not match the release repository"
+        )
+    if (
+        not isinstance(plugin_data.get("description"), str)
+        or not plugin_data["description"]
+    ):
+        raise ReleaseError("plugin.toml has no valid description")
     return environment["version"]
 
 
@@ -192,8 +204,35 @@ def render_manifest(
     environment: str,
     specs: tuple[ArtifactSpec, ...],
     staged: dict[str, Path],
+    plugin_id: str | None = None,
+    plugin_name: str | None = None,
+    description: str | None = None,
 ) -> str:
     lines: list[str] = []
+    lines.extend(
+        (
+            "[manifest]",
+            "schema = 1",
+            'kind = "plugin"',
+            f"version = {json.dumps(version)}",
+            f"repository = {json.dumps(f'https://github.com/{repository}')}",
+            "",
+        )
+    )
+    if plugin_id is not None and plugin_name is not None:
+        lines.extend(
+            (
+                "[plugin]",
+                f"id = {json.dumps(plugin_id)}",
+                f"name = {json.dumps(plugin_name)}",
+                f"version = {json.dumps(version)}",
+                f"repository = {json.dumps(f'https://github.com/{repository}')}",
+            )
+        )
+        if description is not None:
+            lines.append(f"description = {json.dumps(description)}")
+        lines.append(f"environment = {json.dumps(environment)}")
+        lines.append("")
     for spec in specs:
         digest = hashlib.sha256(staged[spec.filename].read_bytes()).hexdigest()
         lines.extend(
@@ -216,6 +255,29 @@ def validate_manifest(
     environment: str,
     specs: tuple[ArtifactSpec, ...],
 ) -> None:
+    metadata = data.get("manifest")
+    if metadata is not None:
+        if not isinstance(metadata, dict) or metadata.get("schema") != 1:
+            raise ReleaseError("manifest metadata must declare schema = 1")
+        if metadata.get("kind") != "plugin":
+            raise ReleaseError("manifest metadata has the wrong kind")
+        if metadata.get("version") != version:
+            raise ReleaseError("manifest metadata has the wrong version")
+        if metadata.get("repository") != f"https://github.com/{repository}":
+            raise ReleaseError("manifest metadata has the wrong repository")
+    plugin_data = data.get("plugin")
+    if not isinstance(plugin_data, dict):
+        raise ReleaseError("schema-1 plugin manifest is missing [plugin]")
+    if plugin_data.get("version") != version:
+        raise ReleaseError("[plugin] has the wrong version")
+    if plugin_data.get("repository") != f"https://github.com/{repository}":
+        raise ReleaseError("[plugin] has the wrong repository")
+    if not isinstance(plugin_data.get("id"), str) or not isinstance(
+        plugin_data.get("name"), str
+    ):
+        raise ReleaseError("[plugin] is missing id or name")
+    if plugin_data.get("environment") != environment:
+        raise ReleaseError("[plugin] has the wrong environment")
     for spec in specs:
         entry = nested_table(data, spec.section)
         if entry.get("version") != version or entry.get("environment") != environment:
@@ -235,10 +297,27 @@ def command_manifest(args: argparse.Namespace) -> None:
     version = validate_version(args.version)
     environment = validate_source(args.root, version)
     specs = artifact_specs(args.plugin_name, version)
+    plugin_data = read_toml(args.root / "plugin.toml")
+    plugin_id = plugin_data.get("id")
+    plugin_name = plugin_data.get("name")
+    description = plugin_data.get("description")
+    if not isinstance(plugin_id, str) or not isinstance(plugin_name, str):
+        raise ReleaseError("plugin.toml must define id and name")
+    if description is not None and not isinstance(description, str):
+        raise ReleaseError("plugin.toml description must be a string")
     staged = stage_artifacts(args.artifacts_dir, args.staging_dir, specs)
     write_atomically(
         args.output,
-        render_manifest(args.repository, version, environment, specs, staged),
+        render_manifest(
+            args.repository,
+            version,
+            environment,
+            specs,
+            staged,
+            plugin_id,
+            plugin_name,
+            description,
+        ),
     )
     data = read_toml(args.output)
     validate_manifest(data, args.repository, version, environment, specs)
