@@ -17,6 +17,7 @@
 
 pub mod actions;
 pub mod change;
+pub mod compare;
 pub mod core;
 pub mod counting;
 pub mod db;
@@ -436,6 +437,7 @@ impl AnnotationsPlugin {
             Pending::ExportAll => transfer::export_all(&self.core, path),
             Pending::Backup => transfer::backup(&self.core, path),
             Pending::MergeDb => transfer::merge_database(&self.core, path, false),
+            Pending::Compare { file_id } => transfer::compare_file(&self.core, file_id, path),
             _ => {}
         }
     }
@@ -564,10 +566,18 @@ impl AnnotationsPlugin {
                 | Pending::Export { file_id: f, .. }
                 | Pending::DeleteLayer { file_id: f, .. }
                 | Pending::ClearCounts { file_id: f }
-                | Pending::Relink { file_id: f, .. } => *f != file_id,
+                | Pending::Relink { file_id: f, .. }
+                | Pending::Compare { file_id: f } => *f != file_id,
                 _ => true,
             });
             state.imports.retain(|_, plan| plan.file_id != file_id);
+            if state
+                .comparison
+                .as_ref()
+                .is_some_and(|c| c.file_id == file_id)
+            {
+                state.comparison = None;
+            }
         }
         let mut ui = self.ui();
         if ui.highlighted.as_ref().is_some_and(|(f, _)| *f == file_id) {

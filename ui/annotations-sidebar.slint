@@ -65,6 +65,14 @@ export struct CommentRow {
     text: string,
 }
 
+// One class compared with another reader ("" lines are left out).
+export struct CompareRow {
+    name: string,
+    color: color,
+    points: string,
+    regions: string,
+}
+
 export struct OrphanRow {
     id: string,
     title: string,
@@ -340,6 +348,11 @@ export component AnnotationsSidebar inherits Rectangle {
     in property <string> field-objective: "40";
     in property <string> field-area;
 
+    // The comparison with another reader ("" title: none).
+    in property <string> compare-title;
+    in property <string> compare-note;
+    in property <[CompareRow]> compare-rows;
+
     in property <string> db-path;
     in property <string> db-status;
     in property <string> db-notes;
@@ -448,6 +461,8 @@ export component AnnotationsSidebar inherits Rectangle {
         "Export as ASAP XML…",
         "Export as ImageScope XML…",
         "Export measurements (CSV)…",
+        "Export a blinded copy…",
+        "Compare with another reader…",
         "Export all slides…",
         "Back up the database…",
         "Merge a database…",
@@ -459,6 +474,8 @@ export component AnnotationsSidebar inherits Rectangle {
         "export-asap",
         "export-imagescope",
         "export-csv",
+        "export-blinded",
+        "compare",
         "export-all",
         "backup",
         "merge-db",
@@ -1820,7 +1837,7 @@ export component AnnotationsSidebar inherits Rectangle {
                         }
 
                         Hint {
-                            text: "Imports: GeoJSON (QuPath and others), eov JSON, ASAP XML and Aperio ImageScope XML. Coordinates are level-0 pixels with y pointing down.";
+                            text: "Imports: GeoJSON (QuPath and others), eov JSON, ASAP XML, Aperio ImageScope XML and Hamamatsu NDPA. Coordinates are level-0 pixels with y pointing down.";
                         }
 
                         HorizontalLayout {
@@ -1905,6 +1922,113 @@ export component AnnotationsSidebar inherits Rectangle {
                                 clicked => {
                                     root.menu("merge-db");
                                 }
+                            }
+                        }
+
+                        Separator { }
+
+                        SectionTitle {
+                            text: "SECOND READER";
+                        }
+
+                        Hint {
+                            text: "A blinded copy holds the visible layers' shapes, classes and names, without authors, comments, statuses, descriptions or properties. Compare reads another reader's export and compares it with the visible layers: counts per class, matched points and overlapping regions.";
+                        }
+
+                        HorizontalLayout {
+                            spacing: 6px;
+                            alignment: start;
+
+                            TextButton {
+                                text: "Blinded copy…";
+                                enabled: root.has-slide;
+                                clicked => {
+                                    root.menu("export-blinded");
+                                }
+                            }
+
+                            TextButton {
+                                text: "Compare…";
+                                enabled: root.has-slide;
+                                clicked => {
+                                    root.menu("compare");
+                                }
+                            }
+
+                            if root.compare-title != "": TextButton {
+                                text: "Again";
+                                clicked => {
+                                    root.menu("compare-again");
+                                }
+                            }
+
+                            if root.compare-title != "": TextButton {
+                                text: "Clear";
+                                clicked => {
+                                    root.menu("compare-clear");
+                                }
+                            }
+                        }
+
+                        if root.compare-title != "": Text {
+                            text: root.compare-title;
+                            font-size: Theme.font-size;
+                            font-weight: 600;
+                            color: Theme.text-primary;
+                            wrap: word-wrap;
+                            height: self.preferred-height;
+                        }
+
+                        if root.compare-note != "": Hint {
+                            text: root.compare-note;
+                        }
+
+                        if root.compare-title != "" && root.compare-rows.length == 0: Hint {
+                            text: "Neither reader has points or regions in the compared layers.";
+                        }
+
+                        for r in root.compare-rows: VerticalLayout {
+                            spacing: 1px;
+
+                            HorizontalLayout {
+                                spacing: 6px;
+
+                                VerticalLayout {
+                                    alignment: center;
+
+                                    Rectangle {
+                                        width: 10px;
+                                        height: 10px;
+                                        border-radius: 5px;
+                                        background: r.color;
+                                    }
+                                }
+
+                                Text {
+                                    text: r.name;
+                                    font-size: Theme.font-size;
+                                    color: Theme.text-primary;
+                                    overflow: elide;
+                                    horizontal-stretch: 1;
+                                }
+                            }
+
+                            if r.points != "": Text {
+                                x: 16px;
+                                text: r.points;
+                                font-size: Theme.small-font-size;
+                                color: Theme.text-secondary;
+                                wrap: word-wrap;
+                                height: self.preferred-height;
+                            }
+
+                            if r.regions != "": Text {
+                                x: 16px;
+                                text: r.regions;
+                                font-size: Theme.small-font-size;
+                                color: Theme.text-secondary;
+                                wrap: word-wrap;
+                                height: self.preferred-height;
                             }
                         }
 

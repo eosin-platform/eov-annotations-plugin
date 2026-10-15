@@ -12,6 +12,7 @@ use crate::core::{Core, Op, Planned};
 use crate::fileio;
 use crate::formats::{self, ImportClass, ImportDoc, eov, geojson};
 use crate::geometry;
+use crate::measure::Calibration;
 use crate::model::{
     Annotation, Bounds, Class, Color, Geometry, Layer, LayerRole, SlideId, Status, clean_name,
     clean_properties, clean_text, new_id, now_ms, pick_color,
@@ -67,6 +68,7 @@ pub struct PreparedLayer {
     pub color: Option<Color>,
     pub notes: String,
     pub visible: Option<bool>,
+    pub role: LayerRole,
     pub annotations: Vec<PreparedAnnotation>,
 }
 
@@ -167,6 +169,7 @@ pub fn prepare(
                     .collect()
             }),
             visible: layer.visible,
+            role: layer.role,
             annotations: Vec::new(),
         };
         for a in layer.annotations {
@@ -425,20 +428,12 @@ pub fn import_file(core: &Arc<Core>, file_id: FileId, path: PathBuf) {
                 pick_archive_entry(doc, &info)?
             };
             let ndpa = doc.units == formats::Units::NdpaNanometres;
-            if ndpa {
-                // NDPA coordinates are nanometres from the slide centre: they
-                // need the slide's NDPI offsets, or the preview says why not.
-                let frame = core
-                    .host
-                    .file_properties(file_id)
-                    .map_err(|e| e.message)
-                    .and_then(|props| formats::ndpa::Frame::of_slide(&props, &info));
-                match frame {
-                    Ok(frame) => formats::ndpa::place(&mut doc, &frame),
-                    Err(reason) => {
-                        return Ok(Some(ImportPlan::blocked(file_id, slide_id, &name, doc.format, reason)));
-                    }
-                }
+            // NDPA coordinates are nanometres from the slide centre: they
+            // need the slide's NDPI offsets, or the preview says why not.
+            if let Err(reason) = place_ndpa(core, file_id, &info, &mut doc) {
+                return Ok(Some(ImportPlan::blocked(
+                    file_id, slide_id, &name, doc.format, reason,
+                )));
             }
             let legacy_sha = doc.slide.legacy_sha256.clone();
             let mut plan = prepare(doc, file_id, slide_id, &info, &existing, &name)?;
@@ -492,6 +487,26 @@ pub fn import_file(core: &Arc<Core>, file_id: FileId, path: PathBuf) {
             Err(e) => core.error(format!("Could not import {name}"), e),
         }
     });
+}
+
+/// Places an NDPA document's nanometre coordinates on the slide; other
+/// documents are left as they are.
+fn place_ndpa(
+    core: &Arc<Core>,
+    file_id: FileId,
+    info: &FileInfo,
+    doc: &mut ImportDoc,
+) -> Result<(), String> {
+    if doc.units != formats::Units::NdpaNanometres {
+        return Ok(());
+    }
+    let frame = core
+        .host
+        .file_properties(file_id)
+        .map_err(|e| e.message)
+        .and_then(|props| formats::ndpa::Frame::of_slide(&props, info))?;
+    formats::ndpa::place(doc, &frame);
+    Ok(())
 }
 
 fn pick_archive_entry(doc: ImportDoc, info: &FileInfo) -> Result<ImportDoc, String> {
@@ -743,10 +758,21 @@ pub fn start_export(core: &Arc<Core>, file_id: FileId, format: ExportFormat) {
                 extensions: vec!["xml".into()],
             },
         ),
+        ExportFormat::Blinded => (
+            format!("{}.blinded.json", stem(&filename)),
+            FileFilter {
+                name: "eov annotations".into(),
+                extensions: vec!["json".into()],
+            },
+        ),
+    };
+    let title = match format {
+        ExportFormat::Blinded => "Export a blinded copy for another reader",
+        _ => "Export annotations",
     };
     save_dialog(
         core,
-        "Export annotations",
+        title,
         &default_name,
         filter,
         Pending::Export { file_id, format },
@@ -819,7 +845,10 @@ pub fn export_file(core: &Arc<Core>, file_id: FileId, format: ExportFormat, path
             export_options(core, &state),
         )
     };
-    let (slide, classes, options) = prepared;
+    let (mut slide, classes, mut options) = prepared;
+    if format == ExportFormat::Blinded {
+        blind(&mut slide, &mut options);
+    }
     core.io(move |core| {
         let count: usize = slide.layers.iter().map(|(_, a)| a.len()).sum();
         let bytes = match format {
@@ -833,6 +862,11 @@ pub fn export_file(core: &Arc<Core>, file_id: FileId, format: ExportFormat, path
             ExportFormat::Asap => Ok(formats::xml::export_asap(&slide, &classes).into_bytes()),
             ExportFormat::ImageScope => {
                 Ok(formats::xml::export_imagescope(&slide, &classes).into_bytes())
+            }
+            ExportFormat::Blinded => {
+                let mut doc = eov::export(&slide, &classes, &options);
+                doc["metadata"]["blinded"] = serde_json::Value::Bool(true);
+                serde_json::to_vec_pretty(&doc)
             }
         };
         let result = bytes
@@ -848,6 +882,166 @@ pub fn export_file(core: &Arc<Core>, file_id: FileId, format: ExportFormat, path
                 format!("Exported {count} annotation(s) to {name}."),
             ),
             Err(e) => core.error(format!("Could not export to {name}"), e),
+        }
+    });
+}
+
+/// Makes an export a blinded copy for a second reader: only the visible
+/// layers, with their shapes, classes and names. Authors, comments,
+/// statuses, descriptions, properties, locks, layer notes and times are
+/// removed, and so are the slide's file name and the exporter's name and
+/// organisation.
+pub fn blind(slide: &mut eov::ExportSlide, options: &mut eov::ExportOptions) {
+    let now = options.exported_at;
+    slide.layers.retain(|(layer, _)| layer.visible);
+    slide.record.filename.clear();
+    for (layer, annotations) in &mut slide.layers {
+        layer.notes.clear();
+        layer.locked = false;
+        layer.created_at = now;
+        layer.updated_at = now;
+        for annotation in annotations.iter_mut() {
+            let mut a = (**annotation).clone();
+            a.author.clear();
+            a.comments.clear();
+            a.status = Status::Draft;
+            a.description.clear();
+            a.properties.clear();
+            a.locked = false;
+            a.created_at = now;
+            a.updated_at = now;
+            *annotation = Arc::new(a);
+        }
+    }
+    options.include_filename = false;
+    options.author.clear();
+    options.organization.clear();
+}
+
+/// Starts comparing the slide with another reader's annotations.
+pub fn start_compare(core: &Arc<Core>, file_id: FileId) {
+    let args = FileDialogArgs {
+        title: Some("Compare with another reader's annotations".into()),
+        filters: vec![FileFilter {
+            name: "Annotations (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA)".into(),
+            extensions: vec!["json".into(), "geojson".into(), "xml".into(), "ndpa".into()],
+        }],
+        ..Default::default()
+    };
+    match core.host.open_file_dialog(args) {
+        Ok(request) => {
+            core.state()
+                .pending
+                .insert(request, Pending::Compare { file_id });
+        }
+        Err(e) => core.error("Cannot show the file dialog", e.message),
+    }
+}
+
+/// Points of two readers match within this distance.
+pub const MATCH_DISTANCE_UM: f64 = 10.0;
+/// ... or this many pixels on a slide without a pixel size.
+pub const MATCH_DISTANCE_PX: f64 = 40.0;
+
+/// Compares the visible annotations of a slide with another reader's file,
+/// in the background; the Data tab shows the result.
+pub fn compare_file(core: &Arc<Core>, file_id: FileId, path: PathBuf) {
+    let prepared = {
+        let state = core.state();
+        let Some(file) = state.files.get(&file_id) else {
+            return;
+        };
+        let Some(slide) = state.slide_of(file_id) else {
+            return;
+        };
+        let class_name = |id: Option<&str>| {
+            id.and_then(|id| state.classes.iter().find(|c| c.id == id))
+                .map(|c| c.name.clone())
+        };
+        // HPF fields are a counting aid, not part of a reading.
+        let ours: Vec<crate::compare::Item> = slide
+            .layers
+            .iter()
+            .filter(|l| l.visible && l.role != LayerRole::Fields)
+            .flat_map(|l| slide.in_layer(&l.id))
+            .map(|a| crate::compare::Item {
+                geometry: a.geometry.clone(),
+                class: class_name(a.class_id.as_deref()),
+            })
+            .collect();
+        let order: Vec<(String, Color)> = state
+            .classes
+            .iter()
+            .map(|c| (c.name.clone(), c.color))
+            .collect();
+        let existing: Vec<String> = slide.layers.iter().map(|l| l.name.clone()).collect();
+        (file.info.clone(), slide.id(), ours, order, existing)
+    };
+    let (info, slide_id, ours, order, existing) = prepared;
+    let name = path
+        .file_name()
+        .map(|n| n.to_string_lossy().into_owned())
+        .unwrap_or_default();
+    core.io(move |core| {
+        let result = (|| -> Result<crate::state::Comparison, String> {
+            let bytes = fileio::read_limited(&path)?;
+            let doc = formats::parse(&bytes, &name)?;
+            let mut doc = if doc.entries.is_empty() {
+                doc
+            } else {
+                pick_archive_entry(doc, &info)?
+            };
+            place_ndpa(core, file_id, &info, &mut doc)?;
+            let ndpa = doc.units == formats::Units::NdpaNanometres;
+            let plan = prepare(doc, file_id, slide_id, &info, &existing, &name)?;
+            let theirs: Vec<crate::compare::Item> = plan
+                .layers
+                .iter()
+                .filter(|l| l.role != LayerRole::Fields)
+                .flat_map(|l| &l.annotations)
+                .map(|a| crate::compare::Item {
+                    geometry: a.geometry.clone(),
+                    class: a.class.clone(),
+                })
+                .collect();
+            let (radius, radius_text) = match Calibration::new(info.mpp_x, info.mpp_y).spacing() {
+                Some((x, y, _)) => (
+                    MATCH_DISTANCE_UM / x.max(y),
+                    format!("{MATCH_DISTANCE_UM} µm"),
+                ),
+                None => (MATCH_DISTANCE_PX, format!("{MATCH_DISTANCE_PX} px")),
+            };
+            let rows = crate::compare::compare(&ours, &theirs, &order, radius);
+            let mut note = format!(
+                "This slide's visible layers ({} annotations) against the {} in {name}, without HPF fields; counts are this slide's, then the other reader's. Points of a class match one to one within {radius_text} (F1 = 2 · matched / both counts); regions by their overlap (Dice = 2 · shared area / both areas).",
+                ours.len(),
+                match theirs.len() {
+                    1 => "1 annotation".to_string(),
+                    n => format!("{n} annotations"),
+                }
+            );
+            if plan.mismatch && !ndpa {
+                note.push_str(&format!(" Check the file: {}", plan.match_text));
+            }
+            Ok(crate::state::Comparison {
+                file_id,
+                path: path.clone(),
+                title: format!("Compared with {name}"),
+                note,
+                rows,
+            })
+        })();
+        match result {
+            Ok(comparison) => {
+                // Unless the slide was closed meanwhile.
+                let mut state = core.state();
+                if state.files.contains_key(&file_id) {
+                    state.comparison = Some(comparison);
+                    drop(state);
+                    core.request_refresh();
+                }
+            }
+            Err(e) => core.error(format!("Could not compare with {name}"), e),
         }
     });
 }

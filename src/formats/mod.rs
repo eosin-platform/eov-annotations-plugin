@@ -25,7 +25,7 @@ pub mod geojson;
 pub mod ndpa;
 pub mod xml;
 
-use crate::model::{Color, Comment, Geometry, Status};
+use crate::model::{Color, Comment, Geometry, LayerRole, Status};
 use std::collections::BTreeMap;
 
 /// The coordinates of a parsed document.
@@ -107,6 +107,9 @@ pub struct ImportLayer {
     pub color: Option<Color>,
     pub notes: String,
     pub visible: Option<bool>,
+    /// What the layer is for in eov (only eov JSON says): HPF fields are
+    /// left out of comparisons between readers.
+    pub role: LayerRole,
     pub annotations: Vec<ImportAnnotation>,
 }
 

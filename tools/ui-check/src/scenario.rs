@@ -110,6 +110,18 @@ fn pending_request(h: &H) -> Option<String> {
         .map(str::to_string)
 }
 
+/// Answers the newest file dialog with `path`.
+fn answer(h: &H, path: &Path) -> Result<(), String> {
+    let request_id = pending_request(h).ok_or("no file dialog")?;
+    h.send(HostEvent::DialogResult {
+        request_id,
+        paths: vec![path.to_string_lossy().into_owned()],
+    })
+    .map_err(|e| e.to_string())?;
+    settle(h);
+    Ok(())
+}
+
 fn row_id(props: &Map<String, Json>, kind: i64, nth: usize) -> Option<(String, String)> {
     props["rows"]
         .as_array()?
@@ -133,6 +145,17 @@ const GEOJSON: &str = r#"{"type": "FeatureCollection", "features": [
     {"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[[10,10],[110,10],[110,110],[10,110],[10,10]]]},
      "properties": {"objectType": "annotation", "name": "Tumour", "classification": {"name": "Tumour", "color": [200, 0, 0]}}},
     {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-50, 20]}, "properties": {}}
+]}"#;
+
+/// A second reader of slide-a: most of the large region, some of the
+/// counted cells and one more.
+const SECOND_READER: &str = r#"{"type": "FeatureCollection", "features": [
+    {"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[[400,100],[2100,100],[2100,2100],[400,2100],[400,100]]]},
+     "properties": {"classification": {"name": "Tumour"}}},
+    {"type": "Feature", "geometry": {"type": "MultiPoint", "coordinates": [[252,401],[302,399],[405,400],[600,410],[900,900]]},
+     "properties": {"classification": {"name": "Positive"}}},
+    {"type": "Feature", "geometry": {"type": "MultiPoint", "coordinates": [[201,400],[500,402]]},
+     "properties": {"classification": {"name": "Negative"}}}
 ]}"#;
 
 pub fn samples() -> Result<Samples, String> {
@@ -366,9 +389,27 @@ pub fn samples() -> Result<Samples, String> {
     settle(&h);
     call(&h, &sb, "tab-changed", vec![json!(sidebar::TAB_CLASSES)]);
     out.sidebar.push(("classes".into(), properties_of(&h, &sb)));
+    // A blinded copy for a second reader, and the comparison with what
+    // that reader drew.
+    let blinded = dir.join("slide-a.blinded.json");
+    call(&h, &sb, "menu", vec![json!("export-blinded")]);
+    answer(&h, &blinded)?;
+    if !blinded.exists() {
+        return Err("the blinded copy was not written".into());
+    }
+    let reader2 = dir.join("reader-2.geojson");
+    std::fs::write(&reader2, SECOND_READER).map_err(|e| e.to_string())?;
+    call(&h, &sb, "menu", vec![json!("compare")]);
+    answer(&h, &reader2)?;
     call(&h, &sb, "tab-changed", vec![json!(sidebar::TAB_DATA)]);
     call(&h, &sb, "orphans-refresh", vec![]);
     let props = properties_of(&h, &sb);
+    if props["compare-rows"].as_array().is_none_or(|r| r.len() < 3) {
+        return Err(format!(
+            "the comparison with the second reader is missing: {:?}",
+            props["compare-rows"]
+        ));
+    }
     if props["orphans"].as_array().is_none_or(|o| o.is_empty()) {
         return Err("the scenario has no other slides to list".into());
     }

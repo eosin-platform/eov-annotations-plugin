@@ -1878,3 +1878,171 @@ fn comments_are_kept_undone_exported_and_audited() {
             .any(|e| e.starts_with("Delete comment") && e.contains("removed"))
     );
 }
+
+/// The second reader of `blinded_copies_and_reader_comparison`: half of
+/// the tumour region, one mitosis near one of ours and one elsewhere.
+const SECOND_READER: &str = r#"{"type": "FeatureCollection", "features": [
+    {"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[[1200,1000],[1600,1000],[1600,1400],[1200,1400],[1200,1000]]]},
+     "properties": {"objectType": "annotation", "classification": {"name": "tumour"}}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [2005, 2003]},
+     "properties": {"classification": {"name": "Mitosis"}}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [6000, 6000]},
+     "properties": {"classification": {"name": "Mitosis"}}}
+]}"#;
+
+fn compare_rows(h: &H, sidebar: &str) -> Vec<(String, String, String)> {
+    prop(h, sidebar, "compare-rows")
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|r| {
+            (
+                r["name"].as_str().unwrap().to_string(),
+                r["points"].as_str().unwrap().to_string(),
+                r["regions"].as_str().unwrap().to_string(),
+            )
+        })
+        .collect()
+}
+
+#[test]
+fn blinded_copies_and_reader_comparison() {
+    let mut init = test_init("annotations");
+    init.settings.insert(
+        SETTINGS_KEY.into(),
+        json!({"author": "Dr. A", "organization": "Site One"}),
+    );
+    let dir = PathBuf::from(&init.cache_dir);
+    let h = start(init);
+    open(&h, info(1, "a", &dir));
+    let sidebar = open_sidebar(&h);
+    // Reader 1: a verified tumour region with a description and a comment,
+    // and three mitoses.
+    draw(&h, POLYGON, 1, square(1000.0, 1000.0, 400.0));
+    let owner = prop(&h, &sidebar, "detail-id");
+    callback(&h, &sidebar, "detail-class-chosen", vec![json!(1)]);
+    callback(&h, &sidebar, "detail-status-chosen", vec![json!(1)]);
+    callback(
+        &h,
+        &sidebar,
+        "detail-description-committed",
+        vec![owner.clone(), json!("probably invasive")],
+    );
+    callback(
+        &h,
+        &sidebar,
+        "comment-add",
+        vec![owner, json!("Looks like DCIS")],
+    );
+    callback(&h, &sidebar, "count-active", vec![json!(5)]);
+    for x in [2000.0, 2100.0, 2200.0] {
+        draw(&h, COUNT, 1, Shape::Point { x, y: 2000.0 });
+    }
+    // An HPF field goes into the copy, but is not compared.
+    draw(
+        &h,
+        FIELD,
+        1,
+        Shape::Point {
+            x: 3000.0,
+            y: 3000.0,
+        },
+    );
+    // A hidden layer stays out of the copy and of the comparison.
+    callback(&h, &sidebar, "layer-new", vec![]);
+    let hidden = prop(&h, &sidebar, "rows")
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|r| r["kind"] == 0 && r["current"] == json!(true))
+        .map(|r| r["id"].as_str().unwrap().to_string())
+        .unwrap();
+    callback(
+        &h,
+        &sidebar,
+        "layer-rename",
+        vec![json!(hidden), json!("Private notes")],
+    );
+    draw(&h, RECTANGLE, 1, square(5000.0, 5000.0, 300.0));
+    callback(
+        &h,
+        &sidebar,
+        "layer-visible",
+        vec![json!(hidden), json!(false)],
+    );
+
+    let copy = dir.join("a.blinded.json");
+    callback(&h, &sidebar, "menu", vec![json!("export-blinded")]);
+    answer_dialog(&h, &copy);
+    let text = std::fs::read_to_string(&copy).unwrap();
+    for secret in [
+        "Dr. A",
+        "Site One",
+        "probably invasive",
+        "Looks like DCIS",
+        "verified",
+        "Private notes",
+        "a.svs",
+    ] {
+        assert!(!text.contains(secret), "the blinded copy shows {secret}");
+    }
+    let doc: Value = serde_json::from_str(&text).unwrap();
+    assert_eq!(doc["metadata"]["blinded"], json!(true));
+    assert_eq!(doc["slide"]["identity"], "eov-slide-1:a");
+    assert!(text.contains("Tumour") && text.contains("Mitosis"));
+    assert!(notified(&h, "Exported 5 annotation(s)"));
+    assert!(text.contains("\"role\": \"fields\""));
+
+    // Compared with the copy itself, the readers agree completely.
+    assert_eq!(prop(&h, &sidebar, "compare-title"), "");
+    callback(&h, &sidebar, "menu", vec![json!("compare")]);
+    answer_dialog(&h, &copy);
+    assert_eq!(
+        prop(&h, &sidebar, "compare-title"),
+        "Compared with a.blinded.json"
+    );
+    let rows = compare_rows(&h, &sidebar);
+    let names: Vec<&str> = rows.iter().map(|r| r.0.as_str()).collect();
+    assert_eq!(names, ["Tumour", "Mitosis", "All regions"]);
+    assert_eq!(rows[0].1, "");
+    assert!(rows[0].2.starts_with("Regions 1 vs 1 · "), "{rows:?}");
+    assert!(rows[0].2.ends_with("Dice 1.00"), "{rows:?}");
+    assert_eq!(rows[1].1, "Points 3 vs 3 · 3 matched · F1 1.00");
+    assert_eq!(rows[1].2, "");
+
+    // Another reader's GeoJSON: half the region, one of the mitoses.
+    let theirs = dir.join("reader2.geojson");
+    std::fs::write(&theirs, SECOND_READER).unwrap();
+    callback(&h, &sidebar, "menu", vec![json!("compare")]);
+    answer_dialog(&h, &theirs);
+    let note = prop(&h, &sidebar, "compare-note");
+    assert!(note.as_str().unwrap().contains("within 10 µm"), "{note}");
+    let rows = compare_rows(&h, &sidebar);
+    assert!(rows[0].2.ends_with("Dice 0.50"), "{rows:?}");
+    assert_eq!(rows[1].1, "Points 3 vs 2 · 1 matched · F1 0.40");
+    // After an edit, "Again" compares with the same file.
+    draw(
+        &h,
+        COUNT,
+        1,
+        Shape::Point {
+            x: 6010.0,
+            y: 6000.0,
+        },
+    );
+    callback(&h, &sidebar, "menu", vec![json!("compare-again")]);
+    assert_eq!(
+        compare_rows(&h, &sidebar)[1].1,
+        "Points 4 vs 2 · 2 matched · F1 0.67"
+    );
+    // Nothing of this is an edit.
+    assert!(
+        !h.state()
+            .undo
+            .iter()
+            .any(|u| u.label.contains("ompar") || u.label.contains("lind"))
+    );
+    callback(&h, &sidebar, "menu", vec![json!("compare-clear")]);
+    assert_eq!(prop(&h, &sidebar, "compare-title"), "");
+    assert_eq!(prop(&h, &sidebar, "compare-rows"), json!([]));
+}

@@ -187,6 +187,53 @@ pub struct CommentRow {
     pub text: String,
 }
 
+/// One class in the comparison with another reader.
+#[derive(Debug, Clone, PartialEq, Serialize)]
+#[serde(rename_all = "kebab-case")]
+pub struct CompareRow {
+    pub name: String,
+    pub color: String,
+    /// "" when neither reader has points of the class.
+    pub points: String,
+    /// "" when neither reader has regions of the class.
+    pub regions: String,
+}
+
+fn compare_row(row: &crate::compare::Row, area: &dyn Fn(f64) -> String) -> CompareRow {
+    let ratio = |v: Option<f64>| v.map_or_else(|| "–".to_string(), |v| format!("{v:.2}"));
+    let points = if row.points == (0, 0) {
+        String::new()
+    } else {
+        format!(
+            "Points {} vs {} · {} matched · F1 {}",
+            row.points.0,
+            row.points.1,
+            row.matched,
+            ratio(row.point_agreement())
+        )
+    };
+    let regions = if row.regions == (0, 0) {
+        String::new()
+    } else {
+        format!(
+            "Regions {} vs {} · {} vs {} · Dice {}",
+            row.regions.0,
+            row.regions.1,
+            area(row.areas.0),
+            area(row.areas.1),
+            ratio(row.dice())
+        )
+    };
+    CompareRow {
+        name: row.name.clone(),
+        color: row
+            .color
+            .map_or_else(|| "#00000000".to_string(), |c| c.to_hex()),
+        points,
+        regions,
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct OrphanRow {
@@ -680,6 +727,31 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
         DbStatus::Opening => (String::new(), "Opening…".to_string()),
         DbStatus::Failed { error } => (String::new(), format!("Unavailable: {error}")),
     };
+    // A second reader.
+    let comparison = state
+        .comparison
+        .as_ref()
+        .filter(|c| Some(c.file_id) == state.active_file);
+    let spacing = file.and_then(|(_, f)| Calibration::new(f.info.mpp_x, f.info.mpp_y).spacing());
+    let area = |px2: f64| match spacing {
+        Some((x, y, _)) => measure::format_area_um2(px2 * x * y),
+        None => measure::format_px2(px2),
+    };
+    let compare_rows: Vec<CompareRow> = comparison
+        .map(|c| c.rows.iter().map(|r| compare_row(r, &area)).collect())
+        .unwrap_or_default();
+    put(
+        &mut p,
+        "compare-title",
+        comparison.map(|c| c.title.clone()).unwrap_or_default(),
+    );
+    put(
+        &mut p,
+        "compare-note",
+        comparison.map(|c| c.note.clone()).unwrap_or_default(),
+    );
+    put(&mut p, "compare-rows", &compare_rows);
+
     put(&mut p, "db-path", path);
     put(&mut p, "db-status", status);
     put(&mut p, "db-notes", state.db_notes.join("\n"));
@@ -825,6 +897,22 @@ pub fn callback(
                 "export-imagescope" => {
                     transfer::start_export(core, need_file()?, ExportFormat::ImageScope)
                 }
+                "export-blinded" => {
+                    transfer::start_export(core, need_file()?, ExportFormat::Blinded)
+                }
+                "compare" => transfer::start_compare(core, need_file()?),
+                "compare-again" => {
+                    let file_id = need_file()?;
+                    let path = core
+                        .state()
+                        .comparison
+                        .as_ref()
+                        .filter(|c| c.file_id == file_id)
+                        .map(|c| c.path.clone())
+                        .ok_or("Compare with another reader's file first.")?;
+                    transfer::compare_file(core, file_id, path);
+                }
+                "compare-clear" => core.state().comparison = None,
                 "export-all" => transfer::save_dialog(
                     core,
                     "Export all annotations",

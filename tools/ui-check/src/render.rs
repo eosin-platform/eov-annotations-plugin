@@ -134,15 +134,25 @@ fn run(out: &Path) -> Result<(), String> {
         let name = format!("sidebar-{i}-{}.png", label.replace(' ', "-"));
         render(&instance, &window, 340, 860, &out.join(name))?;
     }
-    // Every tab, and the popups, in the "one selected" state.
-    if let Some((_, properties)) = samples.sidebar.iter().find(|(l, _)| l == "one selected") {
-        for (tab, name, height) in [
-            (1, "classes", 860),
-            (2, "count", 860),
-            (3, "data", 860),
-            (3, "data-whole", 1700),
-            (0, "layers-whole", 2200),
+    // Every tab, and the popups, in the "one selected" state (the whole
+    // Data tab in the "data tab" state, with the other slides listed and a
+    // comparison with a second reader).
+    let sample = |label: &str| {
+        samples
+            .sidebar
+            .iter()
+            .find(|(l, _)| l == label)
+            .map(|(_, p)| p)
+    };
+    if let Some(properties) = sample("one selected") {
+        for (tab, name, height, state) in [
+            (1, "classes", 860, "one selected"),
+            (2, "count", 860, "one selected"),
+            (3, "data", 860, "one selected"),
+            (3, "data-whole", 2200, "data tab"),
+            (0, "layers-whole", 2200, "one selected"),
         ] {
+            let properties = sample(state).unwrap_or(properties);
             let (instance, window) = instantiate(&sidebar_def, properties)?;
             instance
                 .set_property("tab", Value::Number(tab as f64))

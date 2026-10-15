@@ -7,7 +7,7 @@
 //! plugin exported (`file_path`, `file_sha256`, `annotation_layers`).
 
 use super::{ImportAnnotation, ImportDoc, ImportLayer, SlideHint, iso8601, num, parse_time};
-use crate::model::{Annotation, Class, Color, Geometry, Layer, SlideRecord, Status};
+use crate::model::{Annotation, Class, Color, Geometry, Layer, LayerRole, SlideRecord, Status};
 use eov_plugin_api::protocol::Rect;
 use serde_json::{Map, Value, json};
 use std::sync::Arc;
@@ -265,6 +265,7 @@ fn parse_v2(value: &Value) -> Result<ImportDoc, String> {
                 .and_then(Color::parse),
             notes: text(layer.get("notes")),
             visible: layer.get("visible").and_then(Value::as_bool),
+            role: LayerRole::parse(&text(layer.get("role"))),
             annotations: Vec::new(),
         };
         if layer.get("color").is_some() && out.color.is_none() {
@@ -334,6 +335,7 @@ fn parse_v1(value: &Value) -> Result<ImportDoc, String> {
                 .and_then(Color::parse),
             notes: text(layer.get("notes")),
             visible: None,
+            role: LayerRole::Normal,
             annotations: Vec::new(),
         };
         for a in layer

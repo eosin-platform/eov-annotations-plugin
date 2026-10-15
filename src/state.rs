@@ -407,6 +407,9 @@ pub enum ExportFormat {
     Csv,
     Asap,
     ImageScope,
+    /// eov JSON of the visible layers without authors, comments, statuses,
+    /// descriptions or properties, for a second reader.
+    Blinded,
 }
 
 /// A host dialog or confirmation the plugin waits for.
@@ -440,6 +443,21 @@ pub enum Pending {
     LegacyMerge {
         path: std::path::PathBuf,
     },
+    /// Comparing with another reader's annotations.
+    Compare {
+        file_id: FileId,
+    },
+}
+
+/// The result of comparing a slide with another reader's annotations.
+#[derive(Debug, Clone, PartialEq)]
+pub struct Comparison {
+    pub file_id: FileId,
+    /// The other reader's file (to compare again after edits).
+    pub path: std::path::PathBuf,
+    pub title: String,
+    pub note: String,
+    pub rows: Vec<crate::compare::Row>,
 }
 
 /// A brush stroke in progress.
@@ -512,6 +530,8 @@ pub struct State {
     pub brush: Option<BrushStroke>,
     /// Where the brush outline is shown (the pointer).
     pub brush_cursor: Option<(FileId, [f64; 2])>,
+    /// The last comparison with another reader.
+    pub comparison: Option<Comparison>,
 }
 
 impl State {
@@ -540,6 +560,7 @@ impl State {
             field_press: None,
             brush: None,
             brush_cursor: None,
+            comparison: None,
         }
     }
 

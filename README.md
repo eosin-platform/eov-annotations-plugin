@@ -6,8 +6,10 @@
 Annotations for [eov](https://github.com/eosin-platform/eov), the whole-slide
 image viewer: points, regions, lines and text, reusable classes, cell
 counting with densities and indices, high-power fields, measurements in
-physical units, and import and export in the formats other tools use
-(GeoJSON as QuPath writes it, ASAP and Aperio ImageScope XML).
+physical units, comment threads, blinded copies and reader comparison for
+multi-reader studies, and import and export in the formats other tools use
+(GeoJSON as QuPath writes it, ASAP and Aperio ImageScope XML; Hamamatsu
+NDPA import).
 
 Version 1.0 of the plugin is written for eov 1.x (plugin API 1.0).
 
@@ -51,8 +53,8 @@ has four tabs:
   the details of the selection;
 - **Classes**: the classes shared by all slides;
 - **Count**: cell counts, densities and the high-power field size;
-- **Data**: import and export, backups, the database, other slides and
-  settings.
+- **Data**: import and export, blinded copies and comparison with a second
+  reader, backups, the database, other slides and settings.
 
 ### Tools
 
@@ -174,6 +176,30 @@ approximate (≈). With none, values are given in pixels and the panel says
 so. **Copy measurements** copies them as tab-separated text; the CSV export
 has them for every annotation.
 
+### Second readers
+
+For studies where two people read the same slides (Data → *Second reader*,
+or `⋯`):
+
+- **Blinded copy…** writes an eov JSON file of the slide's **visible**
+  layers (hide the others first): their shapes, classes and names, HPF
+  fields included, without authors, comments, statuses, descriptions,
+  properties, locks, layer notes or times, without the slide's file name
+  and without the exporter's name and organisation. It keeps the slide's
+  identity, so the second reader imports it onto the same slide, and says
+  `"blinded": true` in its metadata.
+- **Compare…** reads another reader's export (any format the plugin
+  imports) and compares it with the visible layers of the open slide, HPF
+  fields left out. For each class it shows how many points and regions
+  each reader has, how many points match (one to one, nearest pairs first,
+  within 10 µm, or 40 px on a slide without a pixel size) with
+  F1 = 2 · matched / (n₁ + n₂), and how much the readers' regions overlap
+  as the Dice coefficient 2 · |A ∩ B| / (|A| + |B|) of each reader's union
+  of regions; a last row compares all regions whatever their class. Lines,
+  arrows and text are not compared, and regions are compared by area, not
+  paired one by one. **Again** compares with the same file after edits.
+  Comparing writes nothing to the database.
+
 ## Formats
 
 | Format | Import | Export |
@@ -239,6 +265,9 @@ names and texts are cut to the limits.
   author, timestamps, centre and measurements in µm and pixels, whether
   the slide was calibrated, and how many comments it has. Cells that a spreadsheet would run as formulas
   are escaped.
+
+Blinded copies for a second reader are eov JSON files without authors,
+comments and statuses (see [Second readers](#second-readers)).
 
 Exports never contain the slide's path. The file name is included only
 when *Include the slide's file name in exports* is set; the author,
@@ -378,8 +407,7 @@ This depends on what eov's plugin API offers today:
 - A region made of several separate parts is stored as several
   annotations (eov's shapes have no multipolygon).
 
-Not done yet: DICOM annotation formats (SR, Bulk Simple Annotations) and
-blinded multi-reader copies.
+Not done yet: DICOM annotation formats (SR, Bulk Simple Annotations).
 
 ## Repository layout
 
@@ -393,7 +421,8 @@ src/
   sidebar.rs        the panel's properties and callbacks
   transfer.rs       import preview and apply, exports, backups
   counting.rs stats.rs measure.rs geometry.rs
-  formats/          GeoJSON, eov JSON, ASAP/ImageScope XML, CSV
+  compare.rs        comparing two readers
+  formats/          GeoJSON, eov JSON, ASAP/ImageScope XML, NDPA, CSV
   db/               schema, migrations (also from before 1.0), queries
   tests.rs          end-to-end tests
 ui/                 the panel and the import dialog (Slint)
