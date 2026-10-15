@@ -1,0 +1,109 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      eov_ref:
+        description: "eov commit, branch or tag whose plugin_api to build against (default: eov's default branch)"
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-latest, windows-latest]
+
+    steps:
+      - name: Check out the plugin
+        uses: actions/checkout@v5
+
+      - name: Check out eov
+        uses: actions/checkout@v5
+        with:
+          repository: eosin-platform/eov
+          ref: ${{ inputs.eov_ref }}
+          path: eov-src
+
+      # The plugin depends on `../../plugin_api`, its place in an eov checkout.
+      - name: Place eov's plugin_api next to the plugin
+        shell: bash
+        run: |
+          set -euo pipefail
+          target="$(cd "$GITHUB_WORKSPACE/../.." && pwd)/plugin_api"
+          rm -rf "$target"
+          cp -R eov-src/plugin_api "$target"
+
+      - name: Install Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache Rust build outputs
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            . -> target
+            tools/load-check -> target
+            tools/ui-check -> target
+
+      - name: Install fontconfig (Slint)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: sudo apt-get update && sudo apt-get install -y libfontconfig1-dev
+
+      - name: Formatting
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo fmt --check
+          cargo fmt --check --manifest-path tools/load-check/Cargo.toml
+          cargo fmt --check --manifest-path tools/ui-check/Cargo.toml
+
+      - name: Clippy
+        shell: bash
+        run: cargo clippy --all-targets --locked -- -D warnings
+
+      - name: Tests
+        shell: bash
+        run: cargo test --locked
+
+      - name: Release and packaging scripts
+        shell: bash
+        working-directory: scripts
+        run: python -m unittest -v test_release_infrastructure test_package_eop
+
+      - name: Build the plugin library
+        shell: bash
+        run: cargo build --release --locked
+
+      - name: Load the library the way eov does
+        shell: bash
+        run: cargo run --release --locked --manifest-path tools/load-check/Cargo.toml
+
+      - name: Check the Slint surfaces against the plugin
+        shell: bash
+        run: cargo run --release --locked --manifest-path tools/ui-check/Cargo.toml --bin annotations-ui-check
+
+      - name: Package
+        shell: bash
+        run: python scripts/package_eop.py --output dist/annotations-ci.eop

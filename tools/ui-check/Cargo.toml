@@ -3,7 +3,7 @@ name = "annotations-ui-check"
 version = "0.0.0"
 edition = "2024"
 publish = false
-description = "Checks the annotations plugin's .slint surfaces against what the plugin pushes, with the Slint version eov uses"
+description = "Checks the annotations plugin's .slint surfaces against what the plugin pushes, with the Slint version eov uses, and renders them"
 
 [dependencies]
 annotations = { path = "../.." }

@@ -209,6 +209,19 @@ pub fn samples() -> Result<Samples, String> {
         Shape::Point { x: 700.0, y: 700.0 },
         Modifiers::default(),
     );
+    // Count positive cells (click) and negative ones (Shift+click).
+    let class_index = |name: &str| -> Option<usize> {
+        properties_of(&h, &sb)["class-names"]
+            .as_array()?
+            .iter()
+            .position(|n| n == name)
+    };
+    let (positive, negative) = (
+        class_index("Positive").ok_or("no Positive class")?,
+        class_index("Negative").ok_or("no Negative class")?,
+    );
+    call(&h, &sb, "count-active", vec![json!(positive)]);
+    call(&h, &sb, "count-alternate", vec![json!(negative)]);
     for i in 0..12 {
         let shift = Modifiers {
             shift: i % 3 == 0,
@@ -238,9 +251,26 @@ pub fn samples() -> Result<Samples, String> {
     out.sidebar
         .push(("annotated slide".into(), properties_of(&h, &sb)));
 
-    // One region selected, with a property: details, measurements, tally.
+    // The large region selected, with a class, a name and a property:
+    // details, measurements and a tally with densities.
     let props = properties_of(&h, &sb);
-    let (first, layer) = row_id(&props, 1, 0).ok_or("no annotation rows")?;
+    let (first, layer) = props["rows"]
+        .as_array()
+        .and_then(|rows| {
+            rows.iter().find(|r| {
+                r["kind"] == 1
+                    && r["detail"]
+                        .as_str()
+                        .is_some_and(|d| d.contains("0.2500 mm²"))
+            })
+        })
+        .map(|r| {
+            (
+                r["id"].as_str().unwrap_or_default().to_string(),
+                r["layer-id"].as_str().unwrap_or_default().to_string(),
+            )
+        })
+        .ok_or("the 0.25 mm² region is not listed")?;
     call(
         &h,
         &sb,
@@ -261,6 +291,9 @@ pub fn samples() -> Result<Samples, String> {
         "detail-name-committed",
         vec![owner, json!("Region of interest")],
     );
+    let tumour = class_index("Tumour").ok_or("no Tumour class")?;
+    call(&h, &sb, "detail-class-chosen", vec![json!(tumour)]);
+    call(&h, &sb, "detail-status-chosen", vec![json!(1)]);
     out.sidebar
         .push(("one selected".into(), properties_of(&h, &sb)));
     call(&h, &sb, "tab-changed", vec![json!(sidebar::TAB_COUNT)]);

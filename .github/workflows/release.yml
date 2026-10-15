@@ -4,8 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to release, e.g. 0.2.2"
+        description: "Version to release, e.g. 1.0.0"
         required: true
+        type: string
+      eov_ref:
+        description: "eov commit, branch or tag whose plugin_api to build against (default: eov's default branch)"
+        required: false
+        default: ""
         type: string
 
 concurrency:
@@ -37,10 +42,14 @@ jobs:
         id: meta
         env:
           GH_TOKEN: ${{ github.token }}
+          INPUT_VERSION: ${{ inputs.version }}
+          INPUT_EOV_REF: ${{ inputs.eov_ref }}
         shell: bash
         run: |
           set -euo pipefail
-          version="${{ inputs.version }}"
+          version="$INPUT_VERSION"
+          # Validates the version (SemVer) against Cargo.toml and plugin.toml
+          # before it is used anywhere else.
           python3 scripts/release.py validate-source --root . --version "$version"
           tag="v$version"
           source_sha="$GITHUB_SHA"
@@ -79,8 +88,15 @@ jobs:
             reuse_draft="true"
           fi
 
-          eov_default_branch="$(gh api repos/eosin-platform/eov --jq .default_branch)"
-          eov_source_sha="$(gh api "repos/eosin-platform/eov/commits/$eov_default_branch" --jq .sha)"
+          eov_ref="$INPUT_EOV_REF"
+          if [[ -z "$eov_ref" ]]; then
+            eov_ref="$(gh api repos/eosin-platform/eov --jq .default_branch)"
+          fi
+          eov_source_sha="$(gh api "repos/eosin-platform/eov/commits/$eov_ref" --jq .sha)"
+          if [[ ! "$eov_source_sha" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "could not resolve eov ref '$eov_ref'" >&2
+            exit 1
+          fi
           {
             echo "source_sha=$source_sha"
             echo "eov_source_sha=$eov_source_sha"
@@ -89,36 +105,12 @@ jobs:
             echo "reuse_draft=$reuse_draft"
           } >> "$GITHUB_OUTPUT"
 
-  build-linux:
-    name: Linux
+  build:
+    name: Build
     needs: prepare
     permissions:
       contents: read
-    uses: ./.github/workflows/build-linux-eop.yml
-    with:
-      source_sha: ${{ needs.prepare.outputs.source_sha }}
-      eov_source_sha: ${{ needs.prepare.outputs.eov_source_sha }}
-      version: ${{ needs.prepare.outputs.version }}
-      tag: ${{ needs.prepare.outputs.tag }}
-
-  build-macos:
-    name: macOS
-    needs: prepare
-    permissions:
-      contents: read
-    uses: ./.github/workflows/build-macos-eop.yml
-    with:
-      source_sha: ${{ needs.prepare.outputs.source_sha }}
-      eov_source_sha: ${{ needs.prepare.outputs.eov_source_sha }}
-      version: ${{ needs.prepare.outputs.version }}
-      tag: ${{ needs.prepare.outputs.tag }}
-
-  build-windows:
-    name: Windows
-    needs: prepare
-    permissions:
-      contents: read
-    uses: ./.github/workflows/build-windows-eop.yml
+    uses: ./.github/workflows/build-eop.yml
     with:
       source_sha: ${{ needs.prepare.outputs.source_sha }}
       eov_source_sha: ${{ needs.prepare.outputs.eov_source_sha }}
@@ -127,10 +119,12 @@ jobs:
 
   aggregate:
     name: Aggregate and validate artifacts
-    needs: [prepare, build-linux, build-macos, build-windows]
+    needs: [prepare, build]
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      VERSION: ${{ needs.prepare.outputs.version }}
     steps:
       - name: Check out exact source
         uses: actions/checkout@v5
@@ -152,7 +146,7 @@ jobs:
           python3 scripts/release.py manifest \
             --root . \
             --plugin-name annotations \
-            --version '${{ needs.prepare.outputs.version }}' \
+            --version "$VERSION" \
             --repository eosin-platform/eov-annotations-plugin \
             --artifacts-dir artifacts \
             --staging-dir release-files \
@@ -172,6 +166,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VERSION: ${{ needs.prepare.outputs.version }}
+      TAG: ${{ needs.prepare.outputs.tag }}
+      SOURCE_SHA: ${{ needs.prepare.outputs.source_sha }}
+      REUSE_DRAFT: ${{ needs.prepare.outputs.reuse_draft }}
     steps:
       - name: Check out exact source
         uses: actions/checkout@v5
@@ -188,47 +188,41 @@ jobs:
           merge-multiple: true
 
       - name: Create or update draft release at SOURCE_SHA
-        env:
-          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          if [[ '${{ needs.prepare.outputs.reuse_draft }}' == 'true' ]]; then
-            gh release upload '${{ needs.prepare.outputs.tag }}' release-files/* --clobber
+          if [[ "$REUSE_DRAFT" == "true" ]]; then
+            gh release upload "$TAG" release-files/* --clobber
           else
-            gh release create '${{ needs.prepare.outputs.tag }}' \
-              --target '${{ needs.prepare.outputs.source_sha }}' \
-              --title 'Annotations ${{ needs.prepare.outputs.version }}' \
+            gh release create "$TAG" \
+              --target "$SOURCE_SHA" \
+              --title "Annotations $VERSION" \
               --generate-notes \
               --draft \
               release-files/*
           fi
 
       - name: Verify draft release target and assets
-        env:
-          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          tag='${{ needs.prepare.outputs.tag }}'
-          source_sha='${{ needs.prepare.outputs.source_sha }}'
           release_json="$(gh api "repos/${GITHUB_REPOSITORY}/releases?per_page=100" \
-            --jq "[.[] | select(.tag_name == \"$tag\")][0]")"
+            --jq "[.[] | select(.tag_name == \"$TAG\")][0]")"
           [[ "$release_json" != "null" ]] || {
-            echo "draft release $tag was not found" >&2
+            echo "draft release $TAG was not found" >&2
             exit 1
           }
-          [[ "$(jq -r '.tag_name' <<<"$release_json")" == "$tag" ]] || {
+          [[ "$(jq -r '.tag_name' <<<"$release_json")" == "$TAG" ]] || {
             echo "draft release has an unexpected tag name" >&2
             exit 1
           }
           [[ "$(jq -r '.draft' <<<"$release_json")" == "true" ]] || {
-            echo "release $tag is not a draft" >&2
+            echo "release $TAG is not a draft" >&2
             exit 1
           }
           draft_target="$(jq -r '.target_commitish' <<<"$release_json")"
-          [[ "$draft_target" == "$source_sha" ]] || {
-            echo "draft release $tag targets $draft_target, expected $source_sha" >&2
+          [[ "$draft_target" == "$SOURCE_SHA" ]] || {
+            echo "draft release $TAG targets $draft_target, expected $SOURCE_SHA" >&2
             exit 1
           }
           expected="$(find release-files -maxdepth 1 -type f -printf '%f\n' | sort)"
@@ -236,27 +230,21 @@ jobs:
           diff -u <(printf '%s\n' "$expected") <(printf '%s\n' "$actual")
 
       - name: Publish verified release
-        env:
-          GH_TOKEN: ${{ github.token }}
         shell: bash
-        run: gh release edit '${{ needs.prepare.outputs.tag }}' --draft=false
+        run: gh release edit "$TAG" --draft=false
 
       - name: Verify published tag target
-        env:
-          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          tag='${{ needs.prepare.outputs.tag }}'
-          source_sha='${{ needs.prepare.outputs.source_sha }}'
-          ref_json="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/$tag")"
+          ref_json="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/$TAG")"
           object_sha="$(jq -r '.object.sha' <<<"$ref_json")"
           object_type="$(jq -r '.object.type' <<<"$ref_json")"
           if [[ "$object_type" == "tag" ]]; then
             object_sha="$(gh api "repos/${GITHUB_REPOSITORY}/git/tags/$object_sha" --jq .object.sha)"
           fi
-          [[ "$object_sha" == "$source_sha" ]] || {
-            echo "published tag $tag points at $object_sha, expected $source_sha" >&2
+          [[ "$object_sha" == "$SOURCE_SHA" ]] || {
+            echo "published tag $TAG points at $object_sha, expected $SOURCE_SHA" >&2
             exit 1
           }
 
@@ -267,9 +255,9 @@ jobs:
           python3 scripts/release.py verify-assets \
             --root . \
             --plugin-name annotations \
-            --version '${{ needs.prepare.outputs.version }}' \
+            --version "$VERSION" \
             --repository eosin-platform/eov-annotations-plugin \
             --manifest release-files/release.toml
           curl --fail --location --silent --show-error \
-            "https://github.com/eosin-platform/eov-annotations-plugin/releases/download/${{ needs.prepare.outputs.tag }}/release.toml" \
+            "https://github.com/eosin-platform/eov-annotations-plugin/releases/download/$TAG/release.toml" \
             | cmp - release-files/release.toml

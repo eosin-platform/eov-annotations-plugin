@@ -1,0 +1,166 @@
+name: Build .eop packages
+
+# Builds the plugin for every platform eov is released for and packages each
+# library with plugin.toml and ui/ (scripts/package_eop.py). The plugin only
+# needs eov's plugin_api crate; no OpenSlide or other native libraries.
+#
+# Inputs reach shell steps through the environment, never through `${{ }}`
+# inside scripts.
+
+on:
+  workflow_call:
+    inputs:
+      source_sha:
+        description: "Exact plugin source commit to build"
+        required: true
+        type: string
+      eov_source_sha:
+        description: "Exact eov commit whose plugin_api to build against"
+        required: true
+        type: string
+      version:
+        description: "Release version without the v prefix"
+        required: true
+        type: string
+      tag:
+        description: "Release tag"
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: "Exact plugin source commit to build"
+        required: true
+        type: string
+      eov_source_sha:
+        description: "Exact eov commit whose plugin_api to build against"
+        required: true
+        type: string
+      version:
+        description: "Release version without the v prefix"
+        required: true
+        type: string
+      tag:
+        description: "Release tag"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: ${{ matrix.os }} ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: linux, arch: x86_64, runner: ubuntu-24.04, rust_target: x86_64-unknown-linux-gnu, library: libannotations.so }
+          - { os: linux, arch: arm64, runner: ubuntu-24.04-arm, rust_target: aarch64-unknown-linux-gnu, library: libannotations.so }
+          - { os: macos, arch: arm64, runner: macos-latest, rust_target: aarch64-apple-darwin, library: libannotations.dylib }
+          - { os: macos, arch: x86_64, runner: macos-15-intel, rust_target: x86_64-apple-darwin, library: libannotations.dylib }
+          - { os: windows, arch: x86_64, runner: windows-latest, rust_target: x86_64-pc-windows-msvc, library: annotations.dll }
+          - { os: windows, arch: arm64, runner: windows-11-arm, rust_target: aarch64-pc-windows-msvc, library: annotations.dll }
+
+    env:
+      SOURCE_SHA: ${{ inputs.source_sha }}
+      INPUT_VERSION: ${{ inputs.version }}
+      INPUT_TAG: ${{ inputs.tag }}
+      RUST_TARGET: ${{ matrix.rust_target }}
+      LIBRARY_NAME: ${{ matrix.library }}
+      PLATFORM: ${{ matrix.os }}-${{ matrix.arch }}
+
+    steps:
+      - name: Check out the plugin
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.source_sha }}
+
+      - name: Check out eov
+        uses: actions/checkout@v5
+        with:
+          repository: eosin-platform/eov
+          ref: ${{ inputs.eov_source_sha }}
+          path: eov-src
+
+      # The plugin depends on `../../plugin_api`, its place in an eov checkout.
+      - name: Place eov's plugin_api next to the plugin
+        shell: bash
+        run: |
+          set -euo pipefail
+          target="$(cd "$GITHUB_WORKSPACE/../.." && pwd)/plugin_api"
+          rm -rf "$target"
+          cp -R eov-src/plugin_api "$target"
+
+      - name: Install Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust_target }}
+
+      - name: Cache Rust build outputs
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.os }}-${{ matrix.arch }}
+          workspaces: |
+            . -> target
+            tools/load-check -> target
+
+      - name: Check the release inputs against the sources
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/release.py validate-source --root . --version "$INPUT_VERSION"
+          if [[ "$INPUT_TAG" != "v$INPUT_VERSION" ]]; then
+            echo "tag '$INPUT_TAG' does not match version '$INPUT_VERSION'" >&2
+            exit 1
+          fi
+          artifact="annotations-v${INPUT_VERSION}-${PLATFORM}.eop"
+          {
+            echo "artifact_name=$artifact"
+            echo "checksum_name=$artifact.sha256"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Build the plugin library
+        shell: bash
+        run: cargo build --release --locked --target "$RUST_TARGET"
+
+      - name: Load the library the way eov does
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo run --release --locked --manifest-path tools/load-check/Cargo.toml -- \
+            "target/$RUST_TARGET/release/$LIBRARY_NAME"
+
+      - name: Package
+        shell: bash
+        env:
+          ARTIFACT: ${{ steps.meta.outputs.artifact_name }}
+          CHECKSUM: ${{ steps.meta.outputs.checksum_name }}
+        run: |
+          set -euo pipefail
+          SOURCE_DATE_EPOCH="$(git log -1 --format=%ct "$SOURCE_SHA")"
+          export SOURCE_DATE_EPOCH
+          python scripts/package_eop.py \
+            --library "target/$RUST_TARGET/release/$LIBRARY_NAME" \
+            --output "dist/$ARTIFACT"
+          cd dist
+          python -c 'import hashlib, sys; name = sys.argv[1]; print(hashlib.sha256(open(name, "rb").read()).hexdigest() + "  " + name)' \
+            "$ARTIFACT" > "$CHECKSUM"
+          cat "$CHECKSUM"
+
+      - name: Upload the package
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.meta.outputs.artifact_name }}
+          path: |
+            dist/${{ steps.meta.outputs.artifact_name }}
+            dist/${{ steps.meta.outputs.checksum_name }}
+          if-no-files-found: error
