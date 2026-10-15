@@ -348,6 +348,8 @@ export component AnnotationsSidebar inherits Rectangle {
     in property <float> setting-point-radius: 4.5;
     in property <float> setting-fill-opacity: 0.18;
     in property <bool> setting-show-labels;
+    in property <float> setting-brush-size: 24;
+    in property <bool> setting-brush-eraser;
 
     // ---------------------------------------------------------------
     // Handled by the plugin.
@@ -2090,6 +2092,51 @@ export component AnnotationsSidebar inherits Rectangle {
                                     root.setting-number("fill-opacity", value);
                                 }
                             }
+                        }
+
+                        Separator { }
+
+                        SectionTitle {
+                            text: "BRUSH (S)";
+                        }
+
+                        HorizontalLayout {
+                            spacing: 6px;
+
+                            Label {
+                                text: "Size";
+                                min-width: 84px;
+                            }
+
+                            Slider {
+                                value: root.setting-brush-size;
+                                minimum: 4;
+                                maximum: 200;
+                                label: "Brush size";
+                                released(value) => {
+                                    root.setting-number("brush-size", value);
+                                }
+                            }
+
+                            Text {
+                                text: "\{round(root.setting-brush-size)} px";
+                                font-size: Theme.small-font-size;
+                                color: Theme.text-secondary;
+                                vertical-alignment: center;
+                                min-width: 44px;
+                            }
+                        }
+
+                        Check {
+                            text: "Erase from the selected region";
+                            checked: root.setting-brush-eraser;
+                            toggled(value) => {
+                                root.setting-bool("brush-eraser", value);
+                            }
+                        }
+
+                        Hint {
+                            text: "Paint over a selected region to extend it, elsewhere to make a new one. Hold Alt to erase; [ and ] change the size.";
                         }
                     }
                 }

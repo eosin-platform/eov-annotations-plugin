@@ -136,7 +136,12 @@ fn run(out: &Path) -> Result<(), String> {
     }
     // Every tab, and the popups, in the "one selected" state.
     if let Some((_, properties)) = samples.sidebar.iter().find(|(l, _)| l == "one selected") {
-        for (tab, name) in [(1, "classes"), (2, "count"), (3, "data")] {
+        for (tab, name, height) in [
+            (1, "classes", 860),
+            (2, "count", 860),
+            (3, "data", 860),
+            (3, "data-whole", 1700),
+        ] {
             let (instance, window) = instantiate(&sidebar_def, properties)?;
             instance
                 .set_property("tab", Value::Number(tab as f64))
@@ -145,7 +150,7 @@ fn run(out: &Path) -> Result<(), String> {
                 &instance,
                 &window,
                 340,
-                860,
+                height,
                 &out.join(format!("tab-{name}.png")),
             )?;
         }

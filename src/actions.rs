@@ -11,7 +11,7 @@ use crate::model::{
     SlideId, Status, clean_name, new_id, now_ms, pick_color,
 };
 use crate::overlay::{self, HostOp, parse_host_layer_id, reticle_layer_id};
-use crate::state::{FieldPress, SlideData, State};
+use crate::state::{BRUSH_SIZES, BrushStroke, FieldPress, SlideData, State};
 use crate::tools;
 use eov_plugin_api::prelude::*;
 use std::collections::BTreeMap;
@@ -1353,6 +1353,363 @@ pub fn field_pointer(core: &Arc<Core>, pane: PaneId, file_id: FileId, event: Poi
         }
         _ => {}
     }
+}
+
+// ---------------------------------------------------------------------------
+// Brush: paint a region, or erase from the selected one
+// ---------------------------------------------------------------------------
+
+pub fn brush_layer_id(file_id: FileId) -> String {
+    format!("brush.{file_id}")
+}
+
+/// Host calls for a file's brush preview: the brush outline at the pointer
+/// and the stroke painted so far.
+pub fn brush_ops(state: &mut State, file_id: FileId) -> Vec<HostOp> {
+    let layer_id = brush_layer_id(file_id);
+    let active = state.active_tool.as_deref() == Some(tools::BRUSH);
+    let size = state.settings.brush_size;
+    let eraser = state.settings.brush_eraser;
+    let mut objects = Vec::new();
+    if active {
+        let erasing = state.brush.as_ref().map_or(eraser, |s| s.erase);
+        let tint = if erasing {
+            Rgba(0xFF, 0x50, 0x50, 0xFF)
+        } else {
+            Rgba(0xFF, 0xFF, 0xFF, 0xFF)
+        };
+        if let Some(stroke) = state.brush.as_ref().filter(|s| s.file_id == file_id) {
+            let style = Style {
+                fill: tint.with_alpha(0x50),
+                stroke: tint.with_alpha(0x50),
+                stroke_width: size,
+                point_radius: size / 2.0,
+                ..Style::default()
+            };
+            let shape = match stroke.points.as_slice() {
+                [p] => Shape::Point { x: p[0], y: p[1] },
+                points => Shape::Polyline {
+                    points: points.to_vec(),
+                },
+            };
+            objects.push(OverlayObject::new("stroke", shape).with_style(style));
+        }
+        if let Some((_, at)) = state.brush_cursor.filter(|(f, _)| *f == file_id) {
+            objects.push(
+                OverlayObject::new("outline", Shape::Point { x: at[0], y: at[1] }).with_style(
+                    Style {
+                        fill: Rgba::TRANSPARENT,
+                        stroke: tint.with_alpha(0xE0),
+                        stroke_width: 1.5,
+                        point_radius: size / 2.0,
+                        ..Style::default()
+                    },
+                ),
+            );
+        }
+    }
+    let Some(file) = state.files.get_mut(&file_id) else {
+        return Vec::new();
+    };
+    if objects.is_empty() {
+        if !file.brush_layer {
+            return Vec::new();
+        }
+        file.brush_layer = false;
+        return vec![HostOp::RemoveLayer(layer_id)];
+    }
+    let mut ops = Vec::new();
+    if !file.brush_layer {
+        let mut spec = LayerSpec::new(layer_id.clone(), file_id)
+            .named("Brush")
+            .at_z(95);
+        spec.interactive = false;
+        ops.push(HostOp::CreateLayer(spec));
+        file.brush_layer = true;
+    }
+    ops.push(HostOp::Replace(layer_id, objects));
+    ops
+}
+
+/// Refreshes the brush preview of every file.
+pub fn refresh_brush(core: &Arc<Core>) {
+    let ops: Vec<HostOp> = {
+        let mut state = core.state();
+        if state.active_tool.as_deref() != Some(tools::BRUSH) {
+            state.brush = None;
+            state.brush_cursor = None;
+        }
+        let files: Vec<FileId> = state.files.keys().copied().collect();
+        files
+            .into_iter()
+            .flat_map(|id| brush_ops(&mut state, id))
+            .collect()
+    };
+    core.exec(ops);
+}
+
+/// Level-0 pixels per screen pixel in a pane (1 when unknown).
+fn pane_pixel(core: &Arc<Core>, pane: PaneId) -> f64 {
+    core.host
+        .snapshot()
+        .ok()
+        .and_then(|s| {
+            s.panes
+                .iter()
+                .find(|p| p.pane == pane)
+                .and_then(|p| p.view.as_ref())
+                .map(|v| v.zoom)
+        })
+        .filter(|z| z.is_finite() && *z > 0.0)
+        .map_or(1.0, |z| 1.0 / z)
+}
+
+/// Pointer input of the brush (a `Custom` tool).
+pub fn brush_pointer(core: &Arc<Core>, pane: PaneId, file_id: FileId, event: PointerEvent) {
+    let image = [event.image_x, event.image_y];
+    match event.kind {
+        PointerKind::Down if event.button == PointerButton::Left => {
+            let pixel = pane_pixel(core, pane);
+            let mut state = core.state();
+            let radius = f64::from(state.settings.brush_size) / 2.0 * pixel;
+            let erase = state.settings.brush_eraser || event.modifiers.alt;
+            state.brush = Some(BrushStroke {
+                pane,
+                file_id,
+                points: vec![image],
+                radius,
+                pixel,
+                erase,
+            });
+            state.brush_cursor = Some((file_id, image));
+        }
+        PointerKind::Move | PointerKind::Wheel => {
+            let mut state = core.state();
+            state.brush_cursor = Some((file_id, image));
+            if let Some(stroke) = state
+                .brush
+                .as_mut()
+                .filter(|s| s.pane == pane && s.file_id == file_id)
+                && stroke
+                    .points
+                    .last()
+                    .is_none_or(|last| geometry::distance(*last, image) >= stroke.radius * 0.25)
+            {
+                stroke.points.push(image);
+            }
+        }
+        PointerKind::Up | PointerKind::Leave => {
+            let stroke = core.state().brush.take();
+            if event.kind == PointerKind::Leave {
+                core.state().brush_cursor = None;
+            }
+            if let Some(mut stroke) = stroke.filter(|s| s.file_id == file_id) {
+                if event.kind == PointerKind::Up && stroke.points.last() != Some(&image) {
+                    stroke.points.push(image);
+                }
+                // Simplified to a quarter of a screen pixel.
+                let regions =
+                    geometry::brush_stroke(&stroke.points, stroke.radius, stroke.pixel * 0.25);
+                brush_apply(core, file_id, regions, stroke.erase);
+            }
+        }
+        _ => {}
+    }
+    refresh_brush(core);
+}
+
+/// `[` and `]` while the brush is active: a smaller or bigger brush.
+pub fn brush_key(core: &Arc<Core>, key: &str) {
+    let factor = match key_name(key).as_str() {
+        "[" => 1.0 / 1.25,
+        "]" => 1.25,
+        _ => return,
+    };
+    {
+        let mut state = core.state();
+        let size = (state.settings.brush_size * factor).round();
+        state.settings.brush_size = size.clamp(*BRUSH_SIZES.start(), *BRUSH_SIZES.end());
+        let _ = core.host.set_setting("settings", &state.settings);
+        core.host.set_status(Some(&brush_status(&state)));
+    }
+    refresh_brush(core);
+    core.request_refresh();
+}
+
+pub fn brush_status(state: &State) -> String {
+    format!(
+        "Brush {} px{}: paint a region (over a selected region to extend it); Alt erases; [ and ] change the size",
+        state.settings.brush_size,
+        if state.settings.brush_eraser {
+            ", eraser"
+        } else {
+            ""
+        }
+    )
+}
+
+/// Applies a brush stroke as one change (one undo step): erasing cuts it
+/// from the selected regions it touches; painting extends the first
+/// selected region it overlaps, or makes a new region.
+fn brush_apply(core: &Arc<Core>, file_id: FileId, stroke: Vec<Geometry>, erase: bool) {
+    if stroke.is_empty() {
+        return;
+    }
+    let label = if erase { "Erase" } else { "Brush stroke" };
+    core.submit(Op::new(label, Some(file_id), move |state| {
+        let (slide, image) = editable_slide(state, file_id)?;
+        let selection = state
+            .files
+            .get(&file_id)
+            .map(|f| f.selection.clone())
+            .unwrap_or_default();
+        let editable =
+            |a: &Annotation| !a.locked && slide.layer(&a.layer_id).is_none_or(|l| !l.locked);
+        let targets: Vec<Arc<Annotation>> = selection
+            .iter()
+            .filter_map(|id| slide.annotations.get(id))
+            .filter(|a| a.geometry.kind().is_area())
+            .cloned()
+            .collect();
+        let mut parts = Vec::new();
+        for g in stroke {
+            if let Ok(n) = geometry::normalize(g, image) {
+                parts.extend(n.parts);
+            }
+        }
+        if parts.is_empty() {
+            return Err("The stroke is outside the slide.".to_string());
+        }
+        let bounds = parts
+            .iter()
+            .map(Geometry::bounds)
+            .reduce(|a, b| Bounds {
+                min_x: a.min_x.min(b.min_x),
+                min_y: a.min_y.min(b.min_y),
+                max_x: a.max_x.max(b.max_x),
+                max_y: a.max_y.max(b.max_y),
+            })
+            .unwrap_or_default();
+        let now = now_ms();
+        let split = |target: &Arc<Annotation>,
+                     mut pieces: Vec<Geometry>,
+                     changes: &mut Vec<Change>,
+                     ids: &mut Vec<String>| {
+            if pieces.is_empty() {
+                changes.push(Change::Annotation {
+                    before: Some(target.clone()),
+                    after: None,
+                });
+                return;
+            }
+            let first = pieces.remove(0);
+            let mut updated = (**target).clone();
+            updated.geometry = first;
+            updated.updated_at = now.max(target.updated_at + 1);
+            ids.push(updated.id.clone());
+            changes.push(Change::Annotation {
+                before: Some(target.clone()),
+                after: Some(Arc::new(updated)),
+            });
+            for piece in pieces {
+                let mut part = (**target).clone();
+                part.id = new_id();
+                part.geometry = piece;
+                part.created_at = now;
+                part.updated_at = now;
+                ids.push(part.id.clone());
+                changes.push(Change::Annotation {
+                    before: None,
+                    after: Some(Arc::new(part)),
+                });
+            }
+        };
+        let mut changes = Vec::new();
+        let mut ids = Vec::new();
+        if erase {
+            if targets.is_empty() {
+                return Err("Select the region to erase from.".to_string());
+            }
+            for target in &targets {
+                if !editable(target) || !target.geometry.bounds().intersects(&bounds) {
+                    ids.push(target.id.clone());
+                    continue;
+                }
+                let mut pieces = vec![target.geometry.clone()];
+                for part in &parts {
+                    pieces = pieces
+                        .iter()
+                        .flat_map(|g| {
+                            geometry::difference(g, part).unwrap_or_else(|| vec![g.clone()])
+                        })
+                        .collect();
+                }
+                if pieces.len() == 1
+                    && geometry::area(&pieces[0]) >= geometry::area(&target.geometry) - 1e-9
+                {
+                    ids.push(target.id.clone());
+                    continue;
+                }
+                split(target, pieces, &mut changes, &mut ids);
+            }
+            if changes.is_empty() {
+                return Err("The eraser did not touch the selected region.".to_string());
+            }
+            return Ok(Planned {
+                changes,
+                select: Some((file_id, ids)),
+                ..Default::default()
+            });
+        }
+        for target in targets.iter().filter(|t| editable(t)) {
+            if !target.geometry.bounds().intersects(&bounds) {
+                continue;
+            }
+            let mut merged = target.geometry.clone();
+            let mut separate = Vec::new();
+            let mut touched = false;
+            for part in &parts {
+                match geometry::union(&merged, part) {
+                    Some(mut u) if u.len() == 1 => {
+                        merged = u.remove(0);
+                        touched = true;
+                    }
+                    _ => separate.push(part.clone()),
+                }
+            }
+            if touched {
+                let mut pieces = vec![merged];
+                pieces.extend(separate);
+                split(target, pieces, &mut changes, &mut ids);
+                return Ok(Planned {
+                    changes,
+                    select: Some((file_id, ids)),
+                    ..Default::default()
+                });
+            }
+        }
+        let layer = target_layer(slide, LayerRole::Normal, &mut changes)?;
+        let class = state
+            .settings
+            .active_class
+            .clone()
+            .filter(|id| state.class(id).is_some());
+        let author = state.settings.author.clone();
+        for part in parts {
+            let a = annotation(&layer, part, class.clone(), "", &author);
+            ids.push(a.id.clone());
+            changes.push(Change::Annotation {
+                before: None,
+                after: Some(Arc::new(a)),
+            });
+        }
+        Ok(Planned {
+            changes,
+            select: Some((file_id, ids)),
+            current_layer: Some((slide.id(), layer.id.clone())),
+            ..Default::default()
+        })
+    }));
 }
 
 /// Annotation-kind label for lists.

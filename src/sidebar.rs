@@ -700,6 +700,8 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
     put(&mut p, "setting-point-radius", state.settings.point_radius);
     put(&mut p, "setting-fill-opacity", state.settings.fill_opacity);
     put(&mut p, "setting-show-labels", state.settings.show_labels);
+    put(&mut p, "setting-brush-size", state.settings.brush_size);
+    put(&mut p, "setting-brush-eraser", state.settings.brush_eraser);
     p
 }
 
@@ -1303,6 +1305,10 @@ pub fn callback(
                         state.settings.show_labels = value;
                         true
                     }
+                    "brush-eraser" => {
+                        state.settings.brush_eraser = value;
+                        false
+                    }
                     other => return Err(format!("unknown setting '{other}'")),
                 }
             };
@@ -1313,16 +1319,32 @@ pub fn callback(
         }
         "setting-number" => {
             let (key, value) = (s(args, 0), n(args, 1) as f32);
-            {
+            let restyle = {
                 let mut state = core.state();
                 match key.as_str() {
-                    "point-radius" => state.settings.point_radius = value.clamp(1.0, 20.0),
-                    "fill-opacity" => state.settings.fill_opacity = value.clamp(0.0, 1.0),
+                    "point-radius" => {
+                        state.settings.point_radius = value.clamp(1.0, 20.0);
+                        true
+                    }
+                    "fill-opacity" => {
+                        state.settings.fill_opacity = value.clamp(0.0, 1.0);
+                        true
+                    }
+                    "brush-size" => {
+                        let sizes = crate::state::BRUSH_SIZES;
+                        state.settings.brush_size =
+                            value.round().clamp(*sizes.start(), *sizes.end());
+                        false
+                    }
                     other => return Err(format!("unknown setting '{other}'")),
                 }
-            }
+            };
             host.save_settings();
-            restyle_all(core);
+            if restyle {
+                restyle_all(core);
+            } else {
+                actions::refresh_brush(core);
+            }
         }
         "tool" => {
             let tool = s(args, 0);

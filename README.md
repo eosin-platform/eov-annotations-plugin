@@ -65,6 +65,7 @@ The tools are in eov's toolbar; each has a key.
 | Count | `C` | A count point in the *Cell counts* layer with the class counted by a click; **Shift+click** counts the second class. |
 | Polygon | `P` | Click the vertices; click the first vertex, double-click or press Enter to close it. |
 | Freehand | `G` | Drag an outline (stored as a polygon). |
+| Brush | `S` | Paint with a round brush: over a selected region to extend it, elsewhere to make a new one. **Alt** (or the eraser setting) erases from the selected region. `[` and `]` change the size. |
 | Rectangle | `B` | Drag a rectangle. |
 | Ellipse | `O` | Drag an ellipse. |
 | Line / path | `L` | Click the vertices; double-click or Enter finishes. Its length is measured. |
@@ -75,7 +76,10 @@ The tools are in eov's toolbar; each has a key.
 With one region selected, drawing a polygon, freehand outline, rectangle
 or ellipse with **Shift** adds the shape to that region and with **Alt**
 (or Ctrl/⌘) cuts it out of the region, which makes holes (an excluded lumen
-no longer counts as area) or splits the region. Outlines that cross
+no longer counts as area) or splits the region. A brush stroke is the
+union of the discs stamped along it, simplified to a quarter of a screen
+pixel; its size is in screen pixels (Data tab), so it paints finer when
+zoomed in, and each stroke is one undo step. Outlines that cross
 themselves are split into simple parts when they are drawn, and every shape
 is clipped to the slide.
 
@@ -359,8 +363,8 @@ This depends on what eov's plugin API offers today:
 - A region made of several separate parts is stored as several
   annotations (eov's shapes have no multipolygon).
 
-Not done yet: a brush with eraser, NDPA and DICOM annotation
-formats, comment threads and blinded multi-reader copies.
+Not done yet: NDPA and DICOM annotation formats, comment threads and
+blinded multi-reader copies.
 
 ## Repository layout
 

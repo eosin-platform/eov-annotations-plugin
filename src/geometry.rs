@@ -637,6 +637,115 @@ pub fn calipers(points: &[P]) -> (f64, f64) {
     (max_d, if min_w.is_finite() { min_w } else { 0.0 })
 }
 
+// ---------------------------------------------------------------------------
+// Brush strokes
+// ---------------------------------------------------------------------------
+
+/// Vertices of a disc of `radius` whose outline is within `tolerance` of
+/// the circle (12 to 96).
+fn disc_segments(radius: f64, tolerance: f64) -> usize {
+    if radius <= tolerance {
+        return 12;
+    }
+    let half_angle = (1.0 - tolerance / radius).clamp(-1.0, 1.0).acos();
+    if half_angle <= 0.0 {
+        return 96;
+    }
+    ((std::f64::consts::PI / half_angle).ceil() as usize).clamp(12, 96)
+}
+
+/// Douglas–Peucker simplification of a closed ring (kept as is when the
+/// result would have fewer than three vertices).
+pub fn simplify_ring(ring: &[P], tolerance: f64) -> Vec<P> {
+    fn segment_distance(p: P, a: P, b: P) -> f64 {
+        let (dx, dy) = (b[0] - a[0], b[1] - a[1]);
+        let length = dx * dx + dy * dy;
+        if length == 0.0 {
+            return distance(p, a);
+        }
+        let t = (((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / length).clamp(0.0, 1.0);
+        distance(p, [a[0] + t * dx, a[1] + t * dy])
+    }
+    fn keep(points: &[P], first: usize, last: usize, tolerance: f64, out: &mut Vec<bool>) {
+        let mut farthest = (0.0, first);
+        for i in first + 1..last {
+            let d = segment_distance(points[i], points[first], points[last]);
+            if d > farthest.0 {
+                farthest = (d, i);
+            }
+        }
+        if farthest.0 > tolerance {
+            out[farthest.1] = true;
+            keep(points, first, farthest.1, tolerance, out);
+            keep(points, farthest.1, last, tolerance, out);
+        }
+    }
+    if ring.len() < 4 || tolerance <= 0.0 {
+        return ring.to_vec();
+    }
+    // Split at the vertex farthest from the first, so both halves are open
+    // polylines with fixed ends.
+    let far = (1..ring.len())
+        .max_by(|a, b| distance(ring[0], ring[*a]).total_cmp(&distance(ring[0], ring[*b])))
+        .unwrap_or(1);
+    let mut closed: Vec<P> = ring.to_vec();
+    closed.push(ring[0]);
+    let mut kept = vec![false; closed.len()];
+    kept[0] = true;
+    kept[far] = true;
+    keep(&closed, 0, far, tolerance, &mut kept);
+    keep(&closed, far, closed.len() - 1, tolerance, &mut kept);
+    let out: Vec<P> = closed[..closed.len() - 1]
+        .iter()
+        .zip(&kept)
+        .filter(|(_, k)| **k)
+        .map(|(p, _)| *p)
+        .collect();
+    if out.len() < 3 { ring.to_vec() } else { out }
+}
+
+/// The region a round brush of `radius` covers along `points` (level-0
+/// pixels): the union of a disc at every point and a band along every
+/// segment between them, simplified to within `tolerance`.
+pub fn brush_stroke(points: &[P], radius: f64, tolerance: f64) -> Vec<Geometry> {
+    if points.is_empty() || !radius.is_finite() || radius <= 0.0 {
+        return Vec::new();
+    }
+    let n = disc_segments(radius, tolerance.max(1e-6));
+    let mut shapes: Vec<Rings> = Vec::with_capacity(points.len() * 2);
+    for p in points {
+        shapes.push(oriented(vec![ellipse_ring(p[0], p[1], radius, radius, n)]));
+    }
+    for pair in points.windows(2) {
+        let (a, b) = (pair[0], pair[1]);
+        let length = distance(a, b);
+        if length <= f64::EPSILON {
+            continue;
+        }
+        let (nx, ny) = (
+            -(b[1] - a[1]) / length * radius,
+            (b[0] - a[0]) / length * radius,
+        );
+        shapes.push(oriented(vec![vec![
+            [a[0] + nx, a[1] + ny],
+            [b[0] + nx, b[1] + ny],
+            [b[0] - nx, b[1] - ny],
+            [a[0] - nx, a[1] - ny],
+        ]]));
+    }
+    let merged = shapes.simplify_shape(FillRule::NonZero);
+    let simplified: Vec<Rings> = merged
+        .into_iter()
+        .map(|rings| {
+            rings
+                .into_iter()
+                .map(|ring| simplify_ring(&ring, tolerance))
+                .collect()
+        })
+        .collect();
+    rings_to_geometries(simplified)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -950,5 +1059,48 @@ mod tests {
     fn signed_area_is_precise_far_from_the_origin() {
         let ring = square(150_000.0, 90_000.0, 1.0);
         assert!((ring_area(&ring) - 1.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn brush_strokes_are_the_union_of_discs_and_bands() {
+        // A straight stroke of 100 px with a radius of 10: a stadium shape
+        // of 100 × 20 + π · 10².
+        let stroke = brush_stroke(&[[0.0, 0.0], [50.0, 0.0], [100.0, 0.0]], 10.0, 0.05);
+        assert_eq!(stroke.len(), 1);
+        let expected = 100.0 * 20.0 + std::f64::consts::PI * 100.0;
+        let got = area(&stroke[0]);
+        assert!(
+            (got - expected).abs() / expected < 0.005,
+            "{got} vs {expected}"
+        );
+        // A single dab is a disc.
+        let dab = brush_stroke(&[[5.0, 5.0]], 4.0, 0.01);
+        assert!((area(&dab[0]) - std::f64::consts::PI * 16.0).abs() < 0.5);
+        // A loop closes into a ring with a hole.
+        let ring: Vec<P> = (0..=40)
+            .map(|i| {
+                let t = i as f64 / 40.0 * std::f64::consts::TAU;
+                [100.0 * t.cos(), 100.0 * t.sin()]
+            })
+            .collect();
+        let looped = brush_stroke(&ring, 10.0, 0.1);
+        assert_eq!(looped.len(), 1);
+        let Geometry::Polygon { holes, .. } = &looped[0] else {
+            panic!()
+        };
+        assert_eq!(holes.len(), 1);
+        assert!(brush_stroke(&[], 10.0, 0.1).is_empty());
+        assert!(brush_stroke(&[[0.0, 0.0]], 0.0, 0.1).is_empty());
+    }
+
+    #[test]
+    fn rings_simplify_within_tolerance() {
+        let circle = ellipse_ring(0.0, 0.0, 100.0, 100.0, 1000);
+        let simple = simplify_ring(&circle, 0.5);
+        assert!(simple.len() < 120 && simple.len() >= 12, "{}", simple.len());
+        let lost = (ring_area(&circle) - ring_area(&simple)) / ring_area(&circle);
+        assert!(lost.abs() < 0.01, "{lost}");
+        let square = vec![[0.0, 0.0], [10.0, 0.0], [10.0, 10.0], [0.0, 10.0]];
+        assert_eq!(simplify_ring(&square, 1.0), square);
     }
 }

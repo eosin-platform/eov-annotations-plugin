@@ -17,6 +17,7 @@ pub const POLYLINE: &str = "polyline";
 pub const ARROW: &str = "arrow";
 pub const TEXT: &str = "text";
 pub const FIELD: &str = "field";
+pub const BRUSH: &str = "brush";
 
 pub const SIDEBAR_BUTTON: &str = "sidebar";
 pub const VISIBILITY_HUD: &str = "visibility";
@@ -114,6 +115,14 @@ const TOOLS: &[Def] = &[
         icon: "<path d='M4 18l5-8 5 4 6-9'/>",
     },
     Def {
+        id: BRUSH,
+        label: "Brush (paint a region, over a selected region to extend it; Alt or the eraser erases; [ and ] change the size)",
+        key: "s",
+        // Custom: the plugin paints the stroke from the pointer.
+        kind: ToolKind::Custom,
+        icon: "<path d='M14 4l6 6-8 8H6v-6z'/><path d='M4 20c2 0 3-1 3-3'/>",
+    },
+    Def {
         id: ARROW,
         label: "Arrow (click the tail, double-click the tip; more clicks bend it)",
         key: "a",
@@ -170,10 +179,13 @@ pub fn tool_specs() -> Vec<ToolSpec> {
                 spec.edit_layers = vec![NO_EDITING.to_string()];
             }
             if def.kind == ToolKind::Custom {
-                // The HPF field tool uses the pointer only: every key keeps
-                // its usual meaning (eov's shortcuts, other tools, class
-                // hotkeys; Escape leaves the tool).
-                spec.keys = Some(Vec::new());
+                // The pointer tools claim only the keys they use: every
+                // other key keeps its usual meaning (eov's shortcuts, other
+                // tools, class hotkeys; Escape leaves the tool).
+                spec.keys = Some(match def.id {
+                    BRUSH => vec!["[".to_string(), "]".to_string()],
+                    _ => Vec::new(),
+                });
             }
             spec.preview_style = Some(Style {
                 fill: Rgba(0xFF, 0xD6, 0x0A, 0x22),

@@ -230,6 +230,7 @@ impl AnnotationsPlugin {
                 tools::SELECT => {
                     "Click to select, drag to select several; drag handles to edit".to_string()
                 }
+                tools::BRUSH => actions::brush_status(&state),
                 _ => format!("Drawing {class}"),
             };
             self.core.host.set_status(Some(&status));
@@ -237,6 +238,9 @@ impl AnnotationsPlugin {
         if field {
             // The reticle appears where the pointer moves.
             actions::refresh_reticles(&self.core);
+        }
+        if tool_id == tools::BRUSH {
+            actions::refresh_brush(&self.core);
         }
     }
 
@@ -250,6 +254,9 @@ impl AnnotationsPlugin {
         self.core.host.set_status(None);
         if tool_id == tools::FIELD {
             actions::refresh_reticles(&self.core);
+        }
+        if tool_id == tools::BRUSH {
+            actions::refresh_brush(&self.core);
         }
     }
 
@@ -702,6 +709,18 @@ impl Plugin for AnnotationsPlugin {
                 file_id,
                 event,
             } if tool_id == tools::FIELD => actions::field_pointer(core, pane, file_id, event),
+            HostEvent::Pointer {
+                tool_id,
+                pane,
+                file_id,
+                event,
+            } if tool_id == tools::BRUSH => actions::brush_pointer(core, pane, file_id, event),
+            HostEvent::Key {
+                tool_id: Some(tool_id),
+                key,
+                pressed: true,
+                ..
+            } if tool_id == tools::BRUSH => actions::brush_key(core, &key),
             HostEvent::UndoDropped { entry_ids } => core.state().history.drop_entries(&entry_ids),
             HostEvent::HudButtonClicked {
                 button_id,

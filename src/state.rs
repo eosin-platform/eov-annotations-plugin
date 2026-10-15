@@ -39,7 +39,14 @@ pub struct Settings {
     pub count_hidden_layers: bool,
     /// The sidebar tab shown last.
     pub tab: i32,
+    /// Diameter of the brush in screen pixels.
+    pub brush_size: f32,
+    /// The brush erases from the selected region (as with Alt held).
+    pub brush_eraser: bool,
 }
+
+/// Brush diameters allowed, in screen pixels.
+pub const BRUSH_SIZES: std::ops::RangeInclusive<f32> = 4.0..=200.0;
 
 impl Default for Settings {
     fn default() -> Self {
@@ -57,6 +64,8 @@ impl Default for Settings {
             alternate_class: None,
             count_hidden_layers: false,
             tab: 0,
+            brush_size: 24.0,
+            brush_eraser: false,
         }
     }
 }
@@ -83,6 +92,9 @@ impl Settings {
             *text = cleaned;
         }
         self.tab = self.tab.clamp(0, 3);
+        if !(self.brush_size.is_finite() && BRUSH_SIZES.contains(&self.brush_size)) {
+            self.brush_size = 24.0;
+        }
         self
     }
 }
@@ -282,6 +294,8 @@ pub struct OpenFile {
     pub reticle: Option<[f64; 2]>,
     /// Whether the reticle's host layer exists.
     pub reticle_layer: bool,
+    /// Whether the brush preview's host layer exists.
+    pub brush_layer: bool,
 }
 
 impl OpenFile {
@@ -294,6 +308,7 @@ impl OpenFile {
             host_layers: BTreeSet::new(),
             reticle: None,
             reticle_layer: false,
+            brush_layer: false,
         }
     }
 
@@ -427,6 +442,20 @@ pub enum Pending {
     },
 }
 
+/// A brush stroke in progress.
+#[derive(Debug, Clone, PartialEq)]
+pub struct BrushStroke {
+    pub pane: PaneId,
+    pub file_id: FileId,
+    /// Stamped centres, level-0 pixels.
+    pub points: Vec<[f64; 2]>,
+    /// Brush radius in level-0 pixels (from the zoom when it started).
+    pub radius: f64,
+    /// Level-0 pixels per screen pixel when it started.
+    pub pixel: f64,
+    pub erase: bool,
+}
+
 /// A press of the HPF field tool (a click places a field, a drag pans).
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct FieldPress {
@@ -479,6 +508,10 @@ pub struct State {
     pub refused_hotkeys: HashMap<String, String>,
     /// The field tool's current press.
     pub field_press: Option<FieldPress>,
+    /// The brush stroke being painted.
+    pub brush: Option<BrushStroke>,
+    /// Where the brush outline is shown (the pointer).
+    pub brush_cursor: Option<(FileId, [f64; 2])>,
 }
 
 impl State {
@@ -505,6 +538,8 @@ impl State {
             legacy_db: None,
             refused_hotkeys: HashMap::new(),
             field_press: None,
+            brush: None,
+            brush_cursor: None,
         }
     }
 

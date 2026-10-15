@@ -3,7 +3,7 @@
 //! directories; nothing touches the home directory.
 
 use super::*;
-use crate::tools::{ARROW, COUNT, FIELD, POINT, POLYGON, RECTANGLE, TEXT};
+use crate::tools::{ARROW, BRUSH, COUNT, FIELD, POINT, POLYGON, RECTANGLE, TEXT};
 use eov_plugin_api::testing::{MockHost, TestHarness, test_init};
 use std::path::Path;
 
@@ -1531,4 +1531,134 @@ fn arrows_are_lines_with_a_head_that_survive_edits_and_formats() {
     let imported = objects(&h, 2);
     assert_eq!(imported.len(), 1);
     assert_eq!(imported[0].1.shape, Shape::Polyline { points });
+}
+
+fn brush(h: &H, kind: PointerKind, image: [f64; 2], alt: bool) {
+    h.send(HostEvent::Pointer {
+        tool_id: BRUSH.into(),
+        pane: 1,
+        file_id: 1,
+        event: PointerEvent {
+            kind,
+            button: PointerButton::Left,
+            image_x: image[0],
+            image_y: image[1],
+            screen_x: image[0] / 2.0,
+            screen_y: image[1] / 2.0,
+            modifiers: Modifiers {
+                alt,
+                ..Default::default()
+            },
+            wheel_delta: 0.0,
+        },
+    })
+    .unwrap();
+    settle(h);
+}
+
+fn stroke(h: &H, from: [f64; 2], to: [f64; 2], alt: bool) {
+    brush(h, PointerKind::Down, from, alt);
+    for i in 1..=10 {
+        let t = i as f64 / 10.0;
+        brush(
+            h,
+            PointerKind::Move,
+            [
+                from[0] + (to[0] - from[0]) * t,
+                from[1] + (to[1] - from[1]) * t,
+            ],
+            alt,
+        );
+    }
+    brush(h, PointerKind::Up, to, alt);
+}
+
+fn area_of(h: &H, file: FileId) -> f64 {
+    objects(h, file)
+        .iter()
+        .map(|(_, o)| geometry::area(&Geometry::from_shape(&o.shape).0))
+        .sum()
+}
+
+#[test]
+fn the_brush_paints_extends_and_erases_regions_one_undo_step_per_stroke() {
+    let (h, dir) = fresh();
+    open(&h, info(1, "a", &dir));
+    // The pane shows level-0 at half size: 24 screen px are 48 level-0 px.
+    h.state().snapshot.panes = vec![PaneInfo {
+        pane: 1,
+        index: 0,
+        file_id: Some(1),
+        view: Some(ViewInfo {
+            pane: 1,
+            file_id: 1,
+            zoom: 0.5,
+            width: 800.0,
+            height: 600.0,
+            ..Default::default()
+        }),
+    }];
+    assert_eq!(
+        h.state().tools[BRUSH].keys,
+        Some(vec!["[".to_string(), "]".to_string()])
+    );
+    h.send(HostEvent::ToolActivated {
+        tool_id: BRUSH.into(),
+    })
+    .unwrap();
+    settle(&h);
+    // Hovering shows the brush outline.
+    brush(&h, PointerKind::Move, [500.0, 500.0], false);
+    assert_eq!(h.state().objects("brush.1").len(), 1);
+    let undo_before = h.state().undo.len();
+    stroke(&h, [1000.0, 1000.0], [2000.0, 1000.0], false);
+    assert_eq!(objects(&h, 1).len(), 1, "one new region");
+    assert_eq!(h.state().undo.len(), undo_before + 1, "one undo step");
+    // A stadium of 1000 × 48 plus a disc of radius 24.
+    let painted = area_of(&h, 1);
+    let expected = 1000.0 * 48.0 + std::f64::consts::PI * 24.0 * 24.0;
+    assert!(
+        (painted - expected).abs() / expected < 0.01,
+        "{painted} vs {expected}"
+    );
+    // Painting over the selected region extends it.
+    stroke(&h, [2000.0, 1000.0], [2000.0, 1500.0], false);
+    assert_eq!(objects(&h, 1).len(), 1, "still one region");
+    assert!(area_of(&h, 1) > painted * 1.4);
+    // Alt erases: a cut across the first stroke splits the region.
+    let before = area_of(&h, 1);
+    stroke(&h, [1500.0, 900.0], [1500.0, 1100.0], true);
+    assert_eq!(objects(&h, 1).len(), 2, "the cut split the region");
+    assert!(area_of(&h, 1) < before);
+    assert_eq!(last_undo(&h).label, "Erase");
+    undo(&h);
+    assert_eq!(objects(&h, 1).len(), 1);
+    assert!((area_of(&h, 1) - before).abs() < 1.0);
+    // [ and ] change the size.
+    h.send(HostEvent::Key {
+        tool_id: Some(BRUSH.into()),
+        pane: Some(1),
+        key: "]".into(),
+        modifiers: Modifiers::default(),
+        pressed: true,
+        repeat: false,
+    })
+    .unwrap();
+    settle(&h);
+    assert_eq!(
+        h.state().settings.get(SETTINGS_KEY).unwrap()["brush_size"],
+        json!(30.0)
+    );
+    // Erasing with nothing selected says what to do.
+    h.send(HostEvent::SelectionChanged { objects: vec![] })
+        .unwrap();
+    settle(&h);
+    stroke(&h, [100.0, 100.0], [200.0, 100.0], true);
+    assert!(notified(&h, "Select the region to erase from"));
+    h.send(HostEvent::ToolDeactivated {
+        tool_id: BRUSH.into(),
+    })
+    .unwrap();
+    settle(&h);
+    assert!(!h.state().layers.contains_key("brush.1"));
 }
