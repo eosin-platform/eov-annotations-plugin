@@ -1,258 +1,374 @@
-# Annotations Plugin for eov
+# Annotations plugin for eov
 
-[![Build Status](https://github.com/eosin-platform/eov-annotations-plugin/actions/workflows/release.yml/badge.svg)](https://github.com/eosin-platform/eov-annotations-plugin/actions/workflows/release.yml)
-[![License: MIT OR Apache-2.0 OR GPL-3.0](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0%20OR%20GPL--3.0-0366d6)](https://github.com/eosin-platform/eov-annotations-plugin#license)
+[![CI](https://github.com/eosin-platform/eov-annotations-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/eosin-platform/eov-annotations-plugin/actions/workflows/ci.yml)
+[![License: MIT OR Apache-2.0 OR GPL-3.0](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0%20OR%20GPL--3.0-0366d6)](#license)
 
-This repository contains the Annotations plugin for [eov](https://github.com/eosin-platform/eov), the lightweight whole-slide image viewer. The plugin adds local point and polygon annotation tools, a slide-scoped annotation sidebar, and JSON export for annotation data.
+Annotations for [eov](https://github.com/eosin-platform/eov), the whole-slide
+image viewer: points, regions, lines and text, reusable classes, cell
+counting with densities and indices, high-power fields, measurements in
+physical units, and import and export in the formats other tools use
+(GeoJSON as QuPath writes it, ASAP and Aperio ImageScope XML).
 
-The host application is documented in the main eov repository. This README covers the plugin itself: what it does, how it behaves today, and how to build and package it for eov.
-
-Prebuilt `.eop` release artifacts are published for Linux, macOS, and Windows across `x86_64` and `arm64` where GitHub-hosted runners are available.
-
-## Screenshots
-
-<p align="center">
-	<img src="images/screenshot-3.webp" width="512">
-</p>
-
-## What It Does
-
-The plugin extends eov with:
-
-- Point annotations
-- Polygon annotations
-- Per-slide annotation layers
-- A docked annotations sidebar
-- Per-layer color selection
-- Per-layer visibility toggles
-- Layer rename and delete actions
-- Annotation delete actions
-- JSON export for the active slide's annotations
-- Persistent local storage backed by SQLite
-
-Annotations are associated with a slide fingerprint rather than only a file path, so saved annotations follow the same slide content when the file is reopened.
-
-## Current User-Facing Behavior
-
-When the plugin is loaded into eov, it contributes three toolbar buttons:
-
-- `Annotations`: opens the sidebar
-- `Create Point Annotation`: activates the point tool, hotkey `1`
-- `Create Polygon Annotation`: activates the polygon tool, hotkey `2`
-
-It also adds two viewport context menu actions for an open slide:
-
-- `Create Point`
-- `Create Polygon`
-
-### Point Annotations
-
-Point annotations are rendered as colored rings in the viewport. When a point is placed, the plugin stores it immediately in the selected annotation layer and refreshes both the sidebar and the viewport.
-
-Placed points can be dragged to a new location. Moving a point updates both the in-memory plugin state and the persistent SQLite store.
-
-### Polygon Annotations
-
-Polygon annotations are rendered as colored filled polygons. The plugin persists a polygon once the host completes placement with at least three vertices.
-
-Placed polygons can be moved, and polygon vertices can be edited through the host application's polygon editing support. The plugin persists updated vertices back to SQLite whenever the polygon changes.
-
-### Annotation Layers
-
-Annotations are organized into layers per slide.
-
-- If you place an annotation on a slide with no selected layer, the plugin creates or selects an `Untitled` layer automatically.
-- Creating a new layer from the sidebar starts inline rename mode immediately.
-- Layers can be renamed, recolored, collapsed, hidden, and deleted.
-- Visibility is controlled per layer. Hidden layers disappear from both the viewport overlays and the sidebar's rendered state.
-
-Layer colors are chosen from a built-in palette and are reused as evenly as possible across layers.
-
-### Sidebar
-
-The sidebar is a runtime-loaded Slint UI hosted by eov. It currently exposes a single annotation source:
-
-- `Local`
-
-The tree shows annotation layers and their child annotations for the active slide. Clicking a layer selects it. Clicking an annotation focuses it in the viewport by framing the corresponding image-space region.
-
-If no slide is open, the sidebar shows an empty-state message. If a slide is open but has no annotations yet, it shows a slide-specific empty state instead.
-
-### Density
-
-Selecting a polygon annotation shows the area it encloses and the points inside it, per layer.
-
-- Area in mm², from the slide's pixel size.
-- Points per mm² and per 10 HPF, each with a 95% range. Small counts are noisy.
-- 10 HPF assumes field number 22 at 40x, 0.2376 mm². Field size varies between microscopes.
-- Layers with no points inside are not listed. Without a pixel size, no area is reported.
+Version 1.0 of the plugin is written for eov 1.x (plugin API 1.0).
 
 <p align="center">
-	<img src="images/density-layers.webp" width="512">
-	<img src="images/density-outside.webp" width="512">
+  <img src="images/panel.webp" width="900" alt="The annotations panel: layers and the details of the selected region, the Count tab with densities and a positive index, and the Classes tab">
 </p>
 
-### Export
+- [Installing](#installing)
+- [Using it](#using-it)
+- [Formats](#formats)
+- [Coordinates and units](#coordinates-and-units)
+- [Where annotations are stored](#where-annotations-are-stored)
+- [Building, testing and packaging](#building-testing-and-packaging)
+- [Limitations](#limitations)
 
-The export action writes the active slide's annotations to a JSON file chosen through the host save dialog. The default file name is based on the active slide name and ends with `_annotations.json`.
+## Installing
 
-The exported payload includes:
-
-- Slide file path
-- Slide fingerprint as hex
-- Annotation layers
-- Layer metadata including name, notes, color, and timestamps
-- Point annotations with coordinates and timestamps
-- Polygon annotations with vertices and timestamps
-
-The export is scoped to the active slide only.
-
-## Storage Model
-
-The plugin stores annotations in a local SQLite database.
-
-Default location:
-
-- Linux: `$XDG_CONFIG_HOME/eov/annotations.db` when `XDG_CONFIG_HOME` is set
-- Otherwise: `~/.config/eov/annotations.db`
-
-You can override the database path with:
+Download the `.eop` package for your platform from the
+[releases](https://github.com/eosin-platform/eov-annotations-plugin/releases)
+and install it with eov:
 
 ```bash
-export EOV_ANNOTATIONS_DB=/path/to/annotations.db
+eov plugin install annotations-v1.0.0-linux-x86_64.eop
+eov plugin info annotations      # version, compatibility, provenance
 ```
 
-The plugin computes a fingerprint for each slide and uses that fingerprint to load the matching annotation layers. This is the key reason annotations are slide-scoped rather than just path-scoped.
+The package declares `api = ">=1.0, <2"` and `[environment] version =
+">=1.0.0, <2.0.0"`; eov refuses it outside that range.
 
-## Scope and Limitations
+## Using it
 
-The current implementation is intentionally narrow.
+Open a slide and click **Annotations** in the toolbar to show the panel. It
+has four tabs:
 
-Implemented today:
+- **Layers**: the annotations of the active slide, grouped in layers, and
+  the details of the selection;
+- **Classes**: the classes shared by all slides;
+- **Count**: cell counts, densities and the high-power field size;
+- **Data**: import and export, backups, the database, other slides and
+  settings.
 
-- Point annotations
-- Polygon annotations
-- Local storage
-- Local export to JSON
+### Tools
 
-Not implemented by this plugin today:
+The tools are in eov's toolbar; each has a key.
 
-- Remote or shared annotation sources
-- Annotation import
-- Labels or ontology support
-- Ellipse annotations
-- Bitmask or brush annotations
-- Viewport image filters
-- HUD toolbar controls
+| Tool | Key | What it does |
+|---|---|---|
+| Select | `V` | Click to select, drag to select several; drag an annotation or its handles to move or reshape it. `Delete` deletes, `Esc` clears the selection. |
+| Point | `.` | A point annotation. |
+| Count | `C` | A count point in the *Cell counts* layer with the class counted by a click; **Shift+click** counts the second class. |
+| Polygon | `P` | Click the vertices; click the first vertex, double-click or press Enter to close it. |
+| Freehand | `G` | Drag an outline (stored as a polygon). |
+| Rectangle | `B` | Drag a rectangle. |
+| Ellipse | `O` | Drag an ellipse. |
+| Line / path | `L` | Click the vertices; double-click or Enter finishes. Its length is measured. |
+| Text | `T` | A text label; its text is the annotation's name. |
+| HPF field | `H` | Shows a field of the configured size at the centre of each view; a click places one in the *HPF fields* layer. |
 
-The database schema already reserves tables for additional annotation types, but this plugin does not expose them yet.
+With one region selected, drawing a polygon, freehand outline, rectangle
+or ellipse with **Shift** adds the shape to that region and with **Alt**
+(or Ctrl/⌘) cuts it out of the region, which makes holes (an excluded lumen
+no longer counts as area) or splits the region. Outlines that cross
+themselves are split into simple parts when they are drawn, and every shape
+is clipped to the slide.
 
-## Building
+Right-clicking the slide offers: show the annotation in the panel, copy its
+measurements, lock or unlock it, delete it, add a point or place an HPF
+field at the cursor, and open the panel. The eye button in each view's HUD
+hides or shows the slide's annotations.
 
-This is a Rust plugin crate built as a dynamic library.
+Every change (drawing, editing, deleting, an import, deleting a layer or a
+class) is one step in eov's undo history, **Ctrl+Z** / **Ctrl+Shift+Z** (⌘ on
+macOS). Undo applies to the slide the change was made on.
 
-Build it from the plugin repository:
+### Layers and annotations
+
+New annotations go into the layer marked with a bar on the left (click a
+layer to choose it); if a slide has none, an *Annotations* layer is created.
+Count points and HPF fields have their own layers. A layer can be hidden,
+locked (no editing, deleting or moving of its annotations), recoloured,
+renamed, given notes and an opacity, or deleted (with undo) from its `⋯`
+settings.
+
+Select an annotation on the slide or in the list to see its details: name,
+class, review status (*draft*, *verified*, *rejected*), layer, lock,
+description, measurements, free-form properties (name–value pairs), its
+author and when it was created and last edited. Changes apply to all
+selected annotations where that makes sense. Text fields save as you type
+(after a pause, on Enter or when you leave the field), to the annotation
+they were typed for. Double-click a row to zoom to it; Ctrl+click selects
+several. The filter matches names, classes, kinds and statuses; large
+layers start collapsed and long lists are shown a few hundred rows at a
+time.
+
+### Classes
+
+Classes (Tumour, Stroma, Necrosis, Immune cells, Mitosis, Positive,
+Negative and Other to begin with) are shared by all slides. Each has a
+colour, an optional one-key hotkey, visibility and opacity, and shows how
+many annotations of the active slide use it. Click a class to make it the
+*active class*: new annotations get it and the Count tool counts it. A
+class with a hotkey also gets a toolbar button, so its key selects it while
+you draw. The second count class (Shift+click with the Count tool) is
+chosen in the class's `⋯` settings or in the Count tab. Deleting a class
+leaves its annotations unclassified (with undo).
+
+### Counting
+
+Pick the classes counted by a click and by Shift+click in the Count tab,
+choose the Count tool and click cells. The tally counts the point
+annotations of the visible layers (optionally of hidden layers too):
+
+- with no region selected, on the whole slide;
+- with regions or HPF fields selected, inside their union, with the area,
+  the density per mm² with its exact 95 % Poisson (Garwood) interval, and
+  the count per 10 HPF (or per field, when only fields are selected);
+- with two count classes, the index *first / (first + second)* with its
+  exact 95 % (Clopper–Pearson) interval, e.g. the Ki-67 proliferation index
+  with *Positive* and *Negative*.
+
+Counts follow every edit at once, and areas use the same even-odd rule as
+the point-in-region test and the display. **Clear counts…** removes the
+count points of the slide (with undo).
+
+### High-power fields
+
+The field size is given as a field number and objective (the default is
+FN 22 at 40×, 0.2376 mm²) or directly as an area in mm². With the HPF
+field tool active, a field outline sits at the centre of each view; click
+to place one. Placed fields are ordinary regions in the *HPF fields* layer:
+select them (**Select all fields**) to count inside them. Without a pixel
+size, fields cannot be sized and are refused.
+
+### Measurements
+
+Every annotation lists, as the slide's pixel size allows:
+
+- area (minus holes) and perimeter, or length for lines;
+- maximum diameter (Feret) and minimum caliper (minimum Feret width);
+- the centre in level-0 pixels.
+
+Values are computed in micrometre space, so slides with different
+horizontal and vertical pixel sizes are measured exactly. With only one
+pixel size known it is used for both axes and the values are marked
+approximate (≈). With none, values are given in pixels and the panel says
+so. **Copy measurements** copies them as tab-separated text; the CSV export
+has them for every annotation.
+
+## Formats
+
+| Format | Import | Export |
+|---|---|---|
+| GeoJSON (QuPath and others) | ✓ | ✓ |
+| eov JSON (format 2; format 1 of the plugin before 1.0) | ✓ | ✓ |
+| eov archive (every slide in the database) | ✓ (one slide) | ✓ |
+| ASAP XML | ✓ | |
+| Aperio ImageScope XML | ✓ | |
+| CSV measurements | | ✓ |
+
+**Importing** (Data → Import…, or `⋯` → Import annotations…) reads the file
+in the background and shows a preview before anything is written: what was
+found, whether the file was made for this slide (by eov slide identity,
+OpenSlide quickhash, size or SHA-256, as far as the file says), what had to
+be skipped or repaired and why, and what to do with layers whose names
+already exist (add to them, replace them, or keep both). The import is
+then written in one transaction and is one undo step. It stays bound to the
+slide it was started on and is cancelled if that slide is closed.
+Unusable elements (bad coordinates, too few vertices, shapes outside the
+slide) are skipped with a reason; crossing outlines are repaired; overlong
+names and texts are cut to the limits.
+
+<p align="center">
+  <img src="images/import-dialog.webp" width="520" alt="The import preview: the file, what it contains, how it matches the slide, what was skipped, and what to do with layers whose names exist">
+</p>
+
+- **GeoJSON**: Points, MultiPoints, LineStrings, Polygons (with holes),
+  MultiPolygons and their Multi/Collection forms. QuPath's
+  `classification` (`name` and `color`, or `names` and `colorRGB` of older
+  versions) becomes the class, `name`, `isLocked` and `metadata` are kept;
+  detections go to a separate layer. Exports are FeatureCollections that
+  QuPath reads; rectangles and ellipses are written as polygons, text as
+  points, and `properties.eov` keeps the exact shape, layer, status and
+  provenance so a round trip through eov loses nothing.
+- **eov JSON**: self-describing (`format`, `format_version`, the coordinate
+  convention, the slide's identity, quickhash, size, pixel size and
+  bounds), with classes, layers and every annotation field.
+- **ASAP XML**: dots, point sets, rectangles, polygons and splines (as
+  their control polygon); groups become classes.
+- **ImageScope XML**: each annotation becomes a layer, `LineColor` its
+  colour; polygon and freehand, rectangle, ellipse, point, ruler and arrow
+  (as lines) regions; negative regions become holes of the region that
+  contains them.
+- **CSV**: one row per annotation with its layer, class, kind, status,
+  author, timestamps, centre and measurements in µm and pixels, and whether
+  the slide was calibrated. Cells that a spreadsheet would run as formulas
+  are escaped.
+
+Exports never contain the slide's path. The file name is included only
+when *Include the slide's file name in exports* is set; the author,
+organization, project and license fields are written into eov JSON
+exports. Files are written to a temporary file first and renamed into
+place, so an interrupted export never leaves a half-written file.
+
+## Coordinates and units
+
+All coordinates, in the database and in every format, are **level-0 pixels**
+of the slide: the origin is the top-left corner of the level-0 image, x
+grows to the right and **y grows downwards** (the convention of OpenSlide,
+QuPath, ASAP and ImageScope, and of eov's plugin API). The OpenSlide bounds offset (`openslide.bounds-x/y`) is **not**
+subtracted: coordinates refer to the full level-0 image, and eov JSON
+exports record the bounds so that tools working in the bounds' frame can
+convert. Physical values use the slide's pixel size (µm per level-0 pixel,
+`mpp_x` and `mpp_y`), also recorded in eov exports.
+
+## Where annotations are stored
+
+Annotations live in one SQLite database, `annotations.db` in the plugin's
+data directory, `<eov data>/plugins/annotations/`, where `<eov data>` is
+`$EOV_DATA_DIR` or the platform's local data directory plus `eov`:
+
+| Platform | Default location |
+|---|---|
+| Linux | `~/.local/share/eov/plugins/annotations/annotations.db` |
+| macOS | `~/Library/Application Support/eov/plugins/annotations/annotations.db` |
+| Windows | `%LOCALAPPDATA%\eov\plugins\annotations\annotations.db` |
+
+To use another file (for example a shared one), set `"database_path"` in the
+plugin's settings file next to it (`settings.json`, while eov is closed), or
+the `EOV_ANNOTATIONS_DB` environment variable. The Data tab shows the file
+in use.
+
+- **Several eov windows** can use the same database: it runs in WAL mode,
+  every change is one transaction checked against what it changes, and a
+  window picks up the other's changes when it is focused.
+- **Read-only databases** (a teaching set on a read-only share) open
+  read-only: annotations can be viewed and exported, not edited. An older
+  read-only database is upgraded in a private copy.
+- **Slides** are recognised by eov's slide identity, not by their path, so
+  annotations follow a slide that is moved or renamed. A slide that was
+  re-saved or de-identified gets a new identity; **Other slides** in the
+  Data tab lists the slides with annotations that are not open, and
+  **Attach** moves their annotations to the open slide (with undo).
+- **Deleted** annotations, layers and classes are kept for undo and removed
+  for good after seven days. Every change is also recorded, with its author
+  and time, in an `audit_log` table.
+- **Backups**: **Back up…** writes a consistent copy of the database (also
+  while eov is using it), **Export all slides…** writes every slide to one
+  eov archive (JSON), and **Merge…** brings the annotations of another
+  database (a backup, or a colleague's) into this one without overwriting
+  anything.
+- **The schema is versioned** (`PRAGMA user_version`, now 2) and upgraded in
+  one transaction when an older database is opened.
+
+### Coming from the plugin before 1.0
+
+Before eov 1.0 the plugin kept its database in eov's settings folder
+(`~/.config/eov/annotations.db` on Linux, `~/Library/Application
+Support/eov/annotations.db` on macOS, `%APPDATA%\eov\annotations.db` on
+Windows). The plugin no longer looks there. To bring those annotations in,
+use **Merge…** in the Data tab and choose that file; or point
+`database_path` at it to keep using it (it is upgraded in place, after
+which older versions of the plugin cannot read it, so back it up first).
+Slides of the old database are recognised by their old sampled fingerprint
+the first time they are opened (computed in the background) and linked to
+their eov identity from then on. Exports of the old plugin (format 1) can
+be imported as well.
+
+## Building, testing and packaging
+
+The plugin builds on its own (it is not a member of eov's workspace) and
+needs only `eov-plugin-api`, found at `../../plugin_api` (where it is inside
+an eov checkout, under `plugins/annotations`).
 
 ```bash
-cargo build
+cargo build --release                 # target/release/libannotations.so (.dylib, annotations.dll)
+cargo test                            # unit and end-to-end tests (SDK mock host, temporary directories)
+cargo clippy --all-targets -- -D warnings
+cargo fmt --check
 ```
 
-Or from the host repository root:
+The tests drive the plugin through the same FFI adapter eov uses, with the
+SDK's mock host; they only touch temporary directories.
+
+Two development tools check what the unit tests cannot:
 
 ```bash
-cargo build --manifest-path plugins/annotations/Cargo.toml
+cargo run --release --manifest-path tools/ui-check/Cargo.toml                        # check the .slint surfaces
+cargo run --release --manifest-path tools/ui-check/Cargo.toml --bin ui-render -- out  # draw them into PNGs
+cargo run --release --manifest-path tools/load-check/Cargo.toml                      # load the built library like eov
 ```
 
-The produced shared library must be packaged together with `plugin.toml` and the `ui/` directory before eov can discover it.
+`tools/ui-check` uses the Slint version eov 1.0 compiles plugin surfaces
+with (1.17.1). It compiles `ui/*.slint` as the host does and verifies that
+the components declare exactly the callbacks the plugin handles (with the
+argument types it reads), that every property the plugin pushes in a range
+of realistic states is a public input of the right type (struct fields
+included) and that every input is pushed, and it presses a few controls
+through the accessibility tree; `ui-render` draws those states with Slint's
+software renderer (the screenshots above). `tools/load-check` opens the
+release library with abi_stable's layout checks and the API version
+handshake, as eov does, and draws an annotation through it.
 
-## Packaging for eov
+To package (an `.eop` is a tar archive with `plugin.toml`, the library and
+`ui/` at its root; entries are sorted and dated `SOURCE_DATE_EPOCH`, so
+builds are reproducible):
 
-Recent eov builds discover plugins from packaged `.eop` tarballs placed in the configured plugin directory. By default that directory is:
+```bash
+python3 scripts/package_eop.py --output dist/annotations-v1.0.0-linux-x86_64.eop
+eov plugin install dist/annotations-v1.0.0-linux-x86_64.eop
+```
+
+`scripts/package_eop.py --check-only` validates the manifest and `ui/`
+without a library. In an eov checkout, `scripts/run-with-plugins.sh` of eov
+starts a development build with the plugins in a separate eov home.
+
+CI (`.github/workflows/ci.yml`) runs formatting, clippy, the tests, the
+surface check, the load check and the packaging script against eov's
+`plugin_api` on Linux, macOS and Windows. Releases
+(`release.yml`, dispatched with `scripts/dispatch-release-workflow.sh
+<version>`) build the six platform packages, write `release.toml` with
+their SHA-256 hashes and immutable URLs, and publish them.
+
+## Limitations
+
+These depend on what eov's plugin API offers today:
+
+- The HPF field outline sits at the centre of each view rather than
+  following the mouse: eov does not report hover positions to plugin tools.
+- Class hotkeys are toolbar buttons (eov has no other way for a plugin to
+  bind a key), so they share the toolbar's limit of 32 buttons.
+- Hiding annotations from a view's HUD hides them in every view of that
+  slide.
+- Selecting an annotation in the list highlights it on the slide by
+  restyling it, not with eov's own hover highlight.
+
+Not done yet: arrows, a brush with eraser, NDPA and DICOM annotation
+formats, export to ASAP or ImageScope XML, comment threads and blinded
+multi-reader copies.
+
+## Repository layout
 
 ```text
-~/.eov/plugins/
+plugin.toml         the manifest
+src/
+  lib.rs            the plugin: events, tools, menus, surfaces
+  core.rs           state, the database and I/O threads, operations
+  actions.rs        drawing, editing, layers, classes, HPF fields
+  overlay.rs        what is drawn on the slide (eov overlay layers)
+  sidebar.rs        the panel's properties and callbacks
+  transfer.rs       import preview and apply, exports, backups
+  counting.rs stats.rs measure.rs geometry.rs
+  formats/          GeoJSON, eov JSON, ASAP/ImageScope XML, CSV
+  db/               schema, migrations (also from before 1.0), queries
+  tests.rs          end-to-end tests
+ui/                 the panel and the import dialog (Slint)
+tools/ui-check/     surface check and renderer (Slint 1.17.1)
+tools/load-check/   loads the built library like eov
+scripts/            packaging and release tooling
 ```
-
-For this plugin, the package should contain at least:
-
-- `plugin.toml`
-- the compiled shared library for the target platform
-- `ui/annotations-sidebar.slint`
-- the rest of the `ui/` assets used by the sidebar
-
-On Linux, a minimal manual packaging flow looks like this:
-
-```bash
-mkdir -p ~/.cache/eov/annotations-package
-cp plugin.toml ~/.cache/eov/annotations-package/
-cp -r ui ~/.cache/eov/annotations-package/
-cp target/debug/libannotations.so ~/.cache/eov/annotations-package/
-
-mkdir -p ~/.eov/plugins
-tar -cf ~/.eov/plugins/annotations.eop -C ~/.cache/eov/annotations-package .
-```
-
-If you are working inside the main eov repository, there is already a helper script that builds, packages, and launches the app with this plugin:
-
-```bash
-./scripts/run-with-annotations.sh path/to/slide.svs
-```
-
-That script packages the plugin into `~/.eov/plugins/annotations.eop` and then starts the debug build of eov.
-
-## Using the Plugin in eov
-
-1. Start eov with the plugin available in its plugin directory.
-2. Open a slide.
-3. Click `Annotations` to open the sidebar.
-4. Click the point tool or press `1` to place point annotations.
-5. Click the polygon tool or press `2` to place polygon annotations.
-6. Use the sidebar to create layers, rename them, change colors, hide or show layers, and export the active slide's annotations.
-
-You can also start annotation placement from the viewport context menu.
-
-## Repository Layout
-
-```text
-.
-├── Cargo.toml
-├── plugin.toml
-├── src/
-│   ├── db.rs
-│   ├── lib.rs
-│   ├── model.rs
-│   ├── operations.rs
-│   ├── sidebar.rs
-│   └── state.rs
-└── ui/
-	├── annotations-sidebar.slint
-	├── annotations-sidebar-types.slint
-	├── annotations-sidebar-widgets.slint
-	└── icons/
-```
-
-Key pieces:
-
-- `src/lib.rs`: FFI entrypoints, toolbar actions, overlay providers, context menu integration
-- `src/operations.rs`: persistence, selection logic, export, and tool activation flows
-- `src/db.rs`: SQLite schema and load/store logic
-- `src/sidebar.rs`: sidebar property generation and callback handling
-- `ui/`: runtime-loaded Slint sidebar UI
-
-## Development Notes
-
-- The plugin is a Rust FFI plugin using the eov `plugin_api` crate.
-- It does not open its own top-level window; its primary UI surface is the embedded sidebar.
-- It currently returns no viewport filters and no HUD toolbar buttons.
-- The sidebar width requested from the host is `300` pixels.
 
 ## License
 
-This repository is tri-licensed under:
-
-- MIT
-- Apache-2.0
-- GPL-3.0
-
-See the license files in this repository for the full text.
-
+This repository is tri-licensed under MIT, Apache-2.0 or GPL-3.0, at your
+option; see `LICENSE-MIT`, `LICENSE-APACHE-2.0` and `LICENSE-GPLv3`.
