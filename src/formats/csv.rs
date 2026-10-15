@@ -42,6 +42,7 @@ pub const HEADER: &[&str] = &[
     "area_px2",
     "perimeter_or_length_px",
     "calibration",
+    "comments",
 ];
 
 pub fn export(slide: &ExportSlide, classes: &[Class]) -> String {
@@ -81,6 +82,7 @@ pub fn export(slide: &ExportSlide, classes: &[Class]) -> String {
                 number(m.area_px2),
                 number(m.length_px),
                 calibration_text.to_string(),
+                a.comments.len().to_string(),
             ];
             out.push_str(&row.join(","));
             out.push('\n');

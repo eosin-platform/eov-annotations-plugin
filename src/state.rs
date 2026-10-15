@@ -785,6 +785,7 @@ mod tests {
             author: String::new(),
             locked: false,
             properties: vec![],
+            comments: vec![],
             created_at: t,
             updated_at: t,
         })

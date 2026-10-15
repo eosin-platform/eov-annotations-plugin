@@ -7,8 +7,8 @@ use crate::core::{Core, DbJob, Op, Planned};
 use crate::geometry::{self, Normalized};
 use crate::measure::Calibration;
 use crate::model::{
-    ARROWHEAD_VERTICES, Annotation, Bounds, Class, Color, Geometry, GeometryKind, Layer, LayerRole,
-    SlideId, Status, clean_name, new_id, now_ms, pick_color,
+    ARROWHEAD_VERTICES, Annotation, Bounds, Class, Color, Comment, Geometry, GeometryKind, Layer,
+    LayerRole, MAX_COMMENTS, SlideId, Status, clean_name, clean_text, new_id, now_ms, pick_color,
 };
 use crate::overlay::{self, HostOp, parse_host_layer_id, reticle_layer_id};
 use crate::state::{BRUSH_SIZES, BrushStroke, FieldPress, SlideData, State};
@@ -98,6 +98,7 @@ fn annotation(
         author: author.to_string(),
         locked: false,
         properties: Vec::new(),
+        comments: Vec::new(),
         created_at: now,
         updated_at: now,
     }
@@ -1353,6 +1354,79 @@ pub fn field_pointer(core: &Arc<Core>, pane: PaneId, file_id: FileId, event: Poi
         }
         _ => {}
     }
+}
+
+// ---------------------------------------------------------------------------
+// Comments
+// ---------------------------------------------------------------------------
+
+/// Adds a comment by the current author (also on locked annotations: a
+/// comment does not change the annotation itself).
+pub fn comment_add(core: &Arc<Core>, file_id: FileId, annotation_id: String, text: String) {
+    core.submit(Op::new("Add comment", Some(file_id), move |state| {
+        state.writable()?;
+        let text = clean_text(&text, "comment")?;
+        if text.trim().is_empty() {
+            return Err("Write the comment first.".to_string());
+        }
+        let slide = state.slide_of(file_id).ok_or(LOADING)?;
+        let current = slide
+            .annotations
+            .get(&annotation_id)
+            .cloned()
+            .ok_or("That annotation no longer exists.")?;
+        if current.comments.len() >= MAX_COMMENTS {
+            return Err(format!(
+                "An annotation can have at most {MAX_COMMENTS} comments."
+            ));
+        }
+        let now = now_ms();
+        let mut updated = (*current).clone();
+        updated.comments.push(Comment {
+            id: new_id(),
+            author: state.settings.author.clone(),
+            text: text.trim().to_string(),
+            created_at: now,
+        });
+        updated.updated_at = now.max(current.updated_at + 1);
+        Ok(Planned {
+            changes: vec![Change::Annotation {
+                before: Some(current),
+                after: Some(Arc::new(updated)),
+            }],
+            ..Default::default()
+        })
+    }));
+}
+
+pub fn comment_remove(
+    core: &Arc<Core>,
+    file_id: FileId,
+    annotation_id: String,
+    comment_id: String,
+) {
+    core.submit(Op::new("Delete comment", Some(file_id), move |state| {
+        state.writable()?;
+        let slide = state.slide_of(file_id).ok_or(LOADING)?;
+        let current = slide
+            .annotations
+            .get(&annotation_id)
+            .cloned()
+            .ok_or("That annotation no longer exists.")?;
+        let mut updated = (*current).clone();
+        updated.comments.retain(|c| c.id != comment_id);
+        if updated.comments.len() == current.comments.len() {
+            return Err("That comment no longer exists.".to_string());
+        }
+        updated.updated_at = now_ms().max(current.updated_at + 1);
+        Ok(Planned {
+            changes: vec![Change::Annotation {
+                before: Some(current),
+                after: Some(Arc::new(updated)),
+            }],
+            ..Default::default()
+        })
+    }));
 }
 
 // ---------------------------------------------------------------------------

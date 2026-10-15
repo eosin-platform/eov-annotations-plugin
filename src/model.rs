@@ -623,9 +623,26 @@ pub struct Annotation {
     pub locked: bool,
     /// Free key/value metadata, in order.
     pub properties: Vec<(String, String)>,
+    /// The discussion of the annotation, oldest first.
+    pub comments: Vec<Comment>,
     /// Unix milliseconds.
     pub created_at: i64,
     pub updated_at: i64,
+}
+
+/// Most comments per annotation.
+pub const MAX_COMMENTS: usize = 500;
+
+/// A comment on an annotation.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Comment {
+    pub id: String,
+    #[serde(default)]
+    pub author: String,
+    pub text: String,
+    /// Unix milliseconds.
+    #[serde(default)]
+    pub created_at: i64,
 }
 
 impl Annotation {

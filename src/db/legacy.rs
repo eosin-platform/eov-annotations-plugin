@@ -3,7 +3,7 @@
 //! The old tables are kept, renamed with a `legacy_v1_` prefix, so nothing
 //! is lost if the migration ever needs to be redone.
 
-use super::schema::{SCHEMA_V2, SCHEMA_VERSION};
+use super::schema::SCHEMA_V2;
 use super::{DbResult, OpenReport};
 use crate::model::{Bounds, Color, Geometry, PALETTE, clean_name};
 use rusqlite::{Connection, params};
@@ -314,7 +314,6 @@ pub(super) fn migrate_v1(tx: &rusqlite::Transaction<'_>, report: &mut OpenReport
         }
     }
 
-    tx.pragma_update(None, "user_version", SCHEMA_VERSION)?;
     report.notes.push(format!(
         "Upgraded the annotation database from the pre-1.0 format: {} slide(s), {migrated} annotation(s){}.",
         slide_ids.len(),

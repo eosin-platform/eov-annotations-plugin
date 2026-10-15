@@ -17,7 +17,8 @@ pub mod schema;
 use crate::change::Change;
 use crate::geometry;
 use crate::model::{
-    Annotation, Bounds, Class, Color, Geometry, Layer, LayerRole, SlideId, SlideRecord, Status,
+    Annotation, Bounds, Class, Color, Comment, Geometry, Layer, LayerRole, SlideId, SlideRecord,
+    Status,
 };
 use rusqlite::{Connection, OpenFlags, OptionalExtension, Row, Transaction, params};
 use std::collections::HashSet;
@@ -492,7 +493,7 @@ impl Db {
         {
             let mut stmt = self.conn.prepare_cached(
                 "SELECT a.id, a.layer_id, a.class_id, a.geometry, a.name, a.description, a.status,
-                        a.author, a.locked, a.properties, a.created_at, a.updated_at, a.geometry_ok
+                        a.author, a.locked, a.properties, a.created_at, a.updated_at, a.geometry_ok, a.comments
                  FROM annotations a JOIN layers l ON a.layer_id = l.id
                  WHERE l.slide_id = ?1 AND l.deleted = 0 AND a.deleted = 0
                  ORDER BY a.created_at, a.id",
@@ -762,7 +763,7 @@ impl Db {
                                            (SELECT d.id FROM main.classes d JOIN src.classes c ON c.id = a.class_id
                                             WHERE d.deleted = 0 AND d.name = c.name COLLATE NOCASE LIMIT 1)) END,
                         a.kind, a.geometry, a.min_x, a.min_y, a.max_x, a.max_y, a.geometry_ok, a.name, a.description,
-                        a.status, a.author, a.locked, a.properties, a.created_at, a.updated_at, 0
+                        a.status, a.author, a.locked, a.properties, a.created_at, a.updated_at, 0, a.comments
                  FROM src.annotations a JOIN main.layers l ON l.id = a.layer_id
                  WHERE a.deleted = 0",
                 [],
@@ -842,6 +843,12 @@ fn annotation_from_row(r: &Row<'_>) -> Result<Annotation, String> {
     let properties_json: String = r.get(9).map_err(|e| e.to_string())?;
     let properties: Vec<(String, String)> =
         serde_json::from_str(&properties_json).unwrap_or_default();
+    // Unreadable comments are dropped rather than losing the annotation.
+    let comments: Vec<Comment> = r
+        .get::<_, String>(13)
+        .ok()
+        .and_then(|json| serde_json::from_str(&json).ok())
+        .unwrap_or_default();
     Ok(Annotation {
         id: r.get(0).map_err(|e| e.to_string())?,
         layer_id: r.get(1).map_err(|e| e.to_string())?,
@@ -854,6 +861,7 @@ fn annotation_from_row(r: &Row<'_>) -> Result<Annotation, String> {
         author: r.get(7).map_err(|e| e.to_string())?,
         locked: r.get(8).map_err(|e| e.to_string())?,
         properties,
+        comments,
         created_at: r.get(10).map_err(|e| e.to_string())?,
         updated_at: r.get(11).map_err(|e| e.to_string())?,
     })
@@ -897,6 +905,8 @@ fn write_annotation(tx: &Transaction<'_>, a: &Annotation) -> DbResult<()> {
         serde_json::to_string(&a.geometry).map_err(|e| DbError::Failed(e.to_string()))?;
     let properties =
         serde_json::to_string(&a.properties).map_err(|e| DbError::Failed(e.to_string()))?;
+    let comments =
+        serde_json::to_string(&a.comments).map_err(|e| DbError::Failed(e.to_string()))?;
     let Bounds {
         min_x,
         min_y,
@@ -905,15 +915,16 @@ fn write_annotation(tx: &Transaction<'_>, a: &Annotation) -> DbResult<()> {
     } = a.geometry.bounds();
     tx.prepare_cached(
         "INSERT INTO annotations (id, layer_id, class_id, kind, geometry, min_x, min_y, max_x, max_y, geometry_ok,
-                                  name, description, status, author, locked, properties, created_at, updated_at, deleted)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, 1, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, 0)
+                                  name, description, status, author, locked, properties, created_at, updated_at, deleted,
+                                  comments)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, 1, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, 0, ?18)
          ON CONFLICT(id) DO UPDATE SET
             layer_id = excluded.layer_id, class_id = excluded.class_id, kind = excluded.kind,
             geometry = excluded.geometry, min_x = excluded.min_x, min_y = excluded.min_y,
             max_x = excluded.max_x, max_y = excluded.max_y, geometry_ok = 1, name = excluded.name,
             description = excluded.description, status = excluded.status, author = excluded.author,
             locked = excluded.locked, properties = excluded.properties, created_at = excluded.created_at,
-            updated_at = excluded.updated_at, deleted = 0",
+            updated_at = excluded.updated_at, deleted = 0, comments = excluded.comments",
     )?
     .execute(params![
         a.id,
@@ -933,6 +944,7 @@ fn write_annotation(tx: &Transaction<'_>, a: &Annotation) -> DbResult<()> {
         properties,
         a.created_at,
         a.updated_at,
+        comments,
     ])?;
     Ok(())
 }
@@ -1089,7 +1101,7 @@ fn apply_change(
                 let mut contents = Vec::new();
                 let mut stmt = tx.prepare_cached(
                     "SELECT id, layer_id, class_id, geometry, name, description, status, author, locked,
-                            properties, created_at, updated_at, geometry_ok
+                            properties, created_at, updated_at, geometry_ok, comments
                      FROM annotations WHERE layer_id = ?1 AND deleted = 0 ORDER BY created_at, id",
                 )?;
                 let mut rows = stmt.query([id])?;

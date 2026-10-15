@@ -314,6 +314,13 @@ pub fn samples() -> Result<Samples, String> {
         "detail-name-committed",
         vec![owner, json!("Region of interest")],
     );
+    let owner = properties_of(&h, &sb)["detail-id"].clone();
+    call(
+        &h,
+        &sb,
+        "comment-add",
+        vec![owner, json!("Looks like DCIS; please check the margin.")],
+    );
     let tumour = class_index("Tumour").ok_or("no Tumour class")?;
     call(&h, &sb, "detail-class-chosen", vec![json!(tumour)]);
     call(&h, &sb, "detail-status-chosen", vec![json!(1)]);

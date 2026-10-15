@@ -124,6 +124,7 @@ fn point(id: &str, layer_id: &str, x: f64) -> Annotation {
         author: "me".into(),
         locked: false,
         properties: vec![("k".into(), "v".into())],
+        comments: vec![],
         created_at: 5,
         updated_at: 5,
     }
@@ -475,10 +476,17 @@ fn backups_and_merges_round_trip() {
     let (mut db, _) = Db::open(&path, dir.path()).unwrap();
     let slide = new_slide(&mut db);
     let l = layer(slide.id, "L");
+    let mut commented = point("A", "L", 1.0);
+    commented.comments.push(crate::model::Comment {
+        id: "c1".into(),
+        author: "Dr. B".into(),
+        text: "Agree".into(),
+        created_at: 7,
+    });
     db.apply(
         &[Change::RestoreLayer {
             layer: l,
-            contents: vec![Arc::new(point("A", "L", 1.0))],
+            contents: vec![Arc::new(commented)],
         }],
         None,
     )
@@ -499,7 +507,9 @@ fn backups_and_merges_round_trip() {
         .find_slide(Some("eov-slide-1:abc"), None, None)
         .unwrap()
         .unwrap();
-    assert_eq!(fresh.load_slide(found.id).unwrap().annotations.len(), 1);
+    let merged = fresh.load_slide(found.id).unwrap().annotations;
+    assert_eq!(merged.len(), 1);
+    assert_eq!(merged[0].comments[0].text, "Agree", "comments are merged");
 
     // A pre-1.0 database can be merged too.
     let legacy = dir.path().join("old.db");
@@ -540,4 +550,52 @@ fn unreadable_rows_are_skipped_not_fatal() {
     let loaded = db.load_slide(slide.id).unwrap();
     assert_eq!(loaded.annotations.len(), 1);
     assert_eq!(loaded.skipped, 1);
+}
+
+#[test]
+fn version_2_databases_gain_comments() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("v2.db");
+    {
+        let conn = rusqlite::Connection::open(&path).unwrap();
+        conn.execute_batch(schema::SCHEMA_V2).unwrap();
+        conn.pragma_update(None, "user_version", 2).unwrap();
+        conn.execute_batch(
+            "INSERT INTO slides (id, identity, created_at, last_opened_at) VALUES (1, 'eov-slide-1:abc', 1, 1);
+             INSERT INTO layers (id, slide_id, name, color, created_at, updated_at) VALUES ('L', 1, 'L', '#FF0000', 1, 1);
+             INSERT INTO annotations (id, layer_id, kind, geometry, min_x, min_y, max_x, max_y, created_at, updated_at)
+             VALUES ('p', 'L', 'point', '{\"kind\":\"point\",\"x\":5.0,\"y\":5.0}', 5, 5, 5, 5, 1, 1);",
+        )
+        .unwrap();
+    }
+    let (mut db, report) = Db::open(&path, dir.path()).unwrap();
+    assert_eq!(report.migrated_from, None, "a silent upgrade");
+    let version: i64 = db
+        .connection()
+        .query_row("PRAGMA user_version", [], |r| r.get(0))
+        .unwrap();
+    assert_eq!(version, SCHEMA_VERSION);
+    let loaded = db.load_slide(1).unwrap();
+    let before = loaded.annotations[0].clone();
+    assert!(before.comments.is_empty());
+    let mut after = (*before).clone();
+    after.comments.push(crate::model::Comment {
+        id: "c".into(),
+        author: "me".into(),
+        text: "Mitosis?".into(),
+        created_at: 9,
+    });
+    after.updated_at = 2;
+    db.apply(
+        &[Change::Annotation {
+            before: Some(before),
+            after: Some(Arc::new(after)),
+        }],
+        None,
+    )
+    .unwrap();
+    assert_eq!(
+        db.load_slide(1).unwrap().annotations[0].comments[0].text,
+        "Mitosis?"
+    );
 }

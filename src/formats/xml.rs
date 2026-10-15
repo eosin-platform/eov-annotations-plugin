@@ -809,6 +809,7 @@ mod tests {
             author: String::new(),
             locked: false,
             properties: vec![],
+            comments: vec![],
             created_at: 0,
             updated_at: 0,
         })

@@ -56,6 +56,7 @@ pub struct PreparedAnnotation {
     pub author: String,
     pub locked: bool,
     pub properties: Vec<(String, String)>,
+    pub comments: Vec<crate::model::Comment>,
     pub created_at: Option<i64>,
     pub updated_at: Option<i64>,
 }
@@ -227,6 +228,7 @@ pub fn prepare(
                     author: author.clone(),
                     locked: a.locked,
                     properties: properties.clone(),
+                    comments: clean_comments(&a.comments),
                     created_at: a.created_at,
                     updated_at: a.updated_at,
                 });
@@ -288,6 +290,33 @@ pub fn prepare(
         conflicts,
         blocked: None,
     })
+}
+
+/// Imported comments within the limits (overlong texts shortened).
+fn clean_comments(comments: &[crate::model::Comment]) -> Vec<crate::model::Comment> {
+    comments
+        .iter()
+        .take(crate::model::MAX_COMMENTS)
+        .filter_map(|c| {
+            let text: String = c
+                .text
+                .chars()
+                .filter(|ch| !ch.is_control() || *ch == '\n')
+                .take(crate::model::MAX_TEXT_CHARS)
+                .collect();
+            (!text.trim().is_empty()).then(|| crate::model::Comment {
+                id: c.id.chars().take(64).collect(),
+                author: c
+                    .author
+                    .chars()
+                    .filter(|ch| !ch.is_control())
+                    .take(200)
+                    .collect(),
+                text,
+                created_at: c.created_at,
+            })
+        })
+        .collect()
 }
 
 /// Compares what the file says about its slide with the open slide.
@@ -633,6 +662,7 @@ pub fn apply_import(core: &Arc<Core>, plan: ImportPlan, strategy: Strategy) {
                         author: a.author.clone(),
                         locked: a.locked,
                         properties: a.properties.clone(),
+                        comments: a.comments.clone(),
                         created_at: created,
                         updated_at: a.updated_at.unwrap_or(created).max(created),
                     })),

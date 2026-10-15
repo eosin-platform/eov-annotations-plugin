@@ -111,6 +111,7 @@ pub fn export(slide: &ExportSlide, classes: &[Class], options: &ExportOptions) -
                     "author": a.author,
                     "locked": a.locked,
                     "properties": a.properties,
+                    "comments": super::comments_json(&a.comments),
                     "created_at": iso8601(a.created_at),
                     "updated_at": iso8601(a.updated_at),
                 })).collect::<Vec<_>>(),
@@ -300,6 +301,7 @@ fn parse_v2(value: &Value) -> Result<ImportDoc, String> {
             ann.author = text(a.get("author"));
             ann.locked = a.get("locked").and_then(Value::as_bool).unwrap_or(false);
             ann.properties = properties(a.get("properties"));
+            ann.comments = super::parse_comments(a.get("comments"));
             ann.created_at = a.get("created_at").and_then(parse_time);
             ann.updated_at = a.get("updated_at").and_then(parse_time);
             out.annotations.push(ann);
@@ -473,6 +475,7 @@ mod tests {
             author: "Dr. A".into(),
             locked: true,
             properties: vec![("grade".into(), "3".into())],
+            comments: vec![],
             created_at: 1_792_056_600_000,
             updated_at: 1_792_056_600_000,
         };

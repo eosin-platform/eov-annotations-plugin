@@ -327,6 +327,7 @@ pub fn parse(value: &Value, stem: &str) -> Result<ImportDoc, String> {
             a.description = text("description");
             a.author = text("author");
             a.status = Status::parse(&text("status")).unwrap_or_default();
+            a.comments = super::parse_comments(eov.and_then(|e| e.get("comments")));
             a.created_at = eov.and_then(|e| e.get("created_at")).and_then(parse_time);
             a.updated_at = eov.and_then(|e| e.get("updated_at")).and_then(parse_time);
             doc.layers[index].annotations.push(a);
@@ -410,6 +411,7 @@ fn feature(a: &Annotation, layer: &Layer, classes: &[Class]) -> Value {
             "status": a.status.as_str(),
             "description": a.description,
             "author": a.author,
+            "comments": super::comments_json(&a.comments),
             "created_at": super::iso8601(a.created_at),
             "updated_at": super::iso8601(a.updated_at),
         }),
@@ -555,6 +557,7 @@ mod tests {
             author: "A".into(),
             locked: false,
             properties: vec![("k".into(), "v".into())],
+            comments: vec![],
             created_at: 1_792_056_600_000,
             updated_at: 1_792_056_600_000,
         };

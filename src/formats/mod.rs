@@ -25,7 +25,7 @@ pub mod geojson;
 pub mod ndpa;
 pub mod xml;
 
-use crate::model::{Color, Geometry, Status};
+use crate::model::{Color, Comment, Geometry, Status};
 use std::collections::BTreeMap;
 
 /// The coordinates of a parsed document.
@@ -121,6 +121,7 @@ pub struct ImportAnnotation {
     pub author: String,
     pub locked: bool,
     pub properties: Vec<(String, String)>,
+    pub comments: Vec<Comment>,
     pub created_at: Option<i64>,
     pub updated_at: Option<i64>,
 }
@@ -136,10 +137,58 @@ impl ImportAnnotation {
             author: String::new(),
             locked: false,
             properties: Vec::new(),
+            comments: Vec::new(),
             created_at: None,
             updated_at: None,
         }
     }
+}
+
+/// Reads exported comments (`[{"author", "text", "created_at"}]`);
+/// unusable entries are left out.
+pub fn parse_comments(value: Option<&serde_json::Value>) -> Vec<Comment> {
+    value
+        .and_then(serde_json::Value::as_array)
+        .map(|items| {
+            items
+                .iter()
+                .filter_map(|c| {
+                    let text = c.get("text")?.as_str()?.to_string();
+                    Some(Comment {
+                        id: c
+                            .get("id")
+                            .and_then(serde_json::Value::as_str)
+                            .map(str::to_string)
+                            .unwrap_or_else(crate::model::new_id),
+                        author: c
+                            .get("author")
+                            .and_then(serde_json::Value::as_str)
+                            .unwrap_or_default()
+                            .to_string(),
+                        text,
+                        created_at: c.get("created_at").and_then(parse_time).unwrap_or(0),
+                    })
+                })
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+/// Comments as exports write them.
+pub fn comments_json(comments: &[Comment]) -> serde_json::Value {
+    serde_json::Value::Array(
+        comments
+            .iter()
+            .map(|c| {
+                serde_json::json!({
+                    "id": c.id,
+                    "author": c.author,
+                    "text": c.text,
+                    "created_at": iso8601(c.created_at),
+                })
+            })
+            .collect(),
+    )
 }
 
 #[derive(Debug, Clone, Default, PartialEq)]

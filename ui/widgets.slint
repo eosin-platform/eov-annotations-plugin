@@ -316,6 +316,53 @@ export component PlainField inherits Rectangle {
     }
 }
 
+// A multi-line text box whose text the panel reads (e.g. a new comment).
+export component TextArea inherits Rectangle {
+    in-out property <string> text;
+    in property <string> placeholder;
+    in property <bool> enabled: true;
+
+    height: 52px;
+    border-radius: 3px;
+    border-width: 1px;
+    border-color: input.has-focus ? Theme.accent : Theme.border;
+    background: root.enabled ? Theme.input : #ffffff06;
+    clip: true;
+    accessible-role: text-input;
+    accessible-value: root.text;
+    accessible-placeholder-text: root.placeholder;
+
+    if root.text == "" && !input.has-focus: Text {
+        x: 6px;
+        y: 4px;
+        width: parent.width - 12px;
+        height: 16px;
+        text: root.placeholder;
+        color: Theme.text-disabled;
+        font-size: Theme.font-size;
+        vertical-alignment: center;
+        overflow: elide;
+    }
+
+    input := TextInput {
+        x: 6px;
+        y: 4px;
+        width: parent.width - 12px;
+        height: parent.height - 8px;
+        text <=> root.text;
+        enabled: root.enabled;
+        read-only: !root.enabled;
+        single-line: false;
+        wrap: word-wrap;
+        vertical-alignment: top;
+        font-size: Theme.font-size;
+        color: Theme.text-primary;
+        selection-background-color: Theme.accent;
+        selection-foreground-color: #ffffff;
+        text-cursor-width: 1px;
+    }
+}
+
 // Looks like a combo box; the panel shows the choices in its popup layer.
 export component ChoiceButton inherits Rectangle {
     in property <string> text;

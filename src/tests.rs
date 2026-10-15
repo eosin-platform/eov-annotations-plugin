@@ -791,9 +791,10 @@ fn read_only_databases_are_viewable_but_not_editable() {
     let db_path = dir.join("teaching.db");
     {
         let conn = rusqlite::Connection::open(&db_path).unwrap();
+        // A database of schema version 2 (before comments): read-only, it
+        // is upgraded in a private copy.
         conn.execute_batch(crate::db::schema::SCHEMA_V2).unwrap();
-        conn.pragma_update(None, "user_version", crate::db::SCHEMA_VERSION)
-            .unwrap();
+        conn.pragma_update(None, "user_version", 2).unwrap();
         conn.execute_batch(
             "INSERT INTO slides (id, identity, created_at, last_opened_at) VALUES (1, 'eov-slide-1:a', 1, 1);
              INSERT INTO layers (id, slide_id, name, color, created_at, updated_at) VALUES ('L', 1, 'Teaching', '#FF0000', 1, 1);
@@ -1744,4 +1745,136 @@ fn ndpa_imports_are_placed_with_the_ndpi_offsets_or_explain_why_not() {
         .unwrap();
     settle(&h);
     assert!(objects(&h, 2).is_empty());
+}
+
+#[test]
+fn comments_are_kept_undone_exported_and_audited() {
+    let mut init = test_init("annotations");
+    init.settings
+        .insert(SETTINGS_KEY.into(), json!({"author": "Dr. A"}));
+    let db = PathBuf::from(&init.data_dir).join("annotations.db");
+    let dir = PathBuf::from(&init.cache_dir);
+    let h = start(init);
+    open(&h, info(1, "a", &dir));
+    draw(&h, POLYGON, 1, square(10.0, 10.0, 100.0));
+    let sidebar = open_sidebar(&h);
+    let owner = prop(&h, &sidebar, "detail-id");
+    callback(
+        &h,
+        &sidebar,
+        "comment-add",
+        vec![owner.clone(), json!("  Looks like DCIS  ")],
+    );
+    let comments = prop(&h, &sidebar, "detail-comments");
+    assert_eq!(comments.as_array().unwrap().len(), 1);
+    assert_eq!(comments[0]["text"], "Looks like DCIS");
+    assert!(
+        comments[0]["byline"]
+            .as_str()
+            .unwrap()
+            .starts_with("Dr. A · ")
+    );
+    assert_eq!(last_undo(&h).label, "Add comment");
+    // The list shows the count.
+    let rows = prop(&h, &sidebar, "rows");
+    assert!(
+        rows.as_array()
+            .unwrap()
+            .iter()
+            .any(|r| r["detail"].as_str().unwrap().ends_with("1 comment"))
+    );
+    // Locked annotations can still be discussed.
+    callback(&h, &sidebar, "detail-locked-toggled", vec![json!(true)]);
+    callback(
+        &h,
+        &sidebar,
+        "comment-add",
+        vec![owner.clone(), json!("Agreed")],
+    );
+    assert_eq!(
+        prop(&h, &sidebar, "detail-comments")
+            .as_array()
+            .unwrap()
+            .len(),
+        2
+    );
+    undo(&h);
+    assert_eq!(
+        prop(&h, &sidebar, "detail-comments")
+            .as_array()
+            .unwrap()
+            .len(),
+        1
+    );
+    // Exports carry them.
+    for (item, name) in [
+        ("export-eov", "c.json"),
+        ("export-geojson", "c.geojson"),
+        ("export-csv", "c.csv"),
+    ] {
+        callback(&h, &sidebar, "menu", vec![json!(item)]);
+        answer_dialog(&h, &dir.join(name));
+    }
+    let eov: Value =
+        serde_json::from_str(&std::fs::read_to_string(dir.join("c.json")).unwrap()).unwrap();
+    let exported = &eov["layers"][0]["annotations"][0]["comments"][0];
+    assert_eq!(exported["text"], "Looks like DCIS");
+    assert_eq!(exported["author"], "Dr. A");
+    let geojson: Value =
+        serde_json::from_str(&std::fs::read_to_string(dir.join("c.geojson")).unwrap()).unwrap();
+    assert_eq!(
+        geojson["features"][0]["properties"]["eov"]["comments"][0]["text"],
+        "Looks like DCIS"
+    );
+    let csv = std::fs::read_to_string(dir.join("c.csv")).unwrap();
+    assert!(csv.lines().next().unwrap().ends_with(",comments"));
+    assert!(csv.lines().nth(1).unwrap().ends_with(",1"), "{csv}");
+    // They come back with an import.
+    open(&h, info(2, "b", &dir));
+    callback(&h, &sidebar, "menu", vec![json!("import")]);
+    answer_dialog(&h, &dir.join("c.json"));
+    let (modal_id, _) = modal(&h).unwrap();
+    h.ui_callback(&modal_id, "import-confirm", vec![json!(0)])
+        .unwrap();
+    settle(&h);
+    let (_, object) = objects(&h, 2).remove(0);
+    callback(
+        &h,
+        &sidebar,
+        "row-clicked",
+        vec![json!(object.object_id), json!(""), json!(false)],
+    );
+    assert_eq!(
+        prop(&h, &sidebar, "detail-comments")[0]["text"],
+        "Looks like DCIS"
+    );
+    // Deleting a comment; the audit trail keeps the discussion.
+    let owner = prop(&h, &sidebar, "detail-id");
+    let comment = prop(&h, &sidebar, "detail-comments")[0]["id"].clone();
+    callback(&h, &sidebar, "comment-remove", vec![owner, comment]);
+    assert!(
+        prop(&h, &sidebar, "detail-comments")
+            .as_array()
+            .unwrap()
+            .is_empty()
+    );
+    let conn = rusqlite::Connection::open(&db).unwrap();
+    let entries: Vec<String> = conn
+        .prepare("SELECT action || ': ' || detail FROM audit_log ORDER BY id")
+        .unwrap()
+        .query_map([], |r| r.get(0))
+        .unwrap()
+        .collect::<Result<_, _>>()
+        .unwrap();
+    assert!(
+        entries
+            .iter()
+            .any(|e| e.starts_with("Add comment") && e.contains("Looks like DCIS")),
+        "{entries:?}"
+    );
+    assert!(
+        entries
+            .iter()
+            .any(|e| e.starts_with("Delete comment") && e.contains("removed"))
+    );
 }

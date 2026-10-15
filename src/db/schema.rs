@@ -4,12 +4,13 @@
 //! |---|---|
 //! | 0 (no tables) | empty database |
 //! | 0 with `annotation_layers` | pre-1.0 plugin (called version 1 here) |
-//! | 2 | current: slides, classes, layers, annotations, audit trail |
+//! | 2 | slides, classes, layers, annotations, audit trail |
+//! | 3 | current: comments on annotations (a JSON column) |
 
 use super::{DbError, DbResult, OpenReport};
 use rusqlite::Connection;
 
-pub const SCHEMA_VERSION: i64 = 2;
+pub const SCHEMA_VERSION: i64 = 3;
 
 /// Version 1 is the unversioned schema of the pre-1.0 plugin.
 pub const LEGACY_VERSION: i64 = 1;
@@ -110,6 +111,12 @@ CREATE TABLE audit_log (
 CREATE INDEX audit_slide ON audit_log(slide_id, at);
 "#;
 
+/// From version 2 to 3: comments on annotations, oldest first, as JSON
+/// (`[{"id", "author", "text", "created_at"}]`), written with the
+/// annotation in one transaction like its other fields.
+pub(crate) const V2_TO_V3: &str =
+    "ALTER TABLE annotations ADD COLUMN comments TEXT NOT NULL DEFAULT '[]';";
+
 fn table_exists(conn: &Connection, name: &str) -> rusqlite::Result<bool> {
     conn.query_row(
         "SELECT EXISTS(SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?1)",
@@ -148,14 +155,17 @@ pub fn migrate(conn: &mut Connection, report: &mut OpenReport) -> DbResult<()> {
         }
         0 => {
             tx.execute_batch(SCHEMA_V2)?;
-            tx.pragma_update(None, "user_version", SCHEMA_VERSION)?;
+            tx.execute_batch(V2_TO_V3)?;
         }
         LEGACY_VERSION => {
             report.migrated_from = Some(LEGACY_VERSION);
             super::legacy::migrate_v1(&tx, report)?;
+            tx.execute_batch(V2_TO_V3)?;
         }
+        2 => tx.execute_batch(V2_TO_V3)?,
         other => return Err(DbError::Failed(format!("unknown schema version {other}"))),
     }
+    tx.pragma_update(None, "user_version", SCHEMA_VERSION)?;
     tx.commit()?;
     Ok(())
 }

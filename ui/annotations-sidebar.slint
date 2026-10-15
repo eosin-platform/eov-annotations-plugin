@@ -6,7 +6,7 @@
 
 import { Theme } from "theme.slint";
 import {
-    IconButton, TextButton, Check, CommitField, PlainField, ChoiceButton, Slider, Swatch, KeyField,
+    IconButton, TextButton, Check, CommitField, PlainField, TextArea, ChoiceButton, Slider, Swatch, KeyField,
     SectionTitle, Hint, Separator, TabButton, ScrollBar,
 } from "widgets.slint";
 
@@ -57,6 +57,12 @@ export struct TallyRow {
     count: string,
     density: string,
     per-hpf: string,
+}
+
+export struct CommentRow {
+    id: string,
+    byline: string,
+    text: string,
 }
 
 export struct OrphanRow {
@@ -316,6 +322,7 @@ export component AnnotationsSidebar inherits Rectangle {
     in property <string> detail-warning;
     in property <[KeyValue]> detail-measurements;
     in property <[KeyValue]> detail-properties;
+    in property <[CommentRow]> detail-comments;
 
     in property <[ClassRow]> classes;
 
@@ -386,6 +393,8 @@ export component AnnotationsSidebar inherits Rectangle {
     callback detail-frame();
     callback detail-repair();
     callback copy-measurements();
+    callback comment-add(string /* owner */, string /* text */);
+    callback comment-remove(string /* owner */, string /* comment id */);
     callback property-add(string /* owner */);
     callback property-remove(string /* owner */, int /* row */);
     callback property-committed(string /* owner */, int /* row */, string /* key */, string /* value */);
@@ -1186,6 +1195,73 @@ export component AnnotationsSidebar inherits Rectangle {
                                             enabled: root.editable && !root.detail-locked;
                                             clicked => {
                                                 root.property-add(root.detail-id);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if root.selection-count == 1: VerticalLayout {
+                                    spacing: 4px;
+
+                                    SectionTitle {
+                                        text: root.detail-comments.length == 0 ? "COMMENTS" : "COMMENTS (\{root.detail-comments.length})";
+                                    }
+
+                                    for c in root.detail-comments: Rectangle {
+                                        border-radius: 4px;
+                                        background: Theme.surface-raised;
+
+                                        VerticalLayout {
+                                            padding: 6px;
+                                            spacing: 2px;
+
+                                            HorizontalLayout {
+                                                spacing: 4px;
+
+                                                Text {
+                                                    text: c.byline;
+                                                    font-size: Theme.small-font-size;
+                                                    color: Theme.text-secondary;
+                                                    vertical-alignment: center;
+                                                    overflow: elide;
+                                                    horizontal-stretch: 1;
+                                                }
+
+                                                IconButton {
+                                                    icon: @image-url("icons/trash.svg");
+                                                    label: "Delete comment";
+                                                    enabled: root.editable;
+                                                    clicked => {
+                                                        root.comment-remove(root.detail-id, c.id);
+                                                    }
+                                                }
+                                            }
+
+                                            Text {
+                                                text: c.text;
+                                                font-size: Theme.font-size;
+                                                color: Theme.text-primary;
+                                                wrap: word-wrap;
+                                                height: self.preferred-height;
+                                            }
+                                        }
+                                    }
+
+                                    new-comment := TextArea {
+                                        placeholder: "Add a comment";
+                                        enabled: root.editable;
+                                        accessible-label: "New comment";
+                                    }
+
+                                    HorizontalLayout {
+                                        alignment: end;
+
+                                        TextButton {
+                                            text: "Comment";
+                                            enabled: root.editable && new-comment.text != "";
+                                            clicked => {
+                                                root.comment-add(root.detail-id, new-comment.text);
+                                                new-comment.text = "";
                                             }
                                         }
                                     }

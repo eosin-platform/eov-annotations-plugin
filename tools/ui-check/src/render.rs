@@ -141,6 +141,7 @@ fn run(out: &Path) -> Result<(), String> {
             (2, "count", 860),
             (3, "data", 860),
             (3, "data-whole", 1700),
+            (0, "layers-whole", 2200),
         ] {
             let (instance, window) = instantiate(&sidebar_def, properties)?;
             instance

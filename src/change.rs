@@ -107,6 +107,9 @@ pub fn invert(changes: &[Change]) -> Vec<Change> {
 /// trail.
 pub fn summary(changes: &[Change]) -> String {
     let (mut added, mut edited, mut deleted, mut layers, mut classes) = (0, 0, 0, 0, 0);
+    // Comments are recorded with their text, so the audit trail keeps the
+    // discussion even after the annotation changes again.
+    let mut comments = Vec::new();
     for change in changes {
         match change {
             Change::Annotation {
@@ -117,7 +120,28 @@ pub fn summary(changes: &[Change]) -> String {
                 before: Some(_),
                 after: None,
             } => deleted += 1,
-            Change::Annotation { .. } => edited += 1,
+            Change::Annotation {
+                before: Some(b),
+                after: Some(a),
+            } => {
+                edited += 1;
+                for c in a
+                    .comments
+                    .iter()
+                    .filter(|c| !b.comments.iter().any(|o| o.id == c.id))
+                {
+                    let text: String = c.text.chars().take(200).collect();
+                    comments.push(format!("comment by {} on {}: {text}", c.author, a.id));
+                }
+                for c in b
+                    .comments
+                    .iter()
+                    .filter(|c| !a.comments.iter().any(|n| n.id == c.id))
+                {
+                    comments.push(format!("comment by {} removed from {}", c.author, b.id));
+                }
+            }
+            Change::Annotation { .. } => {}
             Change::Layer { .. } | Change::RemoveLayer { .. } | Change::RestoreLayer { .. } => {
                 layers += 1
             }
@@ -137,5 +161,6 @@ pub fn summary(changes: &[Change]) -> String {
             parts.push(format!("{n} {what}"));
         }
     }
-    parts.join(", ")
+    parts.extend(comments);
+    parts.join("; ")
 }

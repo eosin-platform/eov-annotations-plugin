@@ -103,8 +103,11 @@ settings.
 
 Select an annotation on the slide or in the list to see its details: name,
 class, review status (*draft*, *verified*, *rejected*), layer, lock,
-description, measurements, free-form properties (name–value pairs), its
-author and when it was created and last edited. Changes apply to all
+description, measurements, free-form properties (name–value pairs),
+comments, its author and when it was created and last edited. Comments
+form a thread under the annotation, each with its author (the *Author*
+setting) and time; they can be added to locked annotations too, deleted
+(with undo), and the list shows how many an annotation has. Changes apply to all
 selected annotations where that makes sense. Text fields save as you type
 (after a pause, on Enter or when you leave the field), to the annotation
 they were typed for. Double-click a row to zoom to it; Ctrl+click selects
@@ -205,11 +208,12 @@ names and texts are cut to the limits.
   versions) becomes the class, `name`, `isLocked` and `metadata` are kept;
   detections go to a separate layer. Exports are FeatureCollections that
   QuPath reads; rectangles and ellipses are written as polygons, text as
-  points, and `properties.eov` keeps the exact shape, layer, status and
-  provenance so a round trip through eov loses nothing.
+  points, and `properties.eov` keeps the exact shape, layer, status,
+  comments and provenance so a round trip through eov loses nothing.
 - **eov JSON**: self-describing (`format`, `format_version`, the coordinate
   convention, the slide's identity, quickhash, size, pixel size and
-  bounds), with classes, layers and every annotation field.
+  bounds), with classes, layers and every annotation field, comments
+  included.
 - **ASAP XML**: dots, point sets, rectangles, polygons, splines (as
   their control polygon) and measurements (as lines); groups become
   classes. Exports write classes as groups and ASAP's nearest shape for what
@@ -232,8 +236,8 @@ names and texts are cut to the limits.
   If the slide is not an NDPI or lacks those properties, the preview says
   so and nothing is imported.
 - **CSV**: one row per annotation with its layer, class, kind, status,
-  author, timestamps, centre and measurements in µm and pixels, and whether
-  the slide was calibrated. Cells that a spreadsheet would run as formulas
+  author, timestamps, centre and measurements in µm and pixels, whether
+  the slide was calibrated, and how many comments it has. Cells that a spreadsheet would run as formulas
   are escaped.
 
 Exports never contain the slide's path. The file name is included only
@@ -283,14 +287,16 @@ in use.
   **Attach** moves their annotations to the open slide (with undo).
 - **Deleted** annotations, layers and classes are kept for undo and removed
   for good after seven days. Every change is also recorded, with its author
-  and time, in an `audit_log` table.
+  and time, in an `audit_log` table; comments are recorded there with their
+  text.
 - **Backups**: **Back up…** writes a consistent copy of the database (also
   while eov is using it), **Export all slides…** writes every slide to one
   eov archive (JSON), and **Merge…** brings the annotations of another
   database (a backup, or a colleague's) into this one without overwriting
   anything.
-- **The schema is versioned** (`PRAGMA user_version`, now 2) and upgraded in
-  one transaction when an older database is opened.
+- **The schema is versioned** (`PRAGMA user_version`, now 3: version 3 added
+  comments) and upgraded in one transaction when an older database is
+  opened.
 
 ### Coming from the plugin before 1.0
 
@@ -372,8 +378,8 @@ This depends on what eov's plugin API offers today:
 - A region made of several separate parts is stored as several
   annotations (eov's shapes have no multipolygon).
 
-Not done yet: DICOM annotation formats (SR, Bulk Simple Annotations),
-comment threads and blinded multi-reader copies.
+Not done yet: DICOM annotation formats (SR, Bulk Simple Annotations) and
+blinded multi-reader copies.
 
 ## Repository layout
 

@@ -60,6 +60,8 @@ pub const CALLBACKS: &[(&str, &str)] = &[
     ("detail-frame", ""),
     ("detail-repair", ""),
     ("copy-measurements", ""),
+    ("comment-add", "ss"),
+    ("comment-remove", "ss"),
     ("property-add", "s"),
     ("property-remove", "sn"),
     ("property-committed", "snss"),
@@ -174,6 +176,15 @@ pub struct TallyRow {
     pub count: String,
     pub density: String,
     pub per_hpf: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize)]
+#[serde(rename_all = "kebab-case")]
+pub struct CommentRow {
+    pub id: String,
+    /// "Author · date".
+    pub byline: String,
+    pub text: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
@@ -339,6 +350,15 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                         format!("{detail} · {area}")
                     };
                 }
+                if !a.comments.is_empty() {
+                    let n = a.comments.len();
+                    let comments = format!("{n} comment{}", if n == 1 { "" } else { "s" });
+                    detail = if detail.is_empty() {
+                        comments
+                    } else {
+                        format!("{detail} · {comments}")
+                    };
+                }
                 rows.push(TreeRow {
                     id: a.id.clone(),
                     layer_id: layer.id.clone(),
@@ -409,6 +429,7 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
     let (mut class_i, mut status_i, mut layer_i, mut locked) = (0, 0, 0, false);
     let mut measurements: Vec<KeyValue> = Vec::new();
     let mut props: Vec<KeyValue> = Vec::new();
+    let mut comments: Vec<CommentRow> = Vec::new();
     if let Some(slide) = slide {
         let chosen: Vec<_> = selection
             .iter()
@@ -451,6 +472,23 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                     .into_iter()
                     .map(|(key, value)| KeyValue { key, value })
                     .collect();
+                comments = first
+                    .comments
+                    .iter()
+                    .map(|c| CommentRow {
+                        id: c.id.clone(),
+                        byline: format!(
+                            "{} · {}",
+                            if c.author.trim().is_empty() {
+                                "Unknown author"
+                            } else {
+                                c.author.as_str()
+                            },
+                            date(c.created_at)
+                        ),
+                        text: c.text.clone(),
+                    })
+                    .collect();
                 props = first
                     .properties
                     .iter()
@@ -491,6 +529,7 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
     put(&mut p, "detail-warning", warning);
     put(&mut p, "detail-measurements", &measurements);
     put(&mut p, "detail-properties", &props);
+    put(&mut p, "detail-comments", &comments);
 
     // Classes.
     let class_rows: Vec<ClassRow> = state
@@ -1088,6 +1127,18 @@ pub fn callback(
                 a.properties = clean_properties(&a.properties)?;
                 Ok(())
             });
+        }
+        "comment-add" => {
+            let file_id = need_file()?;
+            let (owner, text) = (s(args, 0), s(args, 1));
+            if owner.is_empty() || owner.starts_with("multi:") {
+                return Err("Select one annotation to comment on.".to_string());
+            }
+            actions::comment_add(core, file_id, owner, text);
+        }
+        "comment-remove" => {
+            let file_id = need_file()?;
+            actions::comment_remove(core, file_id, s(args, 0), s(args, 1));
         }
         "copy-measurements" => {
             let file_id = need_file()?;
