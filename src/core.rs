@@ -29,8 +29,8 @@ use std::time::{Duration, Instant};
 
 /// Token of the coalesced sidebar refresh.
 pub const REFRESH_TOKEN: &str = "refresh";
-/// Token asking the UI thread to sync the class toolbar buttons.
-pub const PALETTE_TOKEN: &str = "palette";
+/// Token asking the UI thread to sync the class hotkeys.
+pub const HOTKEYS_TOKEN: &str = "hotkeys";
 
 /// A change to make, planned on the database thread against the state as
 /// it is after every earlier edit (so rapid edits never work from stale
@@ -139,7 +139,14 @@ pub struct Paths {
     pub data_dir: PathBuf,
     pub cache_dir: PathBuf,
     pub db_path: PathBuf,
+    /// Where the plugin before eov 1.0 kept its database (in eov's old
+    /// per-user folder, when the host says where that is).
+    pub legacy_db: Option<PathBuf>,
 }
+
+/// Database setting recording what became of the pre-1.0 database:
+/// `merged` or `declined`.
+pub const LEGACY_SETTING: &str = "legacy.merge";
 
 pub struct Core {
     pub host: Host,
@@ -330,7 +337,8 @@ fn io_loop(core: Weak<Core>, rx: Receiver<IoJob>) {
     }
 }
 
-/// Shown in the Data tab with a new, empty database.
+/// Shown in the Data tab with a new, empty database when the host does not
+/// say where eov kept per-user files before 1.0.
 pub const LEGACY_DATABASE_HINT: &str = "New database. If you annotated with eov before 1.0, those annotations are \
      in annotations.db in eov's old settings folder (~/.config/eov on Linux, ~/Library/Application Support/eov \
      on macOS, %APPDATA%\\eov on Windows): bring them in with Merge… above.";
@@ -399,9 +407,9 @@ fn open_db(core: &Arc<Core>, ctx: &mut DbCtx) {
                 let mut state = core.state();
                 state.db = DbStatus::Ready { read_only, path };
                 state.db_notes = report.notes.clone();
-                if fresh {
-                    // The plugin never looks outside its data directory, so
-                    // say where the pre-1.0 database usually is.
+                if fresh && core.paths.legacy_db.is_none() {
+                    // Without the host's legacy folder, say where the pre-1.0
+                    // database usually is.
                     state.db_notes.push(LEGACY_DATABASE_HINT.to_string());
                 }
                 state.classes = classes;
@@ -434,13 +442,14 @@ fn open_db(core: &Arc<Core>, ctx: &mut DbCtx) {
             for note in &report.notes {
                 core.notify(NotifyLevel::Info, note.clone());
             }
+            offer_legacy_merge(core, ctx);
             for file_id in pending {
                 core.db(DbJob::Load {
                     file_id,
                     fingerprint: Fingerprint::NotComputed,
                 });
             }
-            let _ = core.host.post(PALETTE_TOKEN);
+            let _ = core.host.post(HOTKEYS_TOKEN);
         }
         Err(error) => {
             {
@@ -462,6 +471,52 @@ fn open_db(core: &Arc<Core>, ctx: &mut DbCtx) {
         }
     }
     core.request_refresh();
+}
+
+/// Offers (once per database) to merge the database the plugin used before
+/// eov 1.0, when the host's legacy folder has one; the Data tab offers it
+/// until it is merged.
+fn offer_legacy_merge(core: &Arc<Core>, ctx: &mut DbCtx) {
+    let Some(db) = ctx.db.as_ref() else {
+        return;
+    };
+    let candidate = core.paths.legacy_db.clone().filter(|path| {
+        path.is_file()
+            && !db.is_read_only()
+            // Not when the database in use is that very file.
+            && std::fs::canonicalize(path).ok() != std::fs::canonicalize(db.path()).ok()
+    });
+    let decision = db.setting(LEGACY_SETTING).ok().flatten();
+    let available = candidate.filter(|_| decision.as_deref() != Some("merged"));
+    core.state().legacy_db = available.clone();
+    let Some(path) = available else {
+        return;
+    };
+    if decision.is_some() {
+        return;
+    }
+    let args = ConfirmArgs {
+        title: "Annotations from eov before 1.0".into(),
+        message: format!(
+            "The annotations plugin of eov before 1.0 left a database at {}. Bring its annotations into \
+             the current database? The old file is not changed. You can also do this later in the \
+             Data tab of the annotations panel.",
+            path.display()
+        ),
+        confirm_label: "Bring them in".into(),
+        cancel_label: "Not now".into(),
+        destructive: false,
+    };
+    match core.host.confirm(args) {
+        Ok(request) => {
+            core.state()
+                .pending
+                .insert(request, crate::state::Pending::LegacyMerge { path });
+        }
+        Err(e) => core
+            .host
+            .warn(format!("cannot offer the pre-1.0 annotations: {e}")),
+    }
 }
 
 /// The key used when the host provides no identity and no fingerprint can
@@ -633,7 +688,7 @@ fn attach(core: &Arc<Core>, file_id: FileId, slide_id: SlideId) {
     };
     let ops = batch.build();
     core.exec(ops);
-    let reticle = crate::actions::reticle_ops(&core.state(), file_id);
+    let reticle = crate::actions::reticle_ops(&mut core.state(), file_id);
     core.exec(reticle);
     core.request_refresh();
 }
@@ -682,7 +737,7 @@ pub fn reload_all(core: &Arc<Core>, ctx: &mut DbCtx) {
         overlay::sync_all(&mut state)
     };
     core.exec(batch.build());
-    let _ = core.host.post(PALETTE_TOKEN);
+    let _ = core.host.post(HOTKEYS_TOKEN);
     core.request_refresh();
 }
 
@@ -865,7 +920,7 @@ fn finish(core: &Arc<Core>, planned: &Planned, _label: Option<&str>) {
     if let Some(notice) = &planned.notice {
         core.notify(NotifyLevel::Info, notice.clone());
     }
-    let _ = core.host.post(PALETTE_TOKEN);
+    let _ = core.host.post(HOTKEYS_TOKEN);
     core.request_refresh();
 }
 
@@ -922,7 +977,7 @@ fn run_history(core: &Arc<Core>, ctx: &mut DbCtx, entry_id: &str, redo: bool) {
                 overlay::for_changes(&mut state, &changes)
             };
             core.exec(batch.build());
-            let _ = core.host.post(PALETTE_TOKEN);
+            let _ = core.host.post(HOTKEYS_TOKEN);
             core.request_refresh();
         }
         Err(error) => {
@@ -948,7 +1003,7 @@ pub fn file_opened(core: &Arc<Core>, info: FileInfo) {
         let mut state = core.state();
         let mut file = OpenFile::new(info);
         if let Some(old) = state.files.get(&file_id) {
-            file.hidden = old.hidden;
+            file.hidden_panes = old.hidden_panes.clone();
         }
         state.files.insert(file_id, file);
     }

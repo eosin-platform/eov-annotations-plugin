@@ -11,7 +11,7 @@ use crate::change::Change;
 use crate::model::{Annotation, Class, GeometryKind, Layer, LayerRole, SlideId, Status};
 use crate::state::State;
 use eov_plugin_api::prelude::*;
-use std::collections::{BTreeMap, HashMap};
+use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::sync::Arc;
 
 /// Objects per host call (keeps single messages to a few megabytes).
@@ -40,13 +40,13 @@ fn z_for(layer: &Layer, index: usize) -> i32 {
     }
 }
 
-pub fn layer_spec(file_id: FileId, layer: &Layer, index: usize, file_hidden: bool) -> LayerSpec {
+pub fn layer_spec(file_id: FileId, layer: &Layer, index: usize) -> LayerSpec {
     LayerSpec {
         layer_id: host_layer_id(file_id, &layer.id),
         file_id,
         name: layer.name.clone(),
         z: z_for(layer, index),
-        visible: layer.visible && !file_hidden,
+        visible: layer.visible,
         opacity: layer.opacity.clamp(0.0, 1.0),
         interactive: true,
         editable: !layer.locked,
@@ -60,8 +60,8 @@ pub fn layer_spec(file_id: FileId, layer: &Layer, index: usize, file_hidden: boo
     }
 }
 
-fn layer_update(file_id: FileId, layer: &Layer, index: usize, file_hidden: bool) -> LayerUpdate {
-    let spec = layer_spec(file_id, layer, index, file_hidden);
+fn layer_update(file_id: FileId, layer: &Layer, index: usize) -> LayerUpdate {
+    let spec = layer_spec(file_id, layer, index);
     LayerUpdate {
         layer_id: spec.layer_id,
         name: Some(spec.name),
@@ -175,22 +175,6 @@ impl Styler {
     }
 }
 
-impl Styler {
-    /// The object drawn emphasised (the row hovered in the list).
-    pub fn highlighted(&self, a: &Annotation, layer: &Layer) -> Option<OverlayObject> {
-        let mut object = self.object(a, layer)?;
-        if let Some(style) = &mut object.style {
-            style.stroke = Rgba(0xFF, 0xFF, 0xFF, 0xFF);
-            style.stroke_width += 2.0;
-            style.point_radius += 2.0;
-            if style.fill.3 > 0 {
-                style.fill = style.fill.with_alpha(style.fill.3.saturating_add(0x40));
-            }
-        }
-        Some(object)
-    }
-}
-
 /// A host overlay call.
 #[derive(Debug, Clone, PartialEq)]
 pub enum HostOp {
@@ -201,6 +185,10 @@ pub enum HostOp {
     Replace(String, Vec<OverlayObject>),
     Remove(String, Vec<String>),
     Select(String, Vec<String>),
+    /// Draws objects with the layer's hover style (empty: none).
+    Highlight(String, Vec<String>),
+    /// Shows or hides a layer in one pane.
+    PaneVisibility(String, PaneId, bool),
 }
 
 /// Performs host calls; returns the errors.
@@ -246,6 +234,10 @@ pub fn exec(host: &Host, ops: Vec<HostOp>) -> Vec<String> {
                 }
             }
             HostOp::Select(id, ids) => note(host.layer(id).select(ids)),
+            HostOp::Highlight(id, ids) => note(host.layer(id).highlight(ids)),
+            HostOp::PaneVisibility(id, pane, visible) => {
+                note(host.layer(id).set_visible_in_pane(pane, visible))
+            }
         }
     }
     errors
@@ -347,16 +339,17 @@ pub fn sync_file(state: &mut State, file_id: FileId) -> Batch {
     let Some(file) = state.files.get(&file_id) else {
         return batch;
     };
-    let hidden = file.hidden;
+    let hidden = file.hidden_panes.clone();
     let Some(slide) = file.slide_id().and_then(|id| state.slides.get(&id)) else {
         return batch;
     };
-    let mut created = std::collections::BTreeSet::new();
+    let mut created = BTreeSet::new();
     for (index, layer) in slide.layers.iter().enumerate() {
-        let spec = layer_spec(file_id, layer, index, hidden);
+        let spec = layer_spec(file_id, layer, index);
         created.insert(spec.layer_id.clone());
         let host_layer = spec.layer_id.clone();
         batch.op(HostOp::CreateLayer(spec));
+        hide_in_panes(&mut batch, &hidden, &host_layer);
         let contents: Vec<Arc<Annotation>> = slide.in_layer(&layer.id).cloned().collect();
         batch.objects(host_layer, layer, contents, true);
     }
@@ -438,7 +431,7 @@ pub fn for_changes(state: &mut State, changes: &[Change]) -> Batch {
                 };
                 let slide_id = any.slide_id;
                 for file_id in state.files_of(slide_id) {
-                    let hidden = state.files.get(&file_id).is_some_and(|f| f.hidden);
+                    let hidden = hidden_panes(state, file_id);
                     let host_layer = host_layer_id(file_id, &any.id);
                     match after {
                         Some(after) => {
@@ -452,9 +445,7 @@ pub fn for_changes(state: &mut State, changes: &[Change]) -> Batch {
                                 .get(&file_id)
                                 .is_some_and(|f| f.host_layers.contains(&host_layer));
                             if exists {
-                                batch.op(HostOp::UpdateLayer(layer_update(
-                                    file_id, after, index, hidden,
-                                )));
+                                batch.op(HostOp::UpdateLayer(layer_update(file_id, after, index)));
                                 if before.as_ref().is_some_and(|b| b.color != after.color) {
                                     let contents: Vec<Arc<Annotation>> = state
                                         .slides
@@ -464,9 +455,8 @@ pub fn for_changes(state: &mut State, changes: &[Change]) -> Batch {
                                     batch.objects(host_layer.clone(), after, contents, true);
                                 }
                             } else {
-                                batch.op(HostOp::CreateLayer(layer_spec(
-                                    file_id, after, index, hidden,
-                                )));
+                                batch.op(HostOp::CreateLayer(layer_spec(file_id, after, index)));
+                                hide_in_panes(&mut batch, &hidden, &host_layer);
                                 if let Some(f) = state.files.get_mut(&file_id) {
                                     f.host_layers.insert(host_layer.clone());
                                 }
@@ -551,10 +541,11 @@ fn restore_layer(state: &mut State, batch: &mut Batch, slide_id: SlideId, layer_
     let layer = slide.layers[index].clone();
     let contents: Vec<Arc<Annotation>> = slide.in_layer(layer_id).cloned().collect();
     for file_id in state.files_of(slide_id) {
-        let hidden = state.files.get(&file_id).is_some_and(|f| f.hidden);
-        let spec = layer_spec(file_id, &layer, index, hidden);
+        let hidden = hidden_panes(state, file_id);
+        let spec = layer_spec(file_id, &layer, index);
         let host_layer = spec.layer_id.clone();
         batch.op(HostOp::CreateLayer(spec));
+        hide_in_panes(batch, &hidden, &host_layer);
         batch.objects(host_layer.clone(), &layer, contents.clone(), true);
         if let Some(f) = state.files.get_mut(&file_id) {
             f.host_layers.insert(host_layer);
@@ -647,25 +638,35 @@ pub fn select(state: &State, file_id: FileId) -> Vec<HostOp> {
         .collect()
 }
 
-/// Shows or hides every annotation layer of a file (HUD button).
-pub fn file_visibility(state: &State, file_id: FileId) -> Vec<HostOp> {
-    let Some(file) = state.files.get(&file_id) else {
-        return Vec::new();
-    };
-    let Some(slide) = file.slide_id().and_then(|id| state.slides.get(&id)) else {
-        return Vec::new();
-    };
-    slide
-        .layers
-        .iter()
-        .map(|layer| {
-            HostOp::UpdateLayer(LayerUpdate {
-                layer_id: host_layer_id(file_id, &layer.id),
-                visible: Some(layer.visible && !file.hidden),
-                ..Default::default()
-            })
+/// Shows or hides every annotation layer of a file in one pane (the HUD
+/// button of that pane).
+pub fn pane_visibility(state: &State, file_id: FileId, pane: PaneId, visible: bool) -> Vec<HostOp> {
+    state
+        .files
+        .get(&file_id)
+        .map(|file| {
+            file.host_layers
+                .iter()
+                .map(|layer| HostOp::PaneVisibility(layer.clone(), pane, visible))
+                .collect()
         })
-        .collect()
+        .unwrap_or_default()
+}
+
+fn hidden_panes(state: &State, file_id: FileId) -> BTreeSet<PaneId> {
+    state
+        .files
+        .get(&file_id)
+        .map(|f| f.hidden_panes.clone())
+        .unwrap_or_default()
+}
+
+/// Creating a layer resets its per-pane visibility: hide it again where the
+/// HUD button hid the file's annotations.
+fn hide_in_panes(batch: &mut Batch, hidden: &BTreeSet<PaneId>, host_layer: &str) {
+    for pane in hidden {
+        batch.op(HostOp::PaneVisibility(host_layer.to_string(), *pane, false));
+    }
 }
 
 #[cfg(test)]

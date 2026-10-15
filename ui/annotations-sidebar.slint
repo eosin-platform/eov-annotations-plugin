@@ -47,6 +47,8 @@ export struct ClassRow {
     count: int,
     active: bool,
     alternate: bool,
+    // Why eov refused the hotkey ("" when it works).
+    hotkey-note: string,
 }
 
 export struct TallyRow {
@@ -334,6 +336,8 @@ export component AnnotationsSidebar inherits Rectangle {
     in property <string> db-path;
     in property <string> db-status;
     in property <string> db-notes;
+    // The pre-1.0 database found in eov's old settings folder ("" if none).
+    in property <string> legacy-db;
     in property <[OrphanRow]> orphans;
     in property <string> orphans-note;
     in property <string> setting-author;
@@ -402,6 +406,7 @@ export component AnnotationsSidebar inherits Rectangle {
     callback field-config(int /* mode */, string /* field number */, string /* objective */, string /* area */);
 
     callback orphans-refresh();
+    callback legacy-merge();
     callback orphan-relink(string);
     callback setting-text(string /* key */, string);
     callback setting-bool(string /* key */, bool);
@@ -1217,7 +1222,7 @@ export component AnnotationsSidebar inherits Rectangle {
                         spacing: 6px;
 
                         Hint {
-                            text: "New annotations get the active class (●), and the Count tool counts it; Shift+click counts the second class (◐). A class hotkey makes it active while drawing.";
+                            text: "New annotations get the active class (●), and the Count tool counts it; Shift+click counts the second class (◐). Pressing a class's hotkey makes it active.";
                         }
 
                         for c in root.classes: VerticalLayout {
@@ -1285,6 +1290,7 @@ export component AnnotationsSidebar inherits Rectangle {
 
                                         KeyField {
                                             value: c.hotkey;
+                                            refused: c.hotkey-note != "";
                                             chosen(key) => {
                                                 root.class-hotkey(c.id, key);
                                             }
@@ -1309,6 +1315,15 @@ export component AnnotationsSidebar inherits Rectangle {
                                         }
                                     }
                                 }
+                            }
+
+                            if c.hotkey-note != "": Text {
+                                x: 28px;
+                                text: c.hotkey-note;
+                                font-size: Theme.small-font-size;
+                                color: Theme.warning;
+                                wrap: word-wrap;
+                                height: self.preferred-height;
                             }
 
                             if root.editing-class == c.id: Rectangle {
@@ -1812,6 +1827,36 @@ export component AnnotationsSidebar inherits Rectangle {
 
                         if root.db-notes != "": Hint {
                             text: root.db-notes;
+                        }
+
+                        if root.legacy-db != "": Rectangle {
+                            border-radius: 4px;
+                            background: Theme.info-surface;
+
+                            VerticalLayout {
+                                padding: 8px;
+                                spacing: 6px;
+
+                                Text {
+                                    text: "Annotations made with eov before 1.0 are in " + root.legacy-db + ". Bring them into this database (the old file is not changed):";
+                                    font-size: Theme.font-size;
+                                    color: Theme.text-primary;
+                                    wrap: word-wrap;
+                                    height: self.preferred-height;
+                                }
+
+                                HorizontalLayout {
+                                    alignment: end;
+
+                                    TextButton {
+                                        text: "Bring them in";
+                                        primary: true;
+                                        clicked => {
+                                            root.legacy-merge();
+                                        }
+                                    }
+                                }
+                            }
                         }
 
                         Separator { }

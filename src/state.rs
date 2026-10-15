@@ -273,12 +273,15 @@ pub struct OpenFile {
     pub load: Load,
     /// Selected annotation ids (host selection, mirrored).
     pub selection: Vec<String>,
-    /// All annotations hidden from the HUD button.
-    pub hidden: bool,
+    /// Panes in which the HUD button hid the slide's annotations.
+    pub hidden_panes: BTreeSet<PaneId>,
     /// Host layers created for this file.
     pub host_layers: BTreeSet<String>,
-    /// The view centre of each pane showing the file (for the HPF reticle).
-    pub view_centres: BTreeMap<PaneId, [f64; 2]>,
+    /// Where the HPF reticle is (the pointer, while the field tool is
+    /// active and the pointer is over a pane showing this file).
+    pub reticle: Option<[f64; 2]>,
+    /// Whether the reticle's host layer exists.
+    pub reticle_layer: bool,
 }
 
 impl OpenFile {
@@ -287,9 +290,10 @@ impl OpenFile {
             info,
             load: Load::Pending,
             selection: Vec::new(),
-            hidden: false,
+            hidden_panes: BTreeSet::new(),
             host_layers: BTreeSet::new(),
-            view_centres: BTreeMap::new(),
+            reticle: None,
+            reticle_layer: false,
         }
     }
 
@@ -369,6 +373,15 @@ impl History {
     pub fn is_empty(&self) -> bool {
         self.records.is_empty()
     }
+
+    /// Frees the records of entries the host dropped from its history.
+    pub fn drop_entries(&mut self, entry_ids: &[String]) {
+        for id in entry_ids {
+            self.records.remove(id);
+        }
+        let records = &self.records;
+        self.order.retain(|id| records.contains_key(id));
+    }
 }
 
 /// Export formats.
@@ -406,6 +419,25 @@ pub enum Pending {
         file_id: FileId,
         from: SlideId,
     },
+    /// Merging the database of the plugin before eov 1.0.
+    LegacyMerge {
+        path: std::path::PathBuf,
+    },
+}
+
+/// A press of the HPF field tool (a click places a field, a drag pans).
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct FieldPress {
+    pub pane: PaneId,
+    pub file_id: FileId,
+    /// Where it started, on screen and on the slide.
+    pub screen: [f64; 2],
+    pub image: [f64; 2],
+    /// The last pointer position seen (for panning).
+    pub last: [f64; 2],
+    pub dragging: bool,
+    /// The second press of a double click (places no second field).
+    pub double: bool,
 }
 
 /// Everything the plugin keeps in memory.
@@ -438,6 +470,13 @@ pub struct State {
     pub jobs: HashMap<String, Arc<std::sync::atomic::AtomicBool>>,
     /// Slides of the database (for relinking), when listed.
     pub orphans: Option<Vec<crate::db::SlideSummary>>,
+    /// The database of the plugin before eov 1.0, while it exists and has
+    /// not been merged into this one.
+    pub legacy_db: Option<std::path::PathBuf>,
+    /// Class hotkeys the host refused: class id → reason.
+    pub refused_hotkeys: HashMap<String, String>,
+    /// The field tool's current press.
+    pub field_press: Option<FieldPress>,
 }
 
 impl State {
@@ -461,6 +500,9 @@ impl State {
             next_import: 1,
             jobs: HashMap::new(),
             orphans: None,
+            legacy_db: None,
+            refused_hotkeys: HashMap::new(),
+            field_press: None,
         }
     }
 

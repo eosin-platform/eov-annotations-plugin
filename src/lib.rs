@@ -32,7 +32,7 @@ pub mod stats;
 pub mod tools;
 pub mod transfer;
 
-use crate::core::{Core, DbJob, PALETTE_TOKEN, Paths, REFRESH_TOKEN};
+use crate::core::{Core, DbJob, HOTKEYS_TOKEN, Paths, REFRESH_TOKEN};
 use crate::model::{Geometry, LayerRole};
 use crate::sidebar::{SidebarHost, SidebarView};
 use crate::state::{Pending, Settings, State};
@@ -47,16 +47,13 @@ pub const SETTINGS_KEY: &str = "settings";
 /// shared, read-only teaching database).
 pub const DATABASE_PATH_KEY: &str = "database_path";
 
-/// Signature of a registered class button: hotkey, active, icon, tooltip.
-type PaletteEntry = (String, bool, String, String);
-
 #[derive(Default)]
 struct Ui {
     sidebar: Option<Surface>,
     /// Open import dialogs: surface id → import plan id.
     imports: BTreeMap<String, u64>,
-    /// Class toolbar buttons registered, by button id.
-    palette: BTreeMap<String, PaletteEntry>,
+    /// Class hotkeys registered, by hotkey id.
+    hotkeys: BTreeMap<String, HotkeySpec>,
     /// HUD "visibility" state per pane.
     hud: BTreeMap<PaneId, bool>,
     /// The annotation highlighted from the list.
@@ -168,55 +165,37 @@ impl AnnotationsPlugin {
         }
     }
 
-    /// Keeps one toolbar button per class with a hotkey; pressing the key
-    /// (or clicking) makes the class active.
-    fn sync_palette(&self) {
-        let desired: BTreeMap<String, ToolbarButtonSpec> = {
-            let state = self.core.state();
-            state
-                .classes
-                .iter()
-                .filter_map(|c| {
-                    let active = state.settings.active_class.as_deref() == Some(c.id.as_str());
-                    tools::class_button(c, active)
-                })
-                .map(|spec| (spec.button_id.clone(), spec))
-                .collect()
-        };
+    /// Keeps one key binding per class with a hotkey; pressing the key
+    /// makes the class active.
+    fn sync_hotkeys(&self) {
+        let desired: BTreeMap<String, HotkeySpec> = self
+            .core
+            .state()
+            .classes
+            .iter()
+            .filter_map(tools::class_hotkey)
+            .map(|spec| (spec.hotkey_id.clone(), spec))
+            .collect();
         let mut ui = self.ui();
         let stale: Vec<String> = ui
-            .palette
-            .keys()
-            .filter(|id| !desired.contains_key(*id))
-            .cloned()
+            .hotkeys
+            .iter()
+            .filter(|(id, spec)| desired.get(*id) != Some(spec))
+            .map(|(id, _)| id.clone())
             .collect();
         for id in stale {
-            let _ = self.core.host.remove_toolbar_button(&id);
-            ui.palette.remove(&id);
+            let _ = self.core.host.unregister_hotkey(&id);
+            ui.hotkeys.remove(&id);
+            if let Some(class_id) = id.strip_prefix(tools::CLASS_HOTKEY_PREFIX) {
+                self.core.state().refused_hotkeys.remove(class_id);
+            }
         }
         for (id, spec) in desired {
-            let signature: PaletteEntry = (
-                spec.hotkey
-                    .as_ref()
-                    .map(|h| h.key.clone())
-                    .unwrap_or_default(),
-                spec.active,
-                spec.icon_svg.clone(),
-                spec.tooltip.clone(),
-            );
-            if ui.palette.get(&id) == Some(&signature) {
+            if ui.hotkeys.contains_key(&id) {
                 continue;
             }
-            let only_active_changed = ui.palette.get(&id).is_some_and(|old| {
-                old.0 == signature.0 && old.2 == signature.2 && old.3 == signature.3
-            });
-            let result = if only_active_changed {
-                self.core.host.set_toolbar_button_active(&id, signature.1)
-            } else {
-                self.core.host.add_toolbar_button(spec)
-            };
-            if result.is_ok() {
-                ui.palette.insert(id, signature);
+            if self.core.host.register_hotkey(spec.clone()).is_ok() {
+                ui.hotkeys.insert(id, spec);
             }
         }
     }
@@ -244,7 +223,9 @@ impl AnnotationsPlugin {
                     format!("Counting {class}{alternate}")
                 }
                 tools::FIELD => {
-                    "Click to place an HPF field; the dashed circle shows its size".to_string()
+                    "The dashed circle is one HPF: click to place a field, drag to pan, \
+                                 Esc to leave"
+                        .to_string()
                 }
                 tools::SELECT => {
                     "Click to select, drag to select several; drag handles to edit".to_string()
@@ -254,13 +235,7 @@ impl AnnotationsPlugin {
             self.core.host.set_status(Some(&status));
         }
         if field {
-            if let Ok(snapshot) = self.core.host.snapshot() {
-                for pane in snapshot.panes {
-                    if let Some(view) = pane.view {
-                        actions::view_changed(&self.core, &view);
-                    }
-                }
-            }
+            // The reticle appears where the pointer moves.
             actions::refresh_reticles(&self.core);
         }
     }
@@ -278,18 +253,32 @@ impl AnnotationsPlugin {
         }
     }
 
+    /// The HUD button: hides or shows a slide's annotations in one pane.
     fn toggle_visibility(&self, pane: PaneId, file_id: FileId) {
         let (ops, hidden) = {
             let mut state = self.core.state();
             let Some(file) = state.files.get_mut(&file_id) else {
                 return;
             };
-            file.hidden = !file.hidden;
-            let hidden = file.hidden;
-            (overlay::file_visibility(&state, file_id), hidden)
+            let hidden = !file.hidden_panes.remove(&pane);
+            if hidden {
+                file.hidden_panes.insert(pane);
+            }
+            (
+                overlay::pane_visibility(&state, file_id, pane, !hidden),
+                hidden,
+            )
         };
         self.core.exec(ops);
         self.set_hud(pane, hidden);
+    }
+
+    fn hidden_in(&self, pane: PaneId, file_id: FileId) -> bool {
+        self.core
+            .state()
+            .files
+            .get(&file_id)
+            .is_some_and(|f| f.hidden_panes.contains(&pane))
     }
 
     fn set_hud(&self, pane: PaneId, hidden: bool) {
@@ -306,7 +295,8 @@ impl AnnotationsPlugin {
         });
     }
 
-    /// Highlights the annotation hovered in the list.
+    /// Highlights the annotation hovered in the list (with the host's hover
+    /// style of its layer).
     fn highlight(&self, target: Option<(FileId, String)>) {
         let previous = {
             let mut ui = self.ui();
@@ -315,25 +305,22 @@ impl AnnotationsPlugin {
             }
             std::mem::replace(&mut ui.highlighted, target.clone())
         };
-        let mut ops = Vec::new();
-        {
+        let host_layer = |(file_id, id): &(FileId, String)| {
             let state = self.core.state();
-            if let Some((file_id, id)) = previous
-                && let Some(slide) = state.slide_of(file_id)
-            {
-                ops.extend(overlay::for_annotations(&state, slide.id(), &[id]).build());
-            }
-            if let Some((file_id, id)) = &target
-                && let Some(slide) = state.slide_of(*file_id)
-                && let Some(a) = slide.annotations.get(id)
-                && let Some(layer) = slide.layer(&a.layer_id)
-                && let Some(object) = overlay::Styler::new(&state).highlighted(a, layer)
-            {
-                ops.push(overlay::HostOp::Upsert(
-                    overlay::host_layer_id(*file_id, &a.layer_id),
-                    vec![object],
-                ));
-            }
+            let slide = state.slide_of(*file_id)?;
+            let a = slide.annotations.get(id)?;
+            Some(overlay::host_layer_id(*file_id, &a.layer_id))
+        };
+        let mut ops = Vec::new();
+        let old_layer = previous.as_ref().and_then(host_layer);
+        let new_layer = target.as_ref().and_then(host_layer);
+        if let Some(layer) = old_layer
+            && Some(&layer) != new_layer.as_ref()
+        {
+            ops.push(overlay::HostOp::Highlight(layer, Vec::new()));
+        }
+        if let (Some(layer), Some((_, id))) = (new_layer, target) {
+            ops.push(overlay::HostOp::Highlight(layer, vec![id]));
         }
         self.core.exec(ops);
     }
@@ -433,7 +420,7 @@ impl AnnotationsPlugin {
             }
             Pending::ExportAll => transfer::export_all(&self.core, path),
             Pending::Backup => transfer::backup(&self.core, path),
-            Pending::MergeDb => transfer::merge_database(&self.core, path),
+            Pending::MergeDb => transfer::merge_database(&self.core, path, false),
             _ => {}
         }
     }
@@ -443,6 +430,10 @@ impl AnnotationsPlugin {
             return;
         };
         if !confirmed {
+            if let Pending::LegacyMerge { .. } = pending {
+                // Not asked again; the Data tab keeps offering it.
+                transfer::decline_legacy(&self.core);
+            }
             return;
         }
         match pending {
@@ -452,6 +443,7 @@ impl AnnotationsPlugin {
             Pending::ClearCounts { file_id } => actions::clear_counts(&self.core, file_id),
             Pending::DeleteClass { class_id } => actions::class_delete(&self.core, class_id),
             Pending::Relink { file_id, from } => actions::relink(&self.core, file_id, from),
+            Pending::LegacyMerge { path } => transfer::merge_database(&self.core, path, true),
             _ => {}
         }
     }
@@ -614,6 +606,11 @@ impl Plugin for AnnotationsPlugin {
             data_dir: PathBuf::from(&init.data_dir),
             cache_dir: PathBuf::from(&init.cache_dir),
             db_path: database_path(&init),
+            legacy_db: init
+                .legacy_config_dir
+                .as_deref()
+                .filter(|dir| !dir.trim().is_empty())
+                .map(|dir| PathBuf::from(dir).join("annotations.db")),
         };
         for spec in tools::tool_specs() {
             host.register_tool(spec).map_err(String::from)?;
@@ -656,7 +653,7 @@ impl Plugin for AnnotationsPlugin {
                 if restore_sidebar {
                     self.open_sidebar()?;
                 }
-                self.sync_palette();
+                self.sync_hotkeys();
             }
             HostEvent::Shutdown => core.sync(),
             HostEvent::FileOpened { file } => crate::core::file_opened(core, file),
@@ -670,30 +667,50 @@ impl Plugin for AnnotationsPlugin {
                 if let Some(file_id) = file_id {
                     crate::core::retry_if_due(core, file_id, false);
                     actions::check_external(core);
-                    let hidden = core.state().files.get(&file_id).is_some_and(|f| f.hidden);
                     if let Some(pane) = pane {
-                        self.set_hud(pane, hidden);
+                        self.set_hud(pane, self.hidden_in(pane, file_id));
                     }
                 }
                 core.request_refresh();
             }
             HostEvent::ViewChanged { view } => {
-                actions::view_changed(core, &view);
-                let hidden = core
-                    .state()
-                    .files
-                    .get(&view.file_id)
-                    .is_some_and(|f| f.hidden);
-                self.set_hud(view.pane, hidden);
+                self.set_hud(view.pane, self.hidden_in(view.pane, view.file_id));
             }
             HostEvent::WindowFocusChanged { focused: true } => actions::check_external(core),
-            HostEvent::ToolbarButtonClicked { button_id } => {
-                if button_id == tools::SIDEBAR_BUTTON {
-                    self.toggle_sidebar()?;
-                } else if let Some(class_id) = button_id.strip_prefix(tools::CLASS_BUTTON_PREFIX) {
+            HostEvent::ToolbarButtonClicked { button_id } if button_id == tools::SIDEBAR_BUTTON => {
+                self.toggle_sidebar()?
+            }
+            HostEvent::HotkeyPressed { hotkey_id, .. } => {
+                if let Some(class_id) = hotkey_id.strip_prefix(tools::CLASS_HOTKEY_PREFIX) {
                     actions::set_active_class(core, Some(class_id.to_string()));
                 }
             }
+            HostEvent::RegistrationRefused { what, id, reason } if what == "hotkey" => {
+                // eov warns the user too; the Classes tab says which class.
+                // The binding stays listed as tried, so it is not offered
+                // again until the class's key changes.
+                if let Some(class_id) = id.strip_prefix(tools::CLASS_HOTKEY_PREFIX) {
+                    core.state()
+                        .refused_hotkeys
+                        .insert(class_id.to_string(), reason);
+                    core.request_refresh();
+                }
+            }
+            HostEvent::Pointer {
+                tool_id,
+                pane,
+                file_id,
+                event,
+            } if tool_id == tools::FIELD => actions::field_pointer(core, pane, file_id, event),
+            HostEvent::Key {
+                tool_id: Some(tool_id),
+                pane,
+                key,
+                modifiers,
+                pressed: true,
+                ..
+            } if tool_id == tools::FIELD => actions::field_key(core, pane, &key, modifiers),
+            HostEvent::UndoDropped { entry_ids } => core.state().history.drop_entries(&entry_ids),
             HostEvent::HudButtonClicked {
                 button_id,
                 pane,
@@ -785,7 +802,7 @@ impl Plugin for AnnotationsPlugin {
                     core.refresh_delivered();
                     self.refresh_sidebar();
                 }
-                PALETTE_TOKEN => self.sync_palette(),
+                HOTKEYS_TOKEN => self.sync_hotkeys(),
                 other => {
                     if let Some(id) = other
                         .strip_prefix(transfer::IMPORT_TOKEN_PREFIX)
@@ -847,7 +864,8 @@ impl Plugin for AnnotationsPlugin {
         }
         match name {
             // Test hooks (no surface declares these callbacks): wait for the
-            // workers; list the dialog requests the plugin waits for.
+            // workers; list the dialog requests the plugin waits for; count
+            // the undo records kept.
             "__sync" => {
                 self.core.sync();
                 Ok(Value::Null)
@@ -857,6 +875,7 @@ impl Plugin for AnnotationsPlugin {
                 ids.sort();
                 Ok(json!(ids))
             }
+            "__history" => Ok(json!(self.core.state().history.len())),
             "row-hovered" => {
                 let id = args
                     .first()

@@ -19,7 +19,6 @@ pub const FIELD: &str = "field";
 
 pub const SIDEBAR_BUTTON: &str = "sidebar";
 pub const VISIBILITY_HUD: &str = "visibility";
-pub const CLASS_BUTTON_PREFIX: &str = "class-";
 
 /// Edit layers that do not exist: with these, clicks never grab existing
 /// objects, so every count click adds a point.
@@ -122,9 +121,10 @@ const TOOLS: &[Def] = &[
     },
     Def {
         id: FIELD,
-        label: "HPF field (click to place a field of the configured size)",
+        label: "HPF field (a field of the configured size follows the pointer; click to place it, drag to pan, Esc to leave)",
         key: "h",
-        kind: ToolKind::Point,
+        // Custom, so that the reticle can follow the pointer.
+        kind: ToolKind::Custom,
         icon: "<circle cx='12' cy='12' r='8' stroke-dasharray='3 2'/><path d='M12 9v6M9 12h6'/>",
     },
 ];
@@ -136,6 +136,14 @@ pub fn tool_hotkeys() -> Vec<&'static str> {
 
 pub fn is_tool(id: &str) -> bool {
     TOOLS.iter().any(|t| t.id == id)
+}
+
+/// The tool a key selects (`None` for the HPF field tool's own key).
+pub fn tool_for_key(key: &str) -> Option<&'static str> {
+    TOOLS
+        .iter()
+        .find(|t| t.key == key && t.id != FIELD)
+        .map(|t| t.id)
 }
 
 pub fn tool_specs() -> Vec<ToolSpec> {
@@ -167,44 +175,16 @@ pub fn tool_specs() -> Vec<ToolSpec> {
         .collect()
 }
 
-/// A coloured dot with the hotkey letter, for class buttons.
-pub fn class_icon(class: &Class) -> String {
-    let key = class
-        .hotkey
-        .as_deref()
-        .unwrap_or("")
-        .chars()
-        .next()
-        .map(|c| c.to_uppercase().to_string())
-        .unwrap_or_default();
-    let key = match key.as_str() {
-        "<" => "&lt;".to_string(),
-        ">" => "&gt;".to_string(),
-        "&" => "&amp;".to_string(),
-        "'" => "&apos;".to_string(),
-        "\"" => "&quot;".to_string(),
-        other => other.to_string(),
-    };
-    format!(
-        "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='8' fill='{}' \
-         stroke='white' stroke-width='1.2'/><text x='12' y='16' font-size='11' text-anchor='middle' \
-         font-family='sans-serif' fill='white' stroke='black' stroke-width='0.4'>{key}</text></svg>",
-        class.color.to_hex()
-    )
-}
+/// Prefix of the ids of class hotkeys (`class-<class id>`).
+pub const CLASS_HOTKEY_PREFIX: &str = "class-";
 
-/// The toolbar button selecting a class (only for classes with a hotkey).
-pub fn class_button(class: &Class, active: bool) -> Option<ToolbarButtonSpec> {
+/// The key binding that makes a class active (for classes with a hotkey).
+pub fn class_hotkey(class: &Class) -> Option<HotkeySpec> {
     let key = class.hotkey.clone()?;
-    Some(ToolbarButtonSpec {
-        button_id: format!("{CLASS_BUTTON_PREFIX}{}", class.id),
-        tooltip: format!("Class: {}", class.name),
-        icon_svg: class_icon(class),
-        toggled_icon_svg: None,
-        active,
-        enabled: true,
-        hotkey: Some(Hotkey::key(key)),
-        order: 100 + class.sort_order.clamp(0, 1000) as i32,
+    Some(HotkeySpec {
+        hotkey_id: format!("{CLASS_HOTKEY_PREFIX}{}", class.id),
+        hotkey: Hotkey::key(key),
+        description: format!("Annotation class: {}", class.name),
     })
 }
 
@@ -228,22 +208,32 @@ mod tests {
     }
 
     #[test]
-    fn class_icons_escape_their_letter() {
+    fn classes_with_a_hotkey_get_a_key_binding() {
         let class = Class {
             id: "c".into(),
-            name: "A".into(),
+            name: "Blasts".into(),
             color: crate::model::Color(1, 2, 3),
-            hotkey: Some("<".into()),
+            hotkey: Some("q".into()),
             visible: true,
             opacity: 1.0,
             sort_order: 0,
             created_at: 0,
             updated_at: 0,
         };
-        assert!(class_icon(&class).contains("&lt;"));
-        assert!(class_button(&class, false).is_some());
+        let spec = class_hotkey(&class).unwrap();
+        assert_eq!(spec.hotkey_id, "class-c");
+        assert_eq!(spec.hotkey.key, "q");
+        assert!(spec.description.contains("Blasts"));
         let mut none = class;
         none.hotkey = None;
-        assert!(class_button(&none, false).is_none());
+        assert!(class_hotkey(&none).is_none());
+    }
+
+    #[test]
+    fn keys_of_the_other_tools_are_known_to_the_field_tool() {
+        assert_eq!(tool_for_key("p"), Some(POLYGON));
+        assert_eq!(tool_for_key("v"), Some(SELECT));
+        assert_eq!(tool_for_key("h"), None);
+        assert_eq!(tool_for_key("x"), None);
     }
 }

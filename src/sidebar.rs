@@ -81,6 +81,7 @@ pub const CALLBACKS: &[(&str, &str)] = &[
     ("fields-select", ""),
     ("field-config", "nsss"),
     ("orphans-refresh", ""),
+    ("legacy-merge", ""),
     ("orphan-relink", "s"),
     ("setting-text", "ss"),
     ("setting-bool", "sb"),
@@ -163,6 +164,8 @@ pub struct ClassRow {
     pub count: i32,
     pub active: bool,
     pub alternate: bool,
+    /// Why eov refused the hotkey (empty when it is in use).
+    pub hotkey_note: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
@@ -510,6 +513,11 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
             }),
             active: state.settings.active_class.as_deref() == Some(c.id.as_str()),
             alternate: state.settings.alternate_class.as_deref() == Some(c.id.as_str()),
+            hotkey_note: state
+                .refused_hotkeys
+                .get(&c.id)
+                .map(|reason| format!("eov refused the hotkey: {reason}"))
+                .unwrap_or_default(),
         })
         .collect();
     put(&mut p, "classes", &class_rows);
@@ -638,6 +646,15 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
     put(&mut p, "db-path", path);
     put(&mut p, "db-status", status);
     put(&mut p, "db-notes", state.db_notes.join("\n"));
+    put(
+        &mut p,
+        "legacy-db",
+        state
+            .legacy_db
+            .as_ref()
+            .map(|path| path.to_string_lossy().into_owned())
+            .unwrap_or_default(),
+    );
     let orphans: Vec<OrphanRow> = state
         .orphans
         .iter()
@@ -1201,6 +1218,14 @@ pub fn callback(
             actions::refresh_reticles(core);
         }
         "orphans-refresh" => actions::list_orphans(core),
+        "legacy-merge" => {
+            let path = core
+                .state()
+                .legacy_db
+                .clone()
+                .ok_or("There is no database from before eov 1.0 to merge.")?;
+            transfer::merge_database(core, path, true);
+        }
         "orphan-relink" => {
             let file_id = need_file()?;
             let from: i64 = s(args, 0).parse().map_err(|_| "unknown slide")?;

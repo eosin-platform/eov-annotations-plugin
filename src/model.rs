@@ -686,7 +686,7 @@ pub fn clean_properties(properties: &[(String, String)]) -> Result<Vec<(String, 
 
 /// Keys the host binds without modifiers (they can't be class hotkeys).
 const HOST_PLAIN_KEYS: &[&str] = &[
-    "f", "m", "n", "r", "d", "+", "=", "-", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+    "f", "m", "n", "r", "d", "i", "+", "=", "-", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
 ];
 
 /// Validates a class hotkey: empty for none, else one printable character

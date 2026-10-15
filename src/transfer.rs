@@ -840,7 +840,10 @@ pub fn backup(core: &Arc<Core>, path: PathBuf) {
 }
 
 /// Merges another database (a backup or a pre-1.0 `annotations.db`).
-pub fn merge_database(core: &Arc<Core>, path: PathBuf) {
+/// Merges another annotation database into the open one (`legacy`: the
+/// pre-1.0 database the host's legacy folder holds, which is then not
+/// offered again).
+pub fn merge_database(core: &Arc<Core>, path: PathBuf, legacy: bool) {
     let job = core
         .host
         .start_job("Merging annotation database", false)
@@ -857,6 +860,12 @@ pub fn merge_database(core: &Arc<Core>, path: PathBuf) {
                     NotifyLevel::Success,
                     format!("Merged {annotations} annotation(s) in {layers} layer(s) ({slides} new slide(s))."),
                 );
+                if legacy {
+                    if let Err(e) = db.set_setting(crate::core::LEGACY_SETTING, "merged") {
+                        core.host.warn(format!("cannot record the merge: {e}"));
+                    }
+                    core.state().legacy_db = None;
+                }
             }
             Err(e) => core.error("Could not merge the database", e.to_string()),
         }
@@ -865,6 +874,18 @@ pub fn merge_database(core: &Arc<Core>, path: PathBuf) {
         }
         crate::core::reload_all(core, ctx);
         core.state().orphans = None;
+    });
+}
+
+/// Remembers that the user did not want the pre-1.0 database merged now
+/// (the Data tab still offers it).
+pub fn decline_legacy(core: &Arc<Core>) {
+    core.db_run(|core, ctx| {
+        if let Some(db) = ctx.db.as_mut()
+            && let Err(e) = db.set_setting(crate::core::LEGACY_SETTING, "declined")
+        {
+            core.host.warn(format!("cannot record the answer: {e}"));
+        }
     });
 }
 

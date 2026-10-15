@@ -489,19 +489,19 @@ fn selection_and_hover_follow_the_viewport_and_the_sidebar() {
         h.state().layers[&layer].selection,
         vec![object.object_id.clone()]
     );
-    // Hovering the row highlights the object in the viewport, and leaving
-    // restores it.
+    // Hovering the row highlights the object in the viewport (the host's
+    // hover style), and leaving clears it; the object itself is unchanged.
     callback(&h, &sidebar, "row-hovered", vec![json!(object.object_id)]);
-    let style = h.state().layers[&layer].objects[&object.object_id]
-        .style
-        .clone()
-        .unwrap();
-    assert_eq!(style.stroke, Rgba(0xFF, 0xFF, 0xFF, 0xFF));
-    callback(&h, &sidebar, "row-hovered", vec![json!("")]);
+    assert_eq!(
+        h.state().layers[&layer].highlighted,
+        vec![object.object_id.clone()]
+    );
     assert_eq!(
         h.state().layers[&layer].objects[&object.object_id].style,
         object.style
     );
+    callback(&h, &sidebar, "row-hovered", vec![json!("")]);
+    assert!(h.state().layers[&layer].highlighted.is_empty());
 }
 
 #[test]
@@ -872,23 +872,65 @@ fn classes_hotkeys_and_counting() {
         vec![json!(id), json!("Blasts")],
     );
     callback(&h, &sidebar, "class-hotkey", vec![json!(id), json!("Q")]);
-    let button = format!("class-{id}");
+    let hotkey = format!("class-{id}");
     {
         let state = h.state();
-        let spec = state.toolbar_buttons.get(&button).expect("class button");
-        assert_eq!(spec.hotkey.as_ref().unwrap().key, "q");
-        assert_eq!(spec.tooltip, "Class: Blasts");
+        let spec = state.hotkeys.get(&hotkey).expect("a class hotkey");
+        assert_eq!(spec.hotkey.key, "q");
+        assert_eq!(spec.description, "Annotation class: Blasts");
+        assert!(
+            state
+                .toolbar_buttons
+                .keys()
+                .all(|b| b == tools::SIDEBAR_BUTTON)
+        );
     }
-    // A key eov uses is refused.
+    // A key eov uses is refused here already...
     callback(&h, &sidebar, "class-hotkey", vec![json!(id), json!("f")]);
     assert!(notified(&h, "eov already uses"));
-    // The hotkey (a toolbar click) makes the class active.
-    h.send(HostEvent::ToolbarButtonClicked {
-        button_id: button.clone(),
+    // ...and one eov refuses is shown with the class.
+    h.send(HostEvent::RegistrationRefused {
+        what: "hotkey".into(),
+        id: hotkey.clone(),
+        reason: "another plugin uses Q".into(),
     })
     .unwrap();
     settle(&h);
-    assert!(h.state().toolbar_buttons[&button].active);
+    let row = prop(&h, &sidebar, "classes")
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|c| c["id"] == json!(id))
+        .unwrap()
+        .clone();
+    assert!(
+        row["hotkey-note"]
+            .as_str()
+            .unwrap()
+            .contains("another plugin uses Q")
+    );
+    // Choosing another key clears it and registers that one.
+    callback(&h, &sidebar, "class-hotkey", vec![json!(id), json!("k")]);
+    assert_eq!(h.state().hotkeys[&hotkey].hotkey.key, "k");
+    let row = prop(&h, &sidebar, "classes")
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|c| c["id"] == json!(id))
+        .unwrap()
+        .clone();
+    assert_eq!(row["hotkey-note"], "");
+    // The hotkey makes the class active.
+    h.send(HostEvent::HotkeyPressed {
+        hotkey_id: hotkey.clone(),
+        pane: Some(1),
+    })
+    .unwrap();
+    settle(&h);
+    assert_eq!(
+        h.state().settings.get(SETTINGS_KEY).unwrap()["active_class"],
+        json!(id)
+    );
     draw(&h, COUNT, 1, Shape::Point { x: 10.0, y: 10.0 });
     let counted = objects(&h, 1);
     assert!(
@@ -907,36 +949,57 @@ fn classes_hotkeys_and_counting() {
     // Deleting the class (after confirmation) is undoable.
     callback(&h, &sidebar, "class-delete", vec![json!(id)]);
     confirm(&h);
-    assert!(!h.state().toolbar_buttons.contains_key(&button));
+    assert!(!h.state().hotkeys.contains_key(&hotkey));
     undo(&h);
-    assert!(h.state().toolbar_buttons.contains_key(&button));
+    assert!(h.state().hotkeys.contains_key(&hotkey));
+}
+
+fn pointer(h: &H, kind: PointerKind, image: [f64; 2], screen: [f64; 2]) {
+    h.send(HostEvent::Pointer {
+        tool_id: FIELD.into(),
+        pane: 1,
+        file_id: 1,
+        event: PointerEvent {
+            kind,
+            button: PointerButton::Left,
+            image_x: image[0],
+            image_y: image[1],
+            screen_x: screen[0],
+            screen_y: screen[1],
+            modifiers: Modifiers::default(),
+            wheel_delta: 0.0,
+        },
+    })
+    .unwrap();
+    settle(h);
+}
+
+fn key(h: &H, key: &str) {
+    h.send(HostEvent::Key {
+        tool_id: Some(FIELD.into()),
+        pane: Some(1),
+        key: key.into(),
+        modifiers: Modifiers::default(),
+        pressed: true,
+        repeat: false,
+    })
+    .unwrap();
+    settle(h);
 }
 
 #[test]
-fn hpf_fields_have_the_configured_size_and_a_reticle_follows_the_view() {
+fn hpf_fields_have_the_configured_size_and_the_reticle_follows_the_pointer() {
     let (h, dir) = fresh();
     open(&h, info(1, "a", &dir));
-    let view = ViewInfo {
-        pane: 1,
-        file_id: 1,
-        center_x: 5000.0,
-        center_y: 4000.0,
-        zoom: 0.5,
-        width: 800.0,
-        height: 600.0,
-        ..Default::default()
-    };
-    h.state().snapshot.panes = vec![PaneInfo {
-        pane: 1,
-        index: 0,
-        file_id: Some(1),
-        view: Some(view),
-    }];
+    assert_eq!(h.state().tools[FIELD].kind, ToolKind::Custom);
     h.send(HostEvent::ToolActivated {
         tool_id: FIELD.into(),
     })
     .unwrap();
     settle(&h);
+    // No reticle until the pointer is over the slide.
+    assert!(!h.state().layers.contains_key("hpf.1"));
+    pointer(&h, PointerKind::Move, [5000.0, 4000.0], [100.0, 100.0]);
     let reticle = h.state().objects("hpf.1");
     assert_eq!(reticle.len(), 1);
     // 0.2376 mm² → radius 275 µm → 1100 px at 0.25 µm/px.
@@ -945,35 +1008,46 @@ fn hpf_fields_have_the_configured_size_and_a_reticle_follows_the_view() {
     };
     assert_eq!(cx, 5000.0);
     assert!((rx - 1100.0).abs() < 1.0, "{rx}");
-    h.send(HostEvent::ViewChanged {
-        view: ViewInfo {
-            center_x: 6000.0,
-            ..view
-        },
-    })
-    .unwrap();
-    settle(&h);
+    pointer(&h, PointerKind::Move, [6000.0, 4000.0], [140.0, 100.0]);
     let Shape::Ellipse { cx, .. } = h.state().objects("hpf.1")[0].shape else {
         panic!()
     };
-    assert_eq!(cx, 6000.0, "the reticle follows the view");
-    draw(
-        &h,
-        FIELD,
-        1,
-        Shape::Point {
-            x: 3000.0,
-            y: 3000.0,
-        },
-    );
+    assert_eq!(cx, 6000.0, "the reticle follows the pointer");
+    // A click places a field where it was pressed.
+    pointer(&h, PointerKind::Down, [3000.0, 3000.0], [50.0, 50.0]);
+    pointer(&h, PointerKind::Up, [3000.0, 3000.0], [50.0, 50.0]);
     let fields = objects(&h, 1);
-    let Shape::Ellipse { rx, .. } = fields[0].1.shape else {
+    assert_eq!(fields.len(), 1);
+    let Shape::Ellipse { cx, rx, .. } = fields[0].1.shape else {
         panic!("{:?}", fields[0].1.shape)
     };
+    assert_eq!(cx, 3000.0);
     assert!((rx - 1100.0).abs() < 1.0);
     assert_eq!(fields[0].1.label.as_deref(), Some("HPF 1"));
+    // A double click places one field, not two.
+    pointer(&h, PointerKind::Down, [8000.0, 3000.0], [60.0, 50.0]);
+    pointer(&h, PointerKind::Up, [8000.0, 3000.0], [60.0, 50.0]);
+    pointer(&h, PointerKind::Down, [8000.0, 3000.0], [60.0, 50.0]);
+    pointer(&h, PointerKind::DoubleClick, [8000.0, 3000.0], [60.0, 50.0]);
+    pointer(&h, PointerKind::Up, [8000.0, 3000.0], [60.0, 50.0]);
+    assert_eq!(objects(&h, 1).len(), 2);
+    // A drag pans the view (the slide follows the pointer) and places nothing.
+    pointer(&h, PointerKind::Down, [1000.0, 1000.0], [200.0, 200.0]);
+    pointer(&h, PointerKind::Move, [1100.0, 1000.0], [230.0, 200.0]);
+    pointer(&h, PointerKind::Up, [1100.0, 1000.0], [230.0, 200.0]);
+    assert_eq!(objects(&h, 1).len(), 2);
+    let pans = h.state().calls_to("view.pan");
+    assert_eq!(pans.last().unwrap()["dx"], json!(-30.0));
+    // The reticle leaves with the pointer.
+    pointer(&h, PointerKind::Leave, [0.0, 0.0], [0.0, 0.0]);
+    assert!(!h.state().layers.contains_key("hpf.1"));
     // Fields can be moved but not resized.
-    let (layer, object) = fields[0].clone();
+    let fields = objects(&h, 1);
+    let (layer, object) = fields
+        .iter()
+        .find(|(_, o)| matches!(o.shape, Shape::Ellipse { cx, .. } if cx == 3000.0))
+        .unwrap()
+        .clone();
     h.send(HostEvent::ObjectEdited {
         object: reference(&layer, &object),
         shape: Shape::Ellipse {
@@ -985,17 +1059,37 @@ fn hpf_fields_have_the_configured_size_and_a_reticle_follows_the_view() {
     })
     .unwrap();
     settle(&h);
-    let Shape::Ellipse { cx, rx, .. } = objects(&h, 1)[0].1.shape else {
+    let moved = h.state().layers[&layer].objects[&object.object_id].clone();
+    let Shape::Ellipse { cx, rx, .. } = moved.shape else {
         panic!()
     };
     assert_eq!(cx, 3500.0);
     assert!((rx - 1100.0).abs() < 1.0);
+    // eov gives the tool every plain key: the usual ones keep working.
+    key(&h, "p");
+    assert_eq!(
+        h.state().calls_to("tool.activate").last().unwrap()["id"],
+        json!(POLYGON)
+    );
+    key(&h, "+");
+    assert!(
+        h.state().calls_to("view.zoom").last().unwrap()["factor"]
+            .as_f64()
+            .unwrap()
+            > 1.0
+    );
+    key(&h, "\u{1b}");
+    assert_eq!(h.state().calls_to("tool.deactivate").len(), 1);
     h.send(HostEvent::ToolDeactivated {
         tool_id: FIELD.into(),
     })
     .unwrap();
     settle(&h);
-    assert!(!h.state().layers.contains_key("hpf.1"));
+    pointer(&h, PointerKind::Move, [5000.0, 4000.0], [100.0, 100.0]);
+    assert!(
+        !h.state().layers.contains_key("hpf.1"),
+        "no reticle without the tool"
+    );
 }
 
 #[test]
@@ -1129,27 +1223,53 @@ fn text_annotations_show_their_name() {
 }
 
 #[test]
-fn the_hud_button_hides_a_slides_annotations() {
+fn the_hud_button_hides_a_slides_annotations_in_its_pane() {
     let (h, dir) = fresh();
     open(&h, info(1, "a", &dir));
     draw(&h, POINT, 1, Shape::Point { x: 10.0, y: 10.0 });
-    let view = ViewInfo {
-        pane: 1,
-        file_id: 1,
-        ..Default::default()
+    let click = |h: &H| {
+        h.send(HostEvent::HudButtonClicked {
+            button_id: tools::VISIBILITY_HUD.into(),
+            item_id: None,
+            pane: 2,
+            view: Some(ViewInfo {
+                pane: 2,
+                file_id: 1,
+                ..Default::default()
+            }),
+        })
+        .unwrap();
+        settle(h);
     };
-    h.send(HostEvent::HudButtonClicked {
-        button_id: tools::VISIBILITY_HUD.into(),
-        item_id: None,
-        pane: 1,
-        view: Some(view),
-    })
-    .unwrap();
-    settle(&h);
+    click(&h);
     let (layer, _) = objects(&h, 1).remove(0);
-    assert!(!h.state().layers[&layer].spec.visible);
-    let updates = h.state().calls_to("hud.update");
-    assert!(updates.iter().any(|u| u["active"] == json!(true)));
+    {
+        let state = h.state();
+        assert!(
+            state.layers[&layer].spec.visible,
+            "still shown in other panes"
+        );
+        assert!(state.layers[&layer].hidden_panes.contains(&2));
+        let updates = state.calls_to("hud.update");
+        assert!(
+            updates
+                .iter()
+                .any(|u| u["active"] == json!(true) && u["pane"] == json!(2))
+        );
+    }
+    // Layers created later are hidden in that pane too.
+    draw(&h, COUNT, 1, Shape::Point { x: 20.0, y: 20.0 });
+    {
+        let state = h.state();
+        let counts = state
+            .layers
+            .iter()
+            .find(|(id, l)| id.starts_with("ann.1.") && **id != layer && !l.objects.is_empty())
+            .expect("the counts layer");
+        assert!(counts.1.hidden_panes.contains(&2));
+    }
+    click(&h);
+    assert!(h.state().layers[&layer].hidden_panes.is_empty());
 }
 
 #[test]
@@ -1195,4 +1315,123 @@ fn a_new_database_says_where_older_annotations_are() {
     settle(&h);
     let sidebar = open_sidebar(&h);
     assert_eq!(prop(&h, &sidebar, "db-notes"), "");
+}
+
+fn legacy_database(dir: &Path, file: &FileInfo) -> PathBuf {
+    let legacy = dir.join("legacy-config");
+    std::fs::create_dir_all(&legacy).unwrap();
+    let fingerprint = fileio::legacy_fingerprint(Path::new(&file.path)).unwrap();
+    let conn = rusqlite::Connection::open(legacy.join("annotations.db")).unwrap();
+    conn.execute_batch(LEGACY_DDL).unwrap();
+    conn.execute(
+        "INSERT INTO annotation_layers VALUES ('L1', ?1, 'Mitoses', NULL, '#FF0000', 100, 200)",
+        [fingerprint.as_slice()],
+    )
+    .unwrap();
+    conn.execute_batch(
+        "INSERT INTO annotations VALUES ('P1', 'L1', 'point', 10, 11);
+         INSERT INTO annotation_points VALUES ('P1', 5.5, 6.5);",
+    )
+    .unwrap();
+    legacy
+}
+
+#[test]
+fn the_database_from_before_1_0_is_offered_once_from_the_legacy_folder() {
+    let mut init = test_init("annotations");
+    let dir = PathBuf::from(&init.cache_dir);
+    let file = info(1, "old", &dir);
+    let legacy = legacy_database(&dir, &file);
+    init.legacy_config_dir = Some(legacy.to_string_lossy().into_owned());
+    let h = start(init.clone());
+    settle(&h);
+    // Asked at start; nothing is merged before the answer.
+    assert!(
+        !h.ui_callback("", "__pending", vec![])
+            .unwrap()
+            .as_array()
+            .unwrap()
+            .is_empty()
+    );
+    confirm(&h);
+    assert!(notified(&h, "Merged 1 annotation(s)"));
+    open(&h, file.clone());
+    assert_eq!(objects(&h, 1).len(), 1);
+    let sidebar = open_sidebar(&h);
+    assert_eq!(prop(&h, &sidebar, "legacy-db"), "");
+    // The old file is untouched, and it is not offered again.
+    let conn = rusqlite::Connection::open(legacy.join("annotations.db")).unwrap();
+    let version: i64 = conn
+        .query_row("PRAGMA user_version", [], |r| r.get(0))
+        .unwrap();
+    assert_eq!(version, 0);
+    drop(h);
+    let h = start(init);
+    settle(&h);
+    assert!(
+        h.ui_callback("", "__pending", vec![])
+            .unwrap()
+            .as_array()
+            .unwrap()
+            .is_empty()
+    );
+}
+
+#[test]
+fn a_declined_legacy_merge_stays_available_in_the_data_tab() {
+    let mut init = test_init("annotations");
+    let dir = PathBuf::from(&init.cache_dir);
+    let file = info(1, "old", &dir);
+    let legacy = legacy_database(&dir, &file);
+    init.legacy_config_dir = Some(legacy.to_string_lossy().into_owned());
+    let h = start(init.clone());
+    settle(&h);
+    let request_id = pending_request(&h);
+    h.send(HostEvent::ConfirmResult {
+        request_id,
+        confirmed: false,
+    })
+    .unwrap();
+    settle(&h);
+    drop(h);
+    // Not asked again, but offered in the Data tab.
+    let h = start(init);
+    settle(&h);
+    assert!(
+        h.ui_callback("", "__pending", vec![])
+            .unwrap()
+            .as_array()
+            .unwrap()
+            .is_empty()
+    );
+    let sidebar = open_sidebar(&h);
+    let offered = prop(&h, &sidebar, "legacy-db");
+    assert!(
+        offered.as_str().unwrap().ends_with("annotations.db"),
+        "{offered}"
+    );
+    callback(&h, &sidebar, "legacy-merge", vec![]);
+    open(&h, file);
+    assert_eq!(objects(&h, 1).len(), 1);
+    assert_eq!(prop(&h, &sidebar, "legacy-db"), "");
+}
+
+#[test]
+fn undo_records_the_host_dropped_are_freed() {
+    let (h, dir) = fresh();
+    open(&h, info(1, "a", &dir));
+    draw(&h, POINT, 1, Shape::Point { x: 10.0, y: 10.0 });
+    draw(&h, POINT, 1, Shape::Point { x: 20.0, y: 20.0 });
+    let kept = |h: &H| h.ui_callback("", "__history", vec![]).unwrap();
+    assert_eq!(kept(&h), json!(2));
+    let first = h.state().undo[0].entry_id.clone();
+    h.send(HostEvent::UndoDropped {
+        entry_ids: vec![first],
+    })
+    .unwrap();
+    settle(&h);
+    assert_eq!(kept(&h), json!(1));
+    // The remaining entry still undoes.
+    undo(&h);
+    assert_eq!(objects(&h, 1).len(), 1);
 }

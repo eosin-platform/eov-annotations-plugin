@@ -3,7 +3,7 @@
 //! up-to-date state.
 
 use crate::change::Change;
-use crate::core::{Core, DbJob, Op, PALETTE_TOKEN, Planned};
+use crate::core::{Core, DbJob, Op, Planned};
 use crate::geometry::{self, Normalized};
 use crate::measure::Calibration;
 use crate::model::{
@@ -11,7 +11,7 @@ use crate::model::{
     clean_name, new_id, now_ms, pick_color,
 };
 use crate::overlay::{self, HostOp, parse_host_layer_id, reticle_layer_id};
-use crate::state::{SlideData, State};
+use crate::state::{FieldPress, SlideData, State};
 use crate::tools;
 use eov_plugin_api::prelude::*;
 use std::collections::BTreeMap;
@@ -1133,7 +1133,6 @@ pub fn set_active_class(core: &Arc<Core>, class_id: Option<String>) {
             .map_or("Unclassified".to_string(), |c| c.name.clone());
         core.host.set_status(Some(&format!("Class: {name}")));
     }
-    let _ = core.host.post(PALETTE_TOKEN);
     core.request_refresh();
 }
 
@@ -1147,81 +1146,257 @@ pub fn set_alternate_class(core: &Arc<Core>, class_id: Option<String>) {
 }
 
 // ---------------------------------------------------------------------------
-// HPF reticle
+// HPF field tool: a reticle follows the pointer, a click places a field
 // ---------------------------------------------------------------------------
 
-/// The HPF reticle shown at the centre of each pane while the field tool is
-/// active (the slide moves under it, like an eyepiece field).
-pub fn reticle_ops(state: &State, file_id: FileId) -> Vec<HostOp> {
+/// Pointer travel (logical pixels) after which a press pans instead of
+/// placing a field.
+const FIELD_DRAG_PX: f64 = 4.0;
+
+/// The host's keyboard zoom step (ten wheel steps of 2.5 %, as eov's `+`
+/// and `-`).
+fn key_zoom() -> f64 {
+    1.025_f64.powi(10)
+}
+
+/// Host calls for a file's HPF reticle: one dashed field, the size of an
+/// HPF, at the pointer, labelled with what it would count.
+pub fn reticle_ops(state: &mut State, file_id: FileId) -> Vec<HostOp> {
     let layer_id = reticle_layer_id(file_id);
+    let active = state.active_tool.as_deref() == Some(tools::FIELD);
     let Some(file) = state.files.get(&file_id) else {
         return Vec::new();
     };
-    let active = state.active_tool.as_deref() == Some(tools::FIELD);
-    if !active || file.view_centres.is_empty() {
-        return vec![HostOp::RemoveLayer(layer_id)];
+    let object = file
+        .reticle
+        .filter(|_| active)
+        .and_then(|[x, y]| field_geometry(state, &file.info, x, y).ok())
+        .map(|field| {
+            let counted = state
+                .slide_of(file_id)
+                .map_or(0, |s| crate::counting::count_in(s, &field));
+            let area = state.settings.field.area_mm2().unwrap_or(0.0);
+            OverlayObject::new("reticle", field.to_shape(""))
+                .with_style(Style {
+                    fill: Rgba(0xFF, 0xFF, 0xFF, 0x10),
+                    stroke: Rgba(0xFF, 0xFF, 0xFF, 0xE0),
+                    stroke_width: 1.5,
+                    dash: Dash::Dashed,
+                    ..Style::default()
+                })
+                .with_label(format!("1 HPF · {area:.4} mm² · {counted} counted"))
+        });
+    let had_layer = file.reticle_layer;
+    let Some(file) = state.files.get_mut(&file_id) else {
+        return Vec::new();
+    };
+    match object {
+        Some(object) => {
+            let mut ops = Vec::new();
+            if !had_layer {
+                let mut spec = LayerSpec::new(layer_id.clone(), file_id)
+                    .named("HPF reticle")
+                    .at_z(90);
+                spec.interactive = false;
+                ops.push(HostOp::CreateLayer(spec));
+                file.reticle_layer = true;
+            }
+            ops.push(HostOp::Upsert(layer_id, vec![object]));
+            ops
+        }
+        None if had_layer => {
+            file.reticle_layer = false;
+            vec![HostOp::RemoveLayer(layer_id)]
+        }
+        None => Vec::new(),
     }
-    let slide = state.slide_of(file_id);
-    let area = state.settings.field.area_mm2().unwrap_or(0.0);
-    let objects: Vec<OverlayObject> = file
-        .view_centres
-        .iter()
-        .filter_map(|(pane, c)| {
-            let field = field_geometry(state, &file.info, c[0], c[1]).ok()?;
-            let counted = slide.map_or(0, |s| crate::counting::count_in(s, &field));
-            Some(
-                OverlayObject::new(format!("reticle-{pane}"), field.to_shape(""))
-                    .with_style(Style {
-                        fill: Rgba(0xFF, 0xFF, 0xFF, 0x10),
-                        stroke: Rgba(0xFF, 0xFF, 0xFF, 0xE0),
-                        stroke_width: 1.5,
-                        dash: Dash::Dashed,
-                        ..Style::default()
-                    })
-                    .with_label(format!("1 HPF · {area:.4} mm² · {counted} counted")),
-            )
-        })
-        .collect();
-    if objects.is_empty() {
-        return vec![HostOp::RemoveLayer(layer_id)];
-    }
-    let spec = LayerSpec::new(layer_id.clone(), file_id)
-        .named("HPF reticle")
-        .at_z(90);
-    vec![HostOp::CreateLayer(spec), HostOp::Upsert(layer_id, objects)]
 }
 
-/// Refreshes the reticle of every file.
+/// Refreshes the reticle of every file (the field size or the tool changed).
 pub fn refresh_reticles(core: &Arc<Core>) {
     let ops: Vec<HostOp> = {
-        let state = core.state();
-        state
-            .files
-            .keys()
-            .flat_map(|id| reticle_ops(&state, *id))
+        let mut state = core.state();
+        if state.active_tool.as_deref() != Some(tools::FIELD) {
+            for file in state.files.values_mut() {
+                file.reticle = None;
+            }
+            state.field_press = None;
+        }
+        let files: Vec<FileId> = state.files.keys().copied().collect();
+        files
+            .into_iter()
+            .flat_map(|id| reticle_ops(&mut state, id))
             .collect()
     };
     core.exec(ops);
 }
 
-/// Remembers a pane's view centre (from `ViewChanged` or the snapshot).
-pub fn view_changed(core: &Arc<Core>, view: &ViewInfo) {
-    {
+/// Moves (or with `None` hides) a file's reticle.
+fn set_reticle(core: &Arc<Core>, file_id: FileId, at: Option<[f64; 2]>) {
+    let ops = {
         let mut state = core.state();
         for (id, file) in state.files.iter_mut() {
-            if *id == view.file_id {
-                file.view_centres
-                    .insert(view.pane, [view.center_x, view.center_y]);
-            } else {
-                file.view_centres.remove(&view.pane);
+            // One reticle: the pointer is over one pane at a time.
+            file.reticle = if *id == file_id { at } else { None };
+        }
+        let files: Vec<FileId> = state.files.keys().copied().collect();
+        files
+            .into_iter()
+            .flat_map(|id| reticle_ops(&mut state, id))
+            .collect::<Vec<_>>()
+    };
+    core.exec(ops);
+}
+
+/// Pointer input of the HPF field tool (a `Custom` tool, so that the
+/// reticle can follow the pointer): a click places a field, a drag pans.
+pub fn field_pointer(core: &Arc<Core>, pane: PaneId, file_id: FileId, event: PointerEvent) {
+    let screen = [event.screen_x, event.screen_y];
+    let image = [event.image_x, event.image_y];
+    match event.kind {
+        PointerKind::Down if event.button == PointerButton::Left => {
+            core.state().field_press = Some(FieldPress {
+                pane,
+                file_id,
+                screen,
+                image,
+                last: screen,
+                dragging: false,
+                double: false,
+            });
+            set_reticle(core, file_id, Some(image));
+        }
+        PointerKind::DoubleClick => {
+            if let Some(press) = core.state().field_press.as_mut() {
+                press.double = true;
             }
         }
-        if state.active_tool.as_deref() != Some(tools::FIELD) {
-            return;
+        PointerKind::Move | PointerKind::Wheel => {
+            let pan = {
+                let mut state = core.state();
+                match state.field_press.as_mut() {
+                    Some(press) if press.pane == pane => {
+                        let travel =
+                            (screen[0] - press.screen[0]).hypot(screen[1] - press.screen[1]);
+                        if travel > FIELD_DRAG_PX {
+                            press.dragging = true;
+                        }
+                        let delta = [screen[0] - press.last[0], screen[1] - press.last[1]];
+                        press.last = screen;
+                        press.dragging.then_some(delta)
+                    }
+                    _ => None,
+                }
+            };
+            if let Some([dx, dy]) = pan
+                && (dx != 0.0 || dy != 0.0)
+            {
+                // The slide follows the pointer, as with eov's own tools.
+                let _ = core.host.pan(Some(pane), -dx, -dy);
+            }
+            set_reticle(core, file_id, Some(image));
+        }
+        PointerKind::Up => {
+            let press = core.state().field_press.take();
+            if let Some(press) = press
+                && press.pane == pane
+                && !press.dragging
+                && !press.double
+            {
+                shape_drawn(
+                    core,
+                    tools::FIELD,
+                    press.file_id,
+                    Shape::Point {
+                        x: press.image[0],
+                        y: press.image[1],
+                    },
+                    event.modifiers,
+                );
+            }
+        }
+        PointerKind::Leave => {
+            core.state().field_press = None;
+            set_reticle(core, file_id, None);
+        }
+        _ => {}
+    }
+}
+
+/// The name of a key of a `Key` event (Slint key text or a key name).
+fn key_name(key: &str) -> String {
+    let mut chars = key.chars();
+    let (Some(c), None) = (chars.next(), chars.next()) else {
+        return key.to_string();
+    };
+    match c {
+        '\u{1b}' => "Escape".into(),
+        '\u{F700}' => "ArrowUp".into(),
+        '\u{F701}' => "ArrowDown".into(),
+        '\u{F702}' => "ArrowLeft".into(),
+        '\u{F703}' => "ArrowRight".into(),
+        c => c.to_lowercase().collect(),
+    }
+}
+
+/// Keys while the HPF field tool is active. eov gives a `Custom` tool every
+/// key except Tab and Ctrl/⌘ shortcuts, so the keys most used while placing
+/// fields are handled here: Esc (or `n`, or `h` again) leaves the tool, the
+/// other tools' keys switch to them, class hotkeys choose the class, `+`,
+/// `-`, `f` and the arrows zoom, fit and pan.
+pub fn field_key(core: &Arc<Core>, pane: Option<PaneId>, key: &str, modifiers: Modifiers) {
+    let name = key_name(key);
+    let step = if modifiers.shift { 0.5 } else { 0.15 };
+    let arrow = match name.as_str() {
+        "ArrowLeft" => Some([-step, 0.0]),
+        "ArrowRight" => Some([step, 0.0]),
+        "ArrowUp" => Some([0.0, -step]),
+        "ArrowDown" => Some([0.0, step]),
+        _ => None,
+    };
+    if let Some([fx, fy]) = arrow {
+        let size = core.host.snapshot().ok().and_then(|snapshot| {
+            snapshot
+                .panes
+                .iter()
+                .find(|p| Some(p.pane) == pane.or(snapshot.focused_pane))
+                .and_then(|p| p.view.as_ref())
+                .map(|v| [v.width, v.height])
+        });
+        if let Some([w, h]) = size {
+            let _ = core.host.pan(pane, fx * w, fy * h);
+        }
+        return;
+    }
+    match name.as_str() {
+        "Escape" | "n" | "h" => {
+            let _ = core.host.deactivate_tools();
+        }
+        "+" | "=" => {
+            let _ = core.host.zoom(pane, key_zoom());
+        }
+        "-" => {
+            let _ = core.host.zoom(pane, 1.0 / key_zoom());
+        }
+        "f" => {
+            let _ = core.host.fit(pane);
+        }
+        other => {
+            if let Some(tool) = tools::tool_for_key(other) {
+                let _ = core.host.activate_tool(tool);
+                return;
+            }
+            let class = core
+                .state()
+                .classes
+                .iter()
+                .find(|c| c.hotkey.as_deref() == Some(other))
+                .map(|c| c.id.clone());
+            if let Some(class) = class {
+                set_active_class(core, Some(class));
+            }
         }
     }
-    let ops = reticle_ops(&core.state(), view.file_id);
-    core.exec(ops);
 }
 
 /// Annotation-kind label for lists.

@@ -136,10 +136,24 @@ const GEOJSON: &str = r#"{"type": "FeatureCollection", "features": [
 ]}"#;
 
 pub fn samples() -> Result<Samples, String> {
-    let init = test_init("annotations");
+    let mut init = test_init("annotations");
     let dir = PathBuf::from(&init.cache_dir);
+    // A database of the plugin before eov 1.0 in the host's legacy folder
+    // (only its presence matters here); the offer is declined, so the Data
+    // tab keeps offering it.
+    let legacy = dir.join("legacy-config");
+    std::fs::create_dir_all(&legacy).map_err(|e| e.to_string())?;
+    std::fs::write(legacy.join("annotations.db"), b"").map_err(|e| e.to_string())?;
+    init.legacy_config_dir = Some(legacy.to_string_lossy().into_owned());
     let h = TestHarness::<AnnotationsPlugin>::with_host(MockHost::new(), init)
         .map_err(|e| e.to_string())?;
+    settle(&h);
+    let offer = pending_request(&h).ok_or("the pre-1.0 database was not offered")?;
+    h.send(HostEvent::ConfirmResult {
+        request_id: offer,
+        confirmed: false,
+    })
+    .map_err(|e| e.to_string())?;
     settle(&h);
     let mut out = Samples {
         sidebar: vec![],
@@ -319,11 +333,31 @@ pub fn samples() -> Result<Samples, String> {
     call(&h, &sb, "filter-edited", vec![json!("")]);
     call(&h, &sb, "toggle-collapsed", vec![json!(layer)]);
     call(&h, &sb, "class-new", vec![]);
+    // A class hotkey eov refused.
+    let tumour = properties_of(&h, &sb)["classes"]
+        .as_array()
+        .and_then(|c| c.first())
+        .and_then(|c| c["id"].as_str())
+        .map(str::to_string)
+        .ok_or("no classes")?;
+    call(&h, &sb, "class-hotkey", vec![json!(tumour), json!("q")]);
+    h.send(HostEvent::RegistrationRefused {
+        what: "hotkey".into(),
+        id: format!("{}{tumour}", annotations::tools::CLASS_HOTKEY_PREFIX),
+        reason: "another plugin uses Q".into(),
+    })
+    .map_err(|e| e.to_string())?;
+    settle(&h);
+    call(&h, &sb, "tab-changed", vec![json!(sidebar::TAB_CLASSES)]);
+    out.sidebar.push(("classes".into(), properties_of(&h, &sb)));
     call(&h, &sb, "tab-changed", vec![json!(sidebar::TAB_DATA)]);
     call(&h, &sb, "orphans-refresh", vec![]);
     let props = properties_of(&h, &sb);
     if props["orphans"].as_array().is_none_or(|o| o.is_empty()) {
         return Err("the scenario has no other slides to list".into());
+    }
+    if props["legacy-db"].as_str().is_none_or(str::is_empty) {
+        return Err("the Data tab does not offer the pre-1.0 database".into());
     }
     out.sidebar.push(("data tab".into(), props));
 

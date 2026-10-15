@@ -478,13 +478,15 @@ export component Swatch inherits Rectangle {
 export component KeyField inherits Rectangle {
     in property <string> value;
     in property <bool> enabled: true;
+    // eov refused the key.
+    in property <bool> refused: false;
     callback chosen(string);
 
     width: 30px;
     height: 22px;
     border-radius: 3px;
     border-width: 1px;
-    border-color: scope.has-focus ? Theme.accent : Theme.border;
+    border-color: scope.has-focus ? Theme.accent : root.refused ? Theme.warning : Theme.border;
     background: root.enabled ? Theme.input : #ffffff06;
     accessible-role: button;
     accessible-label: "Hotkey";
