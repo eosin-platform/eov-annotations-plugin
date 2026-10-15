@@ -1182,6 +1182,37 @@ fn layer_rows(h: &H, sidebar: &str) -> Vec<(String, bool, usize)> {
 }
 
 #[test]
+fn copies_of_a_slide_say_that_they_share_annotations() {
+    let init = test_init("annotations");
+    let dir = PathBuf::from(&init.cache_dir);
+    let copy = |file_id: FileId| FileInfo {
+        file_id,
+        path: slide_file(&dir, "copy.svs"),
+        filename: "copy.svs".into(),
+        ..info(file_id, "a", &dir)
+    };
+    let h = start(init.clone());
+    open(&h, info(1, "a", &dir));
+    draw(&h, POINT, 1, Shape::Point { x: 10.0, y: 10.0 });
+    assert!(!notified(&h, "same content"));
+    // A copy opened next to the original.
+    open(&h, copy(2));
+    assert_eq!(objects(&h, 2).len(), 1, "the copy shows the annotations");
+    assert!(notified(&h, "copy.svs has the same content as a.svs"));
+    drop(h);
+
+    // A copy opened in a later session.
+    let h = start(init);
+    open(&h, copy(1));
+    assert_eq!(objects(&h, 1).len(), 1);
+    assert!(notified(&h, "copy.svs has the same content as a.svs"));
+    assert!(
+        notified(&h, "Blinded copy"),
+        "the way to an independent read"
+    );
+}
+
+#[test]
 fn collapsed_layers_stay_collapsed_after_a_restart() {
     let init = test_init("annotations");
     let dir = PathBuf::from(&init.cache_dir);

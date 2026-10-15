@@ -547,6 +547,15 @@ fn load_failed(core: &Arc<Core>, file_id: FileId, error: String) {
     core.request_refresh();
 }
 
+/// Annotations follow a slide's content, so copies and renamed files of a
+/// slide share them (ANN-8): say so when that happens.
+fn shared_notice(annotated: &str, opened: &str) -> String {
+    format!(
+        "{opened} has the same content as {annotated}, so it shows and edits the same annotations. \
+         For an independent second read, use Data \u{2192} Second reader \u{2192} Blinded copy."
+    )
+}
+
 fn load_file(core: &Arc<Core>, ctx: &mut DbCtx, file_id: FileId, fingerprint: Fingerprint) {
     let (info, existing) = {
         let state = core.state();
@@ -558,15 +567,32 @@ fn load_file(core: &Arc<Core>, ctx: &mut DbCtx, file_id: FileId, fingerprint: Fi
         }
         // The same slide may already be loaded for another tab.
         let existing = file.info.identity.as_ref().and_then(|identity| {
-            state
+            let slide_id = state
                 .slides
                 .values()
                 .find(|s| s.record.identity.as_deref() == Some(identity.as_str()))
-                .map(SlideData::id)
+                .map(SlideData::id)?;
+            // Another file with the same content (a copy) shares them.
+            let copy_of = state
+                .files
+                .values()
+                .find(|f| f.load == Load::Loaded(slide_id) && f.info.path != file.info.path)
+                .map(|f| f.info.filename.clone());
+            Some((slide_id, copy_of))
         });
         (file.info.clone(), existing)
     };
-    if let Some(slide_id) = existing {
+    if let Some((slide_id, copy_of)) = existing {
+        let annotated = core
+            .state()
+            .slides
+            .get(&slide_id)
+            .is_some_and(|s| !s.annotations.is_empty());
+        if let Some(copy_of) = copy_of
+            && annotated
+        {
+            core.notify(NotifyLevel::Info, shared_notice(&copy_of, &info.filename));
+        }
         attach(core, file_id, slide_id);
         return;
     }
@@ -647,6 +673,16 @@ fn load_file(core: &Arc<Core>, ctx: &mut DbCtx, file_id: FileId, fingerprint: Fi
     } else {
         Default::default()
     };
+    if let Some(found) = &found
+        && !found.filename.is_empty()
+        && found.filename != info.filename
+        && !loaded.annotations.is_empty()
+    {
+        core.notify(
+            NotifyLevel::Info,
+            shared_notice(&found.filename, &info.filename),
+        );
+    }
     if loaded.skipped > 0 {
         core.notify(
             NotifyLevel::Warning,

@@ -115,7 +115,7 @@ selected annotations where that makes sense. Text fields save as you type
 they were typed for. Double-click a row to zoom to it; Ctrl+click selects
 several. The filter matches names, classes, kinds and statuses; large
 layers start collapsed and long lists are shown a few hundred rows at a
-time.
+time. Which layers you collapse or expand is remembered with the slide.
 
 ### Classes
 
@@ -314,6 +314,10 @@ in use.
   re-saved or de-identified gets a new identity; **Other slides** in the
   Data tab lists the slides with annotations that are not open, and
   **Attach** moves their annotations to the open slide (with undo).
+- **Copies** of a slide file have the same identity, so they show and edit
+  the same annotations; the plugin says so when a copy (or a renamed file)
+  opens with annotations made under another name. For an independent
+  second read, give the reader a blinded copy (see above).
 - **Deleted** annotations, layers and classes are kept for undo and removed
   for good after seven days. Every change is also recorded, with its author
   and time, in an `audit_log` table; comments are recorded there with their
