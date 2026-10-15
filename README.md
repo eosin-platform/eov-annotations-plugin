@@ -69,7 +69,7 @@ The tools are in eov's toolbar; each has a key.
 | Ellipse | `O` | Drag an ellipse. |
 | Line / path | `L` | Click the vertices; double-click or Enter finishes. Its length is measured. |
 | Text | `T` | A text label; its text is the annotation's name. |
-| HPF field | `H` | Shows a field of the configured size at the centre of each view; a click places one in the *HPF fields* layer. |
+| HPF field | `H` | A dashed field of the configured size follows the pointer; a click places one in the *HPF fields* layer, a drag pans. |
 
 With one region selected, drawing a polygon, freehand outline, rectangle
 or ellipse with **Shift** adds the shape to that region and with **Alt**
@@ -80,8 +80,8 @@ is clipped to the slide.
 
 Right-clicking the slide offers: show the annotation in the panel, copy its
 measurements, lock or unlock it, delete it, add a point or place an HPF
-field at the cursor, and open the panel. The eye button in each view's HUD
-hides or shows the slide's annotations.
+field at the cursor, and open the panel. The eye button in a view's HUD
+hides or shows the slide's annotations in that view only.
 
 Every change (drawing, editing, deleting, an import, deleting a layer or a
 class) is one step in eov's undo history, **Ctrl+Z** / **Ctrl+Shift+Z** (⌘ on
@@ -113,11 +113,12 @@ Classes (Tumour, Stroma, Necrosis, Immune cells, Mitosis, Positive,
 Negative and Other to begin with) are shared by all slides. Each has a
 colour, an optional one-key hotkey, visibility and opacity, and shows how
 many annotations of the active slide use it. Click a class to make it the
-*active class*: new annotations get it and the Count tool counts it. A
-class with a hotkey also gets a toolbar button, so its key selects it while
-you draw. The second count class (Shift+click with the Count tool) is
-chosen in the class's `⋯` settings or in the Count tab. Deleting a class
-leaves its annotations unclassified (with undo).
+*active class*: new annotations get it and the Count tool counts it.
+Pressing a class's hotkey makes it active; if eov or another plugin already
+uses the key, eov says so and the class shows why its key does not work.
+The second count class (Shift+click with the Count tool) is chosen in the
+class's `⋯` settings or in the Count tab. Deleting a class leaves its
+annotations unclassified (with undo).
 
 ### Counting
 
@@ -141,10 +142,18 @@ count points of the slide (with undo).
 
 The field size is given as a field number and objective (the default is
 FN 22 at 40×, 0.2376 mm²) or directly as an area in mm². With the HPF
-field tool active, a field outline sits at the centre of each view; click
-to place one. Placed fields are ordinary regions in the *HPF fields* layer:
-select them (**Select all fields**) to count inside them. Without a pixel
-size, fields cannot be sized and are refused.
+field tool active, a field outline follows the pointer, labelled with what
+it would count; click to place a field, drag to pan, use the wheel to zoom.
+Placed fields are ordinary regions in the *HPF fields* layer: select them
+(**Select all fields**) to count inside them. Without a pixel size, fields
+cannot be sized and are refused.
+
+eov hands this tool every key except Tab and Ctrl/⌘ shortcuts, so the tool
+handles the ones needed while placing fields: **Esc** (or `N`, or `H`
+again) leaves it, the other tools' keys switch to them, class hotkeys choose
+the class, and `+`, `-`, `F` and the arrows zoom, fit and pan. eov's other
+single keys (`R`, `D`, `M`, `I`, the magnification digits, Page Up/Down,
+F11) work again once the tool is left.
 
 ### Measurements
 
@@ -271,10 +280,14 @@ in use.
 Before eov 1.0 the plugin kept its database in eov's settings folder
 (`~/.config/eov/annotations.db` on Linux, `~/Library/Application
 Support/eov/annotations.db` on macOS, `%APPDATA%\eov\annotations.db` on
-Windows). The plugin no longer looks there. To bring those annotations in,
-use **Merge…** in the Data tab and choose that file; or point
-`database_path` at it to keep using it (it is upgraded in place, after
-which older versions of the plugin cannot read it, so back it up first).
+Windows). eov tells the plugin where that folder is; when it holds an
+`annotations.db`, the plugin offers once, at start, to bring its
+annotations into the current database (the old file is only read), and the
+Data tab keeps offering it until it is done. **Merge…** in the Data tab
+does the same for any other database file. You can also point
+`database_path` at the old file to keep using it (it is upgraded in place,
+after which older versions of the plugin cannot read it, so back it up
+first).
 Slides of the old database are recognised by their old sampled fingerprint
 the first time they are opened (computed in the background) and linked to
 their eov identity from then on. Exports of the old plugin (format 1) can
@@ -339,14 +352,11 @@ their SHA-256 hashes and immutable URLs, and publish them.
 
 These depend on what eov's plugin API offers today:
 
-- The HPF field outline sits at the centre of each view rather than
-  following the mouse: eov does not report hover positions to plugin tools.
-- Class hotkeys are toolbar buttons (eov has no other way for a plugin to
-  bind a key), so they share the toolbar's limit of 32 buttons.
-- Hiding annotations from a view's HUD hides them in every view of that
-  slide.
-- Selecting an annotation in the list highlights it on the slide by
-  restyling it, not with eov's own hover highlight.
+- While the HPF field tool is active, eov gives it every key but Tab and
+  Ctrl/⌘ shortcuts, so only the keys listed under
+  [High-power fields](#high-power-fields) work until it is left.
+- A region made of several separate parts is stored as several
+  annotations (eov's shapes have no multipolygon).
 
 Not done yet: arrows, a brush with eraser, NDPA and DICOM annotation
 formats, export to ASAP or ImageScope XML, comment threads and blinded
