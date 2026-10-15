@@ -702,14 +702,6 @@ impl Plugin for AnnotationsPlugin {
                 file_id,
                 event,
             } if tool_id == tools::FIELD => actions::field_pointer(core, pane, file_id, event),
-            HostEvent::Key {
-                tool_id: Some(tool_id),
-                pane,
-                key,
-                modifiers,
-                pressed: true,
-                ..
-            } if tool_id == tools::FIELD => actions::field_key(core, pane, &key, modifiers),
             HostEvent::UndoDropped { entry_ids } => core.state().history.drop_entries(&entry_ids),
             HostEvent::HudButtonClicked {
                 button_id,

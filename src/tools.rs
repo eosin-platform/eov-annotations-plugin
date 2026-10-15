@@ -121,7 +121,7 @@ const TOOLS: &[Def] = &[
     },
     Def {
         id: FIELD,
-        label: "HPF field (a field of the configured size follows the pointer; click to place it, drag to pan, Esc to leave)",
+        label: "HPF field (a field of the configured size follows the pointer; click to place it, drag to pan)",
         key: "h",
         // Custom, so that the reticle can follow the pointer.
         kind: ToolKind::Custom,
@@ -160,6 +160,12 @@ pub fn tool_specs() -> Vec<ToolSpec> {
             };
             if def.id == COUNT {
                 spec.edit_layers = vec![NO_EDITING.to_string()];
+            }
+            if def.kind == ToolKind::Custom {
+                // The HPF field tool uses the pointer only: every key keeps
+                // its usual meaning (eov's shortcuts, other tools, class
+                // hotkeys; Escape leaves the tool).
+                spec.keys = Some(Vec::new());
             }
             spec.preview_style = Some(Style {
                 fill: Rgba(0xFF, 0xD6, 0x0A, 0x22),

@@ -974,19 +974,6 @@ fn pointer(h: &H, kind: PointerKind, image: [f64; 2], screen: [f64; 2]) {
     settle(h);
 }
 
-fn key(h: &H, key: &str) {
-    h.send(HostEvent::Key {
-        tool_id: Some(FIELD.into()),
-        pane: Some(1),
-        key: key.into(),
-        modifiers: Modifiers::default(),
-        pressed: true,
-        repeat: false,
-    })
-    .unwrap();
-    settle(h);
-}
-
 #[test]
 fn hpf_fields_have_the_configured_size_and_the_reticle_follows_the_pointer() {
     let (h, dir) = fresh();
@@ -1065,21 +1052,27 @@ fn hpf_fields_have_the_configured_size_and_the_reticle_follows_the_pointer() {
     };
     assert_eq!(cx, 3500.0);
     assert!((rx - 1100.0).abs() < 1.0);
-    // eov gives the tool every plain key: the usual ones keep working.
-    key(&h, "p");
-    assert_eq!(
-        h.state().calls_to("tool.activate").last().unwrap()["id"],
-        json!(POLYGON)
-    );
-    key(&h, "+");
+    // The tool claims no keys: eov's shortcuts, the other tools' keys,
+    // class hotkeys and Escape keep working while it is active, and a stray
+    // key event does nothing.
+    assert_eq!(h.state().tools[FIELD].keys, Some(Vec::new()));
+    let calls = h.state().calls.len();
+    h.send(HostEvent::Key {
+        tool_id: Some(FIELD.into()),
+        pane: Some(1),
+        key: "p".into(),
+        modifiers: Modifiers::default(),
+        pressed: true,
+        repeat: false,
+    })
+    .unwrap();
+    settle(&h);
     assert!(
-        h.state().calls_to("view.zoom").last().unwrap()["factor"]
-            .as_f64()
-            .unwrap()
-            > 1.0
+        h.state().calls[calls..]
+            .iter()
+            .all(|c| !c.method.starts_with("tool.") && !c.method.starts_with("view.")),
+        "no emulated keys"
     );
-    key(&h, "\u{1b}");
-    assert_eq!(h.state().calls_to("tool.deactivate").len(), 1);
     h.send(HostEvent::ToolDeactivated {
         tool_id: FIELD.into(),
     })

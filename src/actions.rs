@@ -1153,12 +1153,6 @@ pub fn set_alternate_class(core: &Arc<Core>, class_id: Option<String>) {
 /// placing a field.
 const FIELD_DRAG_PX: f64 = 4.0;
 
-/// The host's keyboard zoom step (ten wheel steps of 2.5 %, as eov's `+`
-/// and `-`).
-fn key_zoom() -> f64 {
-    1.025_f64.powi(10)
-}
-
 /// Host calls for a file's HPF reticle: one dashed field, the size of an
 /// HPF, at the pointer, labelled with what it would count.
 pub fn reticle_ops(state: &mut State, file_id: FileId) -> Vec<HostOp> {
@@ -1320,82 +1314,6 @@ pub fn field_pointer(core: &Arc<Core>, pane: PaneId, file_id: FileId, event: Poi
             set_reticle(core, file_id, None);
         }
         _ => {}
-    }
-}
-
-/// The name of a key of a `Key` event (Slint key text or a key name).
-fn key_name(key: &str) -> String {
-    let mut chars = key.chars();
-    let (Some(c), None) = (chars.next(), chars.next()) else {
-        return key.to_string();
-    };
-    match c {
-        '\u{1b}' => "Escape".into(),
-        '\u{F700}' => "ArrowUp".into(),
-        '\u{F701}' => "ArrowDown".into(),
-        '\u{F702}' => "ArrowLeft".into(),
-        '\u{F703}' => "ArrowRight".into(),
-        c => c.to_lowercase().collect(),
-    }
-}
-
-/// Keys while the HPF field tool is active. eov gives a `Custom` tool every
-/// key except Tab and Ctrl/⌘ shortcuts, so the keys most used while placing
-/// fields are handled here: Esc (or `n`, or `h` again) leaves the tool, the
-/// other tools' keys switch to them, class hotkeys choose the class, `+`,
-/// `-`, `f` and the arrows zoom, fit and pan.
-pub fn field_key(core: &Arc<Core>, pane: Option<PaneId>, key: &str, modifiers: Modifiers) {
-    let name = key_name(key);
-    let step = if modifiers.shift { 0.5 } else { 0.15 };
-    let arrow = match name.as_str() {
-        "ArrowLeft" => Some([-step, 0.0]),
-        "ArrowRight" => Some([step, 0.0]),
-        "ArrowUp" => Some([0.0, -step]),
-        "ArrowDown" => Some([0.0, step]),
-        _ => None,
-    };
-    if let Some([fx, fy]) = arrow {
-        let size = core.host.snapshot().ok().and_then(|snapshot| {
-            snapshot
-                .panes
-                .iter()
-                .find(|p| Some(p.pane) == pane.or(snapshot.focused_pane))
-                .and_then(|p| p.view.as_ref())
-                .map(|v| [v.width, v.height])
-        });
-        if let Some([w, h]) = size {
-            let _ = core.host.pan(pane, fx * w, fy * h);
-        }
-        return;
-    }
-    match name.as_str() {
-        "Escape" | "n" | "h" => {
-            let _ = core.host.deactivate_tools();
-        }
-        "+" | "=" => {
-            let _ = core.host.zoom(pane, key_zoom());
-        }
-        "-" => {
-            let _ = core.host.zoom(pane, 1.0 / key_zoom());
-        }
-        "f" => {
-            let _ = core.host.fit(pane);
-        }
-        other => {
-            if let Some(tool) = tools::tool_for_key(other) {
-                let _ = core.host.activate_tool(tool);
-                return;
-            }
-            let class = core
-                .state()
-                .classes
-                .iter()
-                .find(|c| c.hotkey.as_deref() == Some(other))
-                .map(|c| c.id.clone());
-            if let Some(class) = class {
-                set_active_class(core, Some(class));
-            }
-        }
     }
 }
 

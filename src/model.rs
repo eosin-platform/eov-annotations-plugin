@@ -684,23 +684,29 @@ pub fn clean_properties(properties: &[(String, String)]) -> Result<Vec<(String, 
         .collect()
 }
 
-/// Keys the host binds without modifiers (they can't be class hotkeys).
+/// Single-character keys eov binds without modifiers (they can't be class
+/// hotkeys). eov's named keys (F11, Page Up/Down, the arrows, Escape, …)
+/// are refused as not being single characters.
 const HOST_PLAIN_KEYS: &[&str] = &[
     "f", "m", "n", "r", "d", "i", "+", "=", "-", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
 ];
 
 /// Validates a class hotkey: empty for none, else one printable character
-/// that neither eov nor this plugin's tools use.
+/// that neither eov nor this plugin's tools use. `text` may be the raw key
+/// text of a key press (named keys arrive as private-use characters).
 pub fn clean_hotkey(text: &str, taken: &[&str]) -> Result<Option<String>, String> {
-    let key = text.trim().to_lowercase();
-    if key.is_empty() {
+    let text = text.trim();
+    if text.is_empty() {
         return Ok(None);
     }
+    let key = eov_plugin_api::protocol::key_name(text);
     let mut chars = key.chars();
     let (Some(c), None) = (chars.next(), chars.next()) else {
-        return Err("A hotkey is a single key (a letter or a symbol).".to_string());
+        return Err(format!(
+            "A hotkey is a single character (a letter or a symbol), not {key}."
+        ));
     };
-    if c.is_control() || c.is_whitespace() {
+    if c.is_control() || c.is_whitespace() || ('\u{E000}'..='\u{F8FF}').contains(&c) {
         return Err("A hotkey must be a visible character.".to_string());
     }
     if HOST_PLAIN_KEYS.contains(&key.as_str()) {
@@ -768,6 +774,15 @@ mod tests {
         assert!(clean_hotkey("p", &["p"]).is_err());
         assert!(clean_hotkey("ab", &[]).is_err());
         assert!(clean_hotkey(" ", &[]).is_ok());
+        // Named keys, as the panel's key field sends them, are refused.
+        assert!(clean_hotkey("\u{F70E}", &[]).unwrap_err().contains("F11"));
+        assert!(
+            clean_hotkey("\u{F72C}", &[])
+                .unwrap_err()
+                .contains("PageUp")
+        );
+        assert!(clean_hotkey("\u{1b}", &[]).is_err());
+        assert!(clean_hotkey("i", &[]).is_err());
     }
 
     #[test]

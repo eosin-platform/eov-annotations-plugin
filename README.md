@@ -114,8 +114,9 @@ Negative and Other to begin with) are shared by all slides. Each has a
 colour, an optional one-key hotkey, visibility and opacity, and shows how
 many annotations of the active slide use it. Click a class to make it the
 *active class*: new annotations get it and the Count tool counts it.
-Pressing a class's hotkey makes it active; if eov or another plugin already
-uses the key, eov says so and the class shows why its key does not work.
+Pressing a class's hotkey makes it active; a hotkey is one character that
+eov and the annotation tools do not use. If another plugin already uses
+the key, eov says so and the class shows why its key does not work.
 The second count class (Shift+click with the Count tool) is chosen in the
 class's `⋯` settings or in the Count tab. Deleting a class leaves its
 annotations unclassified (with undo).
@@ -146,14 +147,9 @@ field tool active, a field outline follows the pointer, labelled with what
 it would count; click to place a field, drag to pan, use the wheel to zoom.
 Placed fields are ordinary regions in the *HPF fields* layer: select them
 (**Select all fields**) to count inside them. Without a pixel size, fields
-cannot be sized and are refused.
-
-eov hands this tool every key except Tab and Ctrl/⌘ shortcuts, so the tool
-handles the ones needed while placing fields: **Esc** (or `N`, or `H`
-again) leaves it, the other tools' keys switch to them, class hotkeys choose
-the class, and `+`, `-`, `F` and the arrows zoom, fit and pan. eov's other
-single keys (`R`, `D`, `M`, `I`, the magnification digits, Page Up/Down,
-F11) work again once the tool is left.
+cannot be sized and are refused. The tool uses no keys of its own: eov's
+shortcuts, the other tools' keys and class hotkeys work as usual while it
+is active, and **Esc** (or `H` again) leaves it.
 
 ### Measurements
 
@@ -350,11 +346,8 @@ their SHA-256 hashes and immutable URLs, and publish them.
 
 ## Limitations
 
-These depend on what eov's plugin API offers today:
+This depends on what eov's plugin API offers today:
 
-- While the HPF field tool is active, eov gives it every key but Tab and
-  Ctrl/⌘ shortcuts, so only the keys listed under
-  [High-power fields](#high-power-fields) work until it is left.
 - A region made of several separate parts is stored as several
   annotations (eov's shapes have no multipolygon).
 
