@@ -93,7 +93,7 @@ fn scaled_values(
 ) -> (Option<f64>, Option<f64>, Option<f64>, Option<f64>) {
     match geometry {
         Geometry::Point { .. } | Geometry::Text { .. } => (None, None, None, None),
-        Geometry::Polyline { points } => {
+        Geometry::Polyline { points } | Geometry::Arrow { points } => {
             let pts = scale(points, sx, sy);
             let (feret, _) = geometry::calipers(&pts);
             (
@@ -200,7 +200,7 @@ pub fn centroid(geometry: &Geometry) -> P {
                 geometry.bounds().center()
             }
         }
-        Geometry::Polyline { points } => {
+        Geometry::Polyline { points } | Geometry::Arrow { points } => {
             let n = points.len().max(1) as f64;
             let (sx, sy) = points
                 .iter()

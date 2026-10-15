@@ -77,6 +77,7 @@ impl Status {
 pub enum GeometryKind {
     Point,
     Polyline,
+    Arrow,
     Polygon,
     Rectangle,
     Ellipse,
@@ -88,6 +89,7 @@ impl GeometryKind {
         match self {
             GeometryKind::Point => "point",
             GeometryKind::Polyline => "polyline",
+            GeometryKind::Arrow => "arrow",
             GeometryKind::Polygon => "polygon",
             GeometryKind::Rectangle => "rectangle",
             GeometryKind::Ellipse => "ellipse",
@@ -99,11 +101,17 @@ impl GeometryKind {
         match self {
             GeometryKind::Point => "Point",
             GeometryKind::Polyline => "Line",
+            GeometryKind::Arrow => "Arrow",
             GeometryKind::Polygon => "Polygon",
             GeometryKind::Rectangle => "Rectangle",
             GeometryKind::Ellipse => "Ellipse",
             GeometryKind::Text => "Text",
         }
+    }
+
+    /// Whether the shape is an open line (measured by its length).
+    pub fn is_line(self) -> bool {
+        matches!(self, GeometryKind::Polyline | GeometryKind::Arrow)
     }
 
     /// Whether the shape encloses an area (usable as a counting region).
@@ -124,6 +132,11 @@ pub enum Geometry {
         y: f64,
     },
     Polyline {
+        points: Vec<[f64; 2]>,
+    },
+    /// A line from its first point (the tail) to its last (the tip), drawn
+    /// with an arrowhead at the tip.
+    Arrow {
         points: Vec<[f64; 2]>,
     },
     /// A simple exterior ring with simple, disjoint holes inside it (rings
@@ -214,6 +227,7 @@ impl Geometry {
         match self {
             Geometry::Point { .. } => GeometryKind::Point,
             Geometry::Polyline { .. } => GeometryKind::Polyline,
+            Geometry::Arrow { .. } => GeometryKind::Arrow,
             Geometry::Polygon { .. } => GeometryKind::Polygon,
             Geometry::Rectangle { .. } => GeometryKind::Rectangle,
             Geometry::Ellipse { .. } => GeometryKind::Ellipse,
@@ -229,7 +243,7 @@ impl Geometry {
                 max_x: *x,
                 max_y: *y,
             },
-            Geometry::Polyline { points } => Bounds::of_points(points),
+            Geometry::Polyline { points } | Geometry::Arrow { points } => Bounds::of_points(points),
             Geometry::Polygon { exterior, .. } => Bounds::of_points(exterior),
             Geometry::Rectangle {
                 x,
@@ -254,7 +268,7 @@ impl Geometry {
     /// Number of stored vertices.
     pub fn vertex_count(&self) -> usize {
         match self {
-            Geometry::Polyline { points } => points.len(),
+            Geometry::Polyline { points } | Geometry::Arrow { points } => points.len(),
             Geometry::Polygon { exterior, holes } => {
                 exterior.len() + holes.iter().map(Vec::len).sum::<usize>()
             }
@@ -267,7 +281,7 @@ impl Geometry {
         let finite = |p: &[f64; 2]| p[0].is_finite() && p[1].is_finite();
         match self {
             Geometry::Point { x, y } | Geometry::Text { x, y } => x.is_finite() && y.is_finite(),
-            Geometry::Polyline { points } => points.iter().all(finite),
+            Geometry::Polyline { points } | Geometry::Arrow { points } => points.iter().all(finite),
             Geometry::Polygon { exterior, holes } => {
                 exterior.iter().all(finite) && holes.iter().all(|h| h.iter().all(finite))
             }
@@ -287,6 +301,9 @@ impl Geometry {
             Geometry::Point { x, y } => Shape::Point { x: *x, y: *y },
             Geometry::Polyline { points } => Shape::Polyline {
                 points: points.clone(),
+            },
+            Geometry::Arrow { points } => Shape::Polyline {
+                points: arrow_outline(points),
             },
             Geometry::Polygon { exterior, holes } => Shape::Polygon {
                 exterior: exterior.clone(),
@@ -389,6 +406,9 @@ impl Geometry {
             Geometry::Polyline { points } => Geometry::Polyline {
                 points: points.iter().map(mv).collect(),
             },
+            Geometry::Arrow { points } => Geometry::Arrow {
+                points: points.iter().map(mv).collect(),
+            },
             Geometry::Polygon { exterior, holes } => Geometry::Polygon {
                 exterior: exterior.iter().map(mv).collect(),
                 holes: holes.iter().map(|h| h.iter().map(mv).collect()).collect(),
@@ -412,6 +432,45 @@ impl Geometry {
             },
         }
     }
+}
+
+/// Extra vertices [`arrow_outline`] appends to an arrow's points.
+pub const ARROWHEAD_VERTICES: usize = 3;
+
+/// The polyline drawing an arrow: its points, then the head as two barbs
+/// (`tip → left barb → tip → right barb`), so that one host object draws
+/// the whole arrow. The head is a quarter of the last segment, at most a
+/// fifth of the whole length, with barbs at 25°.
+pub fn arrow_outline(points: &[[f64; 2]]) -> Vec<[f64; 2]> {
+    let mut out = points.to_vec();
+    let Some(&tip) = points.last() else {
+        return out;
+    };
+    let Some(&before) = points.iter().rev().find(|p| **p != tip) else {
+        return out;
+    };
+    let (dx, dy) = (tip[0] - before[0], tip[1] - before[1]);
+    let last = dx.hypot(dy);
+    let total: f64 = points
+        .windows(2)
+        .map(|w| (w[1][0] - w[0][0]).hypot(w[1][1] - w[0][1]))
+        .sum();
+    let head = (0.25 * last).min(0.2 * total);
+    if head <= 0.0 || !head.is_finite() {
+        return out;
+    }
+    let (ux, uy) = (dx / last, dy / last);
+    let (sin, cos) = 25f64.to_radians().sin_cos();
+    let barb = |sign: f64| {
+        // The direction from the tip back along the shaft, turned by ±25°.
+        let (bx, by) = (-ux, -uy);
+        let (rx, ry) = (bx * cos - sign * by * sin, sign * bx * sin + by * cos);
+        [tip[0] + head * rx, tip[1] + head * ry]
+    };
+    out.push(barb(1.0));
+    out.push(tip);
+    out.push(barb(-1.0));
+    out
 }
 
 /// What a layer is for. Count points and HPF fields get their own layers so
@@ -763,6 +822,22 @@ mod tests {
         assert!(clean_name(&"x".repeat(MAX_NAME_CHARS + 1), "name", false).is_err());
         // Counted in characters, not bytes.
         assert!(clean_name(&"é".repeat(MAX_NAME_CHARS), "name", false).is_ok());
+    }
+
+    #[test]
+    fn arrows_get_a_head_at_the_tip() {
+        let outline = arrow_outline(&[[0.0, 0.0], [100.0, 0.0]]);
+        assert_eq!(outline.len(), 2 + ARROWHEAD_VERTICES);
+        assert_eq!(outline[3], [100.0, 0.0]);
+        // A fifth of the length, 25° off the shaft, one barb on each side.
+        for barb in [outline[2], outline[4]] {
+            let length = (barb[0] - 100.0).hypot(barb[1]);
+            assert!((length - 20.0).abs() < 1e-9, "{length}");
+            assert!((barb[1].abs() / length - 25f64.to_radians().sin()).abs() < 1e-9);
+        }
+        assert!(outline[2][1] * outline[4][1] < 0.0);
+        // Degenerate arrows are drawn as they are.
+        assert_eq!(arrow_outline(&[[1.0, 1.0], [1.0, 1.0]]).len(), 2);
     }
 
     #[test]

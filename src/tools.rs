@@ -14,6 +14,7 @@ pub const FREEHAND: &str = "freehand";
 pub const RECTANGLE: &str = "rectangle";
 pub const ELLIPSE: &str = "ellipse";
 pub const POLYLINE: &str = "polyline";
+pub const ARROW: &str = "arrow";
 pub const TEXT: &str = "text";
 pub const FIELD: &str = "field";
 
@@ -111,6 +112,13 @@ const TOOLS: &[Def] = &[
         key: "l",
         kind: ToolKind::Polyline,
         icon: "<path d='M4 18l5-8 5 4 6-9'/>",
+    },
+    Def {
+        id: ARROW,
+        label: "Arrow (click the tail, double-click the tip; more clicks bend it)",
+        key: "a",
+        kind: ToolKind::Polyline,
+        icon: "<path d='M4 20 19 5'/><path d='M10 5h9v9'/>",
     },
     Def {
         id: TEXT,

@@ -219,7 +219,10 @@ fn parse_imagescope(root: Node<'_, '_>, stem: &str) -> ImportDoc {
                             ry: b.height() / 2.0,
                         }
                     }
-                    "3" | "4" => Geometry::Polyline { points },
+                    // Arrows run from the first vertex (tail) to the last
+                    // (tip); rulers are lines.
+                    "3" => Geometry::Arrow { points },
+                    "4" => Geometry::Polyline { points },
                     "5" => Geometry::Point {
                         x: points[0][0],
                         y: points[0][1],

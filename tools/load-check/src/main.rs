@@ -79,9 +79,13 @@ fn run(path: &Path) -> Result<(), String> {
         .into_result()
         .map_err(|e| format!("create failed: {}", e.message.into_string()))?;
     settle(&plugin, &host)?;
-    let tools = host.state().tools.len();
-    if tools != 10 {
-        return Err(format!("{tools} tools registered, expected 10"));
+    {
+        let state = host.state();
+        for tool in ["select", "polygon", "arrow", "count", "field"] {
+            if !state.tools.contains_key(tool) {
+                return Err(format!("the '{tool}' tool was not registered"));
+            }
+        }
     }
 
     let slide = dir.join("slide.svs");

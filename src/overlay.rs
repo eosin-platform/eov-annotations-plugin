@@ -122,7 +122,7 @@ impl Styler {
                 style.stroke_width = 1.5;
                 style.point_radius = self.point_radius;
             }
-            GeometryKind::Polyline => {
+            GeometryKind::Polyline | GeometryKind::Arrow => {
                 style.fill = Rgba::TRANSPARENT;
                 style.stroke = color.rgba(alpha(1.0));
                 style.stroke_width = 2.0;

@@ -7,8 +7,8 @@ use crate::core::{Core, DbJob, Op, Planned};
 use crate::geometry::{self, Normalized};
 use crate::measure::Calibration;
 use crate::model::{
-    Annotation, Bounds, Class, Color, Geometry, GeometryKind, Layer, LayerRole, SlideId, Status,
-    clean_name, new_id, now_ms, pick_color,
+    ARROWHEAD_VERTICES, Annotation, Bounds, Class, Color, Geometry, GeometryKind, Layer, LayerRole,
+    SlideId, Status, clean_name, new_id, now_ms, pick_color,
 };
 use crate::overlay::{self, HostOp, parse_host_layer_id, reticle_layer_id};
 use crate::state::{FieldPress, SlideData, State};
@@ -200,6 +200,21 @@ pub fn shape_drawn(
             true,
             "Add line",
         ),
+        tools::ARROW => {
+            let Geometry::Polyline { points } = geometry else {
+                return;
+            };
+            add(
+                core,
+                file_id,
+                vec![Geometry::Arrow { points }],
+                LayerRole::Normal,
+                active,
+                "",
+                true,
+                "Add arrow",
+            );
+        }
         tools::TEXT => {
             let (x, y) = match geometry {
                 Geometry::Point { x, y } => (x, y),
@@ -492,6 +507,24 @@ pub fn object_edited(core: &Arc<Core>, object: ObjectRef, shape: Shape) {
             return refuse(slide_id, "The annotation is locked.".to_string());
         }
         let (mut geometry, _) = Geometry::from_shape(&shape);
+        // Arrows are drawn with their head (`arrow_outline`): keep the shaft
+        // the host moved or reshaped, and draw a new head for it.
+        let arrow_shaft = |points: &[[f64; 2]], shaft: usize| -> Option<Vec<[f64; 2]>> {
+            if points.len() == shaft + ARROWHEAD_VERTICES {
+                Some(points[..shaft].to_vec())
+            } else {
+                None
+            }
+        };
+        if let Geometry::Arrow { points: shaft } = &current.geometry {
+            let Geometry::Polyline { points } = &geometry else {
+                return refuse(slide_id, "An arrow stays an arrow.".to_string());
+            };
+            let Some(points) = arrow_shaft(points, shaft.len()) else {
+                return refuse(slide_id, "That edit was undone.".to_string());
+            };
+            geometry = Geometry::Arrow { points };
+        }
         // HPF fields keep their size: moving is fine, resizing is not.
         if layer.is_some_and(|l| l.role == LayerRole::Fields)
             && let Geometry::Ellipse { rx, ry, .. } = current.geometry
@@ -526,7 +559,12 @@ pub fn object_edited(core: &Arc<Core>, object: ObjectRef, shape: Shape) {
         let mut updated = (*current).clone();
         updated.geometry = normalized.parts.into_iter().next().expect("one part");
         if updated.geometry == current.geometry {
-            return Ok(Planned::default());
+            // Nothing to store; an arrow whose head was dragged is redrawn.
+            return Ok(Planned {
+                revert: matches!(current.geometry, Geometry::Arrow { .. })
+                    .then(|| (slide_id, vec![id.clone()])),
+                ..Default::default()
+            });
         }
         updated.updated_at = now_ms().max(current.updated_at + 1);
         Ok(Planned {
@@ -1322,6 +1360,7 @@ pub fn kind_glyph(kind: GeometryKind) -> &'static str {
     match kind {
         GeometryKind::Point => "•",
         GeometryKind::Polyline => "╱",
+        GeometryKind::Arrow => "→",
         GeometryKind::Polygon => "△",
         GeometryKind::Rectangle => "▭",
         GeometryKind::Ellipse => "○",

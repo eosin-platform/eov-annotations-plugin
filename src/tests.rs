@@ -3,7 +3,7 @@
 //! directories; nothing touches the home directory.
 
 use super::*;
-use crate::tools::{COUNT, FIELD, POINT, POLYGON, RECTANGLE, TEXT};
+use crate::tools::{ARROW, COUNT, FIELD, POINT, POLYGON, RECTANGLE, TEXT};
 use eov_plugin_api::testing::{MockHost, TestHarness, test_init};
 use std::path::Path;
 
@@ -226,7 +226,7 @@ fn registers_tools_and_opens_its_database_in_the_data_dir() {
     settle(&h);
     {
         let state = h.state();
-        assert_eq!(state.tools.len(), 10);
+        assert_eq!(state.tools.len(), tools::tool_specs().len());
         for (id, spec) in &state.tools {
             assert!(spec.hotkey.is_some(), "{id} lost its hotkey");
         }
@@ -1427,4 +1427,89 @@ fn undo_records_the_host_dropped_are_freed() {
     // The remaining entry still undoes.
     undo(&h);
     assert_eq!(objects(&h, 1).len(), 1);
+}
+
+#[test]
+fn arrows_are_lines_with_a_head_that_survive_edits_and_formats() {
+    let (h, dir) = fresh();
+    open(&h, info(1, "a", &dir));
+    draw(
+        &h,
+        ARROW,
+        1,
+        Shape::Polyline {
+            points: vec![[100.0, 100.0], [500.0, 100.0]],
+        },
+    );
+    let (layer, object) = objects(&h, 1).remove(0);
+    // One object: the shaft, then the head as two barbs at the tip.
+    let Shape::Polyline { points } = &object.shape else {
+        panic!("{:?}", object.shape)
+    };
+    assert_eq!(points.len(), 2 + crate::model::ARROWHEAD_VERTICES);
+    assert_eq!(points[3], [500.0, 100.0]);
+    assert!(
+        points[2][0] < 500.0 && points[4][0] < 500.0,
+        "barbs point back"
+    );
+    let sidebar = open_sidebar(&h);
+    assert_eq!(prop(&h, &sidebar, "detail-kind"), "arrow");
+    let measurements = prop(&h, &sidebar, "detail-measurements");
+    let length = measurements
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|m| m["key"] == "Length")
+        .expect("an arrow has a length")
+        .clone();
+    // 400 px at 0.25 µm/px.
+    assert_eq!(length["value"], "100.0 µm");
+    // Moving the whole drawing moves the arrow; its head is redrawn.
+    let moved: Vec<[f64; 2]> = points.iter().map(|p| [p[0], p[1] + 50.0]).collect();
+    h.send(HostEvent::ObjectEdited {
+        object: reference(&layer, &object),
+        shape: Shape::Polyline { points: moved },
+    })
+    .unwrap();
+    settle(&h);
+    let Shape::Polyline { points } = h.state().layers[&layer].objects[&object.object_id]
+        .shape
+        .clone()
+    else {
+        panic!()
+    };
+    assert_eq!(&points[..2], &[[100.0, 150.0], [500.0, 150.0]]);
+    // Dragging a barb changes nothing and redraws the head.
+    let mut barb = points.clone();
+    barb[2] = [0.0, 0.0];
+    h.send(HostEvent::ObjectEdited {
+        object: reference(&layer, &object),
+        shape: Shape::Polyline { points: barb },
+    })
+    .unwrap();
+    settle(&h);
+    assert_eq!(
+        h.state().layers[&layer].objects[&object.object_id].shape,
+        Shape::Polyline {
+            points: points.clone()
+        }
+    );
+    // GeoJSON carries it as a LineString marked as an arrow; it comes back.
+    let path = dir.join("arrow.geojson");
+    callback(&h, &sidebar, "menu", vec![json!("export-geojson")]);
+    answer_dialog(&h, &path);
+    let exported: Value = serde_json::from_str(&std::fs::read_to_string(&path).unwrap()).unwrap();
+    let feature = &exported["features"][0];
+    assert_eq!(feature["geometry"]["type"], "LineString");
+    assert_eq!(feature["properties"]["eov"]["kind"], "arrow");
+    open(&h, info(2, "b", &dir));
+    callback(&h, &sidebar, "menu", vec![json!("import")]);
+    answer_dialog(&h, &path);
+    let (modal_id, _) = modal(&h).expect("the import dialog");
+    h.ui_callback(&modal_id, "import-confirm", vec![json!(0)])
+        .unwrap();
+    settle(&h);
+    let imported = objects(&h, 2);
+    assert_eq!(imported.len(), 1);
+    assert_eq!(imported[0].1.shape, Shape::Polyline { points });
 }

@@ -68,6 +68,7 @@ The tools are in eov's toolbar; each has a key.
 | Rectangle | `B` | Drag a rectangle. |
 | Ellipse | `O` | Drag an ellipse. |
 | Line / path | `L` | Click the vertices; double-click or Enter finishes. Its length is measured. |
+| Arrow | `A` | Like a line, with a head at the last point: click the tail, double-click the tip. |
 | Text | `T` | A text label; its text is the annotation's name. |
 | HPF field | `H` | A dashed field of the configured size follows the pointer; a click places one in the *HPF fields* layer, a drag pans. |
 
@@ -351,7 +352,7 @@ This depends on what eov's plugin API offers today:
 - A region made of several separate parts is stored as several
   annotations (eov's shapes have no multipolygon).
 
-Not done yet: arrows, a brush with eraser, NDPA and DICOM annotation
+Not done yet: a brush with eraser, NDPA and DICOM annotation
 formats, export to ASAP or ImageScope XML, comment threads and blinded
 multi-reader copies.
 

@@ -211,6 +211,15 @@ pub fn samples() -> Result<Samples, String> {
     );
     draw(
         &h,
+        "arrow",
+        1,
+        Shape::Polyline {
+            points: vec![[1200.0, 900.0], [1500.0, 700.0]],
+        },
+        Modifiers::default(),
+    );
+    draw(
+        &h,
         "text",
         1,
         Shape::Point { x: 300.0, y: 300.0 },

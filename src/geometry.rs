@@ -6,7 +6,7 @@
 //! the even-odd rule) when they are placed, edited or imported, so stored
 //! polygons are simple rings whose shoelace area equals their filled area.
 
-use crate::model::{Bounds, Geometry, MAX_VERTICES};
+use crate::model::{Bounds, Geometry, GeometryKind, MAX_VERTICES};
 use i_overlay::core::fill_rule::FillRule;
 use i_overlay::core::overlay_rule::OverlayRule;
 use i_overlay::float::simplify::SimplifyShape;
@@ -265,7 +265,11 @@ pub fn normalize(geometry: Geometry, image: Option<Bounds>) -> Result<Normalized
             }
             out.parts.push(geometry);
         }
-        Geometry::Polyline { points } => {
+        Geometry::Polyline { .. } | Geometry::Arrow { .. } => {
+            let arrow = geometry.kind() == GeometryKind::Arrow;
+            let (Geometry::Polyline { points } | Geometry::Arrow { points }) = geometry else {
+                unreachable!("matched above")
+            };
             let mut points = dedup_line(&points);
             if let Some(b) = image {
                 for p in &mut points {
@@ -278,9 +282,17 @@ pub fn normalize(geometry: Geometry, image: Option<Bounds>) -> Result<Normalized
                 points = dedup_line(&points);
             }
             if points.len() < 2 {
-                return Err("A line needs at least two distinct points.".to_string());
+                return Err(if arrow {
+                    "An arrow needs two distinct points.".to_string()
+                } else {
+                    "A line needs at least two distinct points.".to_string()
+                });
             }
-            out.parts.push(Geometry::Polyline { points });
+            out.parts.push(if arrow {
+                Geometry::Arrow { points }
+            } else {
+                Geometry::Polyline { points }
+            });
         }
         Geometry::Rectangle {
             mut x,

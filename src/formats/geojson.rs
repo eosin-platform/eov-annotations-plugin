@@ -256,6 +256,17 @@ pub fn parse(value: &Value, stem: &str) -> Result<ImportDoc, String> {
                 }
             },
         }
+        // A LineString that eov marked as an arrow (the exact geometry may
+        // have been dropped by another tool).
+        if eov.and_then(|e| e.get("kind")).and_then(Value::as_str) == Some("arrow") {
+            for shape in &mut shapes {
+                if let Geometry::Polyline { points } = shape {
+                    *shape = Geometry::Arrow {
+                        points: std::mem::take(points),
+                    };
+                }
+            }
+        }
         let (class, class_color) = classification(props);
         if let Some(class) = &class {
             doc.note_class(class, class_color);
@@ -340,7 +351,11 @@ fn geometry_json(g: &Geometry) -> Value {
         Geometry::Point { x, y } | Geometry::Text { x, y } => {
             json!({"type": "Point", "coordinates": [x, y]})
         }
-        Geometry::Polyline { points } => json!({"type": "LineString", "coordinates": points}),
+        // Arrows are LineStrings (tail to tip); `properties.eov.kind` says
+        // "arrow".
+        Geometry::Polyline { points } | Geometry::Arrow { points } => {
+            json!({"type": "LineString", "coordinates": points})
+        }
         Geometry::Polygon { exterior, holes } => {
             let mut rings = vec![closed(exterior)];
             rings.extend(holes.iter().map(|h| closed(h)));

@@ -13,9 +13,7 @@ use crate::actions;
 use crate::core::Core;
 use crate::counting;
 use crate::measure::{self, Calibration};
-use crate::model::{
-    Class, Color, GeometryKind, LayerRole, Status, clean_name, clean_properties, clean_text,
-};
+use crate::model::{Class, Color, LayerRole, Status, clean_name, clean_properties, clean_text};
 use crate::state::{DbStatus, ExportFormat, Load, Pending, State};
 use crate::stats::FieldSize;
 use crate::transfer;
@@ -449,7 +447,7 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                 );
                 let calibration = Calibration::new(slide.record.mpp_x, slide.record.mpp_y);
                 let m = measure::measure(&first.geometry, &calibration);
-                measurements = measure::rows(&m, first.geometry.kind() == GeometryKind::Polyline)
+                measurements = measure::rows(&m, first.geometry.kind().is_line())
                     .into_iter()
                     .map(|(key, value)| KeyValue { key, value })
                     .collect();
@@ -1383,7 +1381,7 @@ pub fn measurement_text(state: &State, file_id: FileId) -> String {
         };
         let m = measure::measure(&a.geometry, &calibration);
         out.push_str(&a.display_name());
-        for (key, value) in measure::rows(&m, a.geometry.kind() == GeometryKind::Polyline) {
+        for (key, value) in measure::rows(&m, a.geometry.kind().is_line()) {
             out.push_str(&format!("\t{key}: {value}"));
         }
         out.push('\n');
