@@ -179,6 +179,13 @@ def validate_source(root: Path, version: str) -> str:
         environment.get("version"), str
     ):
         raise ReleaseError("plugin.toml has no valid [environment].version")
+    if not isinstance(plugin_data.get("api"), str) or not plugin_data["api"]:
+        raise ReleaseError("plugin.toml has no plugin API requirement (api)")
+    legacy = [key for key in ("entry_ui", "entry_component", "toolbar_buttons") if key in plugin_data]
+    if legacy:
+        raise ReleaseError(
+            f"plugin.toml still has keys from before plugin API 1.0: {', '.join(legacy)}"
+        )
     if (
         plugin_data.get("repository")
         != "https://github.com/eosin-platform/eov-annotations-plugin"
