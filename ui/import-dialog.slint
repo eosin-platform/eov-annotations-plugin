@@ -1,0 +1,260 @@
+// Preview of an import: what was read, whether it was made for this slide,
+// what had to be skipped or repaired, and what to do with layers whose
+// names already exist. Nothing is written until "Import" is pressed.
+
+import { Theme } from "theme.slint";
+import { TextButton, SectionTitle, Hint, Separator, ScrollBar } from "widgets.slint";
+
+component Choice inherits Rectangle {
+    in property <string> text;
+    in property <string> detail;
+    in property <bool> selected;
+    callback clicked();
+
+    border-radius: 4px;
+    background: root.selected ? Theme.selection : touch.has-hover ? Theme.hover : transparent;
+    accessible-role: radio-button;
+    accessible-label: root.text;
+    accessible-description: root.detail;
+    accessible-checked: root.selected;
+    accessible-action-default => {
+        root.clicked();
+    }
+
+    touch := TouchArea {
+        clicked => {
+            root.clicked();
+        }
+    }
+
+    VerticalLayout {
+        padding: 6px;
+        spacing: 2px;
+
+        HorizontalLayout {
+            spacing: 8px;
+
+            VerticalLayout {
+                alignment: center;
+
+                Rectangle {
+                    width: 14px;
+                    height: 14px;
+                    border-radius: 7px;
+                    border-width: 1px;
+                    border-color: root.selected ? Theme.accent-text : Theme.border-strong;
+                    background: Theme.input;
+
+                    if root.selected: Rectangle {
+                        x: 3px;
+                        y: 3px;
+                        width: 8px;
+                        height: 8px;
+                        border-radius: 4px;
+                        background: Theme.accent-text;
+                    }
+                }
+            }
+
+            Text {
+                text: root.text;
+                font-size: Theme.font-size;
+                color: Theme.text-primary;
+                horizontal-stretch: 1;
+            }
+        }
+
+        // One child per horizontal layout: Slint then sizes wrapped text
+        // correctly.
+        HorizontalLayout {
+            padding-left: 22px;
+
+            Text {
+                text: root.detail;
+                font-size: Theme.small-font-size;
+                color: Theme.text-secondary;
+                wrap: word-wrap;
+                height: self.preferred-height;
+            }
+        }
+    }
+}
+
+export component ImportDialog inherits Rectangle {
+    in property <string> source;
+    in property <string> summary;
+    in property <string> match-text;
+    in property <bool> mismatch;
+    in property <string> notes;
+    in property <string> conflicts;
+
+    // 0 merge, 1 replace, 2 keep both
+    callback import-confirm(int /* strategy */);
+    callback import-cancel();
+
+    property <int> strategy: 0;
+
+    background: Theme.surface;
+    border-radius: 10px;
+    border-width: 1px;
+    border-color: Theme.border;
+    accessible-role: groupbox;
+    accessible-label: "Import annotations";
+
+    VerticalLayout {
+        padding: 16px;
+        spacing: 10px;
+
+        Text {
+            text: "Import annotations";
+            font-size: 15px;
+            font-weight: 600;
+            color: Theme.text-primary;
+        }
+
+        Rectangle {
+            vertical-stretch: 1;
+
+            flick := Flickable {
+                x: 0px;
+                y: 0px;
+                width: parent.width;
+                height: parent.height;
+                viewport-width: self.width;
+
+                VerticalLayout {
+                    alignment: start;
+                    spacing: 8px;
+                    padding-right: 10px;
+
+                    Text {
+                        text: root.source;
+                        font-size: Theme.font-size;
+                        color: Theme.text-primary;
+                        wrap: word-wrap;
+                        height: self.preferred-height;
+                    }
+
+                    Text {
+                        text: root.summary;
+                        font-size: Theme.font-size;
+                        color: Theme.text-secondary;
+                        wrap: word-wrap;
+                        height: self.preferred-height;
+                    }
+
+                    Rectangle {
+                        border-radius: 4px;
+                        background: root.mismatch ? Theme.warning-surface : Theme.info-surface;
+
+                        VerticalLayout {
+                            padding: 8px;
+
+                            Text {
+                                text: root.match-text;
+                                font-size: Theme.font-size;
+                                color: root.mismatch ? #ffd88a : Theme.text-primary;
+                                wrap: word-wrap;
+                                height: self.preferred-height;
+                            }
+                        }
+                    }
+
+                    if root.notes != "": VerticalLayout {
+                        spacing: 4px;
+
+                        SectionTitle {
+                            text: "NOTES";
+                        }
+
+                        Text {
+                            text: root.notes;
+                            font-size: Theme.small-font-size;
+                            color: Theme.text-secondary;
+                            wrap: word-wrap;
+                            height: self.preferred-height;
+                        }
+                    }
+
+                    if root.conflicts != "": VerticalLayout {
+                        spacing: 4px;
+
+                        Separator { }
+
+                        Text {
+                            text: root.conflicts;
+                            font-size: Theme.font-size;
+                            color: Theme.text-primary;
+                            wrap: word-wrap;
+                            height: self.preferred-height;
+                        }
+
+                        Choice {
+                            text: "Add to the existing layers";
+                            detail: "Imported annotations join the layer with the same name.";
+                            selected: root.strategy == 0;
+                            clicked => {
+                                root.strategy = 0;
+                            }
+                        }
+
+                        Choice {
+                            text: "Replace the existing layers";
+                            detail: "The existing layers are deleted (this can be undone).";
+                            selected: root.strategy == 1;
+                            clicked => {
+                                root.strategy = 1;
+                            }
+                        }
+
+                        Choice {
+                            text: "Keep both";
+                            detail: "Imported layers get a new name, such as \"Tumour (2)\".";
+                            selected: root.strategy == 2;
+                            clicked => {
+                                root.strategy = 2;
+                            }
+                        }
+                    }
+
+                    Hint {
+                        text: "The import is one step: Ctrl+Z (⌘Z) removes everything it added.";
+                    }
+                }
+            }
+
+            ScrollBar {
+                x: parent.width - self.width;
+                y: 0px;
+                height: parent.height;
+                content-height: flick.viewport-height;
+                view-height: flick.height;
+                offset: -flick.viewport-y;
+                scrolled(offset) => {
+                    flick.viewport-y = -offset;
+                }
+            }
+        }
+
+        HorizontalLayout {
+            spacing: 8px;
+            alignment: end;
+
+            TextButton {
+                text: "Cancel";
+                clicked => {
+                    root.import-cancel();
+                }
+            }
+
+            TextButton {
+                text: root.mismatch ? "Import anyway" : "Import";
+                primary: !root.mismatch;
+                danger: root.mismatch;
+                clicked => {
+                    root.import-confirm(root.strategy);
+                }
+            }
+        }
+    }
+}

@@ -1,1276 +1,2162 @@
+// The annotations panel (an eov plugin sidebar).
+//
+// Everything shown comes from properties the plugin pushes (see
+// src/sidebar.rs); every action is a callback the plugin handles. Popups
+// (menus, choice lists, the colour palette) are drawn inside the panel.
+
 import { Theme } from "theme.slint";
-import { ComboBox } from "std-widgets.slint";
-import { AnnotationMetadataRow, AnnotationTreeRow, ColorPaletteEntry } from "annotations-sidebar-types.slint";
 import {
-    ColorSwatchButton,
-    ContextMenuRow,
-    ExportIconButton,
-    PaletteSwatchButton,
-    TreeIconButton,
-} from "annotations-sidebar-widgets.slint";
+    IconButton, TextButton, Check, CommitField, PlainField, ChoiceButton, Slider, Swatch, KeyField,
+    SectionTitle, Hint, Separator, TabButton, ScrollBar,
+} from "widgets.slint";
+
+export struct TreeRow {
+    id: string,
+    layer-id: string,
+    // 0 layer, 1 annotation, 2 "show more"
+    kind: int,
+    label: string,
+    detail: string,
+    color: color,
+    icon: string,
+    indent: int,
+    selected: bool,
+    hovered: bool,
+    visible: bool,
+    locked: bool,
+    collapsed: bool,
+    current: bool,
+    // 0 draft, 1 verified, 2 rejected
+    status: int,
+    opacity: float,
+    notes: string,
+}
+
+export struct KeyValue {
+    key: string,
+    value: string,
+}
+
+export struct ClassRow {
+    id: string,
+    name: string,
+    color: color,
+    hotkey: string,
+    visible: bool,
+    opacity: float,
+    count: int,
+    active: bool,
+    alternate: bool,
+}
+
+export struct TallyRow {
+    name: string,
+    color: color,
+    count: string,
+    density: string,
+    per-hpf: string,
+}
+
+export struct OrphanRow {
+    id: string,
+    title: string,
+    detail: string,
+}
+
+component Label inherits Text {
+    font-size: Theme.font-size;
+    color: Theme.text-secondary;
+    vertical-alignment: center;
+    min-width: 64px;
+    horizontal-stretch: 0;
+}
+
+// One row of the layer/annotation list.
+component TreeItem inherits Rectangle {
+    in property <TreeRow> item;
+    in property <bool> editable;
+    in property <bool> editing;
+    callback clicked(bool /* additive */);
+    callback double-clicked();
+    callback hover-changed(bool);
+    callback toggle-collapsed();
+    callback toggle-visible();
+    callback toggle-locked();
+    callback toggle-editor();
+
+    property <bool> additive;
+
+    height: 24px;
+    background: root.item.selected ? Theme.selection : (root.item.hovered || touch.has-hover) ? Theme.hover : transparent;
+    accessible-role: list-item;
+    accessible-label: root.item.label;
+    accessible-description: root.item.kind == 0 && root.item.current ? root.item.detail + " · new annotations go here" : root.item.detail;
+    accessible-item-selectable: root.item.kind == 1;
+    accessible-item-selected: root.item.selected;
+    accessible-expandable: root.item.kind == 0;
+    accessible-expanded: !root.item.collapsed;
+    accessible-action-default => {
+        root.clicked(false);
+    }
+    accessible-action-expand => {
+        root.toggle-collapsed();
+    }
+
+    // The layer new annotations go into.
+    if root.item.kind == 0 && root.item.current: Rectangle {
+        x: 0px;
+        width: 3px;
+        background: Theme.accent-text;
+    }
+
+    touch := TouchArea {
+        pointer-event(event) => {
+            if event.kind == PointerEventKind.down {
+                root.additive = event.modifiers.control || event.modifiers.meta || event.modifiers.shift;
+            }
+        }
+        clicked => {
+            root.clicked(root.additive);
+        }
+        double-clicked => {
+            root.double-clicked();
+        }
+        changed has-hover => {
+            root.hover-changed(self.has-hover);
+        }
+    }
+
+    // Layer rows.
+    if root.item.kind == 0: HorizontalLayout {
+        padding-left: 2px;
+        padding-right: 4px;
+        spacing: 4px;
+
+        IconButton {
+            width: 20px;
+            icon: root.item.collapsed ? @image-url("icons/chevron-right.svg") : @image-url("icons/chevron-down.svg");
+            label: root.item.collapsed ? "Expand layer" : "Collapse layer";
+            tint: Theme.text-secondary;
+            clicked => {
+                root.toggle-collapsed();
+            }
+        }
+
+        Rectangle {
+            width: 10px;
+
+            Rectangle {
+                y: (parent.height - self.height) / 2;
+                width: 10px;
+                height: 10px;
+                border-radius: 2px;
+                background: root.item.color;
+                opacity: root.item.visible ? 1 : 0.35;
+            }
+        }
+
+        Text {
+            text: root.item.label;
+            font-size: Theme.font-size;
+            font-weight: root.item.current ? 700 : 500;
+            color: root.item.visible ? Theme.text-primary : Theme.text-disabled;
+            vertical-alignment: center;
+            overflow: elide;
+            horizontal-stretch: 1;
+        }
+
+        Text {
+            text: root.item.detail;
+            font-size: Theme.small-font-size;
+            color: Theme.text-secondary;
+            vertical-alignment: center;
+            overflow: elide;
+            max-width: 110px;
+        }
+
+        IconButton {
+            icon: root.item.visible ? @image-url("icons/eye.svg") : @image-url("icons/eye-off.svg");
+            label: root.item.visible ? "Hide layer" : "Show layer";
+            tint: root.item.visible ? Theme.text-primary : Theme.text-disabled;
+            clicked => {
+                root.toggle-visible();
+            }
+        }
+
+        IconButton {
+            icon: root.item.locked ? @image-url("icons/lock.svg") : @image-url("icons/unlock.svg");
+            label: root.item.locked ? "Unlock layer" : "Lock layer";
+            enabled: root.editable;
+            tint: root.item.locked ? Theme.warning : Theme.text-disabled;
+            clicked => {
+                root.toggle-locked();
+            }
+        }
+
+        IconButton {
+            icon: @image-url("icons/more.svg");
+            label: "Layer settings";
+            active: root.editing;
+            clicked => {
+                root.toggle-editor();
+            }
+        }
+    }
+
+    // Annotation rows.
+    if root.item.kind == 1: HorizontalLayout {
+        padding-left: 30px;
+        padding-right: 8px;
+        spacing: 6px;
+
+        Rectangle {
+            width: 8px;
+
+            Rectangle {
+                y: (parent.height - self.height) / 2;
+                width: 8px;
+                height: 8px;
+                border-radius: 4px;
+                background: root.item.color;
+                opacity: root.item.visible ? 1 : 0.35;
+            }
+        }
+
+        Text {
+            width: 14px;
+            text: root.item.icon;
+            font-size: Theme.font-size;
+            color: Theme.text-secondary;
+            horizontal-alignment: center;
+            vertical-alignment: center;
+        }
+
+        Text {
+            text: root.item.label;
+            font-size: Theme.font-size;
+            color: root.item.visible ? Theme.text-primary : Theme.text-disabled;
+            vertical-alignment: center;
+            overflow: elide;
+            horizontal-stretch: 1;
+        }
+
+        Text {
+            text: root.item.detail;
+            font-size: Theme.small-font-size;
+            color: Theme.text-secondary;
+            vertical-alignment: center;
+            horizontal-alignment: right;
+            overflow: elide;
+            max-width: 130px;
+        }
+
+        if root.item.status != 0: Text {
+            text: root.item.status == 1 ? "✓" : "✗";
+            font-size: Theme.font-size;
+            color: root.item.status == 1 ? Theme.success : Theme.error;
+            vertical-alignment: center;
+            accessible-role: text;
+            accessible-label: root.item.status == 1 ? "Verified" : "Rejected";
+        }
+
+        if root.item.locked: Image {
+            width: 12px;
+            source: @image-url("icons/lock.svg");
+            colorize: Theme.text-secondary;
+            accessible-role: image;
+            accessible-label: "Locked";
+        }
+    }
+
+    // "Show more".
+    if root.item.kind == 2: Text {
+        x: 30px;
+        width: parent.width - 38px;
+        text: root.item.label;
+        font-size: Theme.font-size;
+        color: touch.has-hover ? Theme.accent-hover : Theme.accent-text;
+        vertical-alignment: center;
+        overflow: elide;
+    }
+}
 
 export component AnnotationsSidebar inherits Rectangle {
-    in property <[string]> source-options: ["Local"];
-    in property <int> source-index: 0;
-    in property <[AnnotationTreeRow]> tree-items: [];
-    in property <string> empty-state-text: "";
-    in property <string> density-text: "";
-    in property <bool> can-export: false;
-    in property <bool> can-import: false;
-    in property <bool> can-delete-set: false;
-    in property <string> hovered-row-id: "";
-    in property <bool> show-sha-mismatch-warning: false;
-    in property <bool> show-import-conflict-dialog: false;
-    in property <string> import-conflict-layer-name: "";
-    in property <string> metadata-author: "";
-    in property <string> metadata-organization: "";
-    in property <string> metadata-project-name: "";
-    in property <string> metadata-license: "";
-    in-out property <string> selected-layer-id: "";
-    in property <string> selected-layer-name: "";
-    in property <string> selected-layer-color-hex: "";
-    in property <bool> has-selected-annotation: false;
-    in property <string> selected-annotation-name: "";
-    in property <[AnnotationMetadataRow]> annotation-metadata-items: [];
-    in-out property <string> editing-layer-id: "";
-    property <int> metadata-focus-count: 0;
-    out property <bool> capture-hotkeys: editing-layer-id != "" || metadata-focus-count > 0;
-    property <length> tree-scroll-y: 0px;
-    property <length> metadata-scroll-y: 0px;
-    property <string> rename-draft-text: "";
-    property <bool> settings-menu-visible: false;
-    property <length> settings-menu-x: 0px;
-    property <length> settings-menu-y: 0px;
-    in-out property <bool> dismiss-popups: false;
-    property <bool> import-conflict-apply-all: false;
-    property <string> pending-click-row-id: "";
-    property <[ColorPaletteEntry]> color-palette: [
-        { hex: "#FF355E", swatch: #FF355E },
-        { hex: "#FF7A00", swatch: #FF7A00 },
-        { hex: "#39FF14", swatch: #39FF14 },
-        { hex: "#0057FF", swatch: #0057FF },
-        { hex: "#6C63FF", swatch: #6C63FF },
-        { hex: "#9D4EDD", swatch: #9D4EDD },
-        { hex: "#FF4FD8", swatch: #FF4FD8 },
-        { hex: "#F15BB5", swatch: #F15BB5 },
-        { hex: "#43AA8B", swatch: #43AA8B },
-        { hex: "#577590", swatch: #577590 },
-        { hex: "#FF8A5B", swatch: #FF8A5B },
-        { hex: "#FF6B6B", swatch: #FF6B6B },
-        { hex: "#C77DFF", swatch: #C77DFF },
-        { hex: "#B8F2E6", swatch: #B8F2E6 },
-        { hex: "#F4A261", swatch: #F4A261 },
-        { hex: "#FFFFFF", swatch: #FFFFFF },
+    // ---------------------------------------------------------------
+    // Pushed by the plugin.
+    // ---------------------------------------------------------------
+    in-out property <int> tab: 0;
+    in property <string> slide-title: "No slide open";
+    in property <string> banner;
+    // 0 info, 1 warning, 2 error
+    in property <int> banner-level;
+    in property <bool> banner-retry;
+    in property <bool> editable;
+    in property <bool> has-slide;
+    in property <[string]> class-names: ["Unclassified"];
+
+    in property <[TreeRow]> rows;
+    in property <string> rows-note;
+    in property <string> filter;
+    in property <[string]> layer-names;
+
+    in property <int> selection-count;
+    in property <bool> has-detail;
+    in property <string> detail-id;
+    in property <string> detail-title;
+    in property <string> detail-kind;
+    in property <string> detail-name;
+    in property <string> detail-description;
+    in property <int> detail-class;
+    in property <int> detail-status;
+    in property <int> detail-layer;
+    in property <bool> detail-locked;
+    in property <string> detail-meta;
+    in property <string> detail-warning;
+    in property <[KeyValue]> detail-measurements;
+    in property <[KeyValue]> detail-properties;
+
+    in property <[ClassRow]> classes;
+
+    in property <int> count-active-index;
+    in property <int> count-alternate-index;
+    in property <[TallyRow]> tally;
+    in property <string> count-scope;
+    in property <string> count-index;
+    in property <int> field-count;
+    in property <bool> count-hidden;
+    in property <string> field-text;
+    // 0 field number and objective, 1 area
+    in property <int> field-mode;
+    in property <string> field-number: "22";
+    in property <string> field-objective: "40";
+    in property <string> field-area;
+
+    in property <string> db-path;
+    in property <string> db-status;
+    in property <string> db-notes;
+    in property <[OrphanRow]> orphans;
+    in property <string> orphans-note;
+    in property <string> setting-author;
+    in property <string> setting-organization;
+    in property <string> setting-project;
+    in property <string> setting-license;
+    in property <bool> setting-include-filename;
+    in property <float> setting-point-radius: 4.5;
+    in property <float> setting-fill-opacity: 0.18;
+    in property <bool> setting-show-labels;
+
+    // ---------------------------------------------------------------
+    // Handled by the plugin.
+    // ---------------------------------------------------------------
+    callback tab-changed(int);
+    callback retry();
+    callback menu(string /* item */);
+    callback tool(string /* tool id */);
+
+    callback filter-edited(string);
+    callback show-more();
+    callback row-clicked(string /* id */, string /* layer id */, bool /* additive */);
+    callback row-double-clicked(string /* id */, string /* layer id */);
+    callback row-hovered(string /* id, or "" */);
+    callback toggle-collapsed(string /* layer id */);
+
+    callback layer-new();
+    callback layer-visible(string, bool);
+    callback layer-locked(string, bool);
+    callback layer-opacity(string, float);
+    callback layer-color(string, string /* #rrggbb */);
+    callback layer-rename(string, string);
+    callback layer-notes(string, string);
+    callback layer-current(string);
+    callback layer-delete(string);
+
+    callback detail-name-committed(string /* owner */, string);
+    callback detail-description-committed(string /* owner */, string);
+    callback detail-class-chosen(int /* index in class-names */);
+    callback detail-status-chosen(int);
+    callback detail-layer-chosen(int /* index in layer-names */);
+    callback detail-locked-toggled(bool);
+    callback detail-delete();
+    callback detail-frame();
+    callback detail-repair();
+    callback copy-measurements();
+    callback property-add(string /* owner */);
+    callback property-remove(string /* owner */, int /* row */);
+    callback property-committed(string /* owner */, int /* row */, string /* key */, string /* value */);
+
+    callback class-new();
+    callback class-activate(string);
+    callback class-alternate(string);
+    callback class-rename(string, string);
+    callback class-color(string, string /* #rrggbb */);
+    callback class-hotkey(string, string);
+    callback class-visible(string, bool);
+    callback class-opacity(string, float);
+    callback class-delete(string);
+
+    callback count-active(int /* index in class-names */);
+    callback count-alternate(int /* index in class-names */);
+    callback count-hidden-toggled(bool);
+    callback count-clear();
+    callback fields-select();
+    callback field-config(int /* mode */, string /* field number */, string /* objective */, string /* area */);
+
+    callback orphans-refresh();
+    callback orphan-relink(string);
+    callback setting-text(string /* key */, string);
+    callback setting-bool(string /* key */, bool);
+    callback setting-number(string /* key */, float);
+
+    // ---------------------------------------------------------------
+    // Local state.
+    // ---------------------------------------------------------------
+    property <string> editing-layer;
+    property <string> editing-class;
+    property <string> hovered-row;
+    property <int> local-field-mode: root.field-mode;
+
+    // Popups: 0 none, 1 list, 2 palette.
+    property <int> popup: 0;
+    property <string> popup-target;
+    property <string> popup-owner;
+    property <[string]> popup-items;
+    property <int> popup-current: -1;
+    property <length> popup-x;
+    property <length> popup-y;
+    property <length> popup-w;
+
+    property <[string]> menu-labels: [
+        "Import annotations…",
+        "Export as GeoJSON (QuPath)…",
+        "Export as eov JSON…",
+        "Export measurements (CSV)…",
+        "Export all slides…",
+        "Back up the database…",
+        "Merge a database…",
+    ];
+    property <[string]> menu-ids: ["import", "export-geojson", "export-eov", "export-csv", "export-all", "backup", "merge-db"];
+    property <[string]> status-names: ["Draft", "Verified", "Rejected"];
+    property <[string]> field-modes: ["Field number and objective", "Field area"];
+    property <[{hex: string, color: color}]> palette: [
+        { hex: "#E69F00", color: #E69F00 },
+        { hex: "#56B4E9", color: #56B4E9 },
+        { hex: "#009E73", color: #009E73 },
+        { hex: "#F0E442", color: #F0E442 },
+        { hex: "#0072B2", color: #0072B2 },
+        { hex: "#D55E00", color: #D55E00 },
+        { hex: "#CC79A7", color: #CC79A7 },
+        { hex: "#FFFFFF", color: #FFFFFF },
+        { hex: "#FF355E", color: #FF355E },
+        { hex: "#39FF14", color: #39FF14 },
+        { hex: "#9D4EDD", color: #9D4EDD },
+        { hex: "#43AA8B", color: #43AA8B },
+        { hex: "#FF8A5B", color: #FF8A5B },
+        { hex: "#B8F2E6", color: #B8F2E6 },
+        { hex: "#577590", color: #577590 },
+        { hex: "#F4A261", color: #F4A261 },
     ];
 
-    callback source-selected(string);
-    callback create-layer-clicked();
-    callback import-clicked();
-    callback export-clicked();
-    callback metadata-settings-requested();
-    callback import-sha-warning-decided(bool);
-    callback import-conflict-decided(string, bool);
-    callback request-delete-layer(string, string);
-    callback delete-layer-confirmed(string);
-    callback delete-annotation-clicked(string);
-    callback rename-layer-committed(string, string);
-    callback rename-layer-cancelled();
-    callback row-clicked(string);
-    callback row-double-clicked(string);
-    callback row-hovered(string);
-    callback toggle-layer(string);
-    callback toggle-layer-visibility(string, bool);
-    callback set-layer-color(string, string);
-    callback metadata-row-added();
-    callback metadata-row-removed(int);
-    callback metadata-row-key-changed(int, string);
-    callback metadata-row-value-changed(int, string);
+    function open-list(target: string, items: [string], current: int, x: length, y: length, w: length) {
+        root.popup-target = target;
+        root.popup-items = items;
+        root.popup-current = current;
+        root.popup-x = x - root.absolute-position.x;
+        root.popup-y = y - root.absolute-position.y;
+        root.popup-w = w;
+        root.popup = 1;
+    }
 
-    property <bool> context-menu-visible: false;
-    property <length> context-menu-x: 0px;
-    property <length> context-menu-y: 0px;
-    property <string> context-target-id: "";
-    property <string> context-target-name: "";
-    property <bool> context-target-is-layer: false;
-    property <bool> context-target-is-empty-space: false;
-    property <string> pending-context-action: "";
-    property <string> pending-context-id: "";
-    property <string> pending-context-name: "";
-    property <bool> pending-context-is-layer: false;
-    property <bool> color-menu-visible: false;
-    property <length> color-menu-x: 0px;
-    property <length> color-menu-y: 0px;
-    property <string> color-target-id: "";
-    property <string> color-target-hex: "";
-    property <string> active-tooltip:
-        source-selector.has-focus ? "Source" : settings-button.hovered ? settings-button.tooltip-text : "";
-    property <length> tooltip-center-x:
-        source-selector.has-focus ? source-container.x + source-container.width / 2 : settings-button.hovered ? settings-button.x + settings-button.width / 2 : 0px;
+    function open-palette(target: string, owner: string, x: length, y: length) {
+        root.popup-target = target;
+        root.popup-owner = owner;
+        root.popup-x = x - root.absolute-position.x;
+        root.popup-y = y - root.absolute-position.y;
+        root.popup-w = 0px;
+        root.popup = 2;
+    }
+
+    function choose(index: int) {
+        root.popup = 0;
+        if root.popup-target == "menu" {
+            root.menu(root.menu-ids[index]);
+        } else if root.popup-target == "detail-class" {
+            root.detail-class-chosen(index);
+        } else if root.popup-target == "detail-status" {
+            root.detail-status-chosen(index);
+        } else if root.popup-target == "detail-layer" {
+            root.detail-layer-chosen(index);
+        } else if root.popup-target == "count-active" {
+            root.count-active(index);
+        } else if root.popup-target == "count-alternate" {
+            root.count-alternate(index);
+        } else if root.popup-target == "field-mode" {
+            root.local-field-mode = index;
+        }
+    }
+
+    function pick-color(hex: string) {
+        root.popup = 0;
+        if root.popup-target == "layer" {
+            root.layer-color(root.popup-owner, hex);
+        } else if root.popup-target == "class" {
+            root.class-color(root.popup-owner, hex);
+        }
+    }
+
+    function select-tab(index: int) {
+        root.popup = 0;
+        root.tab = index;
+        root.tab-changed(index);
+    }
 
     background: Theme.surface;
-
-    sidebar-focus := FocusScope {
-        width: 0px;
-        height: 0px;
-    }
-
-    action-dispatch := Timer {
-        interval: 1ms;
-        running: false;
-        triggered => {
-            self.running = false;
-            if root.pending-context-action == "rename-local" {
-                root.editing-layer-id = root.pending-context-id;
-            } else if root.pending-context-action == "create-layer" {
-                root.create-layer-clicked();
-            } else if root.pending-context-action == "delete-set" {
-                root.request-delete-layer(root.pending-context-id, root.pending-context-name);
-            } else if root.pending-context-action == "delete-annotation" {
-                root.delete-annotation-clicked(root.pending-context-id);
-            }
-            root.pending-context-action = "";
-            root.pending-context-id = "";
-            root.pending-context-name = "";
-            root.pending-context-is-layer = false;
-        }
-    }
-
-    click-window := Timer {
-        interval: 280ms;
-        running: false;
-        triggered => {
-            self.running = false;
-            root.pending-click-row-id = "";
-        }
-    }
-
-    function confirm-active-rename() {
-        if root.editing-layer-id != "" {
-            root.rename-layer-committed(root.editing-layer-id, root.rename-draft-text);
-            root.editing-layer-id = "";
-        }
-    }
-
-    function open-context-menu(target-id: string, target-name: string, is-layer: bool, local-x: length, local-y: length) {
-        root.context-target-id = target-id;
-        root.context-target-name = target-name;
-        root.context-target-is-layer = is-layer;
-        root.context-target-is-empty-space = false;
-        root.context-menu-x = local-x;
-        root.context-menu-y = local-y;
-        root.context-menu-visible = true;
-        root.color-menu-visible = false;
-    }
-
-    function open-empty-space-context-menu(local-x: length, local-y: length) {
-        root.context-target-id = "";
-        root.context-target-name = "";
-        root.context-target-is-layer = false;
-        root.context-target-is-empty-space = true;
-        root.context-menu_x = local-x;
-        root.context-menu_y = local-y;
-        root.context-menu-visible = true;
-        root.color-menu-visible = false;
-    }
-
-    function queue-context-action(action: string, target-id: string, target-name: string, is-layer: bool) {
-        root.pending-context-action = action;
-        root.pending-context-id = target-id;
-        root.pending-context-name = target-name;
-        root.pending-context-is-layer = is-layer;
-        root.context-menu-visible = false;
-        root.context-target-is-empty-space = false;
-        action-dispatch.start();
-    }
-
-    function open-settings-menu(local-x: length, local-y: length) {
-        root.settings-menu-x = local-x;
-        root.settings-menu-y = local-y;
-        root.settings-menu-visible = true;
-        root.context-menu-visible = false;
-        root.color-menu-visible = false;
-    }
-
-    changed dismiss-popups => {
-        if root.dismiss-popups {
-            root.confirm-active-rename();
-            root.settings-menu-visible = false;
-            root.context-menu-visible = false;
-            root.color-menu-visible = false;
-            root.color-target-id = "";
-            root.color-target-hex = "";
-            root.dismiss-popups = false;
-        }
-    }
+    accessible-role: complementary;
+    accessible-label: "Annotations";
 
     VerticalLayout {
-        width: parent.width;
-        height: parent.height;
-        padding-top: 10px;
-        padding-right: 10px;
-        padding-bottom: 10px;
-        padding-left: 10px;
-        spacing: 10px;
+        x: 0px;
+        y: 0px;
+        width: root.width - 1px;
+        height: root.height;
+        spacing: 0px;
 
-        HorizontalLayout {
-            spacing: 8px;
-
-            source-container := Rectangle {
-                horizontal-stretch: 1;
-                height: 28px;
-                background: transparent;
-
-                source-selector := ComboBox {
-                    width: parent.width;
-                    height: parent.height;
-                    model: root.source-options;
-                    current-index: root.source-index;
-                    selected(index) => {
-                        root.source-selected(index);
-                    }
-                }
-            }
-
-            create-layer-button := ExportIconButton {
-                icon-source: @image-url("icons/new_annotation_layer.svg");
-                tooltip-text: "Create Annotation Layer";
-                enabled: root.can-export || root.can-import;
-                clicked => {
-                    root.confirm-active-rename();
-                    root.create-layer-clicked();
-                }
-            }
-
-            settings-button := ExportIconButton {
-                icon-source: @image-url("icons/settings.svg");
-                tooltip-text: "Settings";
-                enabled: root.can-export || root.can-import;
-                clicked => {
-                    root.confirm-active-rename();
-                    root.open-settings-menu(
-                        self.absolute-position.x - root.absolute-position.x,
-                        self.absolute-position.y - root.absolute-position.y + self.height + 8px,
-                    );
-                }
-            }
-        }
-
+        // -----------------------------------------------------------
+        // Header.
+        // -----------------------------------------------------------
         VerticalLayout {
-            vertical-stretch: 1;
-            spacing: 10px;
+            padding-left: 10px;
+            padding-right: 6px;
+            padding-top: 8px;
+            padding-bottom: 6px;
+            spacing: 6px;
 
-            Rectangle {
-                vertical-stretch: 2;
-                background: transparent;
-                border-radius: 4px;
-                border-width: 1px;
-                border-color: Theme.border;
+            HorizontalLayout {
+                spacing: 4px;
 
-                if root.tree-items.length == 0: Rectangle {
-                    width: parent.width;
-                    height: parent.height;
-                    background: transparent;
-
-                    Text {
-                        x: 14px;
-                        y: 14px;
-                        width: parent.width - 28px;
-                        text: root.empty-state-text;
-                        color: Theme.text-secondary;
-                        font-size: 12px;
-                        wrap: word-wrap;
-                    }
+                Text {
+                    text: root.slide-title;
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: root.has-slide ? Theme.text-primary : Theme.text-secondary;
+                    vertical-alignment: center;
+                    overflow: elide;
+                    horizontal-stretch: 1;
                 }
 
-                tree-flick := Flickable {
-                    width: parent.width;
-                    height: parent.height;
-                    viewport-height: tree-layout.preferred-height;
-                    viewport-y: root.tree-scroll-y;
-                    interactive: root.tree-items.length > 0;
-
-                    changed viewport-y => {
-                        root.tree-scroll-y = self.viewport-y;
-                    }
-
-                    tree-layout := VerticalLayout {
-                        width: parent.width;
-                        spacing: 0px;
-
-                        for row[idx] in root.tree-items: Rectangle {
-                            width: parent.width;
-                            height: 32px;
-                            background: row.is-selected ? #4da3d930 : (row-touch.has-hover || root.hovered-row-id == row.row-id) ? #ffffff10 : transparent;
-
-                            row-touch := TouchArea {
-                                changed has-hover => {
-                                    if row.is-layer {
-                                        if self.has-hover || root.hovered-row-id == row.row-id {
-                                            root.row-hovered("");
-                                        }
-                                    } else {
-                                        root.row-hovered(self.has-hover ? row.row-id : "");
-                                    }
-                                }
-
-                                clicked => {
-                                    root.confirm-active-rename();
-                                    if click-window.running && root.pending-click-row-id == row.row-id {
-                                        click-window.running = false;
-                                        root.pending-click-row-id = "";
-                                        if row.is-layer {
-                                            root.selected-layer-id = row.row-id;
-                                            root.rename-draft-text = row.label;
-                                            root.editing-layer-id = row.row-id;
-                                        } else {
-                                            root.selected-layer-id = row.parent-layer-id;
-                                            root.row-double-clicked(row.row-id);
-                                        }
-                                    } else {
-                                        root.selected-layer-id = row.is-layer ? row.row-id : row.parent-layer-id;
-                                        root.row-clicked(row.row-id);
-                                        root.pending-click-row-id = row.row-id;
-                                        click-window.running = false;
-                                        click-window.running = true;
-                                    }
-                                }
-
-                                pointer-event(e) => {
-                                    if e.kind == PointerEventKind.down && e.button == PointerEventButton.right {
-                                        root.confirm-active-rename();
-                                        root.open-context-menu(
-                                            row.row-id,
-                                            row.label,
-                                            row.is-layer,
-                                            self.absolute-position.x + self.mouse-x - root.absolute-position.x,
-                                            self.absolute-position.y + self.mouse-y - root.absolute-position.y,
-                                        );
-                                    }
-                                }
-                            }
-
-                            HorizontalLayout {
-                                padding-left: (8 + row.indent * 18) * 1px;
-                                padding-right: 6px;
-                                spacing: 1px;
-
-                                if row.is-layer: Rectangle {
-                                    width: 12px;
-                                    height: parent.height;
-                                    background: transparent;
-
-                                    Text {
-                                        text: row.is-collapsed ? "▸" : "▾";
-                                        color: Theme.text-secondary;
-                                        font-size: 12px;
-                                        vertical-alignment: center;
-                                    }
-
-                                    set-expander-touch := TouchArea {
-                                        width: parent.width;
-                                        height: parent.height;
-                                        clicked => {
-                                            root.toggle-layer(row.row-id);
-                                        }
-                                    }
-                                }
-
-                                if !row.is-layer: Rectangle {
-                                    width: 12px;
-                                    height: parent.height;
-                                    background: transparent;
-                                    opacity: row.visible ? 1.0 : 0.65;
-
-                                    Rectangle {
-                                        x: 3px;
-                                        y: (parent.height - self.height) / 2;
-                                        width: 6px;
-                                        height: 6px;
-                                        border-radius: 3px;
-                                        background: rgb(row.color-r, row.color-g, row.color-b);
-                                    }
-                                }
-
-                                if root.editing-layer-id == row.row-id && row.is-layer: Rectangle {
-                                    horizontal-stretch: 1;
-                                    height: 22px;
-                                    y: (parent.height - self.height) / 2;
-                                    background: root.selected-layer-id == row.row-id ? #0f1419f2 : #11161d;
-                                    border-radius: 3px;
-                                    border-width: 1px;
-                                    border-color: rename-input.has-focus ? Theme.accent : #ffffff24;
-
-                                    rename-input := TextInput {
-                                        x: 5px;
-                                        y: 2px;
-                                        width: parent.width - 10px;
-                                        height: parent.height - 4px;
-                                        text: row.label;
-                                        changed text => {
-                                            root.rename-draft-text = self.text;
-                                        }
-                                        font-size: 12px;
-                                        color: Theme.text-primary;
-                                        selection-background-color: Theme.accent;
-                                        selection-foreground-color: #ffffff;
-                                        text-cursor-width: 1px;
-                                        vertical-alignment: center;
-                                        accepted => {
-                                            root.confirm-active-rename();
-                                        }
-                                        key-pressed(e) => {
-                                            if e.text == Key.Escape {
-                                                root.rename-layer-cancelled();
-                                                root.editing-layer-id = "";
-                                                accept
-                                            } else {
-                                                reject
-                                            }
-                                        }
-                                        changed has-focus => {
-                                            if !self.has-focus && root.editing-layer-id == row.row-id {
-                                                root.confirm-active-rename();
-                                            }
-                                        }
-                                    }
-
-                                    focus-rename-input := Timer {
-                                        interval: 1ms;
-                                        running: true;
-                                        triggered => {
-                                            self.running = false;
-                                            root.rename-draft-text = row.label;
-                                            rename-input.focus();
-                                            rename-input.select-all();
-                                        }
-                                    }
-                                }
-
-                                if !(root.editing-layer-id == row.row-id && row.is-layer): Rectangle {
-                                    horizontal-stretch: 1;
-                                    vertical-stretch: 1;
-                                    background: transparent;
-
-                                    if row.is-layer: Rectangle {
-                                        width: parent.width;
-                                        height: parent.height;
-                                        background: transparent;
-
-                                        set-label := Text {
-                                            x: 0px;
-                                            y: 0px;
-                                            width: min(self.preferred-width, max(0px, parent.width - 4px - set-count.preferred-width));
-                                            height: parent.height;
-                                            text: row.label;
-                                            color: row.visible ? Theme.text-primary : Theme.text-secondary;
-                                            font-size: 12px;
-                                            font-weight: 600;
-                                            vertical-alignment: center;
-                                            overflow: elide;
-                                            horizontal-alignment: left;
-                                        }
-
-                                        set-count := Text {
-                                            x: set-label.width + 4px;
-                                            y: 0px;
-                                            width: min(self.preferred-width, max(0px, parent.width - self.x));
-                                            height: parent.height;
-                                            text: "(" + row.annotation-count + ")";
-                                            color: Theme.text-secondary;
-                                            font-size: 10px;
-                                            font-weight: 500;
-                                            vertical-alignment: center;
-                                            horizontal-alignment: left;
-                                        }
-                                    }
-
-                                    if !row.is-layer: Text {
-                                        x: 0px;
-                                        y: 0px;
-                                        width: parent.width;
-                                        height: parent.height;
-                                        text: row.label;
-                                        color: row.visible ? rgb(row.color-r, row.color-g, row.color-b) : rgba(row.color-r, row.color-g, row.color-b, 0.65);
-                                        font-size: 11px;
-                                        font-weight: 400;
-                                        vertical-alignment: center;
-                                        overflow: elide;
-                                    }
-                                }
-
-                                if row.is-layer && !(root.editing-layer-id == row.row-id): Rectangle {
-                                    width: 18px;
-                                    height: parent.height;
-                                    background: transparent;
-
-                                    TreeIconButton {
-                                        x: (parent.width - self.width) / 2;
-                                        y: (parent.height - self.height) / 2;
-                                        icon-source: row.visible ? @image-url("icons/visible-true.svg") : @image-url("icons/visible-false.svg");
-                                        tooltip-text: row.visible ? "Hide Annotation Layer" : "Show Annotation Layer";
-                                        clicked => {
-                                            root.confirm-active-rename();
-                                            root.toggle-layer-visibility(row.row-id, !row.visible);
-                                        }
-                                    }
-                                }
-
-                                if row.is-layer && !(root.editing-layer-id == row.row-id): Rectangle {
-                                    width: 2px;
-                                    height: parent.height;
-                                    background: transparent;
-                                }
-
-                                if row.is-layer && !(root.editing-layer-id == row.row-id): Rectangle {
-                                    width: 18px;
-                                    height: parent.height;
-                                    background: transparent;
-
-                                    ColorSwatchButton {
-                                        x: 0px;
-                                        y: (parent.height - self.height) / 2;
-                                        swatch-color: rgb(row.color-r, row.color-g, row.color-b);
-                                        clicked => {
-                                            root.confirm-active-rename();
-                                            root.color-target-id = row.row-id;
-                                            root.color-target-hex = row.color-hex;
-                                            root.color-menu-x = self.absolute-position.x - root.absolute-position.x - 4px;
-                                            root.color-menu-y = self.absolute-position.y - root.absolute-position.y + self.height + 8px;
-                                            root.color-menu-visible = true;
-                                            root.context-menu-visible = false;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if tree-flick.viewport-height + tree-flick.viewport-y < parent.height: Rectangle {
-                    x: 0px;
-                    y: max(0px, tree-flick.viewport-height + tree-flick.viewport-y);
-                    width: parent.width;
-                    height: parent.height - self.y;
-                    background: transparent;
-
-                    empty-margin-touch := TouchArea {
-                        clicked => {
-                            root.confirm-active-rename();
-                        }
-
-                        pointer-event(e) => {
-                            if e.kind == PointerEventKind.down && e.button == PointerEventButton.right {
-                                root.confirm-active-rename();
-                                root.open-empty-space-context-menu(
-                                    self.absolute-position.x + self.mouse-x - root.absolute-position.x,
-                                    self.absolute-position.y + self.mouse-y - root.absolute-position.y,
-                                );
-                            }
-                        }
+                menu-button := IconButton {
+                    icon: @image-url("icons/more.svg");
+                    label: "Import and export";
+                    active: root.popup == 1 && root.popup-target == "menu";
+                    clicked => {
+                        root.open-list("menu", root.menu-labels, -1, self.absolute-position.x + self.width - 230px, self.absolute-position.y + self.height, 230px);
                     }
                 }
             }
 
-            Rectangle {
-                background: #0f1419;
+            if root.banner != "": Rectangle {
                 border-radius: 4px;
-                border-width: 1px;
-                border-color: Theme.border;
-                height: density-box.preferred-height;
+                background: root.banner-level == 2 ? Theme.error-surface : root.banner-level == 1 ? Theme.warning-surface : Theme.info-surface;
+                accessible-role: text;
+                accessible-label: root.banner;
 
-                density-box := VerticalLayout {
-                    width: parent.width;
-                    padding: 10px;
+                // Wrapped text only in vertical layouts: Slint sizes it
+                // correctly there.
+                VerticalLayout {
+                    padding: 6px;
                     spacing: 6px;
 
                     Text {
-                        text: "Density";
-                        color: Theme.text-primary;
-                        font-size: 12px;
-                        font-weight: 600;
+                        text: root.banner;
+                        font-size: Theme.font-size;
+                        color: root.banner-level == 2 ? #ffb4ab : root.banner-level == 1 ? #ffd88a : Theme.text-primary;
+                        wrap: word-wrap;
+                        height: self.preferred-height;
                     }
 
-                    Text {
-                        text: root.density-text;
-                        color: Theme.text-secondary;
-                        font-size: 11px;
-                        wrap: word-wrap;
+                    if root.banner-retry: HorizontalLayout {
+                        alignment: end;
+
+                        TextButton {
+                            text: "Retry";
+                            clicked => {
+                                root.retry();
+                            }
+                        }
                     }
                 }
             }
+        }
 
-            Rectangle {
-                vertical-stretch: 1;
-                background: #0f1419;
-                border-radius: 4px;
-                border-width: 1px;
-                border-color: Theme.border;
+        // Tabs.
+        HorizontalLayout {
+            accessible-role: tab-list;
 
-                VerticalLayout {
-                    width: parent.width;
-                    height: parent.height;
-                    padding: 10px;
-                    spacing: 8px;
+            TabButton {
+                text: "Layers";
+                selected: root.tab == 0;
+                clicked => {
+                    root.select-tab(0);
+                }
+            }
 
-                    Text {
-                        text: root.has-selected-annotation ? "Metadata for '" + root.selected-annotation-name + "'" : "Metadata";
-                        color: Theme.text-primary;
-                        font-size: 12px;
-                        font-weight: 600;
-                    }
+            TabButton {
+                text: "Classes";
+                selected: root.tab == 1;
+                clicked => {
+                    root.select-tab(1);
+                }
+            }
 
-                    if !root.has-selected-annotation: Text {
-                        text: "Select an annotation to edit its metadata.";
-                        color: Theme.text-secondary;
-                        font-size: 11px;
-                        wrap: word-wrap;
-                    }
+            TabButton {
+                text: "Count";
+                selected: root.tab == 2;
+                clicked => {
+                    root.select-tab(2);
+                }
+            }
 
-                    if root.has-selected-annotation: Rectangle {
+            TabButton {
+                text: "Data";
+                selected: root.tab == 3;
+                clicked => {
+                    root.select-tab(3);
+                }
+            }
+        }
+
+        Separator { }
+
+        // -----------------------------------------------------------
+        // Tab contents.
+        // -----------------------------------------------------------
+        content := Rectangle {
+            vertical-stretch: 1;
+            clip: true;
+
+            // ---------------- Layers ----------------
+            if root.tab == 0: VerticalLayout {
+                spacing: 0px;
+
+                HorizontalLayout {
+                    padding: 8px;
+                    padding-bottom: 6px;
+                    spacing: 6px;
+
+                    Rectangle {
                         height: 24px;
-                        background: #121922;
+                        horizontal-stretch: 1;
                         border-radius: 3px;
                         border-width: 1px;
-                        border-color: #ffffff14;
+                        border-color: filter-input.has-focus ? Theme.accent : Theme.border;
+                        background: Theme.input;
+                        clip: true;
 
-                        HorizontalLayout {
-                            padding-left: 8px;
-                            padding-right: 8px;
-                            spacing: 8px;
+                        if filter-input.text == "" && !filter-input.has-focus: Text {
+                            x: 6px;
+                            width: parent.width - 12px;
+                            height: parent.height;
+                            text: "Filter by name, class, kind or status";
+                            color: Theme.text-disabled;
+                            font-size: Theme.font-size;
+                            vertical-alignment: center;
+                            overflow: elide;
+                        }
 
-                            Text {
-                                width: (parent.width - 44px) / 2;
-                                text: "Key";
-                                color: Theme.text-secondary;
-                                font-size: 10px;
-                                font-weight: 600;
-                                vertical-alignment: center;
+                        filter-input := TextInput {
+                            x: 6px;
+                            width: parent.width - 12px;
+                            height: parent.height;
+                            text: root.filter;
+                            single-line: true;
+                            vertical-alignment: center;
+                            font-size: Theme.font-size;
+                            color: Theme.text-primary;
+                            selection-background-color: Theme.accent;
+                            selection-foreground-color: #ffffff;
+                            text-cursor-width: 1px;
+                            accessible-role: text-input;
+                            accessible-label: "Filter annotations";
+                            edited => {
+                                root.filter-edited(self.text);
                             }
-
-                            Text {
-                                width: (parent.width - 44px) / 2;
-                                text: "Value";
-                                color: Theme.text-secondary;
-                                font-size: 10px;
-                                font-weight: 600;
-                                vertical-alignment: center;
-                            }
-
-                            Rectangle {
-                                width: 20px;
-                                background: transparent;
+                            key-pressed(event) => {
+                                if event.text == Key.Escape && self.text != "" {
+                                    self.text = "";
+                                    root.filter-edited("");
+                                    return accept;
+                                }
+                                reject
                             }
                         }
                     }
 
-                    if root.has-selected-annotation: Rectangle {
-                        vertical-stretch: 1;
-                        background: transparent;
-                        border-radius: 3px;
-                        border-width: 1px;
-                        border-color: #ffffff14;
+                    IconButton {
+                        icon: @image-url("icons/plus.svg");
+                        label: "New layer";
+                        enabled: root.editable;
+                        clicked => {
+                            root.layer-new();
+                        }
+                    }
+                }
 
-                        metadata-flick := Flickable {
-                            width: parent.width;
-                            height: parent.height;
-                            viewport-height: metadata-layout.preferred-height;
-                            viewport-y: root.metadata-scroll-y;
-                            interactive: root.annotation-metadata-items.length > 0;
+                // The list.
+                Rectangle {
+                    vertical-stretch: 1;
+                    min-height: 96px;
 
-                            changed viewport-y => {
-                                root.metadata-scroll-y = self.viewport-y;
+                    list := Flickable {
+                        viewport-width: self.width;
+                        x: 0px;
+                        y: 0px;
+                        width: parent.width;
+                        height: parent.height;
+
+                        VerticalLayout {
+                            alignment: start;
+                            spacing: 0px;
+                            padding-bottom: 6px;
+
+                            for row in root.rows: VerticalLayout {
+                                TreeItem {
+                                    item: row;
+                                    editable: root.editable;
+                                    editing: row.kind == 0 && root.editing-layer == row.id;
+                                    clicked(additive) => {
+                                        if row.kind == 2 {
+                                            root.show-more();
+                                        } else {
+                                            root.row-clicked(row.id, row.layer-id, additive);
+                                        }
+                                    }
+                                    double-clicked => {
+                                        if row.kind == 0 {
+                                            root.editing-layer = root.editing-layer == row.id ? "" : row.id;
+                                        } else if row.kind == 1 {
+                                            root.row-double-clicked(row.id, row.layer-id);
+                                        }
+                                    }
+                                    hover-changed(hovered) => {
+                                        if row.kind == 1 {
+                                            if hovered {
+                                                root.hovered-row = row.id;
+                                                root.row-hovered(row.id);
+                                            } else if root.hovered-row == row.id {
+                                                root.hovered-row = "";
+                                                root.row-hovered("");
+                                            }
+                                        }
+                                    }
+                                    toggle-collapsed => {
+                                        root.toggle-collapsed(row.id);
+                                    }
+                                    toggle-visible => {
+                                        root.layer-visible(row.id, !row.visible);
+                                    }
+                                    toggle-locked => {
+                                        root.layer-locked(row.id, !row.locked);
+                                    }
+                                    toggle-editor => {
+                                        root.editing-layer = root.editing-layer == row.id ? "" : row.id;
+                                    }
+                                }
+
+                                // Layer settings, under the layer's row.
+                                if row.kind == 0 && root.editing-layer == row.id: Rectangle {
+                                    background: Theme.surface-raised;
+
+                                    VerticalLayout {
+                                        padding-left: 28px;
+                                        padding-right: 8px;
+                                        padding-top: 6px;
+                                        padding-bottom: 8px;
+                                        spacing: 6px;
+
+                                        HorizontalLayout {
+                                            spacing: 6px;
+
+                                            Label {
+                                                text: "Name";
+                                            }
+
+                                            CommitField {
+                                                owner: row.id;
+                                                value: row.label;
+                                                placeholder: "Layer name";
+                                                enabled: root.editable;
+                                                accessible-label: "Layer name";
+                                                committed(owner, text) => {
+                                                    root.layer-rename(owner, text);
+                                                }
+                                            }
+                                        }
+
+                                        HorizontalLayout {
+                                            spacing: 6px;
+
+                                            Label {
+                                                text: "Colour";
+                                            }
+
+                                            VerticalLayout {
+                                                alignment: center;
+
+                                                Swatch {
+                                                    fill: row.color;
+                                                    enabled: root.editable;
+                                                    label: "Layer colour";
+                                                    clicked(x, y) => {
+                                                        root.open-palette("layer", row.id, x, y);
+                                                    }
+                                                }
+                                            }
+
+                                            Label {
+                                                text: "Opacity";
+                                                min-width: 0px;
+                                            }
+
+                                            Slider {
+                                                value: row.opacity;
+                                                label: "Layer opacity";
+                                                released(value) => {
+                                                    root.layer-opacity(row.id, value);
+                                                }
+                                            }
+                                        }
+
+                                        HorizontalLayout {
+                                            spacing: 6px;
+
+                                            Label {
+                                                text: "Notes";
+                                                vertical-alignment: top;
+                                            }
+
+                                            CommitField {
+                                                owner: row.id;
+                                                value: row.notes;
+                                                multiline: true;
+                                                placeholder: "Notes about this layer";
+                                                enabled: root.editable;
+                                                accessible-label: "Layer notes";
+                                                committed(owner, text) => {
+                                                    root.layer-notes(owner, text);
+                                                }
+                                            }
+                                        }
+
+                                        HorizontalLayout {
+                                            spacing: 6px;
+                                            alignment: end;
+
+                                            if !row.current: TextButton {
+                                                text: "Draw into this layer";
+                                                enabled: root.editable;
+                                                clicked => {
+                                                    root.layer-current(row.id);
+                                                }
+                                            }
+
+                                            TextButton {
+                                                text: "Delete layer…";
+                                                danger: true;
+                                                enabled: root.editable;
+                                                clicked => {
+                                                    root.editing-layer = "";
+                                                    root.layer-delete(row.id);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
 
-                            metadata-layout := VerticalLayout {
-                                width: parent.width;
-                                spacing: 1px;
+                            if root.rows-note != "": VerticalLayout {
+                                padding: 10px;
 
-                                for entry[idx] in root.annotation-metadata-items: Rectangle {
-                                    width: parent.width;
-                                    height: 34px;
-                                    background: metadata-touch.has-hover ? #ffffff10 : transparent;
+                                Hint {
+                                    text: root.rows-note;
+                                    accessible-role: text;
+                                }
+                            }
+                        }
+                    }
 
-                                    metadata-touch := TouchArea {}
+                    ScrollBar {
+                        x: parent.width - self.width;
+                        y: 0px;
+                        height: parent.height;
+                        content-height: list.viewport-height;
+                        view-height: list.height;
+                        offset: -list.viewport-y;
+                        scrolled(offset) => {
+                            list.viewport-y = -offset;
+                        }
+                    }
+                }
 
-                                    HorizontalLayout {
+                // Details of the selection.
+                if root.has-detail: VerticalLayout {
+                    Separator { }
+
+                    Rectangle {
+                        height: min(details.preferred-height, max(150px, content.height * 0.55));
+
+                        detail-flick := Flickable {
+                            viewport-width: self.width;
+                            x: 0px;
+                            y: 0px;
+                            width: parent.width;
+                            height: parent.height;
+
+                            details := VerticalLayout {
+                                alignment: start;
+                                padding: 10px;
+                                padding-right: 12px;
+                                spacing: 8px;
+
+                                HorizontalLayout {
+                                    spacing: 2px;
+
+                                    Text {
+                                        text: root.detail-title;
+                                        font-size: 13px;
+                                        font-weight: 600;
+                                        color: Theme.text-primary;
+                                        vertical-alignment: center;
+                                        overflow: elide;
+                                        horizontal-stretch: 1;
+                                    }
+
+                                    IconButton {
+                                        icon: @image-url("icons/frame.svg");
+                                        label: "Zoom to the annotation";
+                                        clicked => {
+                                            root.detail-frame();
+                                        }
+                                    }
+
+                                    IconButton {
+                                        icon: @image-url("icons/copy.svg");
+                                        label: "Copy measurements";
+                                        clicked => {
+                                            root.copy-measurements();
+                                        }
+                                    }
+
+                                    IconButton {
+                                        icon: @image-url("icons/trash.svg");
+                                        label: root.selection-count > 1 ? "Delete the selected annotations" : "Delete the annotation";
+                                        enabled: root.editable && !root.detail-locked;
+                                        clicked => {
+                                            root.detail-delete();
+                                        }
+                                    }
+                                }
+
+                                if root.detail-warning != "": Rectangle {
+                                    border-radius: 4px;
+                                    background: Theme.warning-surface;
+
+                                    VerticalLayout {
                                         padding: 6px;
                                         spacing: 6px;
 
-                                        Rectangle {
-                                            width: (parent.width - 36px) / 2;
-                                            height: 22px;
-                                            background: #0b1016;
-                                            border-radius: 3px;
-                                            border-width: 1px;
-                                            border-color: key-input.has-focus ? Theme.accent : #ffffff18;
-
-                                            key-input := TextInput {
-                                                x: 6px;
-                                                y: 2px;
-                                                width: parent.width - 12px;
-                                                height: parent.height - 4px;
-                                                text: entry.key;
-                                                font-size: 11px;
-                                                color: Theme.text-primary;
-                                                selection-background-color: Theme.accent;
-                                                selection-foreground-color: #ffffff;
-                                                vertical-alignment: center;
-                                                accepted => {
-                                                    root.metadata-row-key-changed(idx, self.text);
-                                                    value-input.focus();
-                                                    value-input.select-all();
-                                                }
-                                                changed has-focus => {
-                                                    root.metadata-focus-count = self.has-focus ? root.metadata-focus-count + 1 : max(0, root.metadata-focus-count - 1);
-                                                    if !self.has-focus {
-                                                        root.metadata-row-key-changed(idx, self.text);
-                                                    }
-                                                }
-                                            }
+                                        Text {
+                                            text: root.detail-warning;
+                                            font-size: Theme.small-font-size;
+                                            color: #ffd88a;
+                                            wrap: word-wrap;
+                                            height: self.preferred-height;
                                         }
 
-                                        Rectangle {
-                                            width: (parent.width - 36px) / 2;
-                                            height: 22px;
-                                            background: #0b1016;
-                                            border-radius: 3px;
-                                            border-width: 1px;
-                                            border-color: value-input.has-focus ? Theme.accent : #ffffff18;
+                                        HorizontalLayout {
+                                            alignment: end;
 
-                                            value-input := TextInput {
-                                                x: 6px;
-                                                y: 2px;
-                                                width: parent.width - 12px;
-                                                height: parent.height - 4px;
-                                                text: entry.value;
-                                                font-size: 11px;
-                                                color: Theme.text-primary;
-                                                selection-background-color: Theme.accent;
-                                                selection-foreground-color: #ffffff;
-                                                vertical-alignment: center;
-                                                accepted => {
-                                                    root.metadata-row-value-changed(idx, self.text);
-                                                    sidebar-focus.focus();
-                                                }
-                                                changed has-focus => {
-                                                    root.metadata-focus-count = self.has-focus ? root.metadata-focus-count + 1 : max(0, root.metadata-focus-count - 1);
-                                                    if !self.has-focus {
-                                                        root.metadata-row-value-changed(idx, self.text);
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        Rectangle {
-                                            width: 18px;
-                                            height: 18px;
-                                            y: (parent.height - self.height) / 2;
-                                            border-radius: 9px;
-                                            background: remove-touch.has-hover ? #ffffff12 : transparent;
-
-                                            remove-touch := TouchArea {
+                                            TextButton {
+                                                text: "Repair";
+                                                enabled: root.editable;
                                                 clicked => {
-                                                    root.metadata-row-removed(idx);
+                                                    root.detail-repair();
                                                 }
                                             }
+                                        }
+                                    }
+                                }
 
-                                            Text {
-                                                text: "×";
-                                                color: Theme.text-secondary;
-                                                font-size: 12px;
-                                                horizontal-alignment: center;
-                                                vertical-alignment: center;
+                                if root.selection-count == 1: HorizontalLayout {
+                                    spacing: 6px;
+
+                                    Label {
+                                        text: "Name";
+                                    }
+
+                                    CommitField {
+                                        owner: root.detail-id;
+                                        value: root.detail-name;
+                                        placeholder: "Unnamed";
+                                        enabled: root.editable && !root.detail-locked;
+                                        accessible-label: "Annotation name";
+                                        committed(owner, text) => {
+                                            root.detail-name-committed(owner, text);
+                                        }
+                                    }
+                                }
+
+                                HorizontalLayout {
+                                    spacing: 6px;
+
+                                    Label {
+                                        text: "Class";
+                                    }
+
+                                    ChoiceButton {
+                                        text: root.class-names[root.detail-class];
+                                        enabled: root.editable && !root.detail-locked;
+                                        accessible-label: "Annotation class";
+                                        open(x, y, w) => {
+                                            root.open-list("detail-class", root.class-names, root.detail-class, x, y, w);
+                                        }
+                                    }
+                                }
+
+                                HorizontalLayout {
+                                    spacing: 6px;
+
+                                    Label {
+                                        text: "Status";
+                                    }
+
+                                    ChoiceButton {
+                                        text: root.status-names[root.detail-status];
+                                        enabled: root.editable && !root.detail-locked;
+                                        accessible-label: "Review status";
+                                        open(x, y, w) => {
+                                            root.open-list("detail-status", root.status-names, root.detail-status, x, y, w);
+                                        }
+                                    }
+                                }
+
+                                HorizontalLayout {
+                                    spacing: 6px;
+
+                                    Label {
+                                        text: "Layer";
+                                    }
+
+                                    ChoiceButton {
+                                        text: root.layer-names[root.detail-layer];
+                                        enabled: root.editable && !root.detail-locked;
+                                        accessible-label: "Annotation layer";
+                                        open(x, y, w) => {
+                                            root.open-list("detail-layer", root.layer-names, root.detail-layer, x, y, w);
+                                        }
+                                    }
+                                }
+
+                                HorizontalLayout {
+                                    padding-left: 70px;
+
+                                    Check {
+                                        text: "Locked";
+                                        checked: root.detail-locked;
+                                        enabled: root.editable;
+                                        toggled(locked) => {
+                                            root.detail-locked-toggled(locked);
+                                        }
+                                    }
+                                }
+
+                                if root.selection-count == 1: HorizontalLayout {
+                                    spacing: 6px;
+
+                                    Label {
+                                        text: "Notes";
+                                        vertical-alignment: top;
+                                    }
+
+                                    CommitField {
+                                        owner: root.detail-id;
+                                        value: root.detail-description;
+                                        multiline: true;
+                                        placeholder: "Description";
+                                        enabled: root.editable && !root.detail-locked;
+                                        accessible-label: "Description";
+                                        committed(owner, text) => {
+                                            root.detail-description-committed(owner, text);
+                                        }
+                                    }
+                                }
+
+                                if root.detail-measurements.length > 0: VerticalLayout {
+                                    spacing: 2px;
+
+                                    SectionTitle {
+                                        text: "MEASUREMENTS";
+                                    }
+
+                                    for m in root.detail-measurements: HorizontalLayout {
+                                        spacing: 6px;
+
+                                        Text {
+                                            text: m.key;
+                                            font-size: Theme.font-size;
+                                            color: Theme.text-secondary;
+                                            min-width: 96px;
+                                            horizontal-stretch: 0;
+                                        }
+
+                                        Text {
+                                            text: m.value;
+                                            font-size: Theme.font-size;
+                                            color: Theme.text-primary;
+                                            overflow: elide;
+                                            horizontal-stretch: 1;
+                                        }
+                                    }
+                                }
+
+                                if root.selection-count == 1: VerticalLayout {
+                                    spacing: 4px;
+
+                                    SectionTitle {
+                                        text: "PROPERTIES";
+                                    }
+
+                                    for kv[i] in root.detail-properties: HorizontalLayout {
+                                        spacing: 4px;
+
+                                        CommitField {
+                                            owner: root.detail-id;
+                                            value: kv.key;
+                                            placeholder: "Name";
+                                            enabled: root.editable && !root.detail-locked;
+                                            accessible-label: "Property name";
+                                            committed(owner, text) => {
+                                                root.property-committed(owner, i, text, kv.value);
+                                            }
+                                        }
+
+                                        CommitField {
+                                            owner: root.detail-id;
+                                            value: kv.value;
+                                            placeholder: "Value";
+                                            enabled: root.editable && !root.detail-locked;
+                                            accessible-label: "Property value";
+                                            committed(owner, text) => {
+                                                root.property-committed(owner, i, kv.key, text);
+                                            }
+                                        }
+
+                                        IconButton {
+                                            icon: @image-url("icons/trash.svg");
+                                            label: "Remove property";
+                                            enabled: root.editable && !root.detail-locked;
+                                            clicked => {
+                                                root.property-remove(root.detail-id, i);
+                                            }
+                                        }
+                                    }
+
+                                    HorizontalLayout {
+                                        alignment: start;
+
+                                        TextButton {
+                                            text: "Add property";
+                                            enabled: root.editable && !root.detail-locked;
+                                            clicked => {
+                                                root.property-add(root.detail-id);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if root.detail-meta != "": Hint {
+                                    text: root.detail-meta;
+                                }
+                            }
+                        }
+
+                        ScrollBar {
+                            x: parent.width - self.width;
+                            y: 0px;
+                            height: parent.height;
+                            content-height: detail-flick.viewport-height;
+                            view-height: detail-flick.height;
+                            offset: -detail-flick.viewport-y;
+                            scrolled(offset) => {
+                                detail-flick.viewport-y = -offset;
+                            }
+                        }
+                    }
+                }
+
+                if !root.has-detail && root.has-slide: VerticalLayout {
+                    padding: 10px;
+
+                    Hint {
+                        text: "Select an annotation on the slide or in the list to see its details. Double-click a row to zoom to it; Ctrl+click selects several.";
+                    }
+                }
+            }
+
+            // ---------------- Classes ----------------
+            if root.tab == 1: Rectangle {
+                classes-flick := Flickable {
+                    viewport-width: self.width;
+                    x: 0px;
+                    y: 0px;
+                    width: parent.width;
+                    height: parent.height;
+
+                    VerticalLayout {
+                        alignment: start;
+                        padding: 10px;
+                        padding-right: 12px;
+                        spacing: 6px;
+
+                        Hint {
+                            text: "New annotations get the active class (●), and the Count tool counts it; Shift+click counts the second class (◐). A class hotkey makes it active while drawing.";
+                        }
+
+                        for c in root.classes: VerticalLayout {
+                            spacing: 0px;
+
+                            Rectangle {
+                                height: 28px;
+                                border-radius: 4px;
+                                background: c.active ? Theme.selection : row-touch.has-hover ? Theme.hover : transparent;
+                                accessible-role: list-item;
+                                accessible-label: c.name;
+                                accessible-item-selected: c.active;
+
+                                row-touch := TouchArea {
+                                    clicked => {
+                                        root.class-activate(c.active ? "" : c.id);
+                                    }
+                                }
+
+                                HorizontalLayout {
+                                    padding-left: 4px;
+                                    padding-right: 2px;
+                                    spacing: 6px;
+
+                                    Text {
+                                        width: 14px;
+                                        text: c.active ? "●" : c.alternate ? "◐" : "○";
+                                        font-size: Theme.font-size;
+                                        color: c.active || c.alternate ? Theme.accent-text : Theme.text-disabled;
+                                        horizontal-alignment: center;
+                                        vertical-alignment: center;
+                                    }
+
+                                    VerticalLayout {
+                                        alignment: center;
+
+                                        Swatch {
+                                            fill: c.color;
+                                            label: "Colour of " + c.name;
+                                            clicked(x, y) => {
+                                                root.open-palette("class", c.id, x, y);
+                                            }
+                                        }
+                                    }
+
+                                    Text {
+                                        text: c.name;
+                                        font-size: Theme.font-size;
+                                        font-weight: c.active ? 600 : 400;
+                                        color: c.visible ? Theme.text-primary : Theme.text-disabled;
+                                        vertical-alignment: center;
+                                        overflow: elide;
+                                        horizontal-stretch: 1;
+                                    }
+
+                                    Text {
+                                        text: "\{c.count}";
+                                        font-size: Theme.small-font-size;
+                                        color: Theme.text-secondary;
+                                        vertical-alignment: center;
+                                    }
+
+                                    VerticalLayout {
+                                        alignment: center;
+
+                                        KeyField {
+                                            value: c.hotkey;
+                                            chosen(key) => {
+                                                root.class-hotkey(c.id, key);
+                                            }
+                                        }
+                                    }
+
+                                    IconButton {
+                                        icon: c.visible ? @image-url("icons/eye.svg") : @image-url("icons/eye-off.svg");
+                                        label: c.visible ? "Hide " + c.name : "Show " + c.name;
+                                        tint: c.visible ? Theme.text-primary : Theme.text-disabled;
+                                        clicked => {
+                                            root.class-visible(c.id, !c.visible);
+                                        }
+                                    }
+
+                                    IconButton {
+                                        icon: @image-url("icons/more.svg");
+                                        label: "Class settings";
+                                        active: root.editing-class == c.id;
+                                        clicked => {
+                                            root.editing-class = root.editing-class == c.id ? "" : c.id;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if root.editing-class == c.id: Rectangle {
+                                border-radius: 4px;
+                                background: Theme.surface-raised;
+
+                                VerticalLayout {
+                                    padding: 8px;
+                                    spacing: 6px;
+
+                                    HorizontalLayout {
+                                        spacing: 6px;
+
+                                        Label {
+                                            text: "Name";
+                                        }
+
+                                        CommitField {
+                                            owner: c.id;
+                                            value: c.name;
+                                            placeholder: "Class name";
+                                            accessible-label: "Class name";
+                                            committed(owner, text) => {
+                                                root.class-rename(owner, text);
+                                            }
+                                        }
+                                    }
+
+                                    HorizontalLayout {
+                                        spacing: 6px;
+
+                                        Label {
+                                            text: "Opacity";
+                                        }
+
+                                        Slider {
+                                            value: c.opacity;
+                                            label: "Class opacity";
+                                            released(value) => {
+                                                root.class-opacity(c.id, value);
+                                            }
+                                        }
+                                    }
+
+                                    HorizontalLayout {
+                                        spacing: 6px;
+                                        alignment: end;
+
+                                        TextButton {
+                                            text: c.alternate ? "Not the second count class" : "Count with Shift+click";
+                                            clicked => {
+                                                root.class-alternate(c.alternate ? "" : c.id);
+                                            }
+                                        }
+
+                                        TextButton {
+                                            text: "Delete…";
+                                            danger: true;
+                                            clicked => {
+                                                root.editing-class = "";
+                                                root.class-delete(c.id);
                                             }
                                         }
                                     }
                                 }
                             }
                         }
+
+                        HorizontalLayout {
+                            alignment: start;
+
+                            TextButton {
+                                text: "New class";
+                                clicked => {
+                                    root.class-new();
+                                }
+                            }
+                        }
                     }
+                }
 
-                    if root.has-selected-annotation: Rectangle {
-                        height: 28px;
-                        border-radius: 4px;
-                        background: add-metadata-row-touch.has-hover ? Theme.surface-hover : Theme.surface;
-                        border-width: 1px;
-                        border-color: Theme.border;
+                ScrollBar {
+                    x: parent.width - self.width;
+                    y: 0px;
+                    height: parent.height;
+                    content-height: classes-flick.viewport-height;
+                    view-height: classes-flick.height;
+                    offset: -classes-flick.viewport-y;
+                    scrolled(offset) => {
+                        classes-flick.viewport-y = -offset;
+                    }
+                }
+            }
 
-                        add-metadata-row-touch := TouchArea {
-                            clicked => {
-                                root.metadata-row-added();
+            // ---------------- Count ----------------
+            if root.tab == 2: Rectangle {
+                count-flick := Flickable {
+                    viewport-width: self.width;
+                    x: 0px;
+                    y: 0px;
+                    width: parent.width;
+                    height: parent.height;
+
+                    VerticalLayout {
+                        alignment: start;
+                        padding: 10px;
+                        padding-right: 12px;
+                        spacing: 8px;
+
+                        Hint {
+                            text: "Pick the Count tool (C) and click cells; Shift+click counts the second class. Select regions or HPF fields to count inside them.";
+                        }
+
+                        HorizontalLayout {
+                            spacing: 6px;
+                            alignment: start;
+
+                            TextButton {
+                                text: "Count tool (C)";
+                                primary: true;
+                                enabled: root.editable;
+                                clicked => {
+                                    root.tool("count");
+                                }
+                            }
+
+                            TextButton {
+                                text: "HPF field (H)";
+                                enabled: root.editable;
+                                clicked => {
+                                    root.tool("field");
+                                }
                             }
                         }
 
-                        Text {
-                            text: "Add metadata row";
+                        HorizontalLayout {
+                            spacing: 6px;
+
+                            Label {
+                                text: "Click";
+                                min-width: 80px;
+                            }
+
+                            ChoiceButton {
+                                text: root.class-names[root.count-active-index];
+                                accessible-label: "Class counted by a click";
+                                open(x, y, w) => {
+                                    root.open-list("count-active", root.class-names, root.count-active-index, x, y, w);
+                                }
+                            }
+                        }
+
+                        HorizontalLayout {
+                            spacing: 6px;
+
+                            Label {
+                                text: "Shift+click";
+                                min-width: 80px;
+                            }
+
+                            ChoiceButton {
+                                text: root.count-alternate-index == 0 ? "(same as click)" : root.class-names[root.count-alternate-index];
+                                accessible-label: "Class counted by Shift+click";
+                                open(x, y, w) => {
+                                    root.open-list("count-alternate", root.class-names, root.count-alternate-index, x, y, w);
+                                }
+                            }
+                        }
+
+                        Separator { }
+
+                        if root.has-slide: Text {
+                            text: root.count-scope;
+                            font-size: Theme.font-size;
                             color: Theme.text-primary;
-                            font-size: 11px;
-                            horizontal-alignment: center;
-                            vertical-alignment: center;
+                            wrap: word-wrap;
+                            height: self.preferred-height;
+                        }
+
+                        if root.has-slide && root.tally.length == 0: Hint {
+                            text: "Nothing counted here yet.";
+                        }
+
+                        for t in root.tally: VerticalLayout {
+                            spacing: 1px;
+
+                            HorizontalLayout {
+                                spacing: 6px;
+
+                                VerticalLayout {
+                                    alignment: center;
+
+                                    Rectangle {
+                                        width: 10px;
+                                        height: 10px;
+                                        border-radius: 5px;
+                                        background: t.color;
+                                    }
+                                }
+
+                                Text {
+                                    text: t.name;
+                                    font-size: Theme.font-size;
+                                    color: Theme.text-primary;
+                                    overflow: elide;
+                                    horizontal-stretch: 1;
+                                }
+
+                                Text {
+                                    text: t.count;
+                                    font-size: 13px;
+                                    font-weight: 600;
+                                    color: Theme.text-primary;
+                                    horizontal-alignment: right;
+                                }
+                            }
+
+                            if t.density != "" || t.per-hpf != "": Text {
+                                x: 16px;
+                                text: t.density + (t.density != "" && t.per-hpf != "" ? " · " : "") + t.per-hpf;
+                                font-size: Theme.small-font-size;
+                                color: Theme.text-secondary;
+                                wrap: word-wrap;
+                                height: self.preferred-height;
+                            }
+                        }
+
+                        if root.count-index != "": Rectangle {
+                            border-radius: 4px;
+                            background: Theme.info-surface;
+
+                            VerticalLayout {
+                                padding: 6px;
+
+                                Text {
+                                    text: root.count-index;
+                                    font-size: Theme.font-size;
+                                    color: Theme.text-primary;
+                                    wrap: word-wrap;
+                                    height: self.preferred-height;
+                                }
+                            }
+                        }
+
+                        Check {
+                            text: "Count points in hidden layers";
+                            checked: root.count-hidden;
+                            toggled(value) => {
+                                root.count-hidden-toggled(value);
+                            }
+                        }
+
+                        HorizontalLayout {
+                            alignment: start;
+
+                            TextButton {
+                                text: "Clear counts…";
+                                danger: true;
+                                enabled: root.editable;
+                                clicked => {
+                                    root.count-clear();
+                                }
+                            }
+                        }
+
+                        Separator { }
+
+                        SectionTitle {
+                            text: "HIGH-POWER FIELDS";
+                        }
+
+                        Text {
+                            text: root.field-text;
+                            font-size: Theme.font-size;
+                            color: Theme.text-primary;
+                            wrap: word-wrap;
+                            height: self.preferred-height;
+                        }
+
+                        ChoiceButton {
+                            text: root.field-modes[root.local-field-mode];
+                            accessible-label: "How the field size is given";
+                            open(x, y, w) => {
+                                root.open-list("field-mode", root.field-modes, root.local-field-mode, x, y, w);
+                            }
+                        }
+
+                        if root.local-field-mode == 0: HorizontalLayout {
+                            spacing: 6px;
+
+                            Label {
+                                text: "FN (mm)";
+                                min-width: 0px;
+                            }
+
+                            fn-field := PlainField {
+                                text: root.field-number;
+                                placeholder: "22";
+                                accessible-label: "Field number in mm";
+                                accepted => {
+                                    root.field-config(0, fn-field.text, objective-field.text, "");
+                                }
+                            }
+
+                            Label {
+                                text: "Objective ×";
+                                min-width: 0px;
+                            }
+
+                            objective-field := PlainField {
+                                text: root.field-objective;
+                                placeholder: "40";
+                                accessible-label: "Objective magnification";
+                                accepted => {
+                                    root.field-config(0, fn-field.text, objective-field.text, "");
+                                }
+                            }
+
+                            TextButton {
+                                text: "Apply";
+                                clicked => {
+                                    root.field-config(0, fn-field.text, objective-field.text, "");
+                                }
+                            }
+                        }
+
+                        if root.local-field-mode == 1: HorizontalLayout {
+                            spacing: 6px;
+
+                            Label {
+                                text: "Area (mm²)";
+                                min-width: 0px;
+                            }
+
+                            area-field := PlainField {
+                                text: root.field-area;
+                                placeholder: "0.237";
+                                accessible-label: "Field area in square millimetres";
+                                accepted => {
+                                    root.field-config(1, "", "", area-field.text);
+                                }
+                            }
+
+                            TextButton {
+                                text: "Apply";
+                                clicked => {
+                                    root.field-config(1, "", "", area-field.text);
+                                }
+                            }
+                        }
+
+                        HorizontalLayout {
+                            spacing: 6px;
+
+                            Text {
+                                text: root.field-count == 1 ? "1 field placed on this slide." : "\{root.field-count} fields placed on this slide.";
+                                font-size: Theme.font-size;
+                                color: Theme.text-secondary;
+                                vertical-alignment: center;
+                                horizontal-stretch: 1;
+                            }
+
+                            TextButton {
+                                text: "Select all fields";
+                                enabled: root.field-count > 0;
+                                clicked => {
+                                    root.fields-select();
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }
-    }
 
-    if root.settings-menu-visible: Rectangle {
-        x: 0px;
-        y: 0px;
-        width: parent.width;
-        height: parent.height;
-        background: transparent;
-        z: 15;
-
-        TouchArea {
-            width: parent.width;
-            height: parent.height;
-            clicked => {
-                root.confirm-active-rename();
-                root.settings-menu-visible = false;
-            }
-        }
-
-        Rectangle {
-            x: min(root.settings-menu-x, max(0px, root.width - self.width - 8px));
-            y: min(root.settings-menu-y, max(0px, root.height - self.height - 8px));
-            width: 196px;
-            height: 136px;
-            background: Theme.surface;
-            border-radius: 6px;
-            border-width: 1px;
-            border-color: Theme.border;
-            drop-shadow-blur: 10px;
-            drop-shadow-color: #00000066;
-            clip: true;
-            z: 16;
-
-            VerticalLayout {
-                width: parent.width;
-                height: parent.height;
-                padding-top: 4px;
-                padding-bottom: 4px;
-                spacing: 0px;
-
-                ContextMenuRow {
-                    label: "New Annotation Layer";
-                    enabled: root.can-export || root.can-import;
-                    clicked => {
-                        root.settings-menu-visible = false;
-                        root.confirm-active-rename();
-                        root.create-layer-clicked();
-                    }
-                }
-
-                ContextMenuRow {
-                    label: "Import Annotations";
-                    enabled: root.can-import;
-                    clicked => {
-                        root.settings-menu-visible = false;
-                        root.confirm-active-rename();
-                        root.import-clicked();
-                    }
-                }
-
-                ContextMenuRow {
-                    label: "Export Annotations";
-                    enabled: root.can-export;
-                    clicked => {
-                        root.settings-menu-visible = false;
-                        root.confirm-active-rename();
-                        root.export-clicked();
-                    }
-                }
-
-                ContextMenuRow {
-                    label: "Metadata Settings";
-                    enabled: root.can-export || root.can-import;
-                    clicked => {
-                        root.settings-menu-visible = false;
-                        root.confirm-active-rename();
-                        root.metadata-settings-requested();
+                ScrollBar {
+                    x: parent.width - self.width;
+                    y: 0px;
+                    height: parent.height;
+                    content-height: count-flick.viewport-height;
+                    view-height: count-flick.height;
+                    offset: -count-flick.viewport-y;
+                    scrolled(offset) => {
+                        count-flick.viewport-y = -offset;
                     }
                 }
             }
-        }
-    }
 
-    if root.context-menu-visible: Rectangle {
-        x: 0px;
-        y: 0px;
-        width: parent.width;
-        height: parent.height;
-        background: transparent;
-        z: 15;
+            // ---------------- Data ----------------
+            if root.tab == 3: Rectangle {
+                data-flick := Flickable {
+                    viewport-width: self.width;
+                    x: 0px;
+                    y: 0px;
+                    width: parent.width;
+                    height: parent.height;
 
-        TouchArea {
-            width: parent.width;
-            height: parent.height;
-            clicked => {
-                root.confirm-active-rename();
-                root.context-menu-visible = false;
-            }
-        }
+                    VerticalLayout {
+                        alignment: start;
+                        padding: 10px;
+                        padding-right: 12px;
+                        spacing: 8px;
 
-        Rectangle {
-            x: min(root.context-menu-x, max(0px, root.width - self.width - 8px));
-            y: min(root.context-menu-y, max(0px, root.height - self.height - 8px));
-            width: root.context-target-is-empty-space ? 180px : root.context-target-is-layer ? 204px : 170px;
-            height: root.context-target-is-empty-space ? 32px : root.context-target-is-layer ? 64px : 32px;
-            background: Theme.surface;
-            border-radius: 6px;
-            border-width: 1px;
-            border-color: Theme.border;
-            drop-shadow-blur: 10px;
-            drop-shadow-color: #00000066;
-            clip: true;
-            z: 16;
+                        SectionTitle {
+                            text: "IMPORT AND EXPORT";
+                        }
 
-            VerticalLayout {
-                width: parent.width;
-                height: parent.height;
-                spacing: 1px;
+                        Hint {
+                            text: "Imports: GeoJSON (QuPath and others), eov JSON, ASAP XML and Aperio ImageScope XML. Coordinates are level-0 pixels with y pointing down.";
+                        }
 
-                if root.context-target-is-empty-space: ContextMenuRow {
-                    label: "Create Annotation Layer";
-                    clicked => {
-                        root.queue-context-action("create-layer", "", "", false);
-                    }
-                }
+                        HorizontalLayout {
+                            spacing: 6px;
+                            alignment: start;
 
-                if root.context-target-is-layer && !root.context-target-is-empty-space: ContextMenuRow {
-                    label: "Rename";
-                    clicked => {
-                        root.queue-context-action(
-                            "rename-local",
-                            root.context-target-id,
-                            root.context-target-name,
-                            true,
-                        );
-                    }
-                }
+                            TextButton {
+                                text: "Import…";
+                                primary: true;
+                                enabled: root.editable;
+                                clicked => {
+                                    root.menu("import");
+                                }
+                            }
 
-                if !root.context-target-is-empty-space: ContextMenuRow {
-                    label: root.context-target-is-layer ? "Delete Annotation Layer" : "Delete Annotation";
-                    clicked => {
-                        root.queue-context-action(
-                            root.context-target-is-layer ? "delete-set" : "delete-annotation",
-                            root.context-target-id,
-                            root.context-target-name,
-                            root.context-target-is-layer,
-                        );
-                    }
-                }
-            }
-        }
-    }
+                            TextButton {
+                                text: "GeoJSON…";
+                                enabled: root.has-slide;
+                                clicked => {
+                                    root.menu("export-geojson");
+                                }
+                            }
 
-    if root.color-menu-visible: Rectangle {
-        x: 0px;
-        y: 0px;
-        width: parent.width;
-        height: parent.height;
-        background: transparent;
-        z: 15;
+                            TextButton {
+                                text: "eov JSON…";
+                                enabled: root.has-slide;
+                                clicked => {
+                                    root.menu("export-eov");
+                                }
+                            }
 
-        TouchArea {
-            width: parent.width;
-            height: parent.height;
-            clicked => {
-                root.confirm-active-rename();
-                root.color-menu-visible = false;
-                root.color-target-id = "";
-                root.color-target-hex = "";
-            }
-        }
+                            TextButton {
+                                text: "CSV…";
+                                enabled: root.has-slide;
+                                clicked => {
+                                    root.menu("export-csv");
+                                }
+                            }
+                        }
 
-        Rectangle {
-            x: min(root.color-menu-x, max(0px, root.width - self.width - 8px));
-            y: min(root.color-menu-y, max(0px, root.height - self.height - 8px));
-            width: 118px;
-            height: 150px;
-            background: Theme.surface;
-            border-radius: 6px;
-            border-width: 1px;
-            border-color: Theme.border;
-            drop-shadow-blur: 10px;
-            drop-shadow-color: #00000066;
-            clip: true;
-            z: 16;
+                        HorizontalLayout {
+                            spacing: 6px;
+                            alignment: start;
 
-            VerticalLayout {
-                width: parent.width;
-                height: parent.height;
-                padding: 10px;
-                spacing: 8px;
+                            TextButton {
+                                text: "Export all slides…";
+                                clicked => {
+                                    root.menu("export-all");
+                                }
+                            }
 
-                Text {
-                    text: "Set Color";
-                    color: Theme.text-primary;
-                    font-size: 11px;
-                    font-weight: 600;
-                }
+                            TextButton {
+                                text: "Back up…";
+                                clicked => {
+                                    root.menu("backup");
+                                }
+                            }
 
-                Rectangle {
-                    width: 98px;
-                    height: 98px;
-                    background: transparent;
+                            TextButton {
+                                text: "Merge…";
+                                clicked => {
+                                    root.menu("merge-db");
+                                }
+                            }
+                        }
 
-                    for entry[idx] in root.color-palette: PaletteSwatchButton {
-                        x: (Math.mod(idx, 4) * 26) * 1px;
-                        y: (Math.floor(idx / 4) * 26) * 1px;
-                        hex: entry.hex;
-                        swatch-color: entry.swatch;
-                        is-selected: entry.hex == (root.color-target-hex == "" ? root.selected-layer-color-hex : root.color-target-hex);
-                        selected(hex) => {
-                            root.set-layer-color(root.color-target-id, hex);
-                            root.color-menu-visible = false;
-                            root.color-target-id = "";
-                            root.color-target-hex = "";
+                        Separator { }
+
+                        SectionTitle {
+                            text: "DATABASE";
+                        }
+
+                        Text {
+                            text: root.db-status;
+                            font-size: Theme.font-size;
+                            color: Theme.text-primary;
+                            wrap: word-wrap;
+                            height: self.preferred-height;
+                        }
+
+                        if root.db-path != "": TextInput {
+                            text: root.db-path;
+                            read-only: true;
+                            single-line: false;
+                            wrap: word-wrap;
+                            height: self.preferred-height;
+                            font-size: Theme.small-font-size;
+                            color: Theme.text-secondary;
+                            selection-background-color: Theme.accent;
+                            selection-foreground-color: #ffffff;
+                            accessible-role: text;
+                            accessible-label: "Database file";
+                        }
+
+                        if root.db-notes != "": Hint {
+                            text: root.db-notes;
+                        }
+
+                        Separator { }
+
+                        HorizontalLayout {
+                            spacing: 6px;
+
+                            SectionTitle {
+                                text: "OTHER SLIDES";
+                                vertical-alignment: center;
+                                horizontal-stretch: 1;
+                            }
+
+                            TextButton {
+                                text: "List";
+                                clicked => {
+                                    root.orphans-refresh();
+                                }
+                            }
+                        }
+
+                        Hint {
+                            text: root.orphans-note;
+                        }
+
+                        for o in root.orphans: Rectangle {
+                            border-radius: 4px;
+                            background: Theme.surface-raised;
+
+                            VerticalLayout {
+                                padding: 6px;
+                                spacing: 2px;
+
+                                HorizontalLayout {
+                                    spacing: 6px;
+
+                                    Text {
+                                        text: o.title;
+                                        font-size: Theme.font-size;
+                                        color: Theme.text-primary;
+                                        vertical-alignment: center;
+                                        overflow: elide;
+                                        horizontal-stretch: 1;
+                                    }
+
+                                    TextButton {
+                                        text: "Attach";
+                                        enabled: root.editable;
+                                        clicked => {
+                                            root.orphan-relink(o.id);
+                                        }
+                                    }
+                                }
+
+                                Text {
+                                    text: o.detail;
+                                    font-size: Theme.small-font-size;
+                                    color: Theme.text-secondary;
+                                    wrap: word-wrap;
+                                    height: self.preferred-height;
+                                }
+                            }
+                        }
+
+                        Separator { }
+
+                        SectionTitle {
+                            text: "AUTHOR AND EXPORTS";
+                        }
+
+                        HorizontalLayout {
+                            spacing: 6px;
+
+                            Label {
+                                text: "Author";
+                                min-width: 84px;
+                            }
+
+                            CommitField {
+                                owner: "author";
+                                value: root.setting-author;
+                                placeholder: "Your name or initials";
+                                accessible-label: "Author";
+                                committed(key, text) => {
+                                    root.setting-text(key, text);
+                                }
+                            }
+                        }
+
+                        HorizontalLayout {
+                            spacing: 6px;
+
+                            Label {
+                                text: "Organization";
+                                min-width: 84px;
+                            }
+
+                            CommitField {
+                                owner: "organization";
+                                value: root.setting-organization;
+                                accessible-label: "Organization";
+                                committed(key, text) => {
+                                    root.setting-text(key, text);
+                                }
+                            }
+                        }
+
+                        HorizontalLayout {
+                            spacing: 6px;
+
+                            Label {
+                                text: "Project";
+                                min-width: 84px;
+                            }
+
+                            CommitField {
+                                owner: "project";
+                                value: root.setting-project;
+                                accessible-label: "Project";
+                                committed(key, text) => {
+                                    root.setting-text(key, text);
+                                }
+                            }
+                        }
+
+                        HorizontalLayout {
+                            spacing: 6px;
+
+                            Label {
+                                text: "License";
+                                min-width: 84px;
+                            }
+
+                            CommitField {
+                                owner: "license";
+                                value: root.setting-license;
+                                placeholder: "e.g. CC-BY-4.0";
+                                accessible-label: "License";
+                                committed(key, text) => {
+                                    root.setting-text(key, text);
+                                }
+                            }
+                        }
+
+                        Check {
+                            text: "Include the slide's file name in exports";
+                            checked: root.setting-include-filename;
+                            toggled(value) => {
+                                root.setting-bool("include-filename", value);
+                            }
+                        }
+
+                        Separator { }
+
+                        SectionTitle {
+                            text: "DISPLAY";
+                        }
+
+                        Check {
+                            text: "Show names on the slide";
+                            checked: root.setting-show-labels;
+                            toggled(value) => {
+                                root.setting-bool("show-labels", value);
+                            }
+                        }
+
+                        HorizontalLayout {
+                            spacing: 6px;
+
+                            Label {
+                                text: "Point size";
+                                min-width: 84px;
+                            }
+
+                            Slider {
+                                value: root.setting-point-radius;
+                                minimum: 1;
+                                maximum: 20;
+                                label: "Point size";
+                                released(value) => {
+                                    root.setting-number("point-radius", value);
+                                }
+                            }
+                        }
+
+                        HorizontalLayout {
+                            spacing: 6px;
+
+                            Label {
+                                text: "Fill opacity";
+                                min-width: 84px;
+                            }
+
+                            Slider {
+                                value: root.setting-fill-opacity;
+                                label: "Fill opacity";
+                                released(value) => {
+                                    root.setting-number("fill-opacity", value);
+                                }
+                            }
                         }
                     }
                 }
+
+                ScrollBar {
+                    x: parent.width - self.width;
+                    y: 0px;
+                    height: parent.height;
+                    content-height: data-flick.viewport-height;
+                    view-height: data-flick.height;
+                    offset: -data-flick.viewport-y;
+                    scrolled(offset) => {
+                        data-flick.viewport-y = -offset;
+                    }
+                }
             }
         }
     }
 
-    if root.active-tooltip != "": Rectangle {
-        x: max(4px, min(root.width - self.width - 4px, root.tooltip-center-x - self.width / 2));
-        y: 42px;
-        width: tooltip-text.preferred-width + 12px;
-        height: tooltip-text.preferred-height + 6px;
-        background: #101419f2;
-        border-radius: 6px;
-        border-width: 1px;
-        border-color: Theme.border;
-        z: 20;
-
-        tooltip-text := Text {
-            x: 6px;
-            y: 3px;
-            text: root.active-tooltip;
-            color: Theme.text-primary;
-            font-size: 11px;
-        }
-    }
-
-    if root.show-sha-mismatch-warning: Rectangle {
+    // ---------------------------------------------------------------
+    // Popups, drawn over everything.
+    // ---------------------------------------------------------------
+    if root.popup != 0: Rectangle {
         x: 0px;
         y: 0px;
         width: root.width;
         height: root.height;
-        background: #00000088;
-        z: 30;
 
-        TouchArea { }
-
-        Rectangle {
-            x: 12px;
-            y: max(12px, (parent.height - self.height) / 2);
-            width: parent.width - 24px;
-            height: 186px;
-            background: Theme.surface;
-            border-radius: 8px;
-            border-width: 1px;
-            border-color: Theme.border;
-
-            TouchArea { }
-
-            VerticalLayout {
-                padding: 16px;
-                spacing: 12px;
-
-                Text {
-                    text: "Warning";
-                    color: Theme.text-primary;
-                    font-size: 14px;
-                    font-weight: 600;
-                    horizontal-alignment: left;
-                }
-
-                Text {
-                    text: "Warning: the annotations file being imported is based on a different WSI file. Are you sure you want to continue?";
-                    color: Theme.text-secondary;
-                    font-size: 12px;
-                    wrap: word-wrap;
-                    horizontal-alignment: left;
-                }
-
-                Rectangle {
-                    vertical-stretch: 1;
-                }
-
-                HorizontalLayout {
-                    spacing: 8px;
-                    alignment: end;
-
-                    Rectangle {
-                        min-width: 64px;
-                        height: 28px;
-                        border-radius: 4px;
-                        background: cancel-sha-touch.has-hover ? Theme.surface-hover : Theme.surface;
-                        border-width: 1px;
-                        border-color: Theme.border;
-
-                        cancel-sha-touch := TouchArea {
-                            clicked => {
-                                root.import-sha-warning-decided(false);
-                            }
-                        }
-
-                        Text {
-                            text: "Cancel";
-                            color: Theme.text-primary;
-                            font-size: 12px;
-                            horizontal-alignment: center;
-                            vertical-alignment: center;
-                        }
-                    }
-
-                    Rectangle {
-                        min-width: 64px;
-                        height: 28px;
-                        border-radius: 4px;
-                        background: import-sha-touch.has-hover ? #1177bb : Theme.accent;
-
-                        import-sha-touch := TouchArea {
-                            clicked => {
-                                root.import-sha-warning-decided(true);
-                            }
-                        }
-
-                        Text {
-                            text: "Import";
-                            color: white;
-                            font-size: 12px;
-                            horizontal-alignment: center;
-                            vertical-alignment: center;
-                        }
-                    }
-                }
+        TouchArea {
+            clicked => {
+                root.popup = 0;
             }
         }
-    }
 
-    if root.show-import-conflict-dialog: Rectangle {
-        x: 0px;
-        y: 0px;
-        width: root.width;
-        height: root.height;
-        background: #00000088;
-        z: 30;
+        if root.popup == 1: Rectangle {
+            property <length> list-height: min(root.popup-items.length * 24px + 8px, root.height - 16px);
+            property <bool> above: root.popup-y + self.list-height > root.height - 4px;
 
-        TouchArea { }
-
-        Rectangle {
-            x: 12px;
-            y: max(12px, (parent.height - self.height) / 2);
-            width: parent.width - 24px;
-            height: 226px;
-            background: Theme.surface;
-            border-radius: 8px;
+            x: clamp(root.popup-x, 4px, max(4px, root.width - self.width - 4px));
+            y: self.above ? max(4px, root.popup-y - self.list-height - 26px) : root.popup-y + 2px;
+            width: min(max(root.popup-w, 150px), root.width - 8px);
+            height: self.list-height;
+            border-radius: 4px;
             border-width: 1px;
-            border-color: Theme.border;
+            border-color: Theme.border-strong;
+            background: Theme.surface-raised;
+            drop-shadow-blur: 10px;
+            drop-shadow-offset-y: 2px;
+            drop-shadow-color: #00000090;
+            clip: true;
+            accessible-role: list;
 
+            // Swallow clicks between items.
             TouchArea { }
 
-            VerticalLayout {
-                padding: 16px;
-                spacing: 12px;
+            popup-flick := Flickable {
+                viewport-width: self.width;
+                x: 0px;
+                y: 0px;
+                width: parent.width;
+                height: parent.height;
 
-                Text {
-                    text: "Import Conflict";
-                    color: Theme.text-primary;
-                    font-size: 14px;
-                    font-weight: 600;
-                    horizontal-alignment: left;
-                }
+                VerticalLayout {
+                    alignment: start;
+                    padding: 4px;
 
-                Text {
-                    text: "Annotation Layer '" + root.import-conflict-layer-name + "' already exists for the current slide.";
-                    color: Theme.text-secondary;
-                    font-size: 12px;
-                    wrap: word-wrap;
-                    horizontal-alignment: left;
-                }
-
-                Rectangle {
-                    height: 28px;
-                    background: transparent;
-
-                    conflict-apply-all-touch := TouchArea {
-                        clicked => {
-                            root.import-conflict-apply-all = !root.import-conflict-apply-all;
-                        }
-                    }
-
-                    Rectangle {
-                        x: 0px;
-                        y: 6px;
-                        width: 14px;
-                        height: 14px;
+                    for item[i] in root.popup-items: Rectangle {
+                        height: 24px;
                         border-radius: 3px;
-                        border-width: 1px;
-                        border-color: root.import-conflict-apply-all ? Theme.accent : Theme.border;
-                        background: root.import-conflict-apply-all ? Theme.accent : Theme.surface;
+                        background: item-touch.has-hover ? Theme.accent : i == root.popup-current ? Theme.selection : transparent;
+                        accessible-role: list-item;
+                        accessible-label: item;
+                        accessible-item-selected: i == root.popup-current;
+                        accessible-action-default => {
+                            root.choose(i);
+                        }
 
                         Text {
-                            text: root.import-conflict-apply-all ? "✓" : "";
-                            color: white;
-                            font-size: 10px;
-                            horizontal-alignment: center;
+                            x: 8px;
+                            width: parent.width - 16px;
+                            height: parent.height;
+                            text: item;
+                            font-size: Theme.font-size;
+                            color: item-touch.has-hover ? #ffffff : Theme.text-primary;
                             vertical-alignment: center;
+                            overflow: elide;
                         }
-                    }
 
-                    Text {
-                        x: 22px;
-                        y: 5px;
-                        text: "Apply to all conflicts";
-                        color: Theme.text-primary;
-                        font-size: 12px;
-                    }
-                }
-
-                Rectangle {
-                    vertical-stretch: 1;
-                }
-
-                HorizontalLayout {
-                    spacing: 8px;
-                    alignment: end;
-
-                    for action in [
-                        { label: "Merge", id: "merge", primary: false },
-                        { label: "Replace", id: "replace", primary: false },
-                        { label: "Skip", id: "skip", primary: false },
-                        { label: "Cancel", id: "cancel", primary: true }
-                    ]: Rectangle {
-                        min-width: action.label == "Replace" ? 70px : 62px;
-                        height: 28px;
-                        border-radius: 4px;
-                        background: action.primary ? (action-touch.has-hover ? Theme.surface-hover : Theme.surface) : (action-touch.has-hover ? #1177bb : Theme.accent);
-                        border-width: action.primary ? 1px : 0px;
-                        border-color: Theme.border;
-
-                        action-touch := TouchArea {
+                        item-touch := TouchArea {
                             clicked => {
-                                root.import-conflict-decided(action.id, root.import-conflict-apply-all);
-                                root.import-conflict-apply-all = false;
+                                root.choose(i);
                             }
-                        }
-
-                        Text {
-                            text: action.label;
-                            color: action.primary ? Theme.text-primary : white;
-                            font-size: 12px;
-                            horizontal-alignment: center;
-                            vertical-alignment: center;
                         }
                     }
                 }
             }
         }
-    }
 
+        if root.popup == 2: Rectangle {
+            property <length> cell: 26px;
+
+            x: clamp(root.popup-x - 4px, 4px, max(4px, root.width - self.width - 4px));
+            y: root.popup-y + 2px + self.height > root.height - 4px ? max(4px, root.popup-y - self.height - 22px) : root.popup-y + 2px;
+            width: 8 * self.cell + 12px;
+            height: 2 * self.cell + 12px;
+            border-radius: 4px;
+            border-width: 1px;
+            border-color: Theme.border-strong;
+            background: Theme.surface-raised;
+            drop-shadow-blur: 10px;
+            drop-shadow-offset-y: 2px;
+            drop-shadow-color: #00000090;
+            accessible-role: list;
+            accessible-label: "Colours";
+
+            TouchArea { }
+
+            for p[i] in root.palette: Rectangle {
+                x: 6px + mod(i, 8) * parent.cell;
+                y: 6px + floor(i / 8) * parent.cell;
+                width: parent.cell;
+                height: parent.cell;
+                accessible-role: button;
+                accessible-label: p.hex;
+                accessible-action-default => {
+                    root.pick-color(p.hex);
+                }
+
+                Rectangle {
+                    x: 3px;
+                    y: 3px;
+                    width: parent.width - 6px;
+                    height: parent.height - 6px;
+                    border-radius: 4px;
+                    border-width: swatch-touch.has-hover ? 2px : 1px;
+                    border-color: swatch-touch.has-hover ? #ffffff : #ffffff30;
+                    background: p.color;
+                }
+
+                swatch-touch := TouchArea {
+                    clicked => {
+                        root.pick-color(p.hex);
+                    }
+                }
+            }
+        }
+    }
 }

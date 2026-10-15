@@ -1,0 +1,633 @@
+// Small widgets in eov's dark style. They do not use std-widgets, so the
+// panel looks the same whatever widget style the host was built with.
+
+import { Theme } from "theme.slint";
+
+// A 22 px icon button; it fills the height of its row and centres itself.
+export component IconButton inherits Rectangle {
+    in property <image> icon;
+    in property <string> label;
+    in property <bool> enabled: true;
+    in property <bool> active: false;
+    in property <color> tint: Theme.text-primary;
+    callback clicked();
+
+    width: 22px;
+    min-height: 22px;
+    accessible-role: button;
+    accessible-label: root.label;
+    accessible-enabled: root.enabled;
+    accessible-action-default => {
+        root.clicked();
+    }
+
+    Rectangle {
+        y: (parent.height - self.height) / 2;
+        width: parent.width;
+        height: 22px;
+        border-radius: 4px;
+        background: !root.enabled ? transparent : touch.has-hover ? Theme.surface-hover : root.active ? #ffffff14 : transparent;
+
+        Image {
+            x: 4px;
+            y: 4px;
+            width: parent.width - 8px;
+            height: parent.height - 8px;
+            source: root.icon;
+            image-fit: contain;
+            colorize: !root.enabled ? Theme.text-disabled : root.active ? Theme.accent-text : root.tint;
+        }
+    }
+
+    touch := TouchArea {
+        enabled: root.enabled;
+        clicked => {
+            root.clicked();
+        }
+    }
+}
+
+export component TextButton inherits Rectangle {
+    in property <string> text;
+    in property <bool> enabled: true;
+    in property <bool> primary: false;
+    in property <bool> danger: false;
+    callback clicked();
+
+    height: 24px;
+    min-width: label.preferred-width + 18px;
+    horizontal-stretch: 0;
+    border-radius: 4px;
+    border-width: root.primary || root.danger ? 0px : 1px;
+    border-color: Theme.border;
+    background: !root.enabled ? #ffffff08 : root.danger ? (touch.has-hover ? #a42c31 : #8d2328) : root.primary ? (touch.has-hover ? Theme.accent-hover : Theme.accent) : (touch.has-hover ? Theme.surface-hover : Theme.surface-raised);
+    accessible-role: button;
+    accessible-label: root.text;
+    accessible-enabled: root.enabled;
+    accessible-action-default => {
+        root.clicked();
+    }
+
+    label := Text {
+        width: parent.width;
+        height: parent.height;
+        text: root.text;
+        font-size: Theme.font-size;
+        color: !root.enabled ? Theme.text-disabled : (root.primary || root.danger) ? #ffffff : Theme.text-primary;
+        horizontal-alignment: center;
+        vertical-alignment: center;
+    }
+
+    touch := TouchArea {
+        enabled: root.enabled;
+        clicked => {
+            root.clicked();
+        }
+    }
+}
+
+export component Check inherits Rectangle {
+    in property <bool> checked;
+    in property <string> text;
+    in property <bool> enabled: true;
+    callback toggled(bool);
+
+    height: 22px;
+    min-width: 22px + min(label.preferred-width, 120px);
+    preferred-width: 22px + label.preferred-width;
+    accessible-role: checkbox;
+    accessible-checkable: true;
+    accessible-checked: root.checked;
+    accessible-label: root.text;
+    accessible-enabled: root.enabled;
+    accessible-action-default => {
+        root.toggled(!root.checked);
+    }
+
+    Rectangle {
+        x: 0px;
+        y: (parent.height - self.height) / 2;
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
+        border-width: 1px;
+        border-color: root.checked && root.enabled ? Theme.accent : Theme.border-strong;
+        background: root.checked ? (root.enabled ? Theme.accent : Theme.text-disabled) : Theme.input;
+
+        Text {
+            width: parent.width;
+            height: parent.height;
+            text: root.checked ? "✓" : "";
+            color: #ffffff;
+            font-size: 10px;
+            horizontal-alignment: center;
+            vertical-alignment: center;
+        }
+    }
+
+    label := Text {
+        x: 22px;
+        width: parent.width - self.x;
+        height: parent.height;
+        text: root.text;
+        font-size: Theme.font-size;
+        color: root.enabled ? Theme.text-primary : Theme.text-disabled;
+        vertical-alignment: center;
+        overflow: elide;
+    }
+
+    TouchArea {
+        enabled: root.enabled;
+        clicked => {
+            root.toggled(!root.checked);
+        }
+    }
+}
+
+// A text field that commits its draft (after a pause, on Enter or when it
+// loses focus) to the object it was typed for, so a draft survives
+// selection changes and refreshes (ANN-10). Escape discards the draft.
+export component CommitField inherits Rectangle {
+    // The value from the plugin, and the id of the object it belongs to.
+    in property <string> value;
+    in property <string> owner;
+    in property <string> placeholder;
+    in property <bool> enabled: true;
+    in property <bool> multiline: false;
+    out property <bool> editing: input.has-focus;
+    callback committed(string /* owner */, string /* text */);
+
+    property <bool> dirty: false;
+    property <string> draft-owner;
+
+    height: root.multiline ? 56px : 24px;
+    border-radius: 3px;
+    border-width: 1px;
+    border-color: input.has-focus ? Theme.accent : Theme.border;
+    background: root.enabled ? Theme.input : #ffffff06;
+    clip: true;
+    accessible-role: text-input;
+    accessible-value: input.text;
+    accessible-placeholder-text: root.placeholder;
+    accessible-read-only: !root.enabled;
+
+    function commit() {
+        debounce.stop();
+        if root.dirty {
+            root.dirty = false;
+            root.committed(root.draft-owner, input.text);
+            // If the plugin refuses the text, its value does not change;
+            // show the stored value again once the field is left.
+            resync.restart();
+        }
+    }
+
+    changed owner => {
+        // A draft typed for the previous object goes to that object.
+        root.commit();
+        input.text = root.value;
+    }
+    changed value => {
+        if !root.dirty {
+            input.text = root.value;
+        }
+    }
+
+    debounce := Timer {
+        interval: 800ms;
+        running: false;
+        triggered => {
+            root.commit();
+        }
+    }
+
+    resync := Timer {
+        interval: 700ms;
+        running: false;
+        triggered => {
+            self.stop();
+            if !root.dirty && !input.has-focus {
+                input.text = root.value;
+            }
+        }
+    }
+
+    if input.text == "" && !input.has-focus: Text {
+        x: 6px;
+        y: root.multiline ? 4px : 0px;
+        width: parent.width - 12px;
+        height: root.multiline ? 16px : parent.height;
+        text: root.placeholder;
+        color: Theme.text-disabled;
+        font-size: Theme.font-size;
+        vertical-alignment: center;
+        overflow: elide;
+    }
+
+    input := TextInput {
+        x: 6px;
+        y: root.multiline ? 4px : 0px;
+        width: parent.width - 12px;
+        height: root.multiline ? parent.height - 8px : parent.height;
+        text: root.value;
+        enabled: root.enabled;
+        read-only: !root.enabled;
+        single-line: !root.multiline;
+        wrap: root.multiline ? word-wrap : no-wrap;
+        vertical-alignment: root.multiline ? top : center;
+        font-size: Theme.font-size;
+        color: root.enabled ? Theme.text-primary : Theme.text-secondary;
+        selection-background-color: Theme.accent;
+        selection-foreground-color: #ffffff;
+        text-cursor-width: 1px;
+        edited => {
+            if !root.dirty {
+                root.dirty = true;
+                root.draft-owner = root.owner;
+            }
+            debounce.restart();
+        }
+        accepted => {
+            root.commit();
+        }
+        key-pressed(event) => {
+            if event.text == Key.Escape {
+                debounce.stop();
+                root.dirty = false;
+                self.text = root.value;
+                self.clear-focus();
+                return accept;
+            }
+            reject
+        }
+        changed has-focus => {
+            if !self.has-focus {
+                root.commit();
+                resync.restart();
+            }
+        }
+    }
+}
+
+// A one-line field whose text is read by the panel (e.g. on "Apply").
+export component PlainField inherits Rectangle {
+    in-out property <string> text;
+    in property <string> placeholder;
+    in property <bool> enabled: true;
+    callback accepted();
+
+    height: 24px;
+    border-radius: 3px;
+    border-width: 1px;
+    border-color: input.has-focus ? Theme.accent : Theme.border;
+    background: root.enabled ? Theme.input : #ffffff06;
+    clip: true;
+    accessible-role: text-input;
+    accessible-value: root.text;
+    accessible-placeholder-text: root.placeholder;
+
+    if root.text == "" && !input.has-focus: Text {
+        x: 6px;
+        width: parent.width - 12px;
+        height: parent.height;
+        text: root.placeholder;
+        color: Theme.text-disabled;
+        font-size: Theme.font-size;
+        vertical-alignment: center;
+        overflow: elide;
+    }
+
+    input := TextInput {
+        x: 6px;
+        width: parent.width - 12px;
+        height: parent.height;
+        text <=> root.text;
+        enabled: root.enabled;
+        single-line: true;
+        vertical-alignment: center;
+        font-size: Theme.font-size;
+        color: Theme.text-primary;
+        selection-background-color: Theme.accent;
+        selection-foreground-color: #ffffff;
+        text-cursor-width: 1px;
+        accepted => {
+            root.accepted();
+        }
+    }
+}
+
+// Looks like a combo box; the panel shows the choices in its popup layer.
+export component ChoiceButton inherits Rectangle {
+    in property <string> text;
+    in property <bool> enabled: true;
+    callback open(length /* window x */, length /* window y */, length /* width */);
+
+    height: 24px;
+    min-width: 60px;
+    border-radius: 3px;
+    border-width: 1px;
+    border-color: touch.has-hover && root.enabled ? Theme.border-strong : Theme.border;
+    background: root.enabled ? Theme.input : #ffffff06;
+    accessible-role: combobox;
+    accessible-value: root.text;
+    accessible-enabled: root.enabled;
+    accessible-action-default => {
+        root.open(self.absolute-position.x, self.absolute-position.y + self.height, self.width);
+    }
+
+    Text {
+        x: 6px;
+        width: parent.width - 24px;
+        height: parent.height;
+        text: root.text;
+        color: root.enabled ? Theme.text-primary : Theme.text-secondary;
+        font-size: Theme.font-size;
+        vertical-alignment: center;
+        overflow: elide;
+    }
+
+    Image {
+        x: parent.width - 18px;
+        y: (parent.height - self.height) / 2;
+        width: 12px;
+        height: 12px;
+        source: @image-url("icons/chevron-down.svg");
+        colorize: Theme.text-secondary;
+    }
+
+    touch := TouchArea {
+        enabled: root.enabled;
+        clicked => {
+            root.open(root.absolute-position.x, root.absolute-position.y + root.height, root.width);
+        }
+    }
+}
+
+// A horizontal slider; reports the value when the mouse is released.
+export component Slider inherits Rectangle {
+    in property <float> value;
+    in property <bool> enabled: true;
+    in property <float> minimum: 0.0;
+    in property <float> maximum: 1.0;
+    in property <string> label;
+    callback released(float);
+
+    property <float> shown: root.value;
+    property <float> fraction: clamp((root.shown - root.minimum) / max(0.0001, root.maximum - root.minimum), 0.0, 1.0);
+
+    changed value => {
+        if !touch.pressed {
+            root.shown = root.value;
+        }
+    }
+
+    function pick(x: length) {
+        root.shown = root.minimum + (root.maximum - root.minimum) * clamp((x - 6px) / max(1px, root.width - 12px), 0.0, 1.0);
+    }
+
+    height: 18px;
+    min-width: 60px;
+    horizontal-stretch: 1;
+    accessible-role: slider;
+    accessible-label: root.label;
+    accessible-value: "\{round(root.shown * 100) / 100}";
+    accessible-value-minimum: root.minimum;
+    accessible-value-maximum: root.maximum;
+    accessible-value-step: (root.maximum - root.minimum) / 20;
+    accessible-action-increment => {
+        root.released(min(root.maximum, root.value + (root.maximum - root.minimum) / 20));
+    }
+    accessible-action-decrement => {
+        root.released(max(root.minimum, root.value - (root.maximum - root.minimum) / 20));
+    }
+
+    Rectangle {
+        x: 6px;
+        y: (parent.height - self.height) / 2;
+        width: parent.width - 12px;
+        height: 4px;
+        border-radius: 2px;
+        background: Theme.border;
+    }
+
+    Rectangle {
+        x: 6px;
+        y: (parent.height - self.height) / 2;
+        width: (parent.width - 12px) * root.fraction;
+        height: 4px;
+        border-radius: 2px;
+        background: root.enabled ? Theme.accent : Theme.text-disabled;
+    }
+
+    Rectangle {
+        x: (parent.width - 12px) * root.fraction;
+        y: (parent.height - self.height) / 2;
+        width: 12px;
+        height: 12px;
+        border-radius: 6px;
+        background: root.enabled ? (touch.pressed || touch.has-hover ? #ffffff : #d8d8d8) : Theme.text-disabled;
+    }
+
+    touch := TouchArea {
+        enabled: root.enabled;
+        moved => {
+            if self.pressed {
+                root.pick(self.mouse-x);
+            }
+        }
+        pointer-event(event) => {
+            if event.button == PointerEventButton.left {
+                if event.kind == PointerEventKind.down {
+                    root.pick(self.mouse-x);
+                } else if event.kind == PointerEventKind.up {
+                    root.released(root.shown);
+                }
+            }
+        }
+    }
+}
+
+export component Swatch inherits Rectangle {
+    in property <color> fill;
+    in property <bool> enabled: true;
+    in property <string> label: "Change colour";
+    callback clicked(length /* window x */, length /* window y */);
+
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    border-width: 1px;
+    border-color: touch.has-hover && root.enabled ? #ffffff : #ffffff40;
+    background: root.fill;
+    accessible-role: button;
+    accessible-label: root.label;
+    accessible-enabled: root.enabled;
+    accessible-action-default => {
+        root.clicked(self.absolute-position.x, self.absolute-position.y + self.height);
+    }
+
+    touch := TouchArea {
+        enabled: root.enabled;
+        clicked => {
+            root.clicked(root.absolute-position.x, root.absolute-position.y + root.height);
+        }
+    }
+}
+
+// Click, then press a key; Backspace clears, Escape cancels.
+export component KeyField inherits Rectangle {
+    in property <string> value;
+    in property <bool> enabled: true;
+    callback chosen(string);
+
+    width: 30px;
+    height: 22px;
+    border-radius: 3px;
+    border-width: 1px;
+    border-color: scope.has-focus ? Theme.accent : Theme.border;
+    background: root.enabled ? Theme.input : #ffffff06;
+    accessible-role: button;
+    accessible-label: "Hotkey";
+    accessible-value: root.value;
+    accessible-description: "Click, then press a key. Backspace removes the hotkey.";
+    accessible-action-default => {
+        scope.focus();
+    }
+
+    Text {
+        width: parent.width;
+        height: parent.height;
+        text: scope.has-focus ? "…" : root.value == "" ? "–" : root.value;
+        color: root.value == "" ? Theme.text-disabled : Theme.text-primary;
+        font-size: Theme.font-size;
+        horizontal-alignment: center;
+        vertical-alignment: center;
+    }
+
+    scope := FocusScope {
+        enabled: root.enabled;
+        key-pressed(event) => {
+            if event.text == Key.Escape || event.text == Key.Tab || event.text == Key.Return {
+                self.clear-focus();
+                return accept;
+            }
+            if event.text == Key.Backspace || event.text == Key.Delete {
+                root.chosen("");
+                self.clear-focus();
+                return accept;
+            }
+            if event.modifiers.control || event.modifiers.meta || event.modifiers.alt {
+                return reject;
+            }
+            if event.text != "" {
+                root.chosen(event.text);
+                self.clear-focus();
+                return accept;
+            }
+            reject
+        }
+    }
+
+    TouchArea {
+        enabled: root.enabled;
+        clicked => {
+            scope.focus();
+        }
+    }
+}
+
+export component SectionTitle inherits Text {
+    font-size: Theme.small-font-size;
+    font-weight: 700;
+    color: Theme.text-secondary;
+    letter-spacing: 0.5px;
+}
+
+export component Hint inherits Text {
+    font-size: Theme.small-font-size;
+    color: Theme.text-secondary;
+    wrap: word-wrap;
+    height: self.preferred-height;
+}
+
+export component Separator inherits Rectangle {
+    height: 1px;
+    background: Theme.border;
+}
+
+export component TabButton inherits Rectangle {
+    in property <string> text;
+    in property <bool> selected;
+    callback clicked();
+
+    height: 28px;
+    horizontal-stretch: 1;
+    background: touch.has-hover && !root.selected ? Theme.hover : transparent;
+    accessible-role: tab;
+    accessible-label: root.text;
+    accessible-item-selected: root.selected;
+    accessible-action-default => {
+        root.clicked();
+    }
+
+    Text {
+        width: parent.width;
+        height: parent.height;
+        text: root.text;
+        font-size: Theme.font-size;
+        font-weight: root.selected ? 600 : 400;
+        color: root.selected ? Theme.text-primary : Theme.text-secondary;
+        horizontal-alignment: center;
+        vertical-alignment: center;
+    }
+
+    Rectangle {
+        y: parent.height - 2px;
+        height: 2px;
+        background: root.selected ? Theme.accent-text : transparent;
+    }
+
+    touch := TouchArea {
+        clicked => {
+            root.clicked();
+        }
+    }
+}
+
+// A thin scroll bar for a Flickable: feed it the flickable's geometry and
+// apply `scrolled` to its viewport-y.
+export component ScrollBar inherits Rectangle {
+    in property <length> content-height;
+    in property <length> view-height;
+    in property <length> offset;
+    callback scrolled(length /* new offset, >= 0 */);
+
+    property <length> range: max(0px, root.content-height - root.view-height);
+    property <length> thumb: max(24px, root.height * root.view-height / max(1px, root.content-height));
+    property <length> start-offset;
+
+    width: 8px;
+    visible: root.range > 1px;
+
+    Rectangle {
+        x: 2px;
+        y: root.range > 0px ? (root.height - root.thumb) * clamp(root.offset / root.range, 0, 1) : 0px;
+        width: 5px;
+        height: root.thumb;
+        border-radius: 2.5px;
+        background: touch.pressed ? #ffffff60 : touch.has-hover ? #ffffff40 : #ffffff22;
+    }
+
+    touch := TouchArea {
+        pointer-event(event) => {
+            if event.kind == PointerEventKind.down {
+                root.start-offset = root.offset;
+            }
+        }
+        moved => {
+            if self.pressed && root.range > 0px {
+                root.scrolled(clamp(root.start-offset + (self.mouse-y - self.pressed-y) * root.range / max(1px, root.height - root.thumb), 0px, root.range));
+            }
+        }
+    }
+}

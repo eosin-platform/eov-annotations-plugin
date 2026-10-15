@@ -21,7 +21,7 @@ const LOADING: &str = "The annotations of this slide are still loading; try agai
 
 /// The level-0 canvas of a file.
 fn image_bounds(info: &FileInfo) -> Option<Bounds> {
-    (info.width > 0 && info.height > 0).then(|| Bounds {
+    (info.width > 0 && info.height > 0).then_some(Bounds {
         min_x: 0.0,
         min_y: 0.0,
         max_x: info.width as f64,
@@ -41,7 +41,11 @@ fn editable_slide(state: &State, file_id: FileId) -> Result<(&SlideData, Option<
 }
 
 /// The layer new annotations of `role` go to, creating it when missing.
-fn target_layer(slide: &SlideData, role: LayerRole, changes: &mut Vec<Change>) -> Result<Layer, String> {
+fn target_layer(
+    slide: &SlideData,
+    role: LayerRole,
+    changes: &mut Vec<Change>,
+) -> Result<Layer, String> {
     let existing = match role {
         LayerRole::Normal => slide.target_layer(),
         other => slide.layer_by_role(other),
@@ -75,7 +79,13 @@ fn target_layer(slide: &SlideData, role: LayerRole, changes: &mut Vec<Change>) -
 }
 
 /// A new annotation.
-fn annotation(layer: &Layer, geometry: Geometry, class: Option<String>, name: &str, author: &str) -> Annotation {
+fn annotation(
+    layer: &Layer,
+    geometry: Geometry,
+    class: Option<String>,
+    name: &str,
+    author: &str,
+) -> Annotation {
     let now = now_ms();
     Annotation {
         id: new_id(),
@@ -123,20 +133,34 @@ pub fn field_geometry(state: &State, info: &FileInfo, x: f64, y: f64) -> Result<
     let (rx, ry) = calibration
         .um_to_px(radius_um)
         .ok_or("This slide has no pixel size, so HPF fields cannot be sized.")?;
-    Ok(Geometry::Ellipse { cx: x, cy: y, rx, ry })
+    Ok(Geometry::Ellipse {
+        cx: x,
+        cy: y,
+        rx,
+        ry,
+    })
 }
 
 /// A shape drawn with one of the plugin's tools.
-pub fn shape_drawn(core: &Arc<Core>, tool: &str, file_id: FileId, shape: Shape, modifiers: Modifiers) {
+pub fn shape_drawn(
+    core: &Arc<Core>,
+    tool: &str,
+    file_id: FileId,
+    shape: Shape,
+    modifiers: Modifiers,
+) {
     let (geometry, _) = Geometry::from_shape(&shape);
     let (info, selection, settings) = {
         let state = core.state();
         let Some(file) = state.files.get(&file_id) else {
             return;
         };
-        (file.info.clone(), file.selection.clone(), state.settings.clone())
+        (
+            file.info.clone(),
+            file.selection.clone(),
+            state.settings.clone(),
+        )
     };
-    let author = settings.author.clone();
     let active = settings.active_class.clone();
     match tool {
         tools::COUNT => {
@@ -145,16 +169,52 @@ pub fn shape_drawn(core: &Arc<Core>, tool: &str, file_id: FileId, shape: Shape, 
             } else {
                 active
             };
-            add(core, file_id, vec![geometry], LayerRole::Counts, class, "", false, "Count cell");
+            add(
+                core,
+                file_id,
+                vec![geometry],
+                LayerRole::Counts,
+                class,
+                "",
+                false,
+                "Count cell",
+            );
         }
-        tools::POINT => add(core, file_id, vec![geometry], LayerRole::Normal, active, "", true, "Add point"),
-        tools::POLYLINE => add(core, file_id, vec![geometry], LayerRole::Normal, active, "", true, "Add line"),
+        tools::POINT => add(
+            core,
+            file_id,
+            vec![geometry],
+            LayerRole::Normal,
+            active,
+            "",
+            true,
+            "Add point",
+        ),
+        tools::POLYLINE => add(
+            core,
+            file_id,
+            vec![geometry],
+            LayerRole::Normal,
+            active,
+            "",
+            true,
+            "Add line",
+        ),
         tools::TEXT => {
             let (x, y) = match geometry {
                 Geometry::Point { x, y } => (x, y),
                 _ => return,
             };
-            add(core, file_id, vec![Geometry::Text { x, y }], LayerRole::Normal, active, "Text", true, "Add text");
+            add(
+                core,
+                file_id,
+                vec![Geometry::Text { x, y }],
+                LayerRole::Normal,
+                active,
+                "Text",
+                true,
+                "Add text",
+            );
         }
         tools::FIELD => {
             let Geometry::Point { x, y } = geometry else {
@@ -182,7 +242,12 @@ pub fn shape_drawn(core: &Arc<Core>, tool: &str, file_id: FileId, shape: Shape, 
                 state.slide_of(file_id).and_then(|slide| {
                     let areas: Vec<&String> = selection
                         .iter()
-                        .filter(|id| slide.annotations.get(*id).is_some_and(|a| a.geometry.kind().is_area()))
+                        .filter(|id| {
+                            slide
+                                .annotations
+                                .get(*id)
+                                .is_some_and(|a| a.geometry.kind().is_area())
+                        })
                         .collect();
                     (areas.len() == 1).then(|| areas[0].clone())
                 })
@@ -194,14 +259,31 @@ pub fn shape_drawn(core: &Arc<Core>, tool: &str, file_id: FileId, shape: Shape, 
                         NotifyLevel::Info,
                         "Select one region to add to (Shift) or cut from (Alt). The shape was added as a new annotation.",
                     );
-                    add(core, file_id, vec![geometry], LayerRole::Normal, active, "", true, "Add region");
+                    add(
+                        core,
+                        file_id,
+                        vec![geometry],
+                        LayerRole::Normal,
+                        active,
+                        "",
+                        true,
+                        "Add region",
+                    );
                 }
-                (None, _) => add(core, file_id, vec![geometry], LayerRole::Normal, active, "", true, "Add region"),
+                (None, _) => add(
+                    core,
+                    file_id,
+                    vec![geometry],
+                    LayerRole::Normal,
+                    active,
+                    "",
+                    true,
+                    "Add region",
+                ),
             }
         }
         _ => {}
     }
-    let _ = author;
 }
 
 /// Adds annotations (normalised on the database thread).
@@ -257,11 +339,16 @@ fn add_field(core: &Arc<Core>, file_id: FileId, field: Geometry) {
         let notice = normalized
             .parts
             .first()
-            .is_some_and(|g| image.is_some_and(|b| {
-                let f = g.bounds();
-                f.min_x < b.min_x || f.min_y < b.min_y || f.max_x > b.max_x || f.max_y > b.max_y
-            }))
-            .then(|| "This field extends past the slide edge; its area includes empty canvas.".to_string());
+            .is_some_and(|g| {
+                image.is_some_and(|b| {
+                    let f = g.bounds();
+                    f.min_x < b.min_x || f.min_y < b.min_y || f.max_x > b.max_x || f.max_y > b.max_y
+                })
+            })
+            .then(|| {
+                "This field extends past the slide edge; its area includes empty canvas."
+                    .to_string()
+            });
         let author = state.settings.author.clone();
         let mut ids = Vec::new();
         for part in normalized.parts {
@@ -281,8 +368,18 @@ fn add_field(core: &Arc<Core>, file_id: FileId, field: Geometry) {
 }
 
 /// Shift-draw (union) or Alt-draw (difference) with a selected region.
-fn combine_with(core: &Arc<Core>, file_id: FileId, target_id: String, shape: Geometry, union: bool) {
-    let label = if union { "Add to region" } else { "Cut from region" };
+fn combine_with(
+    core: &Arc<Core>,
+    file_id: FileId,
+    target_id: String,
+    shape: Geometry,
+    union: bool,
+) {
+    let label = if union {
+        "Add to region"
+    } else {
+        "Cut from region"
+    };
     core.submit(Op::new(label, Some(file_id), move |state| {
         let (slide, image) = editable_slide(state, file_id)?;
         let target = slide
@@ -332,9 +429,15 @@ fn combine_with(core: &Arc<Core>, file_id: FileId, target_id: String, shape: Geo
             after: Some(Arc::new(updated)),
         }];
         let notice = if !extra.is_empty() && union {
-            Some("The shapes do not touch; the new shape was added as a separate annotation.".to_string())
+            Some(
+                "The shapes do not touch; the new shape was added as a separate annotation."
+                    .to_string(),
+            )
         } else if !extra.is_empty() {
-            Some(format!("The cut split the region into {} parts.", extra.len() + 1))
+            Some(format!(
+                "The cut split the region into {} parts.",
+                extra.len() + 1
+            ))
         } else {
             None
         };
@@ -406,7 +509,10 @@ pub fn object_edited(core: &Arc<Core>, object: ObjectRef, shape: Shape) {
         {
             geometry = Geometry::Point { x, y };
         }
-        let image = state.files.get(&file_id).and_then(|f| image_bounds(&f.info));
+        let image = state
+            .files
+            .get(&file_id)
+            .and_then(|f| image_bounds(&f.info));
         let normalized = match geometry::normalize(geometry, image) {
             Ok(n) => n,
             Err(e) => return refuse(slide_id, format!("The edit was undone: {e}")),
@@ -601,7 +707,11 @@ pub fn layer_new(core: &Arc<Core>, file_id: FileId) {
         let (slide, _) = editable_slide(state, file_id)?;
         let mut n = slide.layers.len() + 1;
         let mut name = format!("Layer {n}");
-        while slide.layers.iter().any(|l| l.name.eq_ignore_ascii_case(&name)) {
+        while slide
+            .layers
+            .iter()
+            .any(|l| l.name.eq_ignore_ascii_case(&name))
+        {
             n += 1;
             name = format!("Layer {n}");
         }
@@ -643,7 +753,10 @@ pub fn layer_update(
 ) {
     let op = Op::new(label, Some(file_id), move |state| {
         let (slide, _) = editable_slide(state, file_id)?;
-        let current = slide.layer(&layer_id).cloned().ok_or("That layer no longer exists.")?;
+        let current = slide
+            .layer(&layer_id)
+            .cloned()
+            .ok_or("That layer no longer exists.")?;
         let mut updated = current.clone();
         change(&mut updated)?;
         if updated == current {
@@ -659,17 +772,27 @@ pub fn layer_update(
 }
 
 pub fn layer_rename(core: &Arc<Core>, file_id: FileId, layer_id: String, name: String) {
-    layer_update(core, file_id, layer_id, "Rename layer", true, move |layer| {
-        layer.name = clean_name(&name, "layer name", false)?;
-        Ok(())
-    });
+    layer_update(
+        core,
+        file_id,
+        layer_id,
+        "Rename layer",
+        true,
+        move |layer| {
+            layer.name = clean_name(&name, "layer name", false)?;
+            Ok(())
+        },
+    );
 }
 
 /// Deletes a layer with its contents (after the user confirmed).
 pub fn layer_delete(core: &Arc<Core>, file_id: FileId, layer_id: String) {
     core.submit(Op::new("Delete layer", Some(file_id), move |state| {
         let (slide, _) = editable_slide(state, file_id)?;
-        let layer = slide.layer(&layer_id).cloned().ok_or("That layer no longer exists.")?;
+        let layer = slide
+            .layer(&layer_id)
+            .cloned()
+            .ok_or("That layer no longer exists.")?;
         if layer.locked {
             return Err(format!("Layer \"{}\" is locked.", layer.name));
         }
@@ -707,7 +830,10 @@ pub fn clear_counts(core: &Arc<Core>, file_id: FileId) {
             return Ok(Planned::default());
         };
         let contents: Vec<Arc<Annotation>> = slide.in_layer(&layer.id).cloned().collect();
-        Ok(Planned::changes(vec![Change::RemoveLayer { layer, contents }]))
+        Ok(Planned::changes(vec![Change::RemoveLayer {
+            layer,
+            contents,
+        }]))
     }));
 }
 
@@ -736,7 +862,11 @@ pub fn select_fields(core: &Arc<Core>, file_id: FileId) {
 pub fn repair(core: &Arc<Core>, file_id: FileId, id: String) {
     core.submit(Op::new("Repair outline", Some(file_id), move |state| {
         let (slide, image) = editable_slide(state, file_id)?;
-        let current = slide.annotations.get(&id).cloned().ok_or("That annotation no longer exists.")?;
+        let current = slide
+            .annotations
+            .get(&id)
+            .cloned()
+            .ok_or("That annotation no longer exists.")?;
         let normalized = geometry::normalize(current.geometry.clone(), image)?;
         let now = now_ms();
         let mut parts = normalized.parts.into_iter();
@@ -778,25 +908,32 @@ pub fn relink(core: &Arc<Core>, file_id: FileId, from: SlideId) {
             }
             None => return,
         };
-        let op = Op::new("Attach annotations of another slide", Some(file_id), move |state| {
-            state.writable()?;
-            let to = state.slide_of(file_id).ok_or(LOADING)?.id();
-            if to == from || to <= 0 {
-                return Err("Those annotations already belong to this slide.".to_string());
-            }
-            if layer_ids.is_empty() {
-                return Err("That slide has no annotations left.".to_string());
-            }
-            Ok(Planned {
-                changes: vec![Change::MoveLayers {
-                    from,
-                    to,
-                    layer_ids: layer_ids.clone(),
-                }],
-                notice: Some(format!("Attached {} layer(s) to this slide.", layer_ids.len())),
-                ..Default::default()
-            })
-        });
+        let op = Op::new(
+            "Attach annotations of another slide",
+            Some(file_id),
+            move |state| {
+                state.writable()?;
+                let to = state.slide_of(file_id).ok_or(LOADING)?.id();
+                if to == from || to <= 0 {
+                    return Err("Those annotations already belong to this slide.".to_string());
+                }
+                if layer_ids.is_empty() {
+                    return Err("That slide has no annotations left.".to_string());
+                }
+                Ok(Planned {
+                    changes: vec![Change::MoveLayers {
+                        from,
+                        to,
+                        layer_ids: layer_ids.clone(),
+                    }],
+                    notice: Some(format!(
+                        "Attached {} layer(s) to this slide.",
+                        layer_ids.len()
+                    )),
+                    ..Default::default()
+                })
+            },
+        );
         crate::core::run_op(core, ctx, op);
         core.state().orphans = None;
         list_orphans(core);
@@ -812,8 +949,13 @@ pub fn list_orphans(core: &Arc<Core>) {
         match db.slide_summaries() {
             Ok(list) => {
                 let mut state = core.state();
-                let open: Vec<SlideId> = state.files.values().filter_map(|f| f.slide_id()).collect();
-                state.orphans = Some(list.into_iter().filter(|s| !open.contains(&s.record.id)).collect());
+                let open: Vec<SlideId> =
+                    state.files.values().filter_map(|f| f.slide_id()).collect();
+                state.orphans = Some(
+                    list.into_iter()
+                        .filter(|s| !open.contains(&s.record.id))
+                        .collect(),
+                );
             }
             Err(e) => core.host.warn(format!("cannot list slides: {e}")),
         }
@@ -844,7 +986,13 @@ pub fn class_new(core: &Arc<Core>) {
                 hotkey: None,
                 visible: true,
                 opacity: 1.0,
-                sort_order: state.classes.iter().map(|c| c.sort_order).max().unwrap_or(0) + 1,
+                sort_order: state
+                    .classes
+                    .iter()
+                    .map(|c| c.sort_order)
+                    .max()
+                    .unwrap_or(0)
+                    + 1,
                 created_at: now,
                 updated_at: now,
             }),
@@ -861,7 +1009,10 @@ pub fn class_update(
 ) {
     let op = Op::new(label, None, move |state| {
         state.writable()?;
-        let current = state.class(&class_id).cloned().ok_or("That class no longer exists.")?;
+        let current = state
+            .class(&class_id)
+            .cloned()
+            .ok_or("That class no longer exists.")?;
         let mut updated = current.clone();
         change(state, &mut updated)?;
         if updated == current {
@@ -891,32 +1042,51 @@ pub fn class_rename(core: &Arc<Core>, class_id: String, name: String) {
 }
 
 pub fn class_hotkey(core: &Arc<Core>, class_id: String, key: String) {
-    class_update(core, class_id, "Set class hotkey", true, move |state, class| {
-        let mut taken: Vec<String> = tools::tool_hotkeys().iter().map(|k| k.to_string()).collect();
-        taken.extend(
-            state
-                .classes
+    class_update(
+        core,
+        class_id,
+        "Set class hotkey",
+        true,
+        move |state, class| {
+            let mut taken: Vec<String> = tools::tool_hotkeys()
                 .iter()
-                .filter(|c| c.id != class.id)
-                .filter_map(|c| c.hotkey.clone()),
-        );
-        let taken: Vec<&str> = taken.iter().map(String::as_str).collect();
-        class.hotkey = crate::model::clean_hotkey(&key, &taken)?;
-        Ok(())
-    });
+                .map(|k| k.to_string())
+                .collect();
+            taken.extend(
+                state
+                    .classes
+                    .iter()
+                    .filter(|c| c.id != class.id)
+                    .filter_map(|c| c.hotkey.clone()),
+            );
+            let taken: Vec<&str> = taken.iter().map(String::as_str).collect();
+            class.hotkey = crate::model::clean_hotkey(&key, &taken)?;
+            Ok(())
+        },
+    );
 }
 
 pub fn class_color(core: &Arc<Core>, class_id: String, color: String) {
-    class_update(core, class_id, "Change class colour", true, move |_, class| {
-        class.color = Color::parse(&color).ok_or_else(|| format!("\"{color}\" is not a colour."))?;
-        Ok(())
-    });
+    class_update(
+        core,
+        class_id,
+        "Change class colour",
+        true,
+        move |_, class| {
+            class.color =
+                Color::parse(&color).ok_or_else(|| format!("\"{color}\" is not a colour."))?;
+            Ok(())
+        },
+    );
 }
 
 pub fn class_delete(core: &Arc<Core>, class_id: String) {
     core.submit(Op::new("Delete class", None, move |state| {
         state.writable()?;
-        let current = state.class(&class_id).cloned().ok_or("That class no longer exists.")?;
+        let current = state
+            .class(&class_id)
+            .cloned()
+            .ok_or("That class no longer exists.")?;
         Ok(Planned {
             label: Some(format!("Delete class \"{}\"", current.name)),
             changes: vec![Change::Class {
@@ -946,7 +1116,10 @@ pub fn class_usage(state: &State, class_id: &str) -> usize {
 pub fn set_active_class(core: &Arc<Core>, class_id: Option<String>) {
     {
         let mut state = core.state();
-        if class_id.as_ref().is_some_and(|id| state.class(id).is_none()) {
+        if class_id
+            .as_ref()
+            .is_some_and(|id| state.class(id).is_none())
+        {
             return;
         }
         state.settings.active_class = class_id.clone();
@@ -958,7 +1131,7 @@ pub fn set_active_class(core: &Arc<Core>, class_id: Option<String>) {
             .as_deref()
             .and_then(|id| state.class(id))
             .map_or("Unclassified".to_string(), |c| c.name.clone());
-        let _ = core.host.set_status(Some(&format!("Class: {name}")));
+        core.host.set_status(Some(&format!("Class: {name}")));
     }
     let _ = core.host.post(PALETTE_TOKEN);
     core.request_refresh();
@@ -1037,7 +1210,8 @@ pub fn view_changed(core: &Arc<Core>, view: &ViewInfo) {
         let mut state = core.state();
         for (id, file) in state.files.iter_mut() {
             if *id == view.file_id {
-                file.view_centres.insert(view.pane, [view.center_x, view.center_y]);
+                file.view_centres
+                    .insert(view.pane, [view.center_x, view.center_y]);
             } else {
                 file.view_centres.remove(&view.pane);
             }
@@ -1054,10 +1228,10 @@ pub fn view_changed(core: &Arc<Core>, view: &ViewInfo) {
 pub fn kind_glyph(kind: GeometryKind) -> &'static str {
     match kind {
         GeometryKind::Point => "•",
-        GeometryKind::Polyline => "⟋",
-        GeometryKind::Polygon => "⬠",
+        GeometryKind::Polyline => "╱",
+        GeometryKind::Polygon => "△",
         GeometryKind::Rectangle => "▭",
-        GeometryKind::Ellipse => "◯",
+        GeometryKind::Ellipse => "○",
         GeometryKind::Text => "T",
     }
 }

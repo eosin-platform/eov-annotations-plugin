@@ -29,6 +29,67 @@ pub const SIDEBAR_COMPONENT: &str = "AnnotationsSidebar";
 pub const IMPORT_UI: &str = "ui/import-dialog.slint";
 pub const IMPORT_COMPONENT: &str = "ImportDialog";
 
+/// Every callback of the sidebar surface with its arguments (`s` string,
+/// `n` number, `b` bool); `tools/ui-check` checks the `.slint` file
+/// declares exactly these.
+pub const CALLBACKS: &[(&str, &str)] = &[
+    ("tab-changed", "n"),
+    ("retry", ""),
+    ("menu", "s"),
+    ("tool", "s"),
+    ("filter-edited", "s"),
+    ("show-more", ""),
+    ("row-clicked", "ssb"),
+    ("row-double-clicked", "ss"),
+    ("row-hovered", "s"),
+    ("toggle-collapsed", "s"),
+    ("layer-new", ""),
+    ("layer-visible", "sb"),
+    ("layer-locked", "sb"),
+    ("layer-opacity", "sn"),
+    ("layer-color", "ss"),
+    ("layer-rename", "ss"),
+    ("layer-notes", "ss"),
+    ("layer-current", "s"),
+    ("layer-delete", "s"),
+    ("detail-name-committed", "ss"),
+    ("detail-description-committed", "ss"),
+    ("detail-class-chosen", "n"),
+    ("detail-status-chosen", "n"),
+    ("detail-layer-chosen", "n"),
+    ("detail-locked-toggled", "b"),
+    ("detail-delete", ""),
+    ("detail-frame", ""),
+    ("detail-repair", ""),
+    ("copy-measurements", ""),
+    ("property-add", "s"),
+    ("property-remove", "sn"),
+    ("property-committed", "snss"),
+    ("class-new", ""),
+    ("class-activate", "s"),
+    ("class-alternate", "s"),
+    ("class-rename", "ss"),
+    ("class-color", "ss"),
+    ("class-hotkey", "ss"),
+    ("class-visible", "sb"),
+    ("class-opacity", "sn"),
+    ("class-delete", "s"),
+    ("count-active", "n"),
+    ("count-alternate", "n"),
+    ("count-hidden-toggled", "b"),
+    ("count-clear", ""),
+    ("fields-select", ""),
+    ("field-config", "nsss"),
+    ("orphans-refresh", ""),
+    ("orphan-relink", "s"),
+    ("setting-text", "ss"),
+    ("setting-bool", "sb"),
+    ("setting-number", "sn"),
+];
+
+/// The import dialog's callbacks (0 merge, 1 replace, 2 keep both).
+pub const IMPORT_CALLBACKS: &[(&str, &str)] = &[("import-confirm", "n"), ("import-cancel", "")];
+
 /// Rows sent per "page" of the annotation list.
 pub const ROW_STEP: usize = 300;
 /// Layers with more annotations start collapsed.
@@ -78,6 +139,9 @@ pub struct TreeRow {
     pub collapsed: bool,
     pub current: bool,
     pub status: i32,
+    /// Layer rows only.
+    pub opacity: f32,
+    pub notes: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
@@ -126,7 +190,10 @@ fn color_of(state: &State, class: Option<&str>, fallback: Color) -> Color {
 }
 
 fn put(map: &mut Map<String, Value>, key: &str, value: impl Serialize) {
-    map.insert(key.to_string(), serde_json::to_value(value).unwrap_or(Value::Null));
+    map.insert(
+        key.to_string(),
+        serde_json::to_value(value).unwrap_or(Value::Null),
+    );
 }
 
 fn date(ms: i64) -> String {
@@ -138,13 +205,17 @@ fn date(ms: i64) -> String {
 /// Every sidebar property.
 pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
     let mut p = Map::new();
-    let file = state.active_file.and_then(|id| state.files.get(&id).map(|f| (id, f)));
+    let file = state
+        .active_file
+        .and_then(|id| state.files.get(&id).map(|f| (id, f)));
     let slide = state.active_slide();
     put(&mut p, "tab", state.settings.tab);
     put(
         &mut p,
         "slide-title",
-        file.map_or("No slide open".to_string(), |(_, f)| f.info.filename.clone()),
+        file.map_or("No slide open".to_string(), |(_, f)| {
+            f.info.filename.clone()
+        }),
     );
 
     // Banner: the most important problem.
@@ -227,6 +298,8 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                 collapsed,
                 current: current.as_deref() == Some(layer.id.as_str()),
                 status: 0,
+                opacity: layer.opacity,
+                notes: layer.notes.clone(),
             });
             // While filtering, matches are listed even in collapsed layers.
             if collapsed && filter.is_empty() {
@@ -259,7 +332,11 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                         Some(k) => measure::format_area_um2(area_px * k * 1_000_000.0),
                         None => measure::format_px2(area_px),
                     };
-                    detail = if detail.is_empty() { area } else { format!("{detail} · {area}") };
+                    detail = if detail.is_empty() {
+                        area
+                    } else {
+                        format!("{detail} · {area}")
+                    };
                 }
                 rows.push(TreeRow {
                     id: a.id.clone(),
@@ -277,6 +354,8 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                     collapsed: false,
                     current: false,
                     status: a.status.index(),
+                    opacity: 1.0,
+                    notes: String::new(),
                 });
             }
         }
@@ -297,6 +376,8 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                 collapsed: false,
                 current: false,
                 status: 0,
+                opacity: 1.0,
+                notes: String::new(),
             });
         }
         if !filter.is_empty() {
@@ -305,6 +386,8 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
             note = "No annotations yet. Pick a tool in the toolbar (P polygon, . point, C count) and draw on the slide."
                 .to_string();
         }
+    } else if file.is_none() {
+        note = "Open a slide to see and draw its annotations.".to_string();
     }
     put(&mut p, "rows", &rows);
     put(&mut p, "rows-note", note);
@@ -315,13 +398,21 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
     let mut has_detail = false;
     let mut detail_id = String::new();
     let mut title = String::new();
-    let (mut name, mut description, mut meta, mut warning, mut kind) =
-        (String::new(), String::new(), String::new(), String::new(), String::new());
+    let (mut name, mut description, mut meta, mut warning, mut kind) = (
+        String::new(),
+        String::new(),
+        String::new(),
+        String::new(),
+        String::new(),
+    );
     let (mut class_i, mut status_i, mut layer_i, mut locked) = (0, 0, 0, false);
     let mut measurements: Vec<KeyValue> = Vec::new();
     let mut props: Vec<KeyValue> = Vec::new();
     if let Some(slide) = slide {
-        let chosen: Vec<_> = selection.iter().filter_map(|id| slide.annotations.get(id)).collect();
+        let chosen: Vec<_> = selection
+            .iter()
+            .filter_map(|id| slide.annotations.get(id))
+            .collect();
         if let Some(first) = chosen.first() {
             has_detail = true;
             let class = first.class_id.as_deref().and_then(|id| state.class(id));
@@ -348,7 +439,11 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                 } else {
                     format!("By {} · ", first.author)
                 };
-                meta = format!("{by}created {} · edited {}", date(first.created_at), date(first.updated_at));
+                meta = format!(
+                    "{by}created {} · edited {}",
+                    date(first.created_at),
+                    date(first.updated_at)
+                );
                 let calibration = Calibration::new(slide.record.mpp_x, slide.record.mpp_y);
                 let m = measure::measure(&first.geometry, &calibration);
                 measurements = measure::rows(&m, first.geometry.kind() == GeometryKind::Polyline)
@@ -420,8 +515,16 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
     put(&mut p, "classes", &class_rows);
 
     // Counting.
-    put(&mut p, "count-active-index", class_index(state.settings.active_class.as_deref()));
-    put(&mut p, "count-alternate-index", class_index(state.settings.alternate_class.as_deref()));
+    put(
+        &mut p,
+        "count-active-index",
+        class_index(state.settings.active_class.as_deref()),
+    );
+    put(
+        &mut p,
+        "count-alternate-index",
+        class_index(state.settings.alternate_class.as_deref()),
+    );
     let mut tally_rows = Vec::new();
     let (mut scope, mut index_line) = (String::new(), String::new());
     let mut field_count = 0;
@@ -431,7 +534,10 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
             .map_or(0, |l| slide.count_in(&l.id)) as i32;
         let t = counting::tally(state, slide, &selection);
         scope = match (t.regions, t.area_mm2) {
-            (0, _) => "Whole slide. Select regions or HPF fields to count inside them and get densities.".to_string(),
+            (0, _) => {
+                "Whole slide. Select regions or HPF fields to count inside them and get densities."
+                    .to_string()
+            }
             (n, Some(area)) => format!(
                 "Inside {n} selected region(s){}: {}{}",
                 if t.fields > 0 {
@@ -449,7 +555,9 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
         };
         for row in &t.rows {
             let (density, per_hpf) = match t.area_mm2 {
-                Some(area) if area > 0.0 => counting::density_text(row.count, area, &state.settings.field),
+                Some(area) if area > 0.0 => {
+                    counting::density_text(row.count, area, &state.settings.field)
+                }
                 _ => (String::new(), String::new()),
             };
             let per_field = if t.fields > 0 && t.fields == t.regions {
@@ -465,7 +573,10 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                 per_hpf: per_field,
             });
         }
-        if let (Some(a), Some(b)) = (&state.settings.active_class, &state.settings.alternate_class) {
+        if let (Some(a), Some(b)) = (
+            &state.settings.active_class,
+            &state.settings.alternate_class,
+        ) {
             let count = |id: &str| {
                 t.rows
                     .iter()
@@ -491,9 +602,21 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
             objective,
         } => {
             put(&mut p, "field-mode", 0);
-            put(&mut p, "field-number", crate::stats::trim_number(field_number));
-            put(&mut p, "field-objective", crate::stats::trim_number(objective));
-            put(&mut p, "field-area", format!("{:.4}", state.settings.field.area_mm2().unwrap_or(0.0)));
+            put(
+                &mut p,
+                "field-number",
+                crate::stats::trim_number(field_number),
+            );
+            put(
+                &mut p,
+                "field-objective",
+                crate::stats::trim_number(objective),
+            );
+            put(
+                &mut p,
+                "field-area",
+                format!("{:.4}", state.settings.field.area_mm2().unwrap_or(0.0)),
+            );
         }
         FieldSize::Area { mm2 } => {
             put(&mut p, "field-mode", 1);
@@ -542,9 +665,11 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
     let orphans_note = match &state.orphans {
         None => "Press \"List\" to see the other slides in the database.".to_string(),
         Some(list) if list.is_empty() => "No other slides have annotations.".to_string(),
-        Some(_) => "If a slide was re-saved or de-identified, its annotations stay with the old file. \
+        Some(_) => {
+            "If a slide was re-saved or de-identified, its annotations stay with the old file. \
                     Attach them to the open slide here."
-            .to_string(),
+                .to_string()
+        }
     };
     put(&mut p, "orphans", &orphans);
     put(&mut p, "orphans-note", orphans_note);
@@ -552,7 +677,11 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
     put(&mut p, "setting-organization", &state.settings.organization);
     put(&mut p, "setting-project", &state.settings.project);
     put(&mut p, "setting-license", &state.settings.license);
-    put(&mut p, "setting-include-filename", state.settings.include_filename);
+    put(
+        &mut p,
+        "setting-include-filename",
+        state.settings.include_filename,
+    );
     put(&mut p, "setting-point-radius", state.settings.point_radius);
     put(&mut p, "setting-fill-opacity", state.settings.fill_opacity);
     put(&mut p, "setting-show-labels", state.settings.show_labels);
@@ -564,7 +693,10 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
 // ---------------------------------------------------------------------------
 
 fn s(args: &[Value], i: usize) -> String {
-    args.get(i).and_then(Value::as_str).unwrap_or_default().to_string()
+    args.get(i)
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+        .to_string()
 }
 
 fn b(args: &[Value], i: usize) -> bool {
@@ -587,7 +719,10 @@ fn class_by_index(state: &State, index: f64) -> Option<String> {
     if index <= 0 {
         return None;
     }
-    state.classes.get((index - 1) as usize).map(|c| c.id.clone())
+    state
+        .classes
+        .get((index - 1) as usize)
+        .map(|c| c.id.clone())
 }
 
 fn confirm(core: &Arc<Core>, args: ConfirmArgs, pending: Pending) {
@@ -600,7 +735,12 @@ fn confirm(core: &Arc<Core>, args: ConfirmArgs, pending: Pending) {
 }
 
 /// Handles a sidebar callback.
-pub fn callback(core: &Arc<Core>, host: &dyn SidebarHost, name: &str, args: &[Value]) -> Result<Value, String> {
+pub fn callback(
+    core: &Arc<Core>,
+    host: &dyn SidebarHost,
+    name: &str,
+    args: &[Value],
+) -> Result<Value, String> {
     let file_id = core.state().active_file;
     let need_file = || file_id.ok_or_else(|| "Open a slide first.".to_string());
     match name {
@@ -716,39 +856,75 @@ pub fn callback(core: &Arc<Core>, host: &dyn SidebarHost, name: &str, args: &[Va
         }
         "layer-visible" => {
             let visible = b(args, 1);
-            actions::layer_update(core, need_file()?, s(args, 0), "Show or hide layer", false, move |l| {
-                l.visible = visible;
-                Ok(())
-            });
+            actions::layer_update(
+                core,
+                need_file()?,
+                s(args, 0),
+                "Show or hide layer",
+                false,
+                move |l| {
+                    l.visible = visible;
+                    Ok(())
+                },
+            );
         }
         "layer-opacity" => {
             let opacity = crate::model::clean_opacity(n(args, 1));
-            actions::layer_update(core, need_file()?, s(args, 0), "Layer opacity", false, move |l| {
-                l.opacity = opacity;
-                Ok(())
-            });
+            actions::layer_update(
+                core,
+                need_file()?,
+                s(args, 0),
+                "Layer opacity",
+                false,
+                move |l| {
+                    l.opacity = opacity;
+                    Ok(())
+                },
+            );
         }
         "layer-locked" => {
             let locked = b(args, 1);
-            actions::layer_update(core, need_file()?, s(args, 0), if locked { "Lock layer" } else { "Unlock layer" }, true, move |l| {
-                l.locked = locked;
-                Ok(())
-            });
+            actions::layer_update(
+                core,
+                need_file()?,
+                s(args, 0),
+                if locked { "Lock layer" } else { "Unlock layer" },
+                true,
+                move |l| {
+                    l.locked = locked;
+                    Ok(())
+                },
+            );
         }
         "layer-color" => {
             let color = s(args, 1);
-            actions::layer_update(core, need_file()?, s(args, 0), "Change layer colour", true, move |l| {
-                l.color = Color::parse(&color).ok_or_else(|| format!("\"{color}\" is not a colour."))?;
-                Ok(())
-            });
+            actions::layer_update(
+                core,
+                need_file()?,
+                s(args, 0),
+                "Change layer colour",
+                true,
+                move |l| {
+                    l.color = Color::parse(&color)
+                        .ok_or_else(|| format!("\"{color}\" is not a colour."))?;
+                    Ok(())
+                },
+            );
         }
         "layer-rename" => actions::layer_rename(core, need_file()?, s(args, 0), s(args, 1)),
         "layer-notes" => {
             let notes = s(args, 1);
-            actions::layer_update(core, need_file()?, s(args, 0), "Edit layer notes", true, move |l| {
-                l.notes = clean_text(&notes, "notes")?;
-                Ok(())
-            });
+            actions::layer_update(
+                core,
+                need_file()?,
+                s(args, 0),
+                "Edit layer notes",
+                true,
+                move |l| {
+                    l.notes = clean_text(&notes, "notes")?;
+                    Ok(())
+                },
+            );
         }
         "layer-current" => actions::set_current_layer(core, need_file()?, s(args, 0)),
         "layer-new" => actions::layer_new(core, need_file()?),
@@ -757,8 +933,12 @@ pub fn callback(core: &Arc<Core>, host: &dyn SidebarHost, name: &str, args: &[Va
             let layer_id = s(args, 0);
             let (name, count) = {
                 let state = core.state();
-                let slide = state.slide_of(file_id).ok_or("The slide is still loading.")?;
-                let layer = slide.layer(&layer_id).ok_or("That layer no longer exists.")?;
+                let slide = state
+                    .slide_of(file_id)
+                    .ok_or("The slide is still loading.")?;
+                let layer = slide
+                    .layer(&layer_id)
+                    .ok_or("That layer no longer exists.")?;
                 (layer.name.clone(), slide.count_in(&layer_id))
             };
             confirm(
@@ -793,7 +973,7 @@ pub fn callback(core: &Arc<Core>, host: &dyn SidebarHost, name: &str, args: &[Va
                 });
             }
         }
-        "detail-class" => {
+        "detail-class-chosen" => {
             let file_id = need_file()?;
             let class = class_by_index(&core.state(), n(args, 0));
             let ids = selection(core, file_id);
@@ -802,16 +982,22 @@ pub fn callback(core: &Arc<Core>, host: &dyn SidebarHost, name: &str, args: &[Va
                 Ok(())
             });
         }
-        "detail-status" => {
+        "detail-status-chosen" => {
             let file_id = need_file()?;
             let status = Status::from_index(n(args, 0) as i64).unwrap_or_default();
             let ids = selection(core, file_id);
-            actions::edit(core, file_id, ids, format!("Mark {}", status.label().to_lowercase()), move |a| {
-                a.status = status;
-                Ok(())
-            });
+            actions::edit(
+                core,
+                file_id,
+                ids,
+                format!("Mark {}", status.label().to_lowercase()),
+                move |a| {
+                    a.status = status;
+                    Ok(())
+                },
+            );
         }
-        "detail-layer" => {
+        "detail-layer-chosen" => {
             let file_id = need_file()?;
             let layer = core
                 .state()
@@ -824,14 +1010,20 @@ pub fn callback(core: &Arc<Core>, host: &dyn SidebarHost, name: &str, args: &[Va
                 Ok(())
             });
         }
-        "detail-locked" => {
+        "detail-locked-toggled" => {
             let file_id = need_file()?;
             let locked = b(args, 0);
             let ids = selection(core, file_id);
-            actions::edit(core, file_id, ids, if locked { "Lock" } else { "Unlock" }, move |a| {
-                a.locked = locked;
-                Ok(())
-            });
+            actions::edit(
+                core,
+                file_id,
+                ids,
+                if locked { "Lock" } else { "Unlock" },
+                move |a| {
+                    a.locked = locked;
+                    Ok(())
+                },
+            );
         }
         "detail-delete" => {
             let file_id = need_file()?;
@@ -890,23 +1082,37 @@ pub fn callback(core: &Arc<Core>, host: &dyn SidebarHost, name: &str, args: &[Va
         "class-hotkey" => actions::class_hotkey(core, s(args, 0), s(args, 1)),
         "class-visible" => {
             let visible = b(args, 1);
-            actions::class_update(core, s(args, 0), "Show or hide class", false, move |_, c: &mut Class| {
-                c.visible = visible;
-                Ok(())
-            });
+            actions::class_update(
+                core,
+                s(args, 0),
+                "Show or hide class",
+                false,
+                move |_, c: &mut Class| {
+                    c.visible = visible;
+                    Ok(())
+                },
+            );
         }
         "class-opacity" => {
             let opacity = crate::model::clean_opacity(n(args, 1));
-            actions::class_update(core, s(args, 0), "Class opacity", false, move |_, c: &mut Class| {
-                c.opacity = opacity;
-                Ok(())
-            });
+            actions::class_update(
+                core,
+                s(args, 0),
+                "Class opacity",
+                false,
+                move |_, c: &mut Class| {
+                    c.opacity = opacity;
+                    Ok(())
+                },
+            );
         }
         "class-delete" => {
             let class_id = s(args, 0);
             let (name, used) = {
                 let state = core.state();
-                let class = state.class(&class_id).ok_or("That class no longer exists.")?;
+                let class = state
+                    .class(&class_id)
+                    .ok_or("That class no longer exists.")?;
                 (class.name.clone(), actions::class_usage(&state, &class_id))
             };
             confirm(
@@ -940,7 +1146,7 @@ pub fn callback(core: &Arc<Core>, host: &dyn SidebarHost, name: &str, args: &[Va
             let class = class_by_index(&core.state(), n(args, 0));
             actions::set_alternate_class(core, class);
         }
-        "count-hidden" => {
+        "count-hidden-toggled" => {
             core.state().settings.count_hidden_layers = b(args, 0);
             host.save_settings();
         }
@@ -949,7 +1155,10 @@ pub fn callback(core: &Arc<Core>, host: &dyn SidebarHost, name: &str, args: &[Va
             let count = core
                 .state()
                 .slide_of(file_id)
-                .and_then(|s| s.layer_by_role(LayerRole::Counts).map(|l| s.count_in(&l.id)))
+                .and_then(|s| {
+                    s.layer_by_role(LayerRole::Counts)
+                        .map(|l| s.count_in(&l.id))
+                })
                 .unwrap_or(0);
             if count == 0 {
                 return Ok(Value::Null);
@@ -958,7 +1167,9 @@ pub fn callback(core: &Arc<Core>, host: &dyn SidebarHost, name: &str, args: &[Va
                 core,
                 ConfirmArgs {
                     title: "Clear counts".into(),
-                    message: format!("Remove all {count} count point(s) of this slide? You can undo this."),
+                    message: format!(
+                        "Remove all {count} count point(s) of this slide? You can undo this."
+                    ),
                     confirm_label: "Clear".into(),
                     cancel_label: "Cancel".into(),
                     destructive: true,
@@ -976,8 +1187,10 @@ pub fn callback(core: &Arc<Core>, host: &dyn SidebarHost, name: &str, args: &[Va
                 }
             } else {
                 FieldSize::FieldNumber {
-                    field_number: parse(&s(args, 1)).ok_or("Enter the field number in mm, e.g. 22.")?,
-                    objective: parse(&s(args, 2)).ok_or("Enter the objective magnification, e.g. 40.")?,
+                    field_number: parse(&s(args, 1))
+                        .ok_or("Enter the field number in mm, e.g. 22.")?,
+                    objective: parse(&s(args, 2))
+                        .ok_or("Enter the objective magnification, e.g. 40.")?,
                 }
             };
             if field.area_mm2().is_none() {
@@ -993,7 +1206,10 @@ pub fn callback(core: &Arc<Core>, host: &dyn SidebarHost, name: &str, args: &[Va
             let from: i64 = s(args, 0).parse().map_err(|_| "unknown slide")?;
             let (title, dims_differ) = {
                 let state = core.state();
-                let target = state.files.get(&file_id).map(|f| (f.info.width, f.info.height));
+                let target = state
+                    .files
+                    .get(&file_id)
+                    .map(|f| (f.info.width, f.info.height));
                 let orphan = state
                     .orphans
                     .iter()
@@ -1003,13 +1219,19 @@ pub fn callback(core: &Arc<Core>, host: &dyn SidebarHost, name: &str, args: &[Va
                 (
                     orphan.record.filename.clone(),
                     orphan.record.width > 0
-                        && target.is_some_and(|(w, h)| (w, h) != (orphan.record.width, orphan.record.height)),
+                        && target.is_some_and(|(w, h)| {
+                            (w, h) != (orphan.record.width, orphan.record.height)
+                        }),
                 )
             };
             let mut message = format!(
                 "Attach the annotations of \"{}\" to the open slide? Use this when the slide file was re-saved, \
                  converted or de-identified. You can undo this.",
-                if title.is_empty() { "an older slide" } else { title.as_str() }
+                if title.is_empty() {
+                    "an older slide"
+                } else {
+                    title.as_str()
+                }
             );
             if dims_differ {
                 message.push_str(" Warning: the two slides have different sizes, so the annotations may not line up.");
@@ -1089,7 +1311,6 @@ pub fn callback(core: &Arc<Core>, host: &dyn SidebarHost, name: &str, args: &[Va
 
 /// Rebuilds every object after a display setting changed.
 fn restyle_all(core: &Arc<Core>) {
-    let core = core.clone();
     // Off the UI thread: this touches every object of every open slide.
     let task = move |core: &Arc<Core>, _: &mut crate::core::DbCtx| {
         let batch = crate::overlay::sync_all(&mut core.state());
@@ -1109,7 +1330,11 @@ fn selection(core: &Arc<Core>, file_id: FileId) -> Vec<String> {
 /// The annotations a draft belonged to (`detail-id` when it was typed).
 fn owner_ids(core: &Arc<Core>, file_id: FileId, owner: &str) -> Vec<String> {
     if let Some(list) = owner.strip_prefix("multi:") {
-        return list.split(',').map(str::to_string).filter(|s| !s.is_empty()).collect();
+        return list
+            .split(',')
+            .map(str::to_string)
+            .filter(|s| !s.is_empty())
+            .collect();
     }
     if owner.is_empty() {
         return selection(core, file_id);
@@ -1150,7 +1375,15 @@ mod tests {
     fn an_empty_state_has_every_property() {
         let state = State::new(Settings::default());
         let p = properties(&state, &SidebarView::default());
-        for key in ["rows", "classes", "tally", "detail-properties", "banner", "orphans", "field-text"] {
+        for key in [
+            "rows",
+            "classes",
+            "tally",
+            "detail-properties",
+            "banner",
+            "orphans",
+            "field-text",
+        ] {
             assert!(p.contains_key(key), "{key}");
         }
         assert_eq!(p["slide-title"], "No slide open");

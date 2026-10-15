@@ -233,7 +233,10 @@ fn registers_tools_and_opens_its_database_in_the_data_dir() {
         assert!(state.toolbar_buttons.contains_key(tools::SIDEBAR_BUTTON));
         assert!(state.hud_buttons.contains_key(tools::VISIBILITY_HUD));
     }
-    assert!(db.exists(), "the database lives in the plugin data directory");
+    assert!(
+        db.exists(),
+        "the database lives in the plugin data directory"
+    );
     // Default classes exist.
     let sidebar = open_sidebar(&h);
     assert!(prop(&h, &sidebar, "classes").as_array().unwrap().len() >= 5);
@@ -368,7 +371,7 @@ fn deletes_respect_locks_and_are_one_undo_step() {
         "row-clicked",
         vec![json!(all[0].1.object_id), json!("x"), json!(false)],
     );
-    callback(&h, &sidebar, "detail-locked", vec![json!(true)]);
+    callback(&h, &sidebar, "detail-locked-toggled", vec![json!(true)]);
     let refs: Vec<ObjectRef> = all.iter().map(|(l, o)| reference(l, o)).collect();
     h.send(HostEvent::ObjectsDeleteRequested { objects: refs })
         .unwrap();
@@ -476,7 +479,11 @@ fn selection_and_hover_follow_the_viewport_and_the_sidebar() {
         &h,
         &sidebar,
         "row-clicked",
-        vec![json!(object.object_id), json!(annotation_layer), json!(false)],
+        vec![
+            json!(object.object_id),
+            json!(annotation_layer),
+            json!(false),
+        ],
     );
     assert_eq!(
         h.state().layers[&layer].selection,
@@ -627,11 +634,22 @@ fn geojson_imports_are_validated_confirmed_atomic_and_undoable() {
     answer_dialog(&h, &path);
     let (modal_id, props) = modal(&h).expect("the import dialog");
     assert!(
-        props["summary"].as_str().unwrap().contains("3 annotation(s)"),
+        props["summary"]
+            .as_str()
+            .unwrap()
+            .contains("3 annotation(s)"),
         "{props:?}"
     );
-    assert!(props["notes"].as_str().unwrap().contains("outside the slide"));
-    assert!(objects(&h, 1).is_empty(), "nothing is written before confirmation");
+    assert!(
+        props["notes"]
+            .as_str()
+            .unwrap()
+            .contains("outside the slide")
+    );
+    assert!(
+        objects(&h, 1).is_empty(),
+        "nothing is written before confirmation"
+    );
     let undo_before = h.state().undo.len();
     h.ui_callback(&modal_id, "import-confirm", vec![json!(0)])
         .unwrap();
@@ -720,11 +738,16 @@ fn exports_are_written_atomically_without_paths() {
         answer_dialog(&h, &target);
         let text = std::fs::read_to_string(&target).unwrap();
         assert!(!text.contains(&full_path), "{item} leaks the slide path");
-        assert!(!text.contains("a.svs"), "{item} leaks the file name by default");
+        assert!(
+            !text.contains("a.svs"),
+            "{item} leaks the file name by default"
+        );
     }
-    let geojson: Value = serde_json::from_str(&std::fs::read_to_string(dir.join("out.geojson")).unwrap()).unwrap();
+    let geojson: Value =
+        serde_json::from_str(&std::fs::read_to_string(dir.join("out.geojson")).unwrap()).unwrap();
     assert_eq!(geojson["features"].as_array().unwrap().len(), 2);
-    let eov: Value = serde_json::from_str(&std::fs::read_to_string(dir.join("out.json")).unwrap()).unwrap();
+    let eov: Value =
+        serde_json::from_str(&std::fs::read_to_string(dir.join("out.json")).unwrap()).unwrap();
     assert_eq!(eov["format_version"], 2);
     assert_eq!(eov["slide"]["identity"], "eov-slide-1:a");
     let csv = std::fs::read_to_string(dir.join("out.csv")).unwrap();
@@ -761,15 +784,22 @@ fn read_only_databases_are_viewable_but_not_editable() {
         .unwrap();
     }
     std::fs::set_permissions(&db_path, std::fs::Permissions::from_mode(0o444)).unwrap();
-    init.settings.insert(
-        DATABASE_PATH_KEY.into(),
-        json!(db_path.to_string_lossy()),
-    );
+    init.settings
+        .insert(DATABASE_PATH_KEY.into(), json!(db_path.to_string_lossy()));
     let h = start(init);
     open(&h, info(1, "a", &dir));
-    assert_eq!(objects(&h, 1).len(), 1, "a read-only database can be viewed");
+    assert_eq!(
+        objects(&h, 1).len(),
+        1,
+        "a read-only database can be viewed"
+    );
     let sidebar = open_sidebar(&h);
-    assert!(prop(&h, &sidebar, "banner").as_str().unwrap().contains("read-only"));
+    assert!(
+        prop(&h, &sidebar, "banner")
+            .as_str()
+            .unwrap()
+            .contains("read-only")
+    );
     assert_eq!(prop(&h, &sidebar, "editable"), json!(false));
     draw(&h, POINT, 1, Shape::Point { x: 50.0, y: 50.0 });
     assert_eq!(objects(&h, 1).len(), 1);
@@ -797,8 +827,8 @@ fn pre_1_0_databases_are_migrated_and_found_by_fingerprint() {
     let file = info(1, "old", &dir);
     let fingerprint = fileio::legacy_fingerprint(Path::new(&file.path)).unwrap();
     {
-        let conn =
-            rusqlite::Connection::open(PathBuf::from(&init.data_dir).join("annotations.db")).unwrap();
+        let conn = rusqlite::Connection::open(PathBuf::from(&init.data_dir).join("annotations.db"))
+            .unwrap();
         conn.execute_batch(LEGACY_DDL).unwrap();
         conn.execute(
             "INSERT INTO annotation_layers VALUES ('L1', ?1, 'Mitoses', NULL, '#FF0000', 100, 200)",
@@ -835,7 +865,12 @@ fn classes_hotkeys_and_counting() {
     let classes = prop(&h, &sidebar, "classes");
     let new = classes.as_array().unwrap().last().unwrap().clone();
     let id = new["id"].as_str().unwrap().to_string();
-    callback(&h, &sidebar, "class-rename", vec![json!(id), json!("Blasts")]);
+    callback(
+        &h,
+        &sidebar,
+        "class-rename",
+        vec![json!(id), json!("Blasts")],
+    );
     callback(&h, &sidebar, "class-hotkey", vec![json!(id), json!("Q")]);
     let button = format!("class-{id}");
     {
@@ -856,7 +891,14 @@ fn classes_hotkeys_and_counting() {
     assert!(h.state().toolbar_buttons[&button].active);
     draw(&h, COUNT, 1, Shape::Point { x: 10.0, y: 10.0 });
     let counted = objects(&h, 1);
-    assert!(counted[0].1.tooltip.as_deref().unwrap().starts_with("Blasts"));
+    assert!(
+        counted[0]
+            .1
+            .tooltip
+            .as_deref()
+            .unwrap()
+            .starts_with("Blasts")
+    );
     // Hiding the class hides its annotations; showing brings them back.
     callback(&h, &sidebar, "class-visible", vec![json!(id), json!(false)]);
     assert!(objects(&h, 1).is_empty());
@@ -915,7 +957,15 @@ fn hpf_fields_have_the_configured_size_and_a_reticle_follows_the_view() {
         panic!()
     };
     assert_eq!(cx, 6000.0, "the reticle follows the view");
-    draw(&h, FIELD, 1, Shape::Point { x: 3000.0, y: 3000.0 });
+    draw(
+        &h,
+        FIELD,
+        1,
+        Shape::Point {
+            x: 3000.0,
+            y: 3000.0,
+        },
+    );
     let fields = objects(&h, 1);
     let Shape::Ellipse { rx, .. } = fields[0].1.shape else {
         panic!("{:?}", fields[0].1.shape)
@@ -963,8 +1013,18 @@ fn orphaned_annotations_can_be_attached_to_the_open_slide() {
     let sidebar = open_sidebar(&h);
     callback(&h, &sidebar, "tab-changed", vec![json!(sidebar::TAB_DATA)]);
     let orphans = prop(&h, &sidebar, "orphans");
-    let orphan = orphans.as_array().unwrap().first().expect("an orphan").clone();
-    assert!(orphan["title"].as_str().unwrap().contains("before-deidentification"));
+    let orphan = orphans
+        .as_array()
+        .unwrap()
+        .first()
+        .expect("an orphan")
+        .clone();
+    assert!(
+        orphan["title"]
+            .as_str()
+            .unwrap()
+            .contains("before-deidentification")
+    );
     callback(&h, &sidebar, "orphan-relink", vec![orphan["id"].clone()]);
     confirm(&h);
     assert_eq!(objects(&h, 1).len(), 1);
@@ -1017,12 +1077,21 @@ fn layers_can_be_created_renamed_hidden_and_deleted_with_undo() {
         .expect("the new layer is current")
         .clone();
     let id = new_layer["id"].as_str().unwrap().to_string();
-    callback(&h, &sidebar, "layer-rename", vec![json!(id), json!("  Reader 2 ")]);
+    callback(
+        &h,
+        &sidebar,
+        "layer-rename",
+        vec![json!(id), json!("  Reader 2 ")],
+    );
     let host_layer = overlay::host_layer_id(1, &id);
     assert_eq!(h.state().layers[&host_layer].spec.name, "Reader 2");
     // Too long a name is refused with a message.
     let error = h
-        .ui_callback(&sidebar, "layer-rename", vec![json!(id), json!("x".repeat(500))])
+        .ui_callback(
+            &sidebar,
+            "layer-rename",
+            vec![json!(id), json!("x".repeat(500))],
+        )
         .err();
     settle(&h);
     assert!(error.is_some() || notified(&h, "limit"));
@@ -1093,7 +1162,10 @@ fn settings_and_unknown_input_are_handled_safely() {
     let h = start(init);
     settle(&h);
     // Unknown callbacks and events are ignored.
-    assert_eq!(h.ui_callback("s", "no-such-callback", vec![]).unwrap(), Value::Null);
+    assert_eq!(
+        h.ui_callback("s", "no-such-callback", vec![]).unwrap(),
+        Value::Null
+    );
     h.send(HostEvent::Posted {
         token: "import:999".into(),
     })
