@@ -410,5 +410,33 @@ pub fn samples() -> Result<Samples, String> {
     {
         return Err("the second import shows no conflicts".into());
     }
+    // An NDPA on a slide that is not an NDPI: the preview explains.
+    let ndpa = dir.join("case.ndpa");
+    std::fs::write(
+        &ndpa,
+        r##"<?xml version="1.0"?><annotations><ndpviewstate id="1"><title>T</title>
+           <annotation type="pin" color="#ff0000"><x>0</x><y>0</y></annotation></ndpviewstate></annotations>"##,
+    )
+    .map_err(|e| e.to_string())?;
+    call(&h, &sb, "menu", vec![json!("import")]);
+    let request_id = pending_request(&h).ok_or("no file dialog for the NDPA import")?;
+    h.send(HostEvent::DialogResult {
+        request_id,
+        paths: vec![ndpa.to_string_lossy().into_owned()],
+    })
+    .map_err(|e| e.to_string())?;
+    settle(&h);
+    let modal = h
+        .state()
+        .surfaces
+        .iter()
+        .find(|(_, s)| s.open && s.spec.kind == SurfaceKind::Modal)
+        .map(|(id, s)| (id.clone(), s.properties.clone()));
+    let (modal_id, props) = modal.ok_or("the NDPA import dialog did not open")?;
+    if props["blocked"].as_str().is_none_or(str::is_empty) {
+        return Err("the NDPA preview is not blocked".into());
+    }
+    out.import.push(("ndpa blocked".into(), props));
+    call(&h, &modal_id, "import-cancel", vec![]);
     Ok(out)
 }

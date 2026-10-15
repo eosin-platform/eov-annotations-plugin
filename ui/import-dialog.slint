@@ -87,6 +87,8 @@ export component ImportDialog inherits Rectangle {
     in property <bool> mismatch;
     in property <string> notes;
     in property <string> conflicts;
+    // Why nothing can be imported ("" when the file can be).
+    in property <string> blocked;
 
     // 0 merge, 1 replace, 2 keep both
     callback import-confirm(int /* strategy */);
@@ -217,7 +219,7 @@ export component ImportDialog inherits Rectangle {
                         }
                     }
 
-                    Hint {
+                    if root.blocked == "": Hint {
                         text: "The import is one step: Ctrl+Z (⌘Z) removes everything it added.";
                     }
                 }
@@ -241,13 +243,13 @@ export component ImportDialog inherits Rectangle {
             alignment: end;
 
             TextButton {
-                text: "Cancel";
+                text: root.blocked != "" ? "Close" : "Cancel";
                 clicked => {
                     root.import-cancel();
                 }
             }
 
-            TextButton {
+            if root.blocked == "": TextButton {
                 text: root.mismatch ? "Import anyway" : "Import";
                 primary: !root.mismatch;
                 danger: root.mismatch;

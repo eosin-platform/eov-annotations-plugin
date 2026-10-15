@@ -85,9 +85,35 @@ pub struct ImportPlan {
     pub notes: Vec<String>,
     /// Imported layer names that already exist on the slide.
     pub conflicts: Vec<String>,
+    /// Why nothing can be imported (e.g. an NDPA on a slide that is not an
+    /// NDPI): shown in the preview instead of an Import button.
+    pub blocked: Option<String>,
 }
 
 impl ImportPlan {
+    /// A preview that only explains why the file cannot be imported.
+    pub fn blocked(
+        file_id: FileId,
+        slide_id: SlideId,
+        source: &str,
+        format: &'static str,
+        reason: String,
+    ) -> Self {
+        ImportPlan {
+            file_id,
+            slide_id,
+            source: source.to_string(),
+            format,
+            layers: Vec::new(),
+            classes: Vec::new(),
+            match_text: reason.clone(),
+            mismatch: true,
+            notes: Vec::new(),
+            conflicts: Vec::new(),
+            blocked: Some(reason),
+        }
+    }
+
     pub fn annotation_count(&self) -> usize {
         self.layers.iter().map(|l| l.annotations.len()).sum()
     }
@@ -260,6 +286,7 @@ pub fn prepare(
         mismatch,
         notes,
         conflicts,
+        blocked: None,
     })
 }
 
@@ -299,8 +326,8 @@ pub fn start_import(core: &Arc<Core>, file_id: FileId) {
         title: Some("Import annotations".into()),
         filters: vec![
             FileFilter {
-                name: "Annotations (GeoJSON, eov JSON, ASAP / ImageScope XML)".into(),
-                extensions: vec!["geojson".into(), "json".into(), "xml".into()],
+                name: "Annotations (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA)".into(),
+                extensions: vec!["geojson".into(), "json".into(), "xml".into(), "ndpa".into()],
             },
             FileFilter {
                 name: "All files".into(),
@@ -363,13 +390,35 @@ pub fn import_file(core: &Arc<Core>, file_id: FileId, path: PathBuf) {
                 job.update(None, Some("Reading"));
             }
             let doc = formats::parse(&bytes, &name)?;
-            let doc = if doc.entries.is_empty() {
+            let mut doc = if doc.entries.is_empty() {
                 doc
             } else {
                 pick_archive_entry(doc, &info)?
             };
+            let ndpa = doc.units == formats::Units::NdpaNanometres;
+            if ndpa {
+                // NDPA coordinates are nanometres from the slide centre: they
+                // need the slide's NDPI offsets, or the preview says why not.
+                let frame = core
+                    .host
+                    .file_properties(file_id)
+                    .map_err(|e| e.message)
+                    .and_then(|props| formats::ndpa::Frame::of_slide(&props, &info));
+                match frame {
+                    Ok(frame) => formats::ndpa::place(&mut doc, &frame),
+                    Err(reason) => {
+                        return Ok(Some(ImportPlan::blocked(file_id, slide_id, &name, doc.format, reason)));
+                    }
+                }
+            }
             let legacy_sha = doc.slide.legacy_sha256.clone();
             let mut plan = prepare(doc, file_id, slide_id, &info, &existing, &name)?;
+            if ndpa {
+                plan.match_text =
+                    "NDP.view annotations, placed with this slide's offsets from the slide centre and its pixel size."
+                        .to_string();
+                plan.mismatch = false;
+            }
             if let Some(expected) = legacy_sha {
                 // Exports of the pre-1.0 plugin carry the slide's SHA-256.
                 let digest = fileio::sha256_with_progress(Path::new(&info.path), &cancel, |f| {

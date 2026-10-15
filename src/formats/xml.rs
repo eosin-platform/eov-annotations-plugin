@@ -26,11 +26,14 @@ use roxmltree::{Document, Node};
 pub fn parse(text: &str, stem: &str) -> Result<ImportDoc, String> {
     let document = Document::parse(text).map_err(|e| format!("The XML is not well-formed: {e}"))?;
     let root = document.root_element();
+    if super::ndpa::is_ndpa(root) {
+        return Ok(super::ndpa::parse(root, stem));
+    }
     match root.tag_name().name() {
         "ASAP_Annotations" => Ok(parse_asap(root, stem)),
         "Annotations" => Ok(parse_imagescope(root, stem)),
         other => Err(format!(
-            "Unsupported XML annotations (root element <{other}>); ASAP and Aperio ImageScope files are supported."
+            "Unsupported XML annotations (root element <{other}>); ASAP, Aperio ImageScope and Hamamatsu NDPA files are supported."
         )),
     }
 }

@@ -344,9 +344,10 @@ impl AnnotationsPlugin {
             }
             let mut p = Map::new();
             p.insert("source".into(), json!(plan.source));
-            p.insert(
-                "summary".into(),
-                json!(format!(
+            let summary = if plan.blocked.is_some() {
+                format!("{} · cannot be placed on this slide", plan.format)
+            } else {
+                format!(
                     "{} · {} annotation(s) in {} layer(s){}",
                     plan.format,
                     plan.annotation_count(),
@@ -356,9 +357,14 @@ impl AnnotationsPlugin {
                     } else {
                         format!(" · {} class(es)", plan.classes.len())
                     }
-                )),
-            );
+                )
+            };
+            p.insert("summary".into(), json!(summary));
             p.insert("match-text".into(), json!(plan.match_text));
+            p.insert(
+                "blocked".into(),
+                json!(plan.blocked.clone().unwrap_or_default()),
+            );
             p.insert("mismatch".into(), json!(plan.mismatch));
             p.insert("notes".into(), json!(plan.notes.join("\n")));
             p.insert(
@@ -404,7 +410,9 @@ impl AnnotationsPlugin {
         };
         let plan = self.core.state().imports.remove(&plan_id);
         let _ = self.core.host.surface(surface_id).close();
-        if let (Some(plan), "import-confirm") = (plan, name) {
+        if let (Some(plan), "import-confirm") = (plan, name)
+            && plan.blocked.is_none()
+        {
             let strategy = transfer::Strategy::from_index(
                 args.first().and_then(Value::as_f64).unwrap_or(0.0) as i64,
             );

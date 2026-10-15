@@ -5,8 +5,9 @@
 //! | eov JSON (format 2, and the format of the pre-1.0 plugin) | ✓ | ✓ |
 //! | eov archive (every slide in the database) | ✓ (current slide) | ✓ |
 //! | GeoJSON (QuPath-compatible) | ✓ | ✓ |
-//! | ASAP XML | ✓ | |
-//! | Aperio ImageScope XML | ✓ | |
+//! | ASAP XML | ✓ | ✓ |
+//! | Aperio ImageScope XML | ✓ | ✓ |
+//! | Hamamatsu NDPA | ✓ (placed with the slide's NDPI offsets) | |
 //! | CSV measurements | | ✓ |
 //!
 //! All coordinates are level-0 pixels of the slide, origin at the top-left
@@ -21,15 +22,28 @@
 pub mod csv;
 pub mod eov;
 pub mod geojson;
+pub mod ndpa;
 pub mod xml;
 
 use crate::model::{Color, Geometry, Status};
 use std::collections::BTreeMap;
 
+/// The coordinates of a parsed document.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub enum Units {
+    /// Level-0 pixels (every format but NDPA).
+    #[default]
+    Pixels,
+    /// Nanometres from the centre of the slide (NDPA), until placed on a
+    /// slide with [`ndpa::place`].
+    NdpaNanometres,
+}
+
 /// What was read from a file.
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct ImportDoc {
     pub format: &'static str,
+    pub units: Units,
     pub layers: Vec<ImportLayer>,
     /// Classes named in the file, with their colours when given.
     pub classes: Vec<ImportClass>,
@@ -173,7 +187,8 @@ pub fn parse(bytes: &[u8], file_name: &str) -> Result<ImportDoc, String> {
         }
         Some('<') => xml::parse(text, &stem),
         _ => Err(
-            "Unsupported file: expected GeoJSON, eov JSON, ASAP XML or ImageScope XML.".to_string(),
+            "Unsupported file: expected GeoJSON, eov JSON, ASAP XML, ImageScope XML or NDPA."
+                .to_string(),
         ),
     }
 }

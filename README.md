@@ -180,6 +180,7 @@ has them for every annotation.
 | eov archive (every slide in the database) | ✓ (one slide) | ✓ |
 | ASAP XML | ✓ | ✓ |
 | Aperio ImageScope XML | ✓ | ✓ |
+| Hamamatsu NDPA (NDP.view) | ✓ | |
 | CSV measurements | | ✓ |
 
 **Importing** (Data → Import…, or `⋯` → Import annotations…) reads the file
@@ -222,6 +223,14 @@ names and texts are cut to the limits.
   become holes of the region that contains them. Exports write one
   annotation per layer and one region per annotation (holes as negative
   regions), with the class and description as region attributes.
+- **NDPA** (NDP.view): freehand outlines and lines, rectangles, circles,
+  pins and arrows, with their titles and details; one layer per colour.
+  NDPA coordinates are nanometres measured from the centre of the glass
+  slide, so they are placed with the open slide's NDPI properties
+  (`hamamatsu.XOffsetFromSlideCentre` / `YOffsetFromSlideCentre`) and pixel
+  size: `x_px = (x_nm − XOffset) / (mpp · 1000) + width / 2`, likewise y.
+  If the slide is not an NDPI or lacks those properties, the preview says
+  so and nothing is imported.
 - **CSV**: one row per annotation with its layer, class, kind, status,
   author, timestamps, centre and measurements in µm and pixels, and whether
   the slide was calibrated. Cells that a spreadsheet would run as formulas
@@ -363,8 +372,8 @@ This depends on what eov's plugin API offers today:
 - A region made of several separate parts is stored as several
   annotations (eov's shapes have no multipolygon).
 
-Not done yet: NDPA and DICOM annotation formats, comment threads and
-blinded multi-reader copies.
+Not done yet: DICOM annotation formats (SR, Bulk Simple Annotations),
+comment threads and blinded multi-reader copies.
 
 ## Repository layout
 

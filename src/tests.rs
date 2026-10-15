@@ -1662,3 +1662,86 @@ fn the_brush_paints_extends_and_erases_regions_one_undo_step_per_stroke() {
     settle(&h);
     assert!(!h.state().layers.contains_key("brush.1"));
 }
+
+const NDPA: &str = r##"<?xml version="1.0" encoding="utf-8"?>
+<annotations>
+  <ndpviewstate id="1">
+    <title>Tumour</title>
+    <coordformat>nanometers</coordformat>
+    <annotation type="freehand" color="#ff0000"><closed>1</closed>
+      <pointlist>
+        <point><x>0</x><y>0</y></point>
+        <point><x>250000</x><y>0</y></point>
+        <point><x>250000</x><y>250000</y></point>
+      </pointlist>
+    </annotation>
+  </ndpviewstate>
+  <ndpviewstate id="2">
+    <title>Mitosis</title>
+    <annotation type="pin" color="#ff0000"><x>-250000</x><y>0</y></annotation>
+  </ndpviewstate>
+</annotations>"##;
+
+#[test]
+fn ndpa_imports_are_placed_with_the_ndpi_offsets_or_explain_why_not() {
+    let (h, dir) = fresh();
+    let path = dir.join("case.ndpi.ndpa");
+    std::fs::write(&path, NDPA).unwrap();
+    // An NDPI: 10 000 × 8 000 px at 0.25 µm/px whose image centre is the
+    // slide centre.
+    open(&h, info(1, "ndpi", &dir));
+    h.state().properties.insert(
+        1,
+        [
+            ("openslide.vendor", "hamamatsu"),
+            ("hamamatsu.XOffsetFromSlideCentre", "0"),
+            ("hamamatsu.YOffsetFromSlideCentre", "0"),
+        ]
+        .into_iter()
+        .map(|(k, v)| (k.to_string(), v.to_string()))
+        .collect(),
+    );
+    let sidebar = open_sidebar(&h);
+    callback(&h, &sidebar, "menu", vec![json!("import")]);
+    answer_dialog(&h, &path);
+    let (modal_id, props) = modal(&h).expect("the import dialog");
+    assert_eq!(props["blocked"], "");
+    assert!(
+        props["summary"]
+            .as_str()
+            .unwrap()
+            .contains("2 annotation(s)"),
+        "{props:?}"
+    );
+    assert!(props["match-text"].as_str().unwrap().contains("offsets"));
+    h.ui_callback(&modal_id, "import-confirm", vec![json!(0)])
+        .unwrap();
+    settle(&h);
+    let shapes: Vec<Shape> = objects(&h, 1).into_iter().map(|(_, o)| o.shape).collect();
+    // 250 µm = 1000 px from the centre (5000, 4000).
+    assert!(
+        shapes.contains(&Shape::Point {
+            x: 4000.0,
+            y: 4000.0
+        }),
+        "{shapes:?}"
+    );
+    assert!(
+        shapes.iter().any(
+            |s| matches!(s, Shape::Polygon { exterior, .. } if exterior[1] == [6000.0, 4000.0])
+        )
+    );
+    // A slide that is not an NDPI: the preview says why and imports nothing.
+    open(&h, info(2, "svs", &dir));
+    callback(&h, &sidebar, "menu", vec![json!("import")]);
+    answer_dialog(&h, &path);
+    let (modal_id, props) = modal(&h).expect("the import dialog");
+    assert!(
+        props["blocked"].as_str().unwrap().contains("Hamamatsu"),
+        "{props:?}"
+    );
+    h.ui_callback(&modal_id, "import-confirm", vec![json!(0)])
+        .unwrap();
+    settle(&h);
+    assert!(objects(&h, 2).is_empty());
+}
