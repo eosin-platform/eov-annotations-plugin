@@ -221,7 +221,14 @@ impl AnnotationsPlugin {
                         .and_then(|id| state.class(id))
                         .map(|c| format!(", Shift+click: {}", c.name))
                         .unwrap_or_default();
-                    format!("Counting {class}{alternate}")
+                    let immune = state
+                        .settings
+                        .immune_class
+                        .as_deref()
+                        .and_then(|id| state.class(id))
+                        .map(|c| format!(", Alt+click: {}", c.name))
+                        .unwrap_or_default();
+                    format!("Counting {class}{alternate}{immune}")
                 }
                 tools::FIELD => {
                     "The dashed circle is one HPF: click to place a field, drag to pan, \

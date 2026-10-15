@@ -165,7 +165,9 @@ pub fn shape_drawn(
     let active = settings.active_class.clone();
     match tool {
         tools::COUNT => {
-            let class = if modifiers.shift {
+            let class = if modifiers.alt && settings.immune_class.is_some() {
+                settings.immune_class.clone()
+            } else if modifiers.shift {
                 settings.alternate_class.clone().or(active)
             } else {
                 active

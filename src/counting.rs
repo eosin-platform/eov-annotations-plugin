@@ -48,6 +48,7 @@ struct TallyKey {
     include_hidden: bool,
     active: Option<String>,
     alternate: Option<String>,
+    immune: Option<String>,
     /// The classes' ids, names and colours.
     classes: u64,
     mpp: (Option<u64>, Option<u64>),
@@ -73,6 +74,7 @@ fn tally_key(state: &State, slide: &SlideData, selection: &[String]) -> TallyKey
         include_hidden: state.settings.count_hidden_layers,
         active: state.settings.active_class.clone(),
         alternate: state.settings.alternate_class.clone(),
+        immune: state.settings.immune_class.clone(),
         classes: hasher.finish(),
         mpp: (
             slide.record.mpp_x.map(f64::to_bits),
@@ -137,6 +139,7 @@ pub fn tally(state: &State, slide: &SlideData, selection: &[String]) -> Tally {
             counts.contains_key(&Some(c.id.clone()))
                 || state.settings.active_class.as_deref() == Some(c.id.as_str())
                 || state.settings.alternate_class.as_deref() == Some(c.id.as_str())
+                || state.settings.immune_class.as_deref() == Some(c.id.as_str())
         })
         .map(|c| TallyRow {
             class_id: Some(c.id.clone()),
@@ -190,6 +193,43 @@ pub fn density_text(count: u64, area_mm2: f64, field: &FieldSize) -> (String, St
 }
 
 /// `k / (k + m)` as a percentage with its exact interval.
+/// The fewest viable tumour cells for a valid PD-L1 score.
+pub const CPS_MIN_TUMOUR_CELLS: u64 = 100;
+
+/// The PD-L1 combined positive score: positive tumour cells (`a`) plus
+/// positive immune cells (`c`) per 100 viable tumour cells (`a + b`),
+/// capped at 100. One decimal is shown rather than a rounded integer, so a
+/// value next to a cut-off (1, 10, 20) is not rounded across it.
+pub fn cps_text(
+    tumour_positive: &str,
+    tumour_negative: &str,
+    immune_positive: &str,
+    a: u64,
+    b: u64,
+    c: u64,
+) -> Option<String> {
+    let tumour = a + b;
+    if tumour == 0 {
+        return None;
+    }
+    let raw = 100.0 * (a + c) as f64 / tumour as f64;
+    let score = if raw > 100.0 {
+        "100 (capped; the ratio is higher)".to_string()
+    } else {
+        format!("{raw:.1}")
+    };
+    let few = if tumour < CPS_MIN_TUMOUR_CELLS {
+        format!(
+            " Fewer than {CPS_MIN_TUMOUR_CELLS} tumour cells: below the minimum for a valid score."
+        )
+    } else {
+        String::new()
+    };
+    Some(format!(
+        "CPS {score} — ({a} {tumour_positive} + {c} {immune_positive}) per {tumour} tumour cells ({tumour_positive} + {tumour_negative}) × 100.{few}"
+    ))
+}
+
 pub fn index_text(numerator: &str, denominator: &str, k: u64, m: u64) -> Option<String> {
     let n = k + m;
     let (lo, hi) = binomial_interval(k, n)?;
@@ -421,6 +461,42 @@ mod tests {
                 .iter()
                 .any(|row| row.name == "Ki-67 positive"),
             "renamed classes are not served stale"
+        );
+    }
+
+    #[test]
+    fn combined_positive_scores_are_capped_and_flag_small_samples() {
+        let text = cps_text(
+            "PD-L1+ tumour",
+            "PD-L1- tumour",
+            "PD-L1+ immune",
+            30,
+            170,
+            12,
+        )
+        .unwrap();
+        assert!(
+            text.starts_with("CPS 21.0 — (30 PD-L1+ tumour + 12 PD-L1+ immune) per 200"),
+            "{text}"
+        );
+        assert!(!text.contains("minimum"));
+        // Not rounded across a cut-off.
+        assert!(
+            cps_text("a", "b", "c", 19, 981, 0)
+                .unwrap()
+                .starts_with("CPS 1.9 ")
+        );
+        let capped = cps_text("a", "b", "c", 90, 10, 50).unwrap();
+        assert!(capped.starts_with("CPS 100 (capped"), "{capped}");
+        assert!(
+            cps_text("a", "b", "c", 5, 40, 3)
+                .unwrap()
+                .contains("below the minimum")
+        );
+        assert_eq!(
+            cps_text("a", "b", "c", 0, 0, 7),
+            None,
+            "no tumour cells, no score"
         );
     }
 

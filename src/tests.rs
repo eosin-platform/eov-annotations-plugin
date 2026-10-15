@@ -877,6 +877,98 @@ fn pre_1_0_databases_are_migrated_and_found_by_fingerprint() {
 }
 
 #[test]
+fn alt_click_counts_immune_cells_for_the_combined_positive_score() {
+    let (h, dir) = fresh();
+    open(&h, info(1, "a", &dir));
+    let sidebar = open_sidebar(&h);
+    let mut ids = Vec::new();
+    for name in ["PD-L1+ tumour", "PD-L1- tumour", "PD-L1+ immune"] {
+        callback(&h, &sidebar, "class-new", vec![]);
+        let classes = prop(&h, &sidebar, "classes");
+        let id = classes.as_array().unwrap().last().unwrap()["id"]
+            .as_str()
+            .unwrap()
+            .to_string();
+        callback(&h, &sidebar, "class-rename", vec![json!(id), json!(name)]);
+        ids.push(id);
+    }
+    let index_of = |id: &str| -> i64 {
+        let names = prop(&h, &sidebar, "class-names");
+        let classes = prop(&h, &sidebar, "classes");
+        let name = classes
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|c| c["id"] == json!(id))
+            .unwrap()["name"]
+            .clone();
+        names
+            .as_array()
+            .unwrap()
+            .iter()
+            .position(|n| *n == name)
+            .unwrap() as i64
+    };
+    callback(&h, &sidebar, "count-active", vec![json!(index_of(&ids[0]))]);
+    callback(
+        &h,
+        &sidebar,
+        "count-alternate",
+        vec![json!(index_of(&ids[1]))],
+    );
+    callback(&h, &sidebar, "count-immune", vec![json!(index_of(&ids[2]))]);
+    assert_eq!(
+        prop(&h, &sidebar, "count-immune-index"),
+        json!(index_of(&ids[2]))
+    );
+    let mut clicks = 0.0;
+    let mut count = |modifiers: Modifiers, n: usize| {
+        for _ in 0..n {
+            clicks += 1.0;
+            draw_with(
+                &h,
+                COUNT,
+                1,
+                Shape::Point {
+                    x: 10.0 * clicks,
+                    y: 10.0,
+                },
+                modifiers,
+            );
+        }
+    };
+    count(Modifiers::default(), 3);
+    count(
+        Modifiers {
+            shift: true,
+            ..Default::default()
+        },
+        9,
+    );
+    count(
+        Modifiers {
+            alt: true,
+            ..Default::default()
+        },
+        2,
+    );
+    let index = prop(&h, &sidebar, "count-index");
+    let index = index.as_str().unwrap();
+    assert!(
+        index.contains("CPS 41.7 — (3 PD-L1+ tumour + 2 PD-L1+ immune) per 12 tumour cells"),
+        "{index}"
+    );
+    assert!(
+        index.contains("below the minimum"),
+        "12 tumour cells are too few"
+    );
+    assert!(
+        index.contains("PD-L1+ tumour index: 25.0 %"),
+        "the TPS stays: {index}"
+    );
+}
+
+#[test]
 fn classes_hotkeys_and_counting() {
     let (h, dir) = fresh();
     open(&h, info(1, "a", &dir));

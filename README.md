@@ -133,9 +133,10 @@ annotations unclassified (with undo).
 
 ### Counting
 
-Pick the classes counted by a click and by Shift+click in the Count tab,
-choose the Count tool and click cells. The tally counts the point
-annotations of the visible layers (optionally of hidden layers too):
+Pick the classes counted by a click, by Shift+click and (optionally) by
+Alt+click in the Count tab, choose the Count tool and click cells. The
+tally counts the point annotations of the visible layers (optionally of
+hidden layers too):
 
 - with no region selected, on the whole slide;
 - with regions or HPF fields selected, inside their union, with the area,
@@ -143,7 +144,15 @@ annotations of the visible layers (optionally of hidden layers too):
   the count per 10 HPF (or per field, when only fields are selected);
 - with two count classes, the index *first / (first + second)* with its
   exact 95 % (Clopper–Pearson) interval, e.g. the Ki-67 proliferation index
-  with *Positive* and *Negative*.
+  with *Positive* and *Negative*, or the PD-L1 tumour proportion score;
+- with an Alt+click class as well, the PD-L1 combined positive score:
+  (click + Alt+click counts) per 100 tumour cells (click + Shift+click
+  counts), i.e. positive tumour and immune cells over all tumour cells. It
+  is shown with one decimal, so a value next to a cut-off is not rounded
+  across it, capped at 100, and flagged below 100 tumour cells. On desktops
+  where Alt+click moves windows, change that modifier in the window
+  manager, or make the immune class active with its hotkey while counting
+  it.
 
 Counts follow every edit at once, and areas use the same even-odd rule as
 the point-in-region test and the display. **Clear counts…** removes the

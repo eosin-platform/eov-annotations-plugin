@@ -36,6 +36,11 @@ pub struct Settings {
     pub active_class: Option<String>,
     /// The class Shift+click counts with.
     pub alternate_class: Option<String>,
+    /// The class Alt+click counts: PD-L1-positive immune cells
+    /// (lymphocytes, macrophages) for the combined positive score, with the
+    /// click class as positive and the Shift+click class as negative
+    /// tumour cells.
+    pub immune_class: Option<String>,
     pub count_hidden_layers: bool,
     /// The sidebar tab shown last.
     pub tab: i32,
@@ -62,6 +67,7 @@ impl Default for Settings {
             show_labels: true,
             active_class: None,
             alternate_class: None,
+            immune_class: None,
             count_hidden_layers: false,
             tab: 0,
             brush_size: 24.0,
@@ -686,6 +692,7 @@ impl State {
                                 for id in [
                                     &mut self.settings.active_class,
                                     &mut self.settings.alternate_class,
+                                    &mut self.settings.immune_class,
                                 ] {
                                     if id.as_deref() == Some(before.id.as_str()) {
                                         *id = None;

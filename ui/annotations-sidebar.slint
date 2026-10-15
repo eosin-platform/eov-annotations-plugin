@@ -336,6 +336,7 @@ export component AnnotationsSidebar inherits Rectangle {
 
     in property <int> count-active-index;
     in property <int> count-alternate-index;
+    in property <int> count-immune-index;
     in property <[TallyRow]> tally;
     in property <string> count-scope;
     in property <string> count-index;
@@ -424,6 +425,7 @@ export component AnnotationsSidebar inherits Rectangle {
 
     callback count-active(int /* index in class-names */);
     callback count-alternate(int /* index in class-names */);
+    callback count-immune(int /* index in class-names */);
     callback count-hidden-toggled(bool);
     callback count-clear();
     callback fields-select();
@@ -534,6 +536,8 @@ export component AnnotationsSidebar inherits Rectangle {
             root.count-active(index);
         } else if root.popup-target == "count-alternate" {
             root.count-alternate(index);
+        } else if root.popup-target == "count-immune" {
+            root.count-immune(index);
         } else if root.popup-target == "field-mode" {
             root.local-field-mode = index;
         }
@@ -1541,7 +1545,7 @@ export component AnnotationsSidebar inherits Rectangle {
                         spacing: 8px;
 
                         Hint {
-                            text: "Pick the Count tool (C) and click cells; Shift+click counts the second class. Select regions or HPF fields to count inside them.";
+                            text: "Pick the Count tool (C) and click cells; Shift+click and Alt+click count the second and third class. Select regions or HPF fields to count inside them.";
                         }
 
                         HorizontalLayout {
@@ -1598,6 +1602,27 @@ export component AnnotationsSidebar inherits Rectangle {
                                     root.open-list("count-alternate", root.class-names, root.count-alternate-index, x, y, w);
                                 }
                             }
+                        }
+
+                        HorizontalLayout {
+                            spacing: 6px;
+
+                            Label {
+                                text: "Alt+click";
+                                min-width: 80px;
+                            }
+
+                            ChoiceButton {
+                                text: root.count-immune-index == 0 ? "(none)" : root.class-names[root.count-immune-index];
+                                accessible-label: "Class counted by Alt+click: PD-L1-positive immune cells for the combined positive score";
+                                open(x, y, w) => {
+                                    root.open-list("count-immune", root.class-names, root.count-immune-index, x, y, w);
+                                }
+                            }
+                        }
+
+                        if root.count-immune-index != 0: Hint {
+                            text: "Combined positive score: the click and Alt+click classes (PD-L1-positive tumour and immune cells) per 100 tumour cells (the click and Shift+click classes).";
                         }
 
                         Separator { }

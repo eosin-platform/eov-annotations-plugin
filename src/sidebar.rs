@@ -76,6 +76,7 @@ pub const CALLBACKS: &[(&str, &str)] = &[
     ("class-delete", "s"),
     ("count-active", "n"),
     ("count-alternate", "n"),
+    ("count-immune", "n"),
     ("count-hidden-toggled", "b"),
     ("count-clear", ""),
     ("fields-select", ""),
@@ -654,6 +655,11 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
         "count-alternate-index",
         class_index(state.settings.alternate_class.as_deref()),
     );
+    put(
+        &mut p,
+        "count-immune-index",
+        class_index(state.settings.immune_class.as_deref()),
+    );
     let mut tally_rows = Vec::new();
     let (mut scope, mut index_line) = (String::new(), String::new());
     let mut field_count = 0;
@@ -716,6 +722,21 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                 && let Some(text) = counting::index_text(&ca.name, &cb.name, count(a), count(b))
             {
                 index_line = text;
+            }
+            // The combined positive score, with the click and Shift+click
+            // classes as positive and negative tumour cells.
+            if let Some(c) = &state.settings.immune_class
+                && c != a
+                && c != b
+                && let (Some(ca), Some(cb), Some(cc)) =
+                    (state.class(a), state.class(b), state.class(c))
+                && let Some(text) =
+                    counting::cps_text(&ca.name, &cb.name, &cc.name, count(a), count(b), count(c))
+            {
+                if !index_line.is_empty() {
+                    index_line.push('\n');
+                }
+                index_line.push_str(&text);
             }
         }
     }
@@ -1336,6 +1357,11 @@ pub fn callback(
         "count-alternate" => {
             let class = class_by_index(&core.state(), n(args, 0));
             actions::set_alternate_class(core, class);
+        }
+        "count-immune" => {
+            let class = class_by_index(&core.state(), n(args, 0));
+            core.state().settings.immune_class = class;
+            host.save_settings();
         }
         "count-hidden-toggled" => {
             core.state().settings.count_hidden_layers = b(args, 0);
