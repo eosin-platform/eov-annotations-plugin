@@ -2,19 +2,32 @@
 name = "annotations"
 version = "1.0.0"
 edition = "2024"
-publish = false
+rust-version = "1.89"
+description = "Annotations, classes, cell counting, HPF fields and measurements for the eov whole-slide image viewer"
+repository = "https://github.com/eosin-platform/eov-annotations-plugin"
 license = "MIT OR Apache-2.0 OR GPL-3.0"
+publish = false
 
 [lib]
+# The library must be named after the plugin id in plugin.toml.
+name = "annotations"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-abi_stable = { version = "0.11", default-features = false }
-eov-common = { path = "../../common" }
-eov-plugin-api = { path = "../../plugin_api" }
-dirs = "6"
+eov-plugin-api = { path = "../../plugin_api", version = "1.0" }
+# Robust polygon boolean operations (repairing self-intersections, holes,
+# clipping to the slide) with the even-odd rule the host fills with.
+i_overlay = "9.1"
+roxmltree = "0.21"
 rusqlite = { version = "0.32", features = ["bundled"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+sha2 = "0.10"
+statrs = { version = "0.19", default-features = false, features = ["std"] }
 uuid = { version = "1", features = ["v4"] }
-statrs = "0.19"
+
+[dev-dependencies]
+tempfile = "3"
+
+# Built on its own, not as a member of the eov workspace.
+[workspace]
