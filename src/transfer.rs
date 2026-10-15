@@ -650,6 +650,20 @@ pub fn start_export(core: &Arc<Core>, file_id: FileId, format: ExportFormat) {
                 extensions: vec!["csv".into()],
             },
         ),
+        ExportFormat::Asap => (
+            format!("{}.asap.xml", stem(&filename)),
+            FileFilter {
+                name: "ASAP XML".into(),
+                extensions: vec!["xml".into()],
+            },
+        ),
+        ExportFormat::ImageScope => (
+            format!("{}.xml", stem(&filename)),
+            FileFilter {
+                name: "Aperio ImageScope XML".into(),
+                extensions: vec!["xml".into()],
+            },
+        ),
     };
     save_dialog(
         core,
@@ -737,6 +751,10 @@ pub fn export_file(core: &Arc<Core>, file_id: FileId, format: ExportFormat, path
                 serde_json::to_vec_pretty(&eov::export(&slide, &classes, &options))
             }
             ExportFormat::Csv => Ok(formats::csv::export(&slide, &classes).into_bytes()),
+            ExportFormat::Asap => Ok(formats::xml::export_asap(&slide, &classes).into_bytes()),
+            ExportFormat::ImageScope => {
+                Ok(formats::xml::export_imagescope(&slide, &classes).into_bytes())
+            }
         };
         let result = bytes
             .map_err(|e| e.to_string())

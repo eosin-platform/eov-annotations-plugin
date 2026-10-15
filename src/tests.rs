@@ -732,6 +732,8 @@ fn exports_are_written_atomically_without_paths() {
         ("export-geojson", "out.geojson"),
         ("export-eov", "out.json"),
         ("export-csv", "out.csv"),
+        ("export-asap", "out.asap.xml"),
+        ("export-imagescope", "out.imagescope.xml"),
     ] {
         let target = dir.join(name);
         callback(&h, &sidebar, "menu", vec![json!(item)]);
@@ -758,9 +760,26 @@ fn exports_are_written_atomically_without_paths() {
     // Re-importing our own export recognises the slide.
     callback(&h, &sidebar, "menu", vec![json!("import")]);
     answer_dialog(&h, &dir.join("out.json"));
-    let (_, props) = modal(&h).unwrap();
+    let (modal_id, props) = modal(&h).unwrap();
     assert_eq!(props["match-text"], "Made for this slide.");
     assert_eq!(props["mismatch"], json!(false));
+    h.ui_callback(&modal_id, "import-cancel", vec![]).unwrap();
+    settle(&h);
+    // The XML exports import as the same two annotations.
+    for name in ["out.asap.xml", "out.imagescope.xml"] {
+        callback(&h, &sidebar, "menu", vec![json!("import")]);
+        answer_dialog(&h, &dir.join(name));
+        let (modal_id, props) = modal(&h).unwrap();
+        assert!(
+            props["summary"]
+                .as_str()
+                .unwrap()
+                .contains("2 annotation(s)"),
+            "{name}: {props:?}"
+        );
+        h.ui_callback(&modal_id, "import-cancel", vec![]).unwrap();
+        settle(&h);
+    }
 }
 
 #[cfg(unix)]

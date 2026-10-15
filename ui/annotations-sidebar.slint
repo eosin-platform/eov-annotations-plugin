@@ -434,12 +434,24 @@ export component AnnotationsSidebar inherits Rectangle {
         "Import annotations…",
         "Export as GeoJSON (QuPath)…",
         "Export as eov JSON…",
+        "Export as ASAP XML…",
+        "Export as ImageScope XML…",
         "Export measurements (CSV)…",
         "Export all slides…",
         "Back up the database…",
         "Merge a database…",
     ];
-    property <[string]> menu-ids: ["import", "export-geojson", "export-eov", "export-csv", "export-all", "backup", "merge-db"];
+    property <[string]> menu-ids: [
+        "import",
+        "export-geojson",
+        "export-eov",
+        "export-asap",
+        "export-imagescope",
+        "export-csv",
+        "export-all",
+        "backup",
+        "merge-db",
+    ];
     property <[string]> status-names: ["Draft", "Verified", "Rejected"];
     property <[string]> field-modes: ["Field number and objective", "Field area"];
     property <[{hex: string, color: color}]> palette: [
@@ -1767,6 +1779,27 @@ export component AnnotationsSidebar inherits Rectangle {
                                 enabled: root.has-slide;
                                 clicked => {
                                     root.menu("export-csv");
+                                }
+                            }
+                        }
+
+                        HorizontalLayout {
+                            spacing: 6px;
+                            alignment: start;
+
+                            TextButton {
+                                text: "ASAP XML…";
+                                enabled: root.has-slide;
+                                clicked => {
+                                    root.menu("export-asap");
+                                }
+                            }
+
+                            TextButton {
+                                text: "ImageScope XML…";
+                                enabled: root.has-slide;
+                                clicked => {
+                                    root.menu("export-imagescope");
                                 }
                             }
                         }

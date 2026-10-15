@@ -780,6 +780,10 @@ pub fn callback(
                 "export-geojson" => transfer::start_export(core, need_file()?, ExportFormat::GeoJson),
                 "export-eov" => transfer::start_export(core, need_file()?, ExportFormat::Eov),
                 "export-csv" => transfer::start_export(core, need_file()?, ExportFormat::Csv),
+                "export-asap" => transfer::start_export(core, need_file()?, ExportFormat::Asap),
+                "export-imagescope" => {
+                    transfer::start_export(core, need_file()?, ExportFormat::ImageScope)
+                }
                 "export-all" => transfer::save_dialog(
                     core,
                     "Export all annotations",

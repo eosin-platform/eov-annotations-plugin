@@ -174,8 +174,8 @@ has them for every annotation.
 | GeoJSON (QuPath and others) | ✓ | ✓ |
 | eov JSON (format 2; format 1 of the plugin before 1.0) | ✓ | ✓ |
 | eov archive (every slide in the database) | ✓ (one slide) | ✓ |
-| ASAP XML | ✓ | |
-| Aperio ImageScope XML | ✓ | |
+| ASAP XML | ✓ | ✓ |
+| Aperio ImageScope XML | ✓ | ✓ |
 | CSV measurements | | ✓ |
 
 **Importing** (Data → Import…, or `⋯` → Import annotations…) reads the file
@@ -205,12 +205,19 @@ names and texts are cut to the limits.
 - **eov JSON**: self-describing (`format`, `format_version`, the coordinate
   convention, the slide's identity, quickhash, size, pixel size and
   bounds), with classes, layers and every annotation field.
-- **ASAP XML**: dots, point sets, rectangles, polygons and splines (as
-  their control polygon); groups become classes.
+- **ASAP XML**: dots, point sets, rectangles, polygons, splines (as
+  their control polygon) and measurements (as lines); groups become
+  classes. Exports write classes as groups and ASAP's nearest shape for what
+  it lacks (ellipses as polygons, lines and arrows as measurements, text as
+  dots, holes as polygons of their own), with `Eov…` attributes ASAP
+  ignores and eov reads back, so layers, holes, ellipses, arrows and text
+  survive a round trip.
 - **ImageScope XML**: each annotation becomes a layer, `LineColor` its
-  colour; polygon and freehand, rectangle, ellipse, point, ruler and arrow
-  (as lines) regions; negative regions become holes of the region that
-  contains them.
+  colour; polygon and freehand, rectangle, ellipse, point, ruler (a line)
+  and arrow (from its first vertex to its last) regions; negative regions
+  become holes of the region that contains them. Exports write one
+  annotation per layer and one region per annotation (holes as negative
+  regions), with the class and description as region attributes.
 - **CSV**: one row per annotation with its layer, class, kind, status,
   author, timestamps, centre and measurements in µm and pixels, and whether
   the slide was calibrated. Cells that a spreadsheet would run as formulas
@@ -353,8 +360,7 @@ This depends on what eov's plugin API offers today:
   annotations (eov's shapes have no multipolygon).
 
 Not done yet: a brush with eraser, NDPA and DICOM annotation
-formats, export to ASAP or ImageScope XML, comment threads and blinded
-multi-reader copies.
+formats, comment threads and blinded multi-reader copies.
 
 ## Repository layout
 

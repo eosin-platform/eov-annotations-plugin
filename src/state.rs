@@ -390,6 +390,8 @@ pub enum ExportFormat {
     GeoJson,
     Eov,
     Csv,
+    Asap,
+    ImageScope,
 }
 
 /// A host dialog or confirmation the plugin waits for.
