@@ -565,6 +565,29 @@ impl Db {
         Ok(rows.collect::<Result<Vec<_>, _>>()?)
     }
 
+    /// Ids of the live layers of a slide.
+    pub fn layer_ids(&self, slide_id: SlideId) -> DbResult<Vec<String>> {
+        Ok(self.load_layers(slide_id)?.into_iter().map(|l| l.id).collect())
+    }
+
+    /// Every slide with its contents (for archives).
+    pub fn all_slides(&mut self) -> DbResult<Vec<(SlideRecord, LoadedSlide)>> {
+        let sql = format!("SELECT {} FROM slides ORDER BY id", Self::SLIDE_COLUMNS);
+        let records: Vec<SlideRecord> = self
+            .conn
+            .prepare(&sql)?
+            .query_map([], Self::slide_from_row)?
+            .collect::<Result<_, _>>()?;
+        let mut out = Vec::new();
+        for record in records {
+            let loaded = self.load_slide(record.id)?;
+            if !loaded.layers.is_empty() {
+                out.push((record, loaded));
+            }
+        }
+        Ok(out)
+    }
+
     /// Remembers the layer new annotations go to (ANN-18).
     pub fn set_current_layer(&mut self, slide_id: SlideId, layer_id: Option<&str>) -> DbResult<()> {
         self.writable()?;

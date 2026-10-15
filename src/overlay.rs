@@ -11,7 +11,7 @@ use crate::change::Change;
 use crate::model::{Annotation, Class, GeometryKind, Layer, LayerRole, SlideId, Status};
 use crate::state::State;
 use eov_plugin_api::prelude::*;
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 use std::sync::Arc;
 
 /// Objects per host call (keeps single messages to a few megabytes).
@@ -170,6 +170,22 @@ impl Styler {
         object.tooltip = Some(tooltip);
         if a.locked {
             object.editable = Some(false);
+        }
+        Some(object)
+    }
+}
+
+impl Styler {
+    /// The object drawn emphasised (the row hovered in the list).
+    pub fn highlighted(&self, a: &Annotation, layer: &Layer) -> Option<OverlayObject> {
+        let mut object = self.object(a, layer)?;
+        if let Some(style) = &mut object.style {
+            style.stroke = Rgba(0xFF, 0xFF, 0xFF, 0xFF);
+            style.stroke_width += 2.0;
+            style.point_radius += 2.0;
+            if style.fill.3 > 0 {
+                style.fill = style.fill.with_alpha(style.fill.3.saturating_add(0x40));
+            }
         }
         Some(object)
     }
@@ -362,10 +378,15 @@ pub fn sync_all(state: &mut State) -> Batch {
     batch
 }
 
-/// Host calls for committed changes.
+/// Host calls for committed changes. Annotation updates are grouped per
+/// host layer, so an import of many objects is a few calls, not one per
+/// object.
 pub fn for_changes(state: &mut State, changes: &[Change]) -> Batch {
     let mut batch = Batch::new(state);
     let mut classes_changed = Vec::new();
+    // host layer → ids to remove / (layer, annotations) to upsert.
+    let mut removals: BTreeMap<String, Vec<String>> = BTreeMap::new();
+    let mut upserts: BTreeMap<String, (Layer, Vec<Arc<Annotation>>)> = BTreeMap::new();
     for change in changes {
         match change {
             Change::Annotation { before, after } => {
@@ -379,10 +400,11 @@ pub fn for_changes(state: &mut State, changes: &[Change]) -> Batch {
                     if let Some(before) = before
                         && after.as_ref().is_none_or(|a| a.layer_id != before.layer_id)
                     {
-                        batch.op(HostOp::Remove(
-                            host_layer_id(file_id, &before.layer_id),
-                            vec![before.id.clone()],
-                        ));
+                        let host_layer = host_layer_id(file_id, &before.layer_id);
+                        if let Some((_, list)) = upserts.get_mut(&host_layer) {
+                            list.retain(|a| a.id != before.id);
+                        }
+                        removals.entry(host_layer).or_default().push(before.id.clone());
                     }
                     if let Some(after) = after
                         && let Some(layer) = state
@@ -392,16 +414,18 @@ pub fn for_changes(state: &mut State, changes: &[Change]) -> Batch {
                     {
                         // The current version, in case later changes in the
                         // batch touched it again.
-                        let current = state
-                            .annotation(slide_id, &after.id)
-                            .cloned()
-                            .unwrap_or_else(|| after.clone());
-                        batch.objects(
-                            host_layer_id(file_id, &after.layer_id),
-                            layer,
-                            vec![current],
-                            false,
-                        );
+                        let Some(current) = state.annotation(slide_id, &after.id).cloned() else {
+                            continue;
+                        };
+                        let host_layer = host_layer_id(file_id, &after.layer_id);
+                        if let Some(ids) = removals.get_mut(&host_layer) {
+                            ids.retain(|id| *id != current.id);
+                        }
+                        let entry = upserts
+                            .entry(host_layer)
+                            .or_insert_with(|| (layer.clone(), Vec::new()));
+                        entry.1.retain(|a| a.id != current.id);
+                        entry.1.push(current);
                     }
                 }
             }
@@ -487,6 +511,25 @@ pub fn for_changes(state: &mut State, changes: &[Change]) -> Batch {
                     classes_changed.push(id);
                 }
             }
+        }
+    }
+    // Layers removed in this batch need no object updates.
+    let live = |host_layer: &String| {
+        parse_host_layer_id(host_layer).is_some_and(|(file_id, _)| {
+            state
+                .files
+                .get(&file_id)
+                .is_some_and(|f| f.host_layers.contains(host_layer))
+        })
+    };
+    for (host_layer, ids) in removals {
+        if !ids.is_empty() && live(&host_layer) {
+            batch.op(HostOp::Remove(host_layer, ids));
+        }
+    }
+    for (host_layer, (layer, annotations)) in upserts {
+        if !annotations.is_empty() && live(&host_layer) {
+            batch.objects(host_layer, &layer, annotations, false);
         }
     }
     for class_id in classes_changed {

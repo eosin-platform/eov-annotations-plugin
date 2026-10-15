@@ -367,6 +367,28 @@ impl History {
     }
 }
 
+/// Export formats.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ExportFormat {
+    GeoJson,
+    Eov,
+    Csv,
+}
+
+/// A host dialog or confirmation the plugin waits for.
+#[derive(Debug, Clone, PartialEq)]
+pub enum Pending {
+    Import { file_id: FileId },
+    Export { file_id: FileId, format: ExportFormat },
+    ExportAll,
+    Backup,
+    MergeDb,
+    DeleteLayer { file_id: FileId, layer_id: String },
+    ClearCounts { file_id: FileId },
+    DeleteClass { class_id: String },
+    Relink { file_id: FileId, from: SlideId },
+}
+
 /// Everything the plugin keeps in memory.
 #[derive(Debug)]
 pub struct State {
@@ -388,6 +410,15 @@ pub struct State {
     pub hovered: Option<(FileId, String)>,
     /// Virtual ids for slides of a read-only database without a record.
     pub next_virtual_slide: SlideId,
+    /// Dialogs and confirmations by request id.
+    pub pending: HashMap<String, Pending>,
+    /// Prepared imports waiting for the user's decision.
+    pub imports: HashMap<u64, crate::transfer::ImportPlan>,
+    pub next_import: u64,
+    /// Cancel flags of running jobs.
+    pub jobs: HashMap<String, Arc<std::sync::atomic::AtomicBool>>,
+    /// Slides of the database (for relinking), when listed.
+    pub orphans: Option<Vec<crate::db::SlideSummary>>,
 }
 
 impl State {
@@ -406,6 +437,11 @@ impl State {
             history: History::default(),
             hovered: None,
             next_virtual_slide: -1,
+            pending: HashMap::new(),
+            imports: HashMap::new(),
+            next_import: 1,
+            jobs: HashMap::new(),
+            orphans: None,
         }
     }
 

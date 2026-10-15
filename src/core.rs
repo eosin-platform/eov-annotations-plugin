@@ -76,9 +76,11 @@ pub struct Planned {
     pub notice: Option<String>,
     /// Overrides the undo label.
     pub label: Option<String>,
-    /// Annotation ids whose host objects must be restored if saving fails
-    /// (the host already showed an edit).
+    /// Annotation ids whose host objects must be restored if nothing is
+    /// saved (the host already showed an edit that was refused or failed).
     pub revert: Option<(SlideId, Vec<String>)>,
+    /// Shown as a warning (e.g. why an edit was refused).
+    pub warning: Option<String>,
 }
 
 impl Planned {
@@ -716,7 +718,7 @@ fn friendly(error: &DbError) -> String {
     }
 }
 
-fn run_op(core: &Arc<Core>, ctx: &mut DbCtx, op: Op) {
+pub fn run_op(core: &Arc<Core>, ctx: &mut DbCtx, op: Op) {
     let planned = {
         let state = core.state();
         (op.plan)(&state)
@@ -777,9 +779,7 @@ fn run_op(core: &Arc<Core>, ctx: &mut DbCtx, op: Op) {
                     );
                     // Only for files still open (the host forgets closed ones).
                     let file_id = op.file_id.filter(|id| state.files.contains_key(id));
-                    let _ = core
-                        .host
-                        .push_undo(entry_id, file_id.or(None), label.clone());
+                    let _ = core.host.push_undo(entry_id, file_id, label.clone());
                 }
                 batch
             };
@@ -805,6 +805,15 @@ fn run_op(core: &Arc<Core>, ctx: &mut DbCtx, op: Op) {
 
 /// Follow-ups of a successful (or empty) edit.
 fn finish(core: &Arc<Core>, planned: &Planned, _label: Option<&str>) {
+    if planned.changes.is_empty()
+        && let Some((slide, ids)) = &planned.revert
+    {
+        let batch = overlay::for_annotations(&core.state(), *slide, ids);
+        core.exec(batch.build());
+    }
+    if let Some(warning) = &planned.warning {
+        core.notify(NotifyLevel::Warning, warning.clone());
+    }
     if let Some((slide, layer)) = &planned.current_layer {
         let layer = layer.clone();
         let slide = *slide;

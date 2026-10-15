@@ -36,10 +36,9 @@ fn ms(seconds: i64) -> i64 {
     seconds.saturating_mul(1000)
 }
 
-pub(super) fn migrate_v1(conn: &mut Connection, report: &mut OpenReport) -> DbResult<()> {
-    let tx = conn.transaction()?;
+pub(super) fn migrate_v1(tx: &rusqlite::Transaction<'_>, report: &mut OpenReport) -> DbResult<()> {
     for table in LEGACY_TABLES {
-        if exists(&tx, table)? {
+        if exists(tx, table)? {
             tx.execute_batch(&format!("ALTER TABLE {table} RENAME TO legacy_v1_{table};"))?;
         }
     }
@@ -47,7 +46,7 @@ pub(super) fn migrate_v1(conn: &mut Connection, report: &mut OpenReport) -> DbRe
 
     // Slides: one per legacy fingerprint.
     let mut slide_ids: HashMap<Vec<u8>, i64> = HashMap::new();
-    if exists(&tx, "legacy_v1_annotation_layers")? {
+    if exists(tx, "legacy_v1_annotation_layers")? {
         let mut stmt = tx.prepare(
             "SELECT fingerprint, MIN(created_at), MAX(updated_at)
              FROM legacy_v1_annotation_layers GROUP BY fingerprint",
@@ -134,7 +133,7 @@ pub(super) fn migrate_v1(conn: &mut Connection, report: &mut OpenReport) -> DbRe
 
     // Metadata rows per annotation.
     let mut metadata: HashMap<String, Vec<(String, String)>> = HashMap::new();
-    if exists(&tx, "legacy_v1_annotation_metadata")? {
+    if exists(tx, "legacy_v1_annotation_metadata")? {
         let mut stmt = tx.prepare(
             "SELECT annotation_id, key, value FROM legacy_v1_annotation_metadata
              ORDER BY annotation_id, row_index",
@@ -189,7 +188,7 @@ pub(super) fn migrate_v1(conn: &mut Connection, report: &mut OpenReport) -> DbRe
         Ok(())
     };
 
-    if exists(&tx, "legacy_v1_annotation_points")? {
+    if exists(tx, "legacy_v1_annotation_points")? {
         let mut stmt = tx.prepare(
             "SELECT a.id, a.annotation_layer_id, a.created_at, a.updated_at, p.x_level0, p.y_level0
              FROM legacy_v1_annotations a JOIN legacy_v1_annotation_points p ON p.annotation_id = a.id
@@ -228,7 +227,7 @@ pub(super) fn migrate_v1(conn: &mut Connection, report: &mut OpenReport) -> DbRe
         }
     }
 
-    if exists(&tx, "legacy_v1_annotation_polygon_vertices")? {
+    if exists(tx, "legacy_v1_annotation_polygon_vertices")? {
         let mut stmt = tx.prepare(
             "SELECT a.id, a.annotation_layer_id, a.created_at, a.updated_at, v.x_level0, v.y_level0
              FROM legacy_v1_annotations a
@@ -277,15 +276,15 @@ pub(super) fn migrate_v1(conn: &mut Connection, report: &mut OpenReport) -> DbRe
             match &mut current {
                 Some((current_id, _, _, _, vertices)) if *current_id == id => vertices.push([x, y]),
                 _ => {
-                    flush(current.take(), &tx)?;
+                    flush(current.take(), tx)?;
                     current = Some((id, layer, created, updated, vec![[x, y]]));
                 }
             }
         }
-        flush(current.take(), &tx)?;
+        flush(current.take(), tx)?;
     }
 
-    if exists(&tx, "legacy_v1_export_metadata_settings")? {
+    if exists(tx, "legacy_v1_export_metadata_settings")? {
         let row: Option<(String, String, String, String)> = tx
             .query_row(
                 "SELECT author, organization, project_name, license
@@ -312,7 +311,6 @@ pub(super) fn migrate_v1(conn: &mut Connection, report: &mut OpenReport) -> DbRe
     }
 
     tx.pragma_update(None, "user_version", SCHEMA_VERSION)?;
-    tx.commit()?;
     report.notes.push(format!(
         "Upgraded the annotation database from the pre-1.0 format: {} slide(s), {migrated} annotation(s){}.",
         slide_ids.len(),

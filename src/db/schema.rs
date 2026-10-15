@@ -128,25 +128,34 @@ pub fn detect_version(conn: &Connection) -> rusqlite::Result<i64> {
 }
 
 /// Brings the database to [`SCHEMA_VERSION`].
+///
+/// The version is checked again inside an immediate (write-locked)
+/// transaction, so two eov windows opening a new or old database at the
+/// same time do not both try to create or migrate it.
 pub fn migrate(conn: &mut Connection, report: &mut OpenReport) -> DbResult<()> {
-    let version = detect_version(conn)?;
+    if detect_version(conn)? == SCHEMA_VERSION {
+        return Ok(());
+    }
+    let tx = conn.transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+    let version = detect_version(&tx)?;
     match version {
-        SCHEMA_VERSION => Ok(()),
-        v if v > SCHEMA_VERSION => Err(DbError::Failed(format!(
-            "the database was created by a newer version of the annotations plugin (schema {v}); \
-             update the plugin"
-        ))),
+        SCHEMA_VERSION => {}
+        v if v > SCHEMA_VERSION => {
+            return Err(DbError::Failed(format!(
+                "the database was created by a newer version of the annotations plugin (schema {v}); \
+                 update the plugin"
+            )));
+        }
         0 => {
-            let tx = conn.transaction()?;
             tx.execute_batch(SCHEMA_V2)?;
             tx.pragma_update(None, "user_version", SCHEMA_VERSION)?;
-            tx.commit()?;
-            Ok(())
         }
         LEGACY_VERSION => {
             report.migrated_from = Some(LEGACY_VERSION);
-            super::legacy::migrate_v1(conn, report)
+            super::legacy::migrate_v1(&tx, report)?;
         }
-        other => Err(DbError::Failed(format!("unknown schema version {other}"))),
+        other => return Err(DbError::Failed(format!("unknown schema version {other}"))),
     }
+    tx.commit()?;
+    Ok(())
 }
