@@ -33,11 +33,15 @@ fn svg(body: &str) -> String {
 }
 
 pub fn sidebar_icon() -> String {
-    svg("<path d='M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z'/><circle cx='12' cy='11' r='2.2'/>")
+    svg(
+        "<path d='M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z'/><circle cx='12' cy='11' r='2.2'/>",
+    )
 }
 
 pub fn visible_icon() -> String {
-    svg("<path d='M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12z'/><circle cx='12' cy='12' r='2.8'/>")
+    svg(
+        "<path d='M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12z'/><circle cx='12' cy='12' r='2.8'/>",
+    )
 }
 
 pub fn hidden_icon() -> String {
@@ -139,8 +143,8 @@ pub fn tool_specs() -> Vec<ToolSpec> {
         .iter()
         .enumerate()
         .map(|(order, def)| {
-            let mut spec =
-                ToolSpec::new(def.id, def.label, svg(def.icon), def.kind).with_hotkey(Hotkey::key(def.key));
+            let mut spec = ToolSpec::new(def.id, def.label, svg(def.icon), def.kind)
+                .with_hotkey(Hotkey::key(def.key));
             spec.order = order as i32;
             spec.cursor = match def.kind {
                 ToolKind::Select => Cursor::Default,

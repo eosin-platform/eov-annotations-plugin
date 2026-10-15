@@ -67,6 +67,9 @@ impl From<rusqlite::Error> for DbError {
 
 pub type DbResult<T> = Result<T, DbError>;
 
+/// Layers restored by [`Db::apply`], with their annotations.
+pub type Restored = Vec<(Layer, Vec<Arc<Annotation>>)>;
+
 /// What happened while opening.
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct OpenReport {
@@ -567,7 +570,11 @@ impl Db {
 
     /// Ids of the live layers of a slide.
     pub fn layer_ids(&self, slide_id: SlideId) -> DbResult<Vec<String>> {
-        Ok(self.load_layers(slide_id)?.into_iter().map(|l| l.id).collect())
+        Ok(self
+            .load_layers(slide_id)?
+            .into_iter()
+            .map(|l| l.id)
+            .collect())
     }
 
     /// Every slide with its contents (for archives).
@@ -604,11 +611,7 @@ impl Db {
 
     /// Applies changes atomically (all or nothing), checking that each one
     /// still fits the stored data, and records them in the audit trail.
-    pub fn apply(
-        &mut self,
-        changes: &[Change],
-        audit: Option<&Audit>,
-    ) -> DbResult<Vec<(Layer, Vec<Arc<Annotation>>)>> {
+    pub fn apply(&mut self, changes: &[Change], audit: Option<&Audit>) -> DbResult<Restored> {
         self.writable()?;
         let now = crate::model::now_ms();
         let tx = self.conn.transaction()?;

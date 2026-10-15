@@ -251,7 +251,7 @@ impl AnnotationsPlugin {
                 }
                 _ => format!("Drawing {class}"),
             };
-            let _ = self.core.host.set_status(Some(&status));
+            self.core.host.set_status(Some(&status));
         }
         if field {
             if let Ok(snapshot) = self.core.host.snapshot() {
@@ -272,7 +272,7 @@ impl AnnotationsPlugin {
                 state.active_tool = None;
             }
         }
-        let _ = self.core.host.set_status(None);
+        self.core.host.set_status(None);
         if tool_id == tools::FIELD {
             actions::refresh_reticles(&self.core);
         }
@@ -399,7 +399,12 @@ impl AnnotationsPlugin {
         }
     }
 
-    fn import_callback(&self, surface_id: &str, name: &str, args: &[Value]) -> Result<Value, String> {
+    fn import_callback(
+        &self,
+        surface_id: &str,
+        name: &str,
+        args: &[Value],
+    ) -> Result<Value, String> {
         let Some(plan_id) = self.ui().imports.remove(surface_id) else {
             return Ok(Value::Null);
         };
@@ -665,11 +670,7 @@ impl Plugin for AnnotationsPlugin {
                 if let Some(file_id) = file_id {
                     crate::core::retry_if_due(core, file_id, false);
                     actions::check_external(core);
-                    let hidden = core
-                        .state()
-                        .files
-                        .get(&file_id)
-                        .is_some_and(|f| f.hidden);
+                    let hidden = core.state().files.get(&file_id).is_some_and(|f| f.hidden);
                     if let Some(pane) = pane {
                         self.set_hud(pane, hidden);
                     }
@@ -696,13 +697,9 @@ impl Plugin for AnnotationsPlugin {
             HostEvent::HudButtonClicked {
                 button_id,
                 pane,
-                view,
+                view: Some(view),
                 ..
-            } if button_id == tools::VISIBILITY_HUD => {
-                if let Some(view) = view {
-                    self.toggle_visibility(pane, view.file_id);
-                }
-            }
+            } if button_id == tools::VISIBILITY_HUD => self.toggle_visibility(pane, view.file_id),
             HostEvent::ContextMenuItemSelected { item_id, context } => {
                 self.menu_item(&item_id, context)?
             }
@@ -748,7 +745,9 @@ impl Plugin for AnnotationsPlugin {
                     core.request_refresh();
                 }
             }
-            HostEvent::ObjectEdited { object, shape } => actions::object_edited(core, object, shape),
+            HostEvent::ObjectEdited { object, shape } => {
+                actions::object_edited(core, object, shape)
+            }
             HostEvent::ObjectsDeleteRequested { objects } => actions::delete_objects(core, objects),
             HostEvent::SelectionChanged { objects } => actions::selection_changed(core, objects),
             HostEvent::Undo { entry_id } => core.db(DbJob::History {
@@ -819,7 +818,9 @@ impl Plugin for AnnotationsPlugin {
         let hit = context
             .hit
             .as_ref()
-            .filter(|h| overlay::parse_host_layer_id(&h.layer_id).is_some_and(|(f, _)| f == file_id))
+            .filter(|h| {
+                overlay::parse_host_layer_id(&h.layer_id).is_some_and(|(f, _)| f == file_id)
+            })
             .and_then(|h| slide.annotations.get(&h.object_id));
         if let Some(a) = hit {
             items.push(item("show", "Show in annotations panel", "", true));

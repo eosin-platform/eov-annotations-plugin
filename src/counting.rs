@@ -160,7 +160,9 @@ pub fn count_in(slide: &SlideData, field: &Geometry) -> u64 {
         .filter(|l| l.visible)
         .flat_map(|l| slide.in_layer(&l.id))
         .filter(|a| match a.geometry {
-            Geometry::Point { x, y } => b.contains(x, y) && crate::geometry::contains(field, [x, y]),
+            Geometry::Point { x, y } => {
+                b.contains(x, y) && crate::geometry::contains(field, [x, y])
+            }
             _ => false,
         })
         .count() as u64
@@ -239,13 +241,37 @@ mod tests {
         );
         let mut annotations = vec![region];
         for i in 0..30 {
-            annotations.push(ann(&format!("p{i}"), "counts", Some("pos"), Geometry::Point { x: 10.0 + i as f64, y: 10.0 }));
+            annotations.push(ann(
+                &format!("p{i}"),
+                "counts",
+                Some("pos"),
+                Geometry::Point {
+                    x: 10.0 + i as f64,
+                    y: 10.0,
+                },
+            ));
         }
         for i in 0..10 {
-            annotations.push(ann(&format!("n{i}"), "counts", Some("neg"), Geometry::Point { x: 10.0 + i as f64, y: 20.0 }));
+            annotations.push(ann(
+                &format!("n{i}"),
+                "counts",
+                Some("neg"),
+                Geometry::Point {
+                    x: 10.0 + i as f64,
+                    y: 20.0,
+                },
+            ));
         }
         // Outside the region.
-        annotations.push(ann("out", "counts", Some("pos"), Geometry::Point { x: 5000.0, y: 5000.0 }));
+        annotations.push(ann(
+            "out",
+            "counts",
+            Some("pos"),
+            Geometry::Point {
+                x: 5000.0,
+                y: 5000.0,
+            },
+        ));
         let slide = SlideData::new(
             SlideRecord {
                 id: 1,
@@ -253,7 +279,10 @@ mod tests {
                 mpp_y: Some(0.5),
                 ..Default::default()
             },
-            vec![layer("regions", LayerRole::Normal), layer("counts", LayerRole::Counts)],
+            vec![
+                layer("regions", LayerRole::Normal),
+                layer("counts", LayerRole::Counts),
+            ],
             annotations,
             HashSet::new(),
             None,
@@ -269,7 +298,8 @@ mod tests {
         assert!((t.area_mm2.unwrap() - 0.25).abs() < 1e-12);
         let pos = t.rows.iter().find(|r| r.name == "Positive").unwrap();
         assert_eq!(pos.count, 30);
-        let (density, per_hpf) = density_text(pos.count, t.area_mm2.unwrap(), &FieldSize::default());
+        let (density, per_hpf) =
+            density_text(pos.count, t.area_mm2.unwrap(), &FieldSize::default());
         assert!(density.starts_with("120 /mm²"), "{density}");
         assert!(per_hpf.contains("/10 HPF"));
         let index = index_text("Positive", "Negative", 30, 10).unwrap();
@@ -282,8 +312,16 @@ mod tests {
         let t = tally(&state, &slide, &[]);
         assert_eq!(t.regions, 0);
         assert_eq!(t.area_mm2, None);
-        assert_eq!(t.rows.iter().find(|r| r.name == "Positive").unwrap().count, 31);
-        slide.layers.iter_mut().find(|l| l.id == "counts").unwrap().visible = false;
+        assert_eq!(
+            t.rows.iter().find(|r| r.name == "Positive").unwrap().count,
+            31
+        );
+        slide
+            .layers
+            .iter_mut()
+            .find(|l| l.id == "counts")
+            .unwrap()
+            .visible = false;
         let hidden = tally(&state, &slide, &[]);
         assert_eq!(hidden.total, 0);
         state.settings.count_hidden_layers = true;

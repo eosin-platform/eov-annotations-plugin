@@ -41,8 +41,12 @@ pub struct Op {
     pub file_id: Option<FileId>,
     /// Push an undo entry.
     pub record: bool,
-    pub plan: Box<dyn FnOnce(&State) -> Result<Planned, String> + Send>,
+    pub plan: Plan,
 }
+
+/// Turns the current state into the changes to apply (on the database
+/// thread).
+pub type Plan = Box<dyn FnOnce(&State) -> Result<Planned, String> + Send>;
 
 impl Op {
     pub fn new(
@@ -369,11 +373,9 @@ fn open_db(core: &Arc<Core>, ctx: &mut DbCtx) {
                     classes = db.load_classes().unwrap_or_default();
                 }
             }
-            if !read_only {
-                if let Err(e) = db.purge_deleted(now_ms() - PURGE_AFTER_MS) {
-                    core.host
-                        .warn(format!("cannot purge deleted annotations: {e}"));
-                }
+            if !read_only && let Err(e) = db.purge_deleted(now_ms() - PURGE_AFTER_MS) {
+                core.host
+                    .warn(format!("cannot purge deleted annotations: {e}"));
             }
             let legacy_export: Vec<(String, Option<String>)> =
                 ["author", "organization", "project", "license"]
@@ -695,7 +697,7 @@ fn apply_with_retry(
     db: &mut Db,
     changes: &[Change],
     audit: &Audit,
-) -> Result<Vec<(crate::model::Layer, Vec<Arc<crate::model::Annotation>>)>, DbError> {
+) -> Result<crate::db::Restored, DbError> {
     let mut delay = Duration::from_millis(500);
     for attempt in 0..3 {
         match db.apply(changes, Some(audit)) {

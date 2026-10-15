@@ -36,6 +36,11 @@ fn ms(seconds: i64) -> i64 {
     seconds.saturating_mul(1000)
 }
 
+/// id, fingerprint, name, notes, colour, created, updated.
+type LegacyLayer = (String, Vec<u8>, String, Option<String>, String, i64, i64);
+/// id, layer, created, updated, vertices.
+type LegacyPolygon = (String, String, i64, i64, Vec<[f64; 2]>);
+
 pub(super) fn migrate_v1(tx: &rusqlite::Transaction<'_>, report: &mut OpenReport) -> DbResult<()> {
     for table in LEGACY_TABLES {
         if exists(tx, table)? {
@@ -75,7 +80,7 @@ pub(super) fn migrate_v1(tx: &rusqlite::Transaction<'_>, report: &mut OpenReport
             "SELECT id, fingerprint, name, notes, color, created_at, updated_at
              FROM legacy_v1_annotation_layers ORDER BY lower(name), created_at",
         )?;
-        let layers: Vec<(String, Vec<u8>, String, Option<String>, String, i64, i64)> = stmt
+        let layers: Vec<LegacyLayer> = stmt
             .query_map([], |r| {
                 Ok((
                     r.get(0)?,
@@ -214,7 +219,7 @@ pub(super) fn migrate_v1(tx: &rusqlite::Transaction<'_>, report: &mut OpenReport
             }
             let props = metadata.get(&id).cloned().unwrap_or_default();
             insert(
-                &tx,
+                tx,
                 &id,
                 &layer,
                 &Geometry::Point { x, y },
@@ -248,30 +253,29 @@ pub(super) fn migrate_v1(tx: &rusqlite::Transaction<'_>, report: &mut OpenReport
             })?
             .collect::<Result<_, _>>()?;
         drop(stmt);
-        let mut current: Option<(String, String, i64, i64, Vec<[f64; 2]>)> = None;
-        let mut flush = |polygon: Option<(String, String, i64, i64, Vec<[f64; 2]>)>,
-                         tx: &rusqlite::Transaction<'_>|
-         -> DbResult<()> {
-            let Some((id, layer, created, updated, vertices)) = polygon else {
-                return Ok(());
+        let mut current: Option<LegacyPolygon> = None;
+        let mut flush =
+            |polygon: Option<LegacyPolygon>, tx: &rusqlite::Transaction<'_>| -> DbResult<()> {
+                let Some((id, layer, created, updated, vertices)) = polygon else {
+                    return Ok(());
+                };
+                let finite = vertices
+                    .iter()
+                    .all(|p| p[0].is_finite() && p[1].is_finite());
+                if vertices.len() < 3 || !finite {
+                    skipped += 1;
+                    return Ok(());
+                }
+                let props = metadata.get(&id).cloned().unwrap_or_default();
+                let geometry = Geometry::Polygon {
+                    exterior: vertices,
+                    holes: Vec::new(),
+                };
+                // Checked for self-intersections the first time it is loaded.
+                insert(tx, &id, &layer, &geometry, false, created, updated, &props)?;
+                migrated += 1;
+                Ok(())
             };
-            let finite = vertices
-                .iter()
-                .all(|p| p[0].is_finite() && p[1].is_finite());
-            if vertices.len() < 3 || !finite {
-                skipped += 1;
-                return Ok(());
-            }
-            let props = metadata.get(&id).cloned().unwrap_or_default();
-            let geometry = Geometry::Polygon {
-                exterior: vertices,
-                holes: Vec::new(),
-            };
-            // Checked for self-intersections the first time it is loaded.
-            insert(tx, &id, &layer, &geometry, false, created, updated, &props)?;
-            migrated += 1;
-            Ok(())
-        };
         for (id, layer, created, updated, x, y) in rows {
             match &mut current {
                 Some((current_id, _, _, _, vertices)) if *current_id == id => vertices.push([x, y]),

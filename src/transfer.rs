@@ -103,7 +103,7 @@ pub fn prepare(
     source: &str,
 ) -> Result<ImportPlan, String> {
     let mut doc = doc;
-    let image = (info.width > 0 && info.height > 0).then(|| Bounds {
+    let image = (info.width > 0 && info.height > 0).then_some(Bounds {
         min_x: 0.0,
         min_y: 0.0,
         max_x: info.width as f64,
@@ -118,7 +118,14 @@ pub fn prepare(
             Err(_) if layer.name.trim().is_empty() => "Imported".to_string(),
             Err(_) => {
                 truncated += 1;
-                layer.name.chars().filter(|c| !c.is_control()).take(200).collect::<String>().trim().to_string()
+                layer
+                    .name
+                    .chars()
+                    .filter(|c| !c.is_control())
+                    .take(200)
+                    .collect::<String>()
+                    .trim()
+                    .to_string()
             }
         };
         let mut out = PreparedLayer {
@@ -126,7 +133,11 @@ pub fn prepare(
             color: layer.color,
             notes: clean_text(&layer.notes, "notes").unwrap_or_else(|_| {
                 truncated += 1;
-                layer.notes.chars().take(crate::model::MAX_TEXT_CHARS).collect()
+                layer
+                    .notes
+                    .chars()
+                    .take(crate::model::MAX_TEXT_CHARS)
+                    .collect()
             }),
             visible: layer.visible,
             annotations: Vec::new(),
@@ -143,11 +154,18 @@ pub fn prepare(
             clipped += usize::from(normalized.clipped);
             let name = clean_name(&a.name, "name", true).unwrap_or_else(|_| {
                 truncated += 1;
-                a.name.chars().filter(|c| !c.is_control()).take(200).collect()
+                a.name
+                    .chars()
+                    .filter(|c| !c.is_control())
+                    .take(200)
+                    .collect()
             });
             let description = clean_text(&a.description, "description").unwrap_or_else(|_| {
                 truncated += 1;
-                a.description.chars().take(crate::model::MAX_TEXT_CHARS).collect()
+                a.description
+                    .chars()
+                    .take(crate::model::MAX_TEXT_CHARS)
+                    .collect()
             });
             let properties = clean_properties(&a.properties).unwrap_or_else(|_| {
                 truncated += 1;
@@ -157,8 +175,12 @@ pub fn prepare(
                     .take(crate::model::MAX_PROPERTIES)
                     .map(|(k, v)| {
                         (
-                            k.chars().take(crate::model::MAX_PROPERTY_KEY_CHARS).collect(),
-                            v.chars().take(crate::model::MAX_PROPERTY_VALUE_CHARS).collect(),
+                            k.chars()
+                                .take(crate::model::MAX_PROPERTY_KEY_CHARS)
+                                .collect(),
+                            v.chars()
+                                .take(crate::model::MAX_PROPERTY_VALUE_CHARS)
+                                .collect(),
                         )
                     })
                     .collect();
@@ -197,10 +219,14 @@ pub fn prepare(
         ));
     }
     if clipped > 0 {
-        notes.push(format!("{clipped} shape(s) extended past the slide and were cut at its edge."));
+        notes.push(format!(
+            "{clipped} shape(s) extended past the slide and were cut at its edge."
+        ));
     }
     if truncated > 0 {
-        notes.push(format!("{truncated} over-long name(s) or text(s) were shortened."));
+        notes.push(format!(
+            "{truncated} over-long name(s) or text(s) were shortened."
+        ));
     }
     if layers.is_empty() {
         return Err(match notes.is_empty() {
@@ -211,7 +237,11 @@ pub fn prepare(
     let (match_text, mismatch) = slide_match(&doc, info);
     let conflicts = layers
         .iter()
-        .filter(|l| existing_layers.iter().any(|e| e.eq_ignore_ascii_case(&l.name)))
+        .filter(|l| {
+            existing_layers
+                .iter()
+                .any(|e| e.eq_ignore_ascii_case(&l.name))
+        })
         .map(|l| l.name.clone())
         .collect();
     let classes = doc
@@ -240,7 +270,10 @@ fn slide_match(doc: &ImportDoc, info: &FileInfo) -> (String, bool) {
         return if theirs == ours {
             ("Made for this slide.".to_string(), false)
         } else {
-            ("Made for a different slide (its identity does not match).".to_string(), true)
+            (
+                "Made for a different slide (its identity does not match).".to_string(),
+                true,
+            )
         };
     }
     if let (Some(w), Some(h)) = (hint.width, hint.height)
@@ -278,7 +311,9 @@ pub fn start_import(core: &Arc<Core>, file_id: FileId) {
     };
     match core.host.open_file_dialog(args) {
         Ok(request) => {
-            core.state().pending.insert(request, Pending::Import { file_id });
+            core.state()
+                .pending
+                .insert(request, Pending::Import { file_id });
         }
         Err(e) => core.error("Cannot show the file dialog", e.message),
     }
@@ -293,13 +328,20 @@ pub fn import_file(core: &Arc<Core>, file_id: FileId, path: PathBuf) {
         };
         let Some(slide) = state.slide_of(file_id) else {
             drop(state);
-            core.notify(NotifyLevel::Warning, "The annotations of this slide are still loading.");
+            core.notify(
+                NotifyLevel::Warning,
+                "The annotations of this slide are still loading.",
+            );
             return;
         };
         (
             file.info.clone(),
             slide.id(),
-            slide.layers.iter().map(|l| l.name.clone()).collect::<Vec<_>>(),
+            slide
+                .layers
+                .iter()
+                .map(|l| l.name.clone())
+                .collect::<Vec<_>>(),
         )
     };
     let (info, slide_id, existing) = prepared;
@@ -310,7 +352,9 @@ pub fn import_file(core: &Arc<Core>, file_id: FileId, path: PathBuf) {
     let job = core.host.start_job(format!("Importing {name}"), true).ok();
     let cancel = Arc::new(AtomicBool::new(false));
     if let Some(job) = &job {
-        core.state().jobs.insert(job.id().to_string(), cancel.clone());
+        core.state()
+            .jobs
+            .insert(job.id().to_string(), cancel.clone());
     }
     core.io(move |core| {
         let result = (|| -> Result<Option<ImportPlan>, String> {
@@ -341,7 +385,8 @@ pub fn import_file(core: &Arc<Core>, file_id: FileId, path: PathBuf) {
                     plan.match_text = "Made for this slide (checked by content).".to_string();
                     plan.mismatch = false;
                 } else {
-                    plan.match_text = "Made for a different slide (its checksum does not match).".to_string();
+                    plan.match_text =
+                        "Made for a different slide (its checksum does not match).".to_string();
                     plan.mismatch = true;
                 }
             }
@@ -406,7 +451,12 @@ pub fn apply_import(core: &Arc<Core>, plan: ImportPlan, strategy: Strategy) {
         // Classes by name: existing ones are reused, missing ones created.
         let mut class_ids: Vec<(String, String)> = Vec::new();
         let mut used_colors: Vec<Color> = state.classes.iter().map(|c| c.color).collect();
-        let mut sort = state.classes.iter().map(|c| c.sort_order).max().unwrap_or(0);
+        let mut sort = state
+            .classes
+            .iter()
+            .map(|c| c.sort_order)
+            .max()
+            .unwrap_or(0);
         let needed: Vec<&String> = plan
             .layers
             .iter()
@@ -470,7 +520,8 @@ pub fn apply_import(core: &Arc<Core>, plan: ImportPlan, strategy: Strategy) {
                         if existing.locked {
                             return Err(format!("Layer \"{}\" is locked.", existing.name));
                         }
-                        let contents: Vec<Arc<Annotation>> = slide.in_layer(&existing.id).cloned().collect();
+                        let contents: Vec<Arc<Annotation>> =
+                            slide.in_layer(&existing.id).cloned().collect();
                         changes.push(Change::RemoveLayer {
                             layer: existing.clone(),
                             contents,
@@ -484,7 +535,9 @@ pub fn apply_import(core: &Arc<Core>, plan: ImportPlan, strategy: Strategy) {
                             n += 1;
                         }
                     }
-                    let color = layer.color.unwrap_or_else(|| pick_color(layer_colors.iter()));
+                    let color = layer
+                        .color
+                        .unwrap_or_else(|| pick_color(layer_colors.iter()));
                     layer_colors.push(color);
                     layer_names.push(name.clone());
                     sort_order += 1;
@@ -540,7 +593,10 @@ pub fn apply_import(core: &Arc<Core>, plan: ImportPlan, strategy: Strategy) {
         }
         Ok(Planned {
             changes,
-            notice: Some(format!("Imported {total} annotation(s) from {}.", plan.source)),
+            notice: Some(format!(
+                "Imported {total} annotation(s) from {}.",
+                plan.source
+            )),
             ..Default::default()
         })
     }));
@@ -595,10 +651,22 @@ pub fn start_export(core: &Arc<Core>, file_id: FileId, format: ExportFormat) {
             },
         ),
     };
-    save_dialog(core, "Export annotations", &default_name, filter, Pending::Export { file_id, format });
+    save_dialog(
+        core,
+        "Export annotations",
+        &default_name,
+        filter,
+        Pending::Export { file_id, format },
+    );
 }
 
-pub fn save_dialog(core: &Arc<Core>, title: &str, default_name: &str, filter: FileFilter, pending: Pending) {
+pub fn save_dialog(
+    core: &Arc<Core>,
+    title: &str,
+    default_name: &str,
+    filter: FileFilter,
+    pending: Pending,
+) {
     let args = FileDialogArgs {
         title: Some(title.to_string()),
         filters: vec![filter],
@@ -662,16 +730,26 @@ pub fn export_file(core: &Arc<Core>, file_id: FileId, format: ExportFormat, path
     core.io(move |core| {
         let count: usize = slide.layers.iter().map(|(_, a)| a.len()).sum();
         let bytes = match format {
-            ExportFormat::GeoJson => serde_json::to_vec_pretty(&geojson::export(&slide, &classes, &options)),
-            ExportFormat::Eov => serde_json::to_vec_pretty(&eov::export(&slide, &classes, &options)),
+            ExportFormat::GeoJson => {
+                serde_json::to_vec_pretty(&geojson::export(&slide, &classes, &options))
+            }
+            ExportFormat::Eov => {
+                serde_json::to_vec_pretty(&eov::export(&slide, &classes, &options))
+            }
             ExportFormat::Csv => Ok(formats::csv::export(&slide, &classes).into_bytes()),
         };
         let result = bytes
             .map_err(|e| e.to_string())
             .and_then(|bytes| fileio::write_atomically(&path, &bytes).map_err(|e| e.to_string()));
-        let name = path.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
+        let name = path
+            .file_name()
+            .map(|n| n.to_string_lossy().into_owned())
+            .unwrap_or_default();
         match result {
-            Ok(()) => core.notify(NotifyLevel::Success, format!("Exported {count} annotation(s) to {name}.")),
+            Ok(()) => core.notify(
+                NotifyLevel::Success,
+                format!("Exported {count} annotation(s) to {name}."),
+            ),
             Err(e) => core.error(format!("Could not export to {name}"), e),
         }
     });
@@ -700,7 +778,8 @@ pub fn export_all(core: &Arc<Core>, path: PathBuf) {
         let exports: Vec<eov::ExportSlide> = slides
             .into_iter()
             .map(|(record, loaded)| {
-                let mut by_layer: std::collections::HashMap<String, Vec<Arc<Annotation>>> = Default::default();
+                let mut by_layer: std::collections::HashMap<String, Vec<Arc<Annotation>>> =
+                    Default::default();
                 for a in loaded.annotations {
                     by_layer.entry(a.layer_id.clone()).or_default().push(a);
                 }
@@ -723,10 +802,15 @@ pub fn export_all(core: &Arc<Core>, path: PathBuf) {
             let slides = exports.len();
             let result = serde_json::to_vec(&eov::archive(&exports, &classes, &options))
                 .map_err(|e| e.to_string())
-                .and_then(|bytes| fileio::write_atomically(&path, &bytes).map_err(|e| e.to_string()));
+                .and_then(|bytes| {
+                    fileio::write_atomically(&path, &bytes).map_err(|e| e.to_string())
+                });
             match result {
                 Ok(()) => {
-                    core.notify(NotifyLevel::Success, format!("Exported the annotations of {slides} slide(s)."));
+                    core.notify(
+                        NotifyLevel::Success,
+                        format!("Exported the annotations of {slides} slide(s)."),
+                    );
                     if let Some(job) = job {
                         job.finish(None);
                     }
@@ -757,7 +841,10 @@ pub fn backup(core: &Arc<Core>, path: PathBuf) {
 
 /// Merges another database (a backup or a pre-1.0 `annotations.db`).
 pub fn merge_database(core: &Arc<Core>, path: PathBuf) {
-    let job = core.host.start_job("Merging annotation database", false).ok();
+    let job = core
+        .host
+        .start_job("Merging annotation database", false)
+        .ok();
     core.db_run(move |core, ctx| {
         let scratch = core.paths.cache_dir.join("db");
         let Some(db) = ctx.db.as_mut() else {
@@ -825,7 +912,11 @@ mod tests {
         let plan = prepare(d, 1, 7, &info(), &["imported".to_string()], "x.geojson").unwrap();
         // The bowtie becomes two parts; two invalid shapes are skipped.
         assert_eq!(plan.annotation_count(), 3);
-        assert!(plan.notes.iter().any(|n| n.contains("Skipped")), "{:?}", plan.notes);
+        assert!(
+            plan.notes.iter().any(|n| n.contains("Skipped")),
+            "{:?}",
+            plan.notes
+        );
         assert!(plan.notes.iter().any(|n| n.contains("repaired")));
         assert_eq!(plan.conflicts, vec!["Imported".to_string()]);
         assert!(!plan.mismatch);

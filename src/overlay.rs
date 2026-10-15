@@ -404,7 +404,10 @@ pub fn for_changes(state: &mut State, changes: &[Change]) -> Batch {
                         if let Some((_, list)) = upserts.get_mut(&host_layer) {
                             list.retain(|a| a.id != before.id);
                         }
-                        removals.entry(host_layer).or_default().push(before.id.clone());
+                        removals
+                            .entry(host_layer)
+                            .or_default()
+                            .push(before.id.clone());
                     }
                     if let Some(after) = after
                         && let Some(layer) = state

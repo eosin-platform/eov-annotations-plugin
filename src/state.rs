@@ -365,6 +365,10 @@ impl History {
     pub fn len(&self) -> usize {
         self.records.len()
     }
+
+    pub fn is_empty(&self) -> bool {
+        self.records.is_empty()
+    }
 }
 
 /// Export formats.
@@ -378,15 +382,30 @@ pub enum ExportFormat {
 /// A host dialog or confirmation the plugin waits for.
 #[derive(Debug, Clone, PartialEq)]
 pub enum Pending {
-    Import { file_id: FileId },
-    Export { file_id: FileId, format: ExportFormat },
+    Import {
+        file_id: FileId,
+    },
+    Export {
+        file_id: FileId,
+        format: ExportFormat,
+    },
     ExportAll,
     Backup,
     MergeDb,
-    DeleteLayer { file_id: FileId, layer_id: String },
-    ClearCounts { file_id: FileId },
-    DeleteClass { class_id: String },
-    Relink { file_id: FileId, from: SlideId },
+    DeleteLayer {
+        file_id: FileId,
+        layer_id: String,
+    },
+    ClearCounts {
+        file_id: FileId,
+    },
+    DeleteClass {
+        class_id: String,
+    },
+    Relink {
+        file_id: FileId,
+        from: SlideId,
+    },
 }
 
 /// Everything the plugin keeps in memory.
@@ -719,7 +738,7 @@ mod tests {
             layer: layer("b"),
             contents: vec![],
         });
-        assert!(slide.annotations.get("p1").is_none());
+        assert!(!slide.annotations.contains_key("p1"));
         assert_eq!(slide.layers.len(), 1);
         assert!(slide.revision > 1);
     }
