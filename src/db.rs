@@ -22,9 +22,12 @@ fn annotations_db_path() -> Result<PathBuf, String> {
         return Ok(path);
     }
 
-    let config_dir = dirs::config_dir()
-        .ok_or_else(|| "could not determine config directory for annotations db".to_string())?
-        .join("eov");
+    #[cfg(test)]
+    {
+        eov_common::paths::isolate_for_tests();
+    }
+    let config_dir = eov_common::paths::legacy_config_dir()
+        .ok_or_else(|| "could not determine config directory for annotations db".to_string())?;
     fs::create_dir_all(&config_dir).map_err(|err| {
         format!(
             "failed to create annotations config directory '{}': {err}",
