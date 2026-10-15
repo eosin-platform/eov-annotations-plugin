@@ -330,6 +330,11 @@ fn io_loop(core: Weak<Core>, rx: Receiver<IoJob>) {
     }
 }
 
+/// Shown in the Data tab with a new, empty database.
+pub const LEGACY_DATABASE_HINT: &str = "New database. If you annotated with eov before 1.0, those annotations are \
+     in annotations.db in eov's old settings folder (~/.config/eov on Linux, ~/Library/Application Support/eov \
+     on macOS, %APPDATA%\\eov on Windows): bring them in with Merge… above.";
+
 /// The classes a new database starts with.
 const DEFAULT_CLASSES: &[(&str, &str)] = &[
     ("Tumour", "#D55E00"),
@@ -349,7 +354,8 @@ fn open_db(core: &Arc<Core>, ctx: &mut DbCtx) {
         Ok((mut db, report)) => {
             let read_only = db.is_read_only();
             let mut classes = db.load_classes().unwrap_or_default();
-            if classes.is_empty() && !read_only {
+            let fresh = classes.is_empty() && !read_only;
+            if fresh {
                 let now = now_ms();
                 let defaults: Vec<Change> = DEFAULT_CLASSES
                     .iter()
@@ -393,6 +399,11 @@ fn open_db(core: &Arc<Core>, ctx: &mut DbCtx) {
                 let mut state = core.state();
                 state.db = DbStatus::Ready { read_only, path };
                 state.db_notes = report.notes.clone();
+                if fresh {
+                    // The plugin never looks outside its data directory, so
+                    // say where the pre-1.0 database usually is.
+                    state.db_notes.push(LEGACY_DATABASE_HINT.to_string());
+                }
                 state.classes = classes;
                 state.sort_classes();
                 // Settings from the pre-1.0 export metadata.

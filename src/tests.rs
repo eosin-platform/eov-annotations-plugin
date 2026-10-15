@@ -1180,3 +1180,19 @@ fn settings_and_unknown_input_are_handled_safely() {
     .unwrap();
     settle(&h);
 }
+
+#[test]
+fn a_new_database_says_where_older_annotations_are() {
+    let init = test_init("annotations");
+    let h = start(init.clone());
+    settle(&h);
+    let sidebar = open_sidebar(&h);
+    let notes = prop(&h, &sidebar, "db-notes");
+    assert!(notes.as_str().unwrap().contains("before 1.0"), "{notes}");
+    drop(h);
+    // The second start finds the database it created: no hint.
+    let h = start(init);
+    settle(&h);
+    let sidebar = open_sidebar(&h);
+    assert_eq!(prop(&h, &sidebar, "db-notes"), "");
+}
