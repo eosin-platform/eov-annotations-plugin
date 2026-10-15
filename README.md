@@ -25,13 +25,18 @@ Version 1.0 of the plugin is written for eov 1.x (plugin API 1.0).
 
 ## Installing
 
-Download the `.eop` package for your platform from the
-[releases](https://github.com/eosin-platform/eov-annotations-plugin/releases)
-and install it with eov:
+```bash
+eov plugin install annotations     # the official release for this platform
+eov plugin info annotations        # version, compatibility, provenance
+```
+
+Packages are also attached to the
+[releases](https://github.com/eosin-platform/eov-annotations-plugin/releases).
+A package you downloaded or built yourself installs with `--force`, because
+it replaces the official source of the `annotations` id:
 
 ```bash
-eov plugin install annotations-v1.0.0-linux-x86_64.eop
-eov plugin info annotations      # version, compatibility, provenance
+eov plugin install --force annotations-v1.0.0-linux-x86_64.eop
 ```
 
 The package declares `api = ">=1.0, <2"` and `[environment] version =
@@ -183,8 +188,8 @@ names and texts are cut to the limits.
   <img src="images/import-dialog.webp" width="520" alt="The import preview: the file, what it contains, how it matches the slide, what was skipped, and what to do with layers whose names exist">
 </p>
 
-- **GeoJSON**: Points, MultiPoints, LineStrings, Polygons (with holes),
-  MultiPolygons and their Multi/Collection forms. QuPath's
+- **GeoJSON**: Points, LineStrings and Polygons (with holes), their Multi
+  forms and GeometryCollections, as Features or a FeatureCollection. QuPath's
   `classification` (`name` and `color`, or `names` and `colorRGB` of older
   versions) becomes the class, `name`, `isLocked` and `metadata` are kept;
   detections go to a separate layer. Exports are FeatureCollections that
@@ -316,7 +321,7 @@ builds are reproducible):
 
 ```bash
 python3 scripts/package_eop.py --output dist/annotations-v1.0.0-linux-x86_64.eop
-eov plugin install dist/annotations-v1.0.0-linux-x86_64.eop
+eov plugin install --force dist/annotations-v1.0.0-linux-x86_64.eop
 ```
 
 `scripts/package_eop.py --check-only` validates the manifest and `ui/`
