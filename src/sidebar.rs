@@ -101,13 +101,11 @@ pub const TAB_CLASSES: i32 = 1;
 pub const TAB_COUNT: i32 = 2;
 pub const TAB_DATA: i32 = 3;
 
-/// Sidebar state that lives only in the UI.
+/// Sidebar state that lives only in the UI. (Which layers are collapsed
+/// is saved with each slide: `SlideData::collapsed`.)
 #[derive(Debug, Clone)]
 pub struct SidebarView {
     pub filter: String,
-    /// Layers whose collapsed state the user toggled (relative to the
-    /// automatic default).
-    pub toggled: HashSet<String>,
     pub limit: usize,
 }
 
@@ -115,9 +113,49 @@ impl Default for SidebarView {
     fn default() -> Self {
         Self {
             filter: String::new(),
-            toggled: HashSet::new(),
             limit: ROW_STEP,
         }
+    }
+}
+
+/// Whether a layer's annotations are folded away in the tree: what the
+/// user chose for it, or folded when it is big.
+pub fn layer_collapsed(slide: &crate::state::SlideData, layer_id: &str) -> bool {
+    slide
+        .collapsed
+        .get(layer_id)
+        .copied()
+        .unwrap_or_else(|| slide.count_in(layer_id) > AUTO_COLLAPSE)
+}
+
+/// Collapses or expands a layer and saves the choice with its slide.
+fn toggle_collapsed(core: &Arc<Core>, layer_id: &str) {
+    let saved = {
+        let mut state = core.state();
+        let Some(slide_id) = state.layer_slide.get(layer_id).copied() else {
+            return;
+        };
+        let Some(slide) = state.slides.get_mut(&slide_id) else {
+            return;
+        };
+        let collapsed = !layer_collapsed(slide, layer_id);
+        slide.collapsed.insert(layer_id.to_string(), collapsed);
+        let layers: HashSet<&str> = slide.layers.iter().map(|l| l.id.as_str()).collect();
+        slide
+            .collapsed
+            .retain(|layer, _| layers.contains(layer.as_str()));
+        (slide_id > 0).then(|| (slide_id, slide.collapsed.clone()))
+    };
+    if let Some((slide_id, collapsed)) = saved {
+        core.db_run(move |core, ctx| {
+            if let Some(db) = ctx.db.as_mut()
+                && let Err(e) = db.set_collapsed_layers(slide_id, &collapsed)
+                && e != crate::db::DbError::ReadOnly
+            {
+                core.host
+                    .warn(format!("cannot remember the collapsed layers: {e}"));
+            }
+        });
     }
 }
 
@@ -334,8 +372,7 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
         for layer in &slide.layers {
             layer_names.push(layer.name.clone());
             let count = slide.count_in(&layer.id);
-            let auto = count > AUTO_COLLAPSE;
-            let collapsed = auto != view.toggled.contains(&layer.id);
+            let collapsed = layer_collapsed(slide, &layer.id);
             let role = match layer.role {
                 LayerRole::Normal => "",
                 LayerRole::Counts => " · counts",
@@ -624,7 +661,7 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
         field_count = slide
             .layer_by_role(LayerRole::Fields)
             .map_or(0, |l| slide.count_in(&l.id)) as i32;
-        let t = counting::tally(state, slide, &selection);
+        let t = counting::tally_cached(state, slide, &selection);
         scope = match (t.regions, t.area_mm2) {
             (0, _) => {
                 "Whole slide. Select regions or HPF fields to count inside them and get densities."
@@ -995,13 +1032,7 @@ pub fn callback(
                 _ => None,
             };
         }
-        "toggle-collapsed" => {
-            let id = s(args, 0);
-            let mut view = host.view();
-            if !view.toggled.remove(&id) {
-                view.toggled.insert(id);
-            }
-        }
+        "toggle-collapsed" => toggle_collapsed(core, &s(args, 0)),
         "layer-visible" => {
             let visible = b(args, 1);
             actions::layer_update(

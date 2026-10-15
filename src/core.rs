@@ -656,13 +656,14 @@ fn load_file(core: &Arc<Core>, ctx: &mut DbCtx, file_id: FileId, fingerprint: Fi
             ),
         );
     }
-    let slide = SlideData::new(
+    let mut slide = SlideData::new(
         record,
         loaded.layers,
         loaded.annotations,
         loaded.invalid,
         loaded.current_layer,
     );
+    slide.collapsed = loaded.collapsed;
     let slide_id = slide.id();
     {
         let mut state = core.state();
@@ -711,13 +712,17 @@ pub fn reload_all(core: &Arc<Core>, ctx: &mut DbCtx) {
             continue;
         }
         match db.load_slide(id) {
-            Ok(loaded) => reloaded.push(SlideData::new(
-                record,
-                loaded.layers,
-                loaded.annotations,
-                loaded.invalid,
-                loaded.current_layer,
-            )),
+            Ok(loaded) => {
+                let mut slide = SlideData::new(
+                    record,
+                    loaded.layers,
+                    loaded.annotations,
+                    loaded.invalid,
+                    loaded.current_layer,
+                );
+                slide.collapsed = loaded.collapsed;
+                reloaded.push(slide);
+            }
             Err(e) => core.host.warn(format!("cannot reload annotations: {e}")),
         }
     }

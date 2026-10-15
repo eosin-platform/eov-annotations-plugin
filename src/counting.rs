@@ -6,7 +6,9 @@
 //! selected the whole slide is counted and no density is given. Counts are
 //! recomputed from the current data on every refresh, so they follow edits
 //! immediately (ANN-2), and areas use the same even-odd rule as the
-//! containment test (ANN-3).
+//! containment test (ANN-3). The last tally is reused until the slide, the
+//! selection or the classes change (ANN-12), so refreshing the sidebar does
+//! not walk every point again.
 
 use crate::geometry::Region;
 use crate::measure::Calibration;
@@ -35,6 +37,64 @@ pub struct Tally {
     pub approximate: bool,
     /// Points not inside any visible layer were skipped.
     pub total: u64,
+}
+
+/// What a tally depends on.
+#[derive(Debug, Clone, PartialEq)]
+struct TallyKey {
+    slide: crate::model::SlideId,
+    revision: u64,
+    selection: Vec<String>,
+    include_hidden: bool,
+    active: Option<String>,
+    alternate: Option<String>,
+    /// The classes' ids, names and colours.
+    classes: u64,
+    mpp: (Option<u64>, Option<u64>),
+}
+
+/// A tally and what it was computed from.
+#[derive(Debug, Clone)]
+pub struct CachedTally {
+    key: TallyKey,
+    tally: Tally,
+}
+
+fn tally_key(state: &State, slide: &SlideData, selection: &[String]) -> TallyKey {
+    use std::hash::{Hash, Hasher};
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+    for class in &state.classes {
+        (&class.id, &class.name, class.color.to_hex()).hash(&mut hasher);
+    }
+    TallyKey {
+        slide: slide.id(),
+        revision: slide.revision,
+        selection: selection.to_vec(),
+        include_hidden: state.settings.count_hidden_layers,
+        active: state.settings.active_class.clone(),
+        alternate: state.settings.alternate_class.clone(),
+        classes: hasher.finish(),
+        mpp: (
+            slide.record.mpp_x.map(f64::to_bits),
+            slide.record.mpp_y.map(f64::to_bits),
+        ),
+    }
+}
+
+/// [`tally`], reusing the previous result while its inputs are unchanged.
+pub fn tally_cached(state: &State, slide: &SlideData, selection: &[String]) -> Tally {
+    let key = tally_key(state, slide, selection);
+    if let Some(cached) = state.tally_cache.borrow().as_ref()
+        && cached.key == key
+    {
+        return cached.tally.clone();
+    }
+    let tally = tally(state, slide, selection);
+    *state.tally_cache.borrow_mut() = Some(CachedTally {
+        key,
+        tally: tally.clone(),
+    });
+    tally
 }
 
 /// Counts points per class in the selection of `file_id` (or the whole
@@ -327,6 +387,41 @@ mod tests {
         assert_eq!(hidden.total, 0);
         state.settings.count_hidden_layers = true;
         assert_eq!(tally(&state, &slide, &[]).total, 41);
+    }
+
+    #[test]
+    fn cached_tallies_follow_edits_selection_and_settings() {
+        let (mut state, mut slide) = setup();
+        let selection = ["r".to_string()];
+        let first = tally_cached(&state, &slide, &selection);
+        assert_eq!(first, tally(&state, &slide, &selection));
+        // Same inputs: served from the cache, even if the data were changed
+        // behind its back without a new revision.
+        slide.annotations.remove("p0");
+        assert_eq!(tally_cached(&state, &slide, &selection), first);
+        // A new revision, another selection or another setting recomputes.
+        slide.revision += 1;
+        let edited = tally_cached(&state, &slide, &selection);
+        assert_eq!(edited, tally(&state, &slide, &selection));
+        assert_ne!(edited, first);
+        assert_eq!(
+            tally_cached(&state, &slide, &[]).regions,
+            0,
+            "the whole slide when nothing is selected"
+        );
+        state.settings.count_hidden_layers = true;
+        assert_eq!(
+            tally_cached(&state, &slide, &selection),
+            tally(&state, &slide, &selection)
+        );
+        state.classes[0].name = "Ki-67 positive".into();
+        assert!(
+            tally_cached(&state, &slide, &selection)
+                .rows
+                .iter()
+                .any(|row| row.name == "Ki-67 positive"),
+            "renamed classes are not served stale"
+        );
     }
 
     #[test]

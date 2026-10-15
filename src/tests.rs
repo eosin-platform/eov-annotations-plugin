@@ -1162,6 +1162,57 @@ fn changes_from_another_eov_window_are_picked_up() {
     assert!(notified(&b, "another eov window"));
 }
 
+/// The layer rows of the sidebar tree: (id, collapsed, annotation rows
+/// listed under it).
+fn layer_rows(h: &H, sidebar: &str) -> Vec<(String, bool, usize)> {
+    let rows = prop(h, sidebar, "rows");
+    let mut layers: Vec<(String, bool, usize)> = Vec::new();
+    for row in rows.as_array().unwrap() {
+        match row["kind"].as_i64() {
+            Some(0) => layers.push((
+                row["id"].as_str().unwrap().to_string(),
+                row["collapsed"] == json!(true),
+                0,
+            )),
+            Some(1) => layers.last_mut().expect("annotations follow their layer").2 += 1,
+            _ => {}
+        }
+    }
+    layers
+}
+
+#[test]
+fn collapsed_layers_stay_collapsed_after_a_restart() {
+    let init = test_init("annotations");
+    let dir = PathBuf::from(&init.cache_dir);
+    let h = start(init.clone());
+    open(&h, info(1, "a", &dir));
+    draw(&h, POINT, 1, Shape::Point { x: 10.0, y: 10.0 });
+    draw(&h, POINT, 1, Shape::Point { x: 20.0, y: 20.0 });
+    let sidebar = open_sidebar(&h);
+    let (layer, collapsed, listed) = layer_rows(&h, &sidebar).remove(0);
+    assert!(!collapsed && listed == 2, "small layers start expanded");
+    callback(&h, &sidebar, "toggle-collapsed", vec![json!(layer)]);
+    assert_eq!(layer_rows(&h, &sidebar)[0], (layer.clone(), true, 0));
+    drop(h);
+
+    let h = start(init.clone());
+    open(&h, info(1, "a", &dir));
+    let sidebar = open_sidebar(&h);
+    assert_eq!(
+        layer_rows(&h, &sidebar)[0],
+        (layer.clone(), true, 0),
+        "the choice is saved with the slide"
+    );
+    // Expanding again is remembered too.
+    callback(&h, &sidebar, "toggle-collapsed", vec![json!(layer)]);
+    drop(h);
+    let h = start(init);
+    open(&h, info(1, "a", &dir));
+    let sidebar = open_sidebar(&h);
+    assert_eq!(layer_rows(&h, &sidebar)[0], (layer, false, 2));
+}
+
 #[test]
 fn layers_can_be_created_renamed_hidden_and_deleted_with_undo() {
     let (h, dir) = fresh();

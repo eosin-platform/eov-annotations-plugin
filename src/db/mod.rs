@@ -21,7 +21,8 @@ use crate::model::{
     Status,
 };
 use rusqlite::{Connection, OpenFlags, OptionalExtension, Row, Transaction, params};
-use std::collections::HashSet;
+use serde_json::Value;
+use std::collections::{BTreeMap, HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::Duration;
@@ -543,19 +544,49 @@ impl Db {
                 tx.commit()?;
             }
         }
-        let current_layer = self
+        let (current_layer, view_state) = self
             .conn
-            .prepare_cached("SELECT current_layer FROM slide_state WHERE slide_id = ?1")?
-            .query_row([slide_id], |r| r.get::<_, Option<String>>(0))
+            .prepare_cached("SELECT current_layer, state FROM slide_state WHERE slide_id = ?1")?
+            .query_row([slide_id], |r| {
+                Ok((r.get::<_, Option<String>>(0)?, r.get::<_, String>(1)?))
+            })
             .optional()?
-            .flatten();
+            .unwrap_or_default();
         Ok(LoadedSlide {
             layers,
             annotations,
             invalid,
             skipped,
             current_layer,
+            collapsed: collapsed_from_state(&view_state),
         })
+    }
+
+    /// Remembers which of a slide's layers the user collapsed or expanded
+    /// (ANN-18), in `slide_state.state` next to any other keys there.
+    pub fn set_collapsed_layers(
+        &mut self,
+        slide_id: SlideId,
+        collapsed: &HashMap<String, bool>,
+    ) -> DbResult<()> {
+        self.writable()?;
+        let tx = self.conn.transaction()?;
+        let state: Option<String> = tx
+            .prepare_cached("SELECT state FROM slide_state WHERE slide_id = ?1")?
+            .query_row([slide_id], |r| r.get(0))
+            .optional()?;
+        let mut object = state
+            .and_then(|state| serde_json::from_str::<serde_json::Map<String, Value>>(&state).ok())
+            .unwrap_or_default();
+        let collapsed: BTreeMap<&String, &bool> = collapsed.iter().collect();
+        object.insert(COLLAPSED_KEY.into(), serde_json::json!(collapsed));
+        tx.prepare_cached(
+            "INSERT INTO slide_state (slide_id, state) VALUES (?1, ?2)
+             ON CONFLICT(slide_id) DO UPDATE SET state = excluded.state",
+        )?
+        .execute(params![slide_id, Value::Object(object).to_string()])?;
+        tx.commit()?;
+        Ok(())
     }
 
     fn load_layers(&self, slide_id: SlideId) -> DbResult<Vec<Layer>> {
@@ -801,6 +832,26 @@ pub struct LoadedSlide {
     /// Rows that could not be read.
     pub skipped: usize,
     pub current_layer: Option<String>,
+    /// Layers the user collapsed (`true`) or expanded (`false`).
+    pub collapsed: HashMap<String, bool>,
+}
+
+/// The key of the collapsed layers in `slide_state.state`.
+const COLLAPSED_KEY: &str = "collapsed";
+
+fn collapsed_from_state(state: &str) -> HashMap<String, bool> {
+    serde_json::from_str::<Value>(state)
+        .ok()
+        .and_then(|state| {
+            let layers = state.get(COLLAPSED_KEY)?.as_object()?.clone();
+            Some(
+                layers
+                    .into_iter()
+                    .filter_map(|(id, collapsed)| Some((id, collapsed.as_bool()?)))
+                    .collect(),
+            )
+        })
+        .unwrap_or_default()
 }
 
 #[derive(Debug, Clone)]

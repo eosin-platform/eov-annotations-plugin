@@ -111,8 +111,18 @@ pub struct SlideData {
     /// Polygons from older versions whose outline crosses itself.
     pub invalid: HashSet<String>,
     pub current_layer: Option<String>,
-    /// Increases with every change (caches key on it).
+    /// Layers the user collapsed (`true`) or expanded (`false`) in the
+    /// sidebar; others follow the size-based default. Saved per slide.
+    pub collapsed: HashMap<String, bool>,
+    /// Changes with every change (caches key on it). Revisions come from
+    /// one counter, so a slide loaded again never repeats a revision of an
+    /// earlier copy.
     pub revision: u64,
+}
+
+fn next_revision() -> u64 {
+    static NEXT: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(1);
+    NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
 }
 
 impl SlideData {
@@ -130,7 +140,8 @@ impl SlideData {
             order: HashMap::new(),
             invalid,
             current_layer,
-            revision: 1,
+            collapsed: HashMap::new(),
+            revision: next_revision(),
         };
         for annotation in annotations {
             slide.insert(annotation);
@@ -248,7 +259,7 @@ impl SlideData {
             }
             Change::Class { .. } | Change::MoveLayers { .. } => {}
         }
-        self.revision += 1;
+        self.revision = next_revision();
     }
 
     fn drop_layer(&mut self, layer_id: &str) {
@@ -532,6 +543,9 @@ pub struct State {
     pub brush_cursor: Option<(FileId, [f64; 2])>,
     /// The last comparison with another reader.
     pub comparison: Option<Comparison>,
+    /// The last count tally, reused while nothing it depends on changed
+    /// (ANN-12).
+    pub tally_cache: std::cell::RefCell<Option<crate::counting::CachedTally>>,
 }
 
 impl State {
@@ -561,6 +575,7 @@ impl State {
             brush: None,
             brush_cursor: None,
             comparison: None,
+            tally_cache: std::cell::RefCell::new(None),
         }
     }
 
