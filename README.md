@@ -8,8 +8,8 @@ image viewer: points, regions, lines and text, reusable classes, cell
 counting with densities and indices, high-power fields, measurements in
 physical units, comment threads, blinded copies and reader comparison for
 multi-reader studies, and import and export in the formats other tools use
-(GeoJSON as QuPath writes it, ASAP and Aperio ImageScope XML; Hamamatsu
-NDPA import).
+(GeoJSON as QuPath writes it, ASAP and Aperio ImageScope XML, DICOM
+Microscopy Bulk Simple Annotations; Hamamatsu NDPA import).
 
 Version 1.0 of the plugin is written for eov 1.x (plugin API 1.0).
 
@@ -219,6 +219,7 @@ or `⋯`):
 | ASAP XML | ✓ | ✓ |
 | Aperio ImageScope XML | ✓ | ✓ |
 | Hamamatsu NDPA (NDP.view) | ✓ | |
+| DICOM Microscopy Bulk Simple Annotations (`.dcm`) | ✓ (2D) | ✓ |
 | CSV measurements | | ✓ |
 
 **Importing** (Data → Import…, or `⋯` → Import annotations…) reads the file
@@ -270,6 +271,48 @@ names and texts are cut to the limits.
   size: `x_px = (x_nm − XOffset) / (mpp · 1000) + width / 2`, likewise y.
   If the slide is not an NDPI or lacks those properties, the preview says
   so and nothing is imported.
+- **DICOM** (Microscopy Bulk Simple Annotations, the annotation objects of
+  DICOM whole-slide imaging: SOP class 1.2.840.10008.5.1.4.1.1.91.1,
+  modality ANN). A DICOM annotation group has one graphic type and one
+  property type, so an export has a group per layer, class and kind of
+  shape, labelled with the class (or with the layer, for unclassified
+  annotations), described with the layer's name and coloured with the
+  class colour (Recommended Display CIELab Value). Points and the anchors
+  of text labels are POINTs, lines and arrows (tail to tip) POLYLINEs,
+  polygons POLYGONs (their outer ring), rectangles RECTANGLEs and ellipses
+  ELLIPSEs (the ends of the major axis, then of the minor axis). Every
+  group's property category and type is SCT 91723000 "Anatomical
+  Structure": eov classes are names rather than codes, so a generic code
+  says nothing wrong about what was drawn, and the class stays the label.
+  Coordinates are (column, row) pairs in 32-bit floats (finer than
+  0.01 px on slides of up to 100 000 px), in the total pixel matrix (Pixel
+  Origin Interpretation VOLUME), with lines and polygons located by a
+  1-based Long Primitive Point Index List.
+  - *References.* When the slide is a DICOM image (OpenSlide publishes its
+    attributes as `dicom.*` properties), the export joins the slide's
+    study, with its patient and study attributes, shares its frame of
+    reference, and refers to its image and series. Otherwise the file is a
+    study of its own with empty patient attributes (nothing identifying is
+    made up) that refers to no image, so DICOM viewers cannot attach it to a
+    slide by themselves.
+  - *What other viewers do not see.* DICOM bulk annotations have no holes,
+    text, arrowheads or annotation names: other viewers show regions
+    without their holes, text labels as points and arrows as lines. eov
+    keeps holes, texts, arrows, layers, names, descriptions and statuses in
+    private attributes (creator `EOV ANNOTATIONS`) that it reads back, and
+    the export's notice lists what was left out for other viewers.
+    Authors, comments, properties and times are not exported.
+  - *Importing.* Files of other producers are read when their coordinates
+    are 2D (32- or 64-bit, any of the five graphic types): each group
+    becomes a layer named after its label (groups with the same label
+    share one), the label (or, without one, the property type's meaning)
+    the class of its annotations, and its measurements become annotation
+    properties; rectangles and ellipses that are not axis-aligned become
+    polygons. A file that refers to a DICOM image is checked against the
+    open slide's series and instance. 3D annotations (millimetres in the
+    slide's frame of reference) and coordinates relative to single frames
+    are refused with the reason, as are DICOM files that hold no
+    annotations (slide images, structured reports).
 - **CSV**: one row per annotation with its layer, class, kind, status,
   author, timestamps, centre and measurements in µm and pixels, whether
   the slide was calibrated, and how many comments it has. Cells that a spreadsheet would run as formulas
@@ -281,15 +324,23 @@ comments and statuses (see [Second readers](#second-readers)).
 Exports never contain the slide's path. The file name is included only
 when *Include the slide's file name in exports* is set; the author,
 organization, project and license fields are written into eov JSON
-exports. Files are written to a temporary file first and renamed into
-place, so an interrupted export never leaves a half-written file.
+exports (DICOM exports use the author, organization and project as the
+content creator, institution and content description). DICOM exports of
+a DICOM slide carry the slide's patient and study attributes, as the
+objects of one DICOM study must. Files are written to a temporary file
+first and renamed into place, so an interrupted export never leaves a
+half-written file.
 
 ## Coordinates and units
 
 All coordinates, in the database and in every format, are **level-0 pixels**
 of the slide: the origin is the top-left corner of the level-0 image, x
 grows to the right and **y grows downwards** (the convention of OpenSlide,
-QuPath, ASAP and ImageScope, and of eov's plugin API). The OpenSlide bounds offset (`openslide.bounds-x/y`) is **not**
+QuPath, ASAP and ImageScope, and of eov's plugin API). DICOM's 2D image
+coordinates have the same convention: (0, 0) is the top-left corner of
+the top-left pixel, whose centre is (0.5, 0.5), and (columns, rows) the
+bottom-right corner of the image, so they are written and read
+unchanged. The OpenSlide bounds offset (`openslide.bounds-x/y`) is **not**
 subtracted: coordinates refer to the full level-0 image, and eov JSON
 exports record the bounds so that tools working in the bounds' frame can
 convert. Physical values use the slide's pixel size (µm per level-0 pixel,
@@ -420,7 +471,9 @@ This depends on what eov's plugin API offers today:
 - A region made of several separate parts is stored as several
   annotations (eov's shapes have no multipolygon).
 
-Not done yet: DICOM annotation formats (SR, Bulk Simple Annotations).
+Not done yet: DICOM structured reports (SR) are neither read nor
+written, and DICOM bulk annotations in 3D slide coordinates or relative to
+single frames are refused (see [Formats](#formats)).
 
 ## Repository layout
 
@@ -435,7 +488,8 @@ src/
   transfer.rs       import preview and apply, exports, backups
   counting.rs stats.rs measure.rs geometry.rs
   compare.rs        comparing two readers
-  formats/          GeoJSON, eov JSON, ASAP/ImageScope XML, NDPA, CSV
+  formats/          GeoJSON, eov JSON, ASAP/ImageScope XML, NDPA, CSV,
+                    DICOM (with a small Part 10 reader and writer)
   db/               schema, migrations (also from before 1.0), queries
   tests.rs          end-to-end tests
 ui/                 the panel and the import dialog (Slint)
