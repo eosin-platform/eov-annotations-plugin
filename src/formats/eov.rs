@@ -238,6 +238,7 @@ fn parse_v2(value: &Value) -> Result<ImportDoc, String> {
                 .get("filename")
                 .and_then(Value::as_str)
                 .map(str::to_string),
+            dicom: None,
         };
     }
     for class in value

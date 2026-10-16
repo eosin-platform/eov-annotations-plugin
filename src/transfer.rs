@@ -358,8 +358,14 @@ pub fn start_import(core: &Arc<Core>, file_id: FileId) {
         title: Some("Import annotations".into()),
         filters: vec![
             FileFilter {
-                name: "Annotations (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA)".into(),
-                extensions: vec!["geojson".into(), "json".into(), "xml".into(), "ndpa".into()],
+                name: "Annotations (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)".into(),
+                extensions: vec![
+                    "geojson".into(),
+                    "json".into(),
+                    "xml".into(),
+                    "ndpa".into(),
+                    "dcm".into(),
+                ],
             },
             FileFilter {
                 name: "All files".into(),
@@ -436,12 +442,23 @@ pub fn import_file(core: &Arc<Core>, file_id: FileId, path: PathBuf) {
                 )));
             }
             let legacy_sha = doc.slide.legacy_sha256.clone();
+            // A DICOM file that refers to a DICOM image (and not to an eov
+            // slide identity) is matched by that reference.
+            let dicom = doc
+                .slide
+                .dicom
+                .clone()
+                .filter(|_| doc.slide.identity.is_none());
             let mut plan = prepare(doc, file_id, slide_id, &info, &existing, &name)?;
             if ndpa {
                 plan.match_text =
                     "NDP.view annotations, placed with this slide's offsets from the slide centre and its pixel size."
                         .to_string();
                 plan.mismatch = false;
+            }
+            if let Some(reference) = dicom {
+                let props = core.host.file_properties(file_id).unwrap_or_default();
+                (plan.match_text, plan.mismatch) = formats::dicom::match_slide(&reference, &props);
             }
             if let Some(expected) = legacy_sha {
                 // Exports of the pre-1.0 plugin carry the slide's SHA-256.
@@ -758,6 +775,13 @@ pub fn start_export(core: &Arc<Core>, file_id: FileId, format: ExportFormat) {
                 extensions: vec!["xml".into()],
             },
         ),
+        ExportFormat::Dicom => (
+            format!("{}.annotations.dcm", stem(&filename)),
+            FileFilter {
+                name: "DICOM bulk annotations".into(),
+                extensions: vec!["dcm".into()],
+            },
+        ),
         ExportFormat::Blinded => (
             format!("{}.blinded.json", stem(&filename)),
             FileFilter {
@@ -814,11 +838,10 @@ pub fn export_options(core: &Core, state: &State) -> eov::ExportOptions {
 
 /// Writes the export chosen in the save dialog.
 pub fn export_file(core: &Arc<Core>, file_id: FileId, format: ExportFormat, path: PathBuf) {
-    let quickhash = core
-        .host
-        .file_properties(file_id)
-        .ok()
-        .and_then(|p| p.get("openslide.quickhash-1").cloned());
+    let props = core.host.file_properties(file_id).unwrap_or_default();
+    let quickhash = props.get("openslide.quickhash-1").cloned();
+    // A DICOM slide is referred to by DICOM exports.
+    let source = formats::dicom::Source::of_slide(&props);
     let prepared = {
         let state = core.state();
         let Some(file) = state.files.get(&file_id) else {
@@ -850,36 +873,43 @@ pub fn export_file(core: &Arc<Core>, file_id: FileId, format: ExportFormat, path
         blind(&mut slide, &mut options);
     }
     core.io(move |core| {
-        let count: usize = slide.layers.iter().map(|(_, a)| a.len()).sum();
+        let mut count: usize = slide.layers.iter().map(|(_, a)| a.len()).sum();
+        // What the format could not hold (DICOM), shown with the notice.
+        let mut note = None;
+        let json =
+            |value: serde_json::Value| serde_json::to_vec_pretty(&value).map_err(|e| e.to_string());
         let bytes = match format {
-            ExportFormat::GeoJson => {
-                serde_json::to_vec_pretty(&geojson::export(&slide, &classes, &options))
-            }
-            ExportFormat::Eov => {
-                serde_json::to_vec_pretty(&eov::export(&slide, &classes, &options))
-            }
+            ExportFormat::GeoJson => json(geojson::export(&slide, &classes, &options)),
+            ExportFormat::Eov => json(eov::export(&slide, &classes, &options)),
             ExportFormat::Csv => Ok(formats::csv::export(&slide, &classes).into_bytes()),
             ExportFormat::Asap => Ok(formats::xml::export_asap(&slide, &classes).into_bytes()),
             ExportFormat::ImageScope => {
                 Ok(formats::xml::export_imagescope(&slide, &classes).into_bytes())
             }
+            ExportFormat::Dicom => {
+                formats::dicom::export(&slide, &classes, &options, source.as_ref()).map(|export| {
+                    count = export.count;
+                    note = Some(export.notes.join("\n"));
+                    export.bytes
+                })
+            }
             ExportFormat::Blinded => {
                 let mut doc = eov::export(&slide, &classes, &options);
                 doc["metadata"]["blinded"] = serde_json::Value::Bool(true);
-                serde_json::to_vec_pretty(&doc)
+                json(doc)
             }
         };
         let result = bytes
-            .map_err(|e| e.to_string())
             .and_then(|bytes| fileio::write_atomically(&path, &bytes).map_err(|e| e.to_string()));
         let name = path
             .file_name()
             .map(|n| n.to_string_lossy().into_owned())
             .unwrap_or_default();
         match result {
-            Ok(()) => core.notify(
+            Ok(()) => core.notify_detail(
                 NotifyLevel::Success,
                 format!("Exported {count} annotation(s) to {name}."),
+                note,
             ),
             Err(e) => core.error(format!("Could not export to {name}"), e),
         }
@@ -923,8 +953,14 @@ pub fn start_compare(core: &Arc<Core>, file_id: FileId) {
     let args = FileDialogArgs {
         title: Some("Compare with another reader's annotations".into()),
         filters: vec![FileFilter {
-            name: "Annotations (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA)".into(),
-            extensions: vec!["json".into(), "geojson".into(), "xml".into(), "ndpa".into()],
+            name: "Annotations (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)".into(),
+            extensions: vec![
+                "json".into(),
+                "geojson".into(),
+                "xml".into(),
+                "ndpa".into(),
+                "dcm".into(),
+            ],
         }],
         ..Default::default()
     };
@@ -993,7 +1029,16 @@ pub fn compare_file(core: &Arc<Core>, file_id: FileId, path: PathBuf) {
             };
             place_ndpa(core, file_id, &info, &mut doc)?;
             let ndpa = doc.units == formats::Units::NdpaNanometres;
-            let plan = prepare(doc, file_id, slide_id, &info, &existing, &name)?;
+            let dicom = doc
+                .slide
+                .dicom
+                .clone()
+                .filter(|_| doc.slide.identity.is_none());
+            let mut plan = prepare(doc, file_id, slide_id, &info, &existing, &name)?;
+            if let Some(reference) = dicom {
+                let props = core.host.file_properties(file_id).unwrap_or_default();
+                (plan.match_text, plan.mismatch) = formats::dicom::match_slide(&reference, &props);
+            }
             let theirs: Vec<crate::compare::Item> = plan
                 .layers
                 .iter()

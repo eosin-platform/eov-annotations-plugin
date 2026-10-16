@@ -2,9 +2,9 @@
 //!
 //! Point, region, line and text annotations in per-slide layers, reusable
 //! classes, cell counting with per-class tallies and densities, HPF fields,
-//! per-annotation measurements, and GeoJSON (QuPath), ASAP, ImageScope and
-//! eov import/export. Data lives in a SQLite database in the plugin's data
-//! directory, keyed by the host's slide identity.
+//! per-annotation measurements, and GeoJSON (QuPath), ASAP, ImageScope, DICOM
+//! bulk annotation and eov import/export. Data lives in a SQLite database in
+//! the plugin's data directory, keyed by the host's slide identity.
 //!
 //! Coordinates are level-0 pixels of the slide (x right, y down, origin at
 //! the top-left of the level-0 canvas).

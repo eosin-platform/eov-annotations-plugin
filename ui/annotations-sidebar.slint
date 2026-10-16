@@ -462,6 +462,7 @@ export component AnnotationsSidebar inherits Rectangle {
         "Export as eov JSON…",
         "Export as ASAP XML…",
         "Export as ImageScope XML…",
+        "Export as DICOM annotations…",
         "Export measurements (CSV)…",
         "Export a blinded copy…",
         "Compare with another reader…",
@@ -475,6 +476,7 @@ export component AnnotationsSidebar inherits Rectangle {
         "export-eov",
         "export-asap",
         "export-imagescope",
+        "export-dicom",
         "export-csv",
         "export-blinded",
         "compare",
@@ -1862,7 +1864,7 @@ export component AnnotationsSidebar inherits Rectangle {
                         }
 
                         Hint {
-                            text: "Imports: GeoJSON (QuPath and others), eov JSON, ASAP XML, Aperio ImageScope XML and Hamamatsu NDPA. Coordinates are level-0 pixels with y pointing down.";
+                            text: "Imports: GeoJSON (QuPath and others), eov JSON, ASAP XML, Aperio ImageScope XML, Hamamatsu NDPA and DICOM bulk annotations. Coordinates are level-0 pixels with y pointing down.";
                         }
 
                         HorizontalLayout {
@@ -1920,6 +1922,14 @@ export component AnnotationsSidebar inherits Rectangle {
                                 enabled: root.has-slide;
                                 clicked => {
                                     root.menu("export-imagescope");
+                                }
+                            }
+
+                            TextButton {
+                                text: "DICOM…";
+                                enabled: root.has-slide;
+                                clicked => {
+                                    root.menu("export-dicom");
                                 }
                             }
                         }

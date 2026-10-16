@@ -8,11 +8,13 @@
 //! | ASAP XML | ✓ | ✓ |
 //! | Aperio ImageScope XML | ✓ | ✓ |
 //! | Hamamatsu NDPA | ✓ (placed with the slide's NDPI offsets) | |
+//! | DICOM Microscopy Bulk Simple Annotations | ✓ (2D) | ✓ |
 //! | CSV measurements | | ✓ |
 //!
 //! All coordinates are level-0 pixels of the slide, origin at the top-left
 //! corner of the level-0 canvas, x to the right, y down — the convention of
-//! OpenSlide, QuPath, ASAP and ImageScope. The OpenSlide bounds offset
+//! OpenSlide, QuPath, ASAP and ImageScope, and the image-relative one of
+//! DICOM (pixel *i* spans *i* to *i* + 1). The OpenSlide bounds offset
 //! (`openslide.bounds-x/y`) is **not** subtracted; it is recorded in eov
 //! exports so other tools can apply it.
 //!
@@ -20,6 +22,7 @@
 //! skipped and counted with a reason.
 
 pub mod csv;
+pub mod dicom;
 pub mod eov;
 pub mod geojson;
 pub mod ndpa;
@@ -212,19 +215,33 @@ pub struct SlideHint {
     /// Full-file SHA-256 (exports of the pre-1.0 plugin).
     pub legacy_sha256: Option<String>,
     pub filename: Option<String>,
+    /// The DICOM image a DICOM file refers to.
+    pub dicom: Option<dicom::Reference>,
 }
 
 /// Reads any supported format, recognised by content.
 pub fn parse(bytes: &[u8], file_name: &str) -> Result<ImportDoc, String> {
-    let text = std::str::from_utf8(bytes).map_err(|_| {
-        "The file is not UTF-8 text, so it is not a supported annotation file.".to_string()
-    })?;
-    let text = text.trim_start_matches('\u{feff}');
-    let first = text.trim_start().chars().next();
-    let stem = std::path::Path::new(file_name)
+    let path = std::path::Path::new(file_name);
+    let stem = path
         .file_stem()
         .map(|s| s.to_string_lossy().into_owned())
         .unwrap_or_else(|| "Imported".to_string());
+    if dicom::part10::is_part10(bytes) {
+        return dicom::parse(bytes, &stem);
+    }
+    let text = std::str::from_utf8(bytes).map_err(|_| {
+        if path
+            .extension()
+            .is_some_and(|e| e.eq_ignore_ascii_case("dcm"))
+        {
+            "This .dcm file is not a DICOM file (\"DICM\" is missing at byte 128).".to_string()
+        } else {
+            "The file is not UTF-8 text or DICOM, so it is not a supported annotation file."
+                .to_string()
+        }
+    })?;
+    let text = text.trim_start_matches('\u{feff}');
+    let first = text.trim_start().chars().next();
     match first {
         Some('{') | Some('[') => {
             let value: serde_json::Value = serde_json::from_str(text)
@@ -239,7 +256,7 @@ pub fn parse(bytes: &[u8], file_name: &str) -> Result<ImportDoc, String> {
         }
         Some('<') => xml::parse(text, &stem),
         _ => Err(
-            "Unsupported file: expected GeoJSON, eov JSON, ASAP XML, ImageScope XML or NDPA."
+            "Unsupported file: expected GeoJSON, eov JSON, ASAP XML, ImageScope XML, NDPA or DICOM bulk annotations."
                 .to_string(),
         ),
     }

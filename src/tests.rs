@@ -2220,3 +2220,217 @@ fn blinded_copies_and_reader_comparison() {
     assert_eq!(prop(&h, &sidebar, "compare-title"), "");
     assert_eq!(prop(&h, &sidebar, "compare-rows"), json!([]));
 }
+
+/// What OpenSlide publishes of a DICOM slide (its level-0 instance).
+fn dicom_properties() -> eov_plugin_api::protocol::PropertyMap {
+    [
+        ("openslide.vendor", "dicom"),
+        ("dicom.StudyInstanceUID", "1.2.826.0.1.3680043.10.1"),
+        ("dicom.SeriesInstanceUID", "1.2.826.0.1.3680043.10.2"),
+        ("dicom.SOPInstanceUID", "1.2.826.0.1.3680043.10.3"),
+        ("dicom.SOPClassUID", "1.2.840.10008.5.1.4.1.1.77.1.6"),
+        ("dicom.FrameOfReferenceUID", "1.2.826.0.1.3680043.10.4"),
+        ("dicom.PatientID", "P-0001"),
+    ]
+    .into_iter()
+    .map(|(k, v)| (k.to_string(), v.to_string()))
+    .collect()
+}
+
+#[test]
+fn dicom_exports_refer_to_dicom_slides_and_come_back_in_one_undo_step() {
+    use crate::formats::dicom::part10::{self, Tag};
+    let (h, dir) = fresh();
+    let file = info(1, "wsi", &dir);
+    let full_path = file.path.clone();
+    open(&h, file);
+    h.state().properties.insert(1, dicom_properties());
+    let sidebar = open_sidebar(&h);
+    // A tumour region with a hole, a point and a text label.
+    draw(&h, POLYGON, 1, square(100.0, 100.0, 400.0));
+    callback(&h, &sidebar, "detail-class-chosen", vec![json!(1)]);
+    draw_with(
+        &h,
+        RECTANGLE,
+        1,
+        Shape::Rectangle {
+            x: 200.0,
+            y: 200.0,
+            width: 100.0,
+            height: 100.0,
+        },
+        Modifiers {
+            alt: true,
+            ..Default::default()
+        },
+    );
+    draw(&h, POINT, 1, Shape::Point { x: 5.5, y: 5.5 });
+    draw(&h, TEXT, 1, Shape::Point { x: 700.0, y: 700.0 });
+    let label = prop(&h, &sidebar, "detail-id");
+    callback(
+        &h,
+        &sidebar,
+        "detail-name-committed",
+        vec![label, json!("Margin")],
+    );
+    let shapes = |file: FileId| {
+        let mut shapes: Vec<String> = objects(&h, file)
+            .into_iter()
+            .map(|(_, o)| format!("{:?}", o.shape))
+            .collect();
+        shapes.sort();
+        shapes
+    };
+    let before = shapes(1);
+    assert_eq!(before.len(), 3);
+    assert!(before.iter().any(|s| s.contains("holes: [[")), "{before:?}");
+
+    let target = dir.join("wsi.annotations.dcm");
+    callback(&h, &sidebar, "menu", vec![json!("export-dicom")]);
+    answer_dialog(&h, &target);
+    let bytes = std::fs::read(&target).unwrap();
+    let text = String::from_utf8_lossy(&bytes);
+    assert!(!text.contains(&full_path), "the slide path leaks");
+    assert!(!text.contains("wsi.svs"), "the file name leaks by default");
+    assert!(
+        notified(&h, "Exported 3 annotation(s) to wsi.annotations.dcm."),
+        "{:?}",
+        notifications(&h)
+    );
+    // The notice's detail says what DICOM viewers will not see.
+    assert!(notified(&h, "refers to this slide's DICOM image"));
+    assert!(notified(&h, "1 hole in 1 region"));
+    assert!(notified(&h, "the text of 1 text label"));
+    // It refers to the slide's image and joins its study.
+    let file = part10::read(&bytes).unwrap();
+    let ds = &file.dataset;
+    assert_eq!(
+        ds.text(Tag(0x0020, 0x000D)).as_deref(),
+        Some("1.2.826.0.1.3680043.10.1")
+    );
+    assert_eq!(ds.text(Tag(0x0010, 0x0020)).as_deref(), Some("P-0001"));
+    assert_eq!(
+        ds.text(Tag(0x0020, 0x0052)).as_deref(),
+        Some("1.2.826.0.1.3680043.10.4")
+    );
+    let image = &ds.items(Tag(0x0008, 0x1140))[0];
+    assert_eq!(
+        image.text(Tag(0x0008, 0x1155)).as_deref(),
+        Some("1.2.826.0.1.3680043.10.3")
+    );
+
+    // Imported again on the same slide, it is recognised.
+    callback(&h, &sidebar, "menu", vec![json!("import")]);
+    answer_dialog(&h, &target);
+    let (modal_id, props) = modal(&h).expect("the import dialog");
+    assert_eq!(props["match-text"], "Made for this slide.");
+    assert_eq!(props["mismatch"], json!(false));
+    h.ui_callback(&modal_id, "import-cancel", vec![]).unwrap();
+    settle(&h);
+
+    // On another slide: the same shapes, class and layer, in one undo step.
+    open(&h, info(2, "other", &dir));
+    callback(&h, &sidebar, "menu", vec![json!("import")]);
+    answer_dialog(&h, &target);
+    let (modal_id, props) = modal(&h).expect("the import dialog");
+    let summary = props["summary"].as_str().unwrap();
+    assert_eq!(
+        summary,
+        "DICOM bulk annotations · 3 annotation(s) in 1 layer(s) · 1 class(es)"
+    );
+    assert_eq!(props["mismatch"], json!(true), "made for the other slide");
+    assert!(objects(&h, 2).is_empty(), "nothing before confirmation");
+    let undo_before = h.state().undo.len();
+    h.ui_callback(&modal_id, "import-confirm", vec![json!(0)])
+        .unwrap();
+    settle(&h);
+    assert_eq!(shapes(2), before);
+    assert_eq!(h.state().undo.len(), undo_before + 1, "one undo step");
+    assert!(
+        prop(&h, &sidebar, "rows")
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|r| r["label"] == "Annotations"),
+        "the layer keeps its name"
+    );
+    undo(&h);
+    assert!(objects(&h, 2).is_empty());
+}
+
+#[test]
+fn dicom_annotations_of_other_programs_are_matched_by_the_image_they_refer_to() {
+    use crate::formats::dicom::part10::{self, DataSet, Tag, Vr};
+    let (h, dir) = fresh();
+    open(&h, info(1, "wsi", &dir));
+    h.state().properties.insert(1, dicom_properties());
+    // Two mitoses, as another program writes them: no eov attributes.
+    let foreign = |instance: &str, coordinates: &str| {
+        let mut group = DataSet::new();
+        group.put_text(Tag(0x006A, 0x0005), Vr::LO, "Mitosis");
+        group.put_text(Tag(0x0070, 0x0023), Vr::CS, "POINT");
+        group.put_f32s(Tag(0x0066, 0x0016), Vr::OF, &[100.0, 200.0, 300.0, 400.0]);
+        let mut image = DataSet::new();
+        image.put_text(
+            Tag(0x0008, 0x1150),
+            Vr::UI,
+            "1.2.840.10008.5.1.4.1.1.77.1.6",
+        );
+        image.put_text(Tag(0x0008, 0x1155), Vr::UI, instance);
+        let mut ds = DataSet::new();
+        ds.put_text(Tag(0x0008, 0x0016), Vr::UI, formats::dicom::SOP_CLASS_UID);
+        ds.put_text(Tag(0x006A, 0x0001), Vr::CS, coordinates);
+        ds.put_items(Tag(0x006A, 0x0002), vec![group]);
+        ds.put_items(Tag(0x0008, 0x1140), vec![image]);
+        part10::write(
+            &part10::FileMeta {
+                sop_class_uid: formats::dicom::SOP_CLASS_UID,
+                sop_instance_uid: "1.2.3",
+                implementation_class_uid: "1.2.3.4",
+                implementation_version_name: "OTHER",
+            },
+            &ds,
+        )
+        .unwrap()
+    };
+    let sidebar = open_sidebar(&h);
+    let path = dir.join("mitoses.dcm");
+    std::fs::write(&path, foreign("1.2.826.0.1.3680043.10.3", "2D")).unwrap();
+    callback(&h, &sidebar, "menu", vec![json!("import")]);
+    answer_dialog(&h, &path);
+    let (modal_id, props) = modal(&h).expect("the import dialog");
+    assert_eq!(
+        props["match-text"],
+        "Made for this slide (its DICOM image)."
+    );
+    assert_eq!(props["mismatch"], json!(false));
+    h.ui_callback(&modal_id, "import-confirm", vec![json!(0)])
+        .unwrap();
+    settle(&h);
+    assert_eq!(objects(&h, 1).len(), 2);
+    let classes = prop(&h, &sidebar, "class-names");
+    assert!(classes.as_array().unwrap().iter().any(|c| c == "Mitosis"));
+    // Made for another image: the preview says so.
+    std::fs::write(&path, foreign("1.2.826.0.1.3680043.99", "2D")).unwrap();
+    callback(&h, &sidebar, "menu", vec![json!("import")]);
+    answer_dialog(&h, &path);
+    let (modal_id, props) = modal(&h).expect("the import dialog");
+    assert_eq!(props["mismatch"], json!(true));
+    assert!(
+        props["match-text"]
+            .as_str()
+            .unwrap()
+            .contains("different DICOM slide"),
+        "{props:?}"
+    );
+    h.ui_callback(&modal_id, "import-cancel", vec![]).unwrap();
+    settle(&h);
+    // 3D annotations are refused with the reason, and change nothing.
+    std::fs::write(&path, foreign("1.2.826.0.1.3680043.10.3", "3D")).unwrap();
+    callback(&h, &sidebar, "menu", vec![json!("import")]);
+    answer_dialog(&h, &path);
+    assert!(modal(&h).is_none());
+    assert!(notified(&h, "Could not import mitoses.dcm"));
+    assert!(notified(&h, "3D annotations"), "{:?}", notifications(&h));
+    assert_eq!(objects(&h, 1).len(), 2);
+}

@@ -955,6 +955,7 @@ pub fn callback(
                 "export-imagescope" => {
                     transfer::start_export(core, need_file()?, ExportFormat::ImageScope)
                 }
+                "export-dicom" => transfer::start_export(core, need_file()?, ExportFormat::Dicom),
                 "export-blinded" => {
                     transfer::start_export(core, need_file()?, ExportFormat::Blinded)
                 }

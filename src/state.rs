@@ -424,6 +424,8 @@ pub enum ExportFormat {
     Csv,
     Asap,
     ImageScope,
+    /// DICOM Microscopy Bulk Simple Annotations.
+    Dicom,
     /// eov JSON of the visible layers without authors, comments, statuses,
     /// descriptions or properties, for a second reader.
     Blinded,

@@ -279,6 +279,21 @@ impl Core {
         self.host.notify(level, message);
     }
 
+    /// A notice with an optional longer text the user can expand.
+    pub fn notify_detail(
+        &self,
+        level: NotifyLevel,
+        message: impl Into<String>,
+        detail: Option<String>,
+    ) {
+        let args = NotifyArgs {
+            level,
+            message: message.into(),
+            detail,
+        };
+        let _ = self.host.call::<_, Value>(methods::NOTIFY, &args);
+    }
+
     pub fn error(&self, message: impl Into<String>, detail: impl Into<String>) {
         self.host.notify_error(message, detail);
     }
