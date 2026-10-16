@@ -68,7 +68,9 @@ pub mod part10;
 
 use super::eov::{ExportOptions, ExportSlide, coordinates, slide_json};
 use super::{ImportAnnotation, ImportDoc, ImportLayer};
-use crate::model::{Annotation, Bounds, Class, Color, Geometry, GeometryKind, Layer, Status};
+use crate::model::{
+    Annotation, Bounds, Class, Color, Geometry, GeometryKind, Layer, LayerRole, Status,
+};
 use eov_plugin_api::protocol::PropertyMap;
 use part10::{DataSet, Tag, Vr};
 use serde::{Deserialize, Serialize};
@@ -357,6 +359,11 @@ struct PrivateGroup {
     layer_color: Option<String>,
     #[serde(default, skip_serializing_if = "String::is_empty")]
     layer_notes: String,
+    /// What the layer is for (`counts`, `fields`; empty for others).
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    layer_role: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    layer_visible: Option<bool>,
     #[serde(default)]
     class: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -642,7 +649,8 @@ fn group_item(number: usize, group: &Group<'_>, losses: &mut Losses) -> Result<D
             ": arrows, as lines from tail to tip (DICOM bulk annotations have no arrowheads).",
         ),
         GeometryKind::Polygon if holed > 0 => description.push_str(&format!(
-            ": {holed} of these regions have holes, which DICOM bulk annotations cannot hold; they are drawn without them."
+            ": {holed} of these regions {} holes, which DICOM bulk annotations cannot hold; they are drawn without them.",
+            if holed == 1 { "has" } else { "have" }
         )),
         _ => description.push('.'),
     }
@@ -651,6 +659,8 @@ fn group_item(number: usize, group: &Group<'_>, losses: &mut Losses) -> Result<D
         layer: group.layer.name.clone(),
         layer_color: Some(group.layer.color.to_hex()),
         layer_notes: group.layer.notes.clone(),
+        layer_role: group.layer.role.as_str().to_string(),
+        layer_visible: (!group.layer.visible).then_some(false),
         class: group.class.map(|c| c.name.clone()),
         class_color: group.class.map(|c| c.color.to_hex()),
         kind: group.kind.as_str().to_string(),
@@ -1414,29 +1424,39 @@ fn read_group(
     let description = item
         .text(tag::ANNOTATION_GROUP_DESCRIPTION)
         .unwrap_or_default();
-    let (layer_name, layer_color, notes, class, class_color, kind) = match &private {
+    let (new_layer, class, class_color, kind) = match &private {
         Some(p) => (
-            p.layer.clone(),
-            p.layer_color.as_deref().and_then(Color::parse),
-            p.layer_notes.clone(),
+            ImportLayer {
+                name: p.layer.clone(),
+                color: p.layer_color.as_deref().and_then(Color::parse),
+                notes: p.layer_notes.clone(),
+                visible: p.layer_visible,
+                role: LayerRole::parse(&p.layer_role),
+                annotations: Vec::new(),
+            },
             p.class.clone().filter(|c| !c.trim().is_empty()),
             p.class_color.as_deref().and_then(Color::parse).or(lab),
             p.kind.as_str(),
         ),
-        None => (name, lab, description, class, lab, ""),
+        None => (
+            ImportLayer {
+                name,
+                color: lab,
+                notes: description,
+                ..Default::default()
+            },
+            class,
+            lab,
+            "",
+        ),
     };
     if let Some(class) = &class {
         doc.note_class(class, class_color);
     }
-    let layer = match doc.layers.iter().position(|l| l.name == layer_name) {
+    let layer = match doc.layers.iter().position(|l| l.name == new_layer.name) {
         Some(i) => i,
         None => {
-            doc.layers.push(ImportLayer {
-                name: layer_name,
-                color: layer_color,
-                notes,
-                ..Default::default()
-            });
+            doc.layers.push(new_layer);
             doc.layers.len() - 1
         }
     };

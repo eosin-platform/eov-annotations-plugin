@@ -346,6 +346,19 @@ fn exports_read_back_with_shapes_classes_names_and_layers() {
             assert!(b.author.is_empty() && b.properties.is_empty());
         }
     }
+    // Count and HPF field layers keep their role; hidden layers stay hidden.
+    let (mut slide, classes) = sample();
+    slide.layers[0].0.role = LayerRole::Fields;
+    slide.layers[1].0.visible = false;
+    let again = parse(
+        &export(&slide, &classes, &options(), None).unwrap().bytes,
+        "x",
+    )
+    .unwrap();
+    assert_eq!(again.layers[0].role, LayerRole::Fields);
+    assert_eq!(again.layers[0].visible, None);
+    assert_eq!(again.layers[1].role, LayerRole::Normal);
+    assert_eq!(again.layers[1].visible, Some(false));
     // Class colours are exact; the long class name survives its label.
     for c in &classes {
         let imported = doc.classes.iter().find(|i| i.name == c.name).unwrap();
