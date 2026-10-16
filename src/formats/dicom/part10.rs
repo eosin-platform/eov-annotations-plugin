@@ -10,9 +10,11 @@
 //!   little endian, sequences and items with defined lengths.
 //! - Sequences and their items may have defined or undefined lengths. An
 //!   explicit VR `UN` element of undefined length is a sequence encoded in
-//!   implicit VR (PS3.5 6.2.2); in implicit VR, any element of undefined
-//!   length is a sequence, and so are the defined-length elements of
-//!   [`SEQUENCES`].
+//!   implicit VR (PS3.5 6.2.2), and so is a defined-length `UN` element of
+//!   a tag in [`SEQUENCES`] whose bytes are implicit VR items (as programs
+//!   that do not know the tag write it); in implicit VR, any element of
+//!   undefined length is a sequence, and so are the defined-length
+//!   elements of [`SEQUENCES`].
 //! - Values keep their bytes, padding included; the accessors interpret
 //!   them (text as UTF-8 when it is valid UTF-8, else as ISO 8859-1, which
 //!   covers `ISO_IR 192`, the default repertoire and `ISO_IR 100`).
@@ -596,6 +598,22 @@ impl Parser {
             if vr == Vr::SQ {
                 let mut inner = Cursor::new(body, base);
                 Value::Items(self.sequence(&mut inner, syntax, false, depth + 1)?)
+            } else if vr == Vr::UN && SEQUENCES.contains(&tag) {
+                // A sequence written by a program that did not know its
+                // tag: implicit VR items (PS3.5 6.2.2), else just bytes.
+                let mut inner = Cursor::new(body, base);
+                match self.sequence(&mut inner, Syntax::ImplicitLittle, false, depth + 1) {
+                    Ok(items) => {
+                        return Ok(Next::Element(
+                            tag,
+                            Element {
+                                vr: Vr::SQ,
+                                value: Value::Items(items),
+                            },
+                        ));
+                    }
+                    Err(_) => Value::Bytes(body.to_vec()),
+                }
             } else {
                 Value::Bytes(body.to_vec())
             }
@@ -1085,6 +1103,49 @@ mod tests {
         let file = read(&out).unwrap();
         let items = file.dataset.items(Tag(0x0099, 0x1010));
         assert_eq!(items[0].text(Tag(0x0008, 0x0100)).as_deref(), Some("ABCD"));
+    }
+
+    #[test]
+    fn known_sequences_written_as_un_are_read_as_sequences() {
+        // (006A,0002) as UN of defined length holding an implicit VR item,
+        // as a program without the tag in its dictionary writes it.
+        let mut item = Vec::new();
+        item.extend_from_slice(&[0x6A, 0x00, 0x05, 0x00, 6, 0, 0, 0]);
+        item.extend_from_slice(b"Nuclei");
+        let mut items = vec![0xFE, 0xFF, 0x00, 0xE0];
+        items.extend_from_slice(&(item.len() as u32).to_le_bytes());
+        items.extend_from_slice(&item);
+        let mut header = vec![0u8; 128];
+        header.extend_from_slice(b"DICM");
+        let mut meta = DataSet::new();
+        meta.put_text(TRANSFER_SYNTAX_UID, Vr::UI, EXPLICIT_VR_LITTLE_ENDIAN);
+        encode_dataset(&meta, &mut header).unwrap();
+        let mut file = header.clone();
+        let mut body = DataSet::new();
+        body.put_bytes(Tag(0x006A, 0x0002), Vr::UN, items);
+        // Not a known sequence: stays bytes.
+        body.put_bytes(Tag(0x0010, 0x0010), Vr::UN, b"Anon".to_vec());
+        encode_dataset(&body, &mut file).unwrap();
+        let parsed = read(&file).unwrap();
+        let groups = parsed.dataset.items(Tag(0x006A, 0x0002));
+        assert_eq!(
+            groups[0].text(Tag(0x006A, 0x0005)).as_deref(),
+            Some("Nuclei")
+        );
+        assert_eq!(
+            parsed.dataset.text(Tag(0x0010, 0x0010)).as_deref(),
+            Some("Anon")
+        );
+        // Bytes that are no sequence stay bytes.
+        let mut body = DataSet::new();
+        body.put_bytes(Tag(0x006A, 0x0002), Vr::UN, vec![1, 2, 3, 4]);
+        let mut file = header;
+        encode_dataset(&body, &mut file).unwrap();
+        let parsed = read(&file).unwrap();
+        assert_eq!(
+            parsed.dataset.bytes(Tag(0x006A, 0x0002)),
+            Some(&[1, 2, 3, 4][..])
+        );
     }
 
     #[test]
