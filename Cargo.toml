@@ -2,7 +2,7 @@
 name = "annotations"
 version = "1.0.0"
 edition = "2024"
-rust-version = "1.89"
+rust-version = "1.100"
 description = "Annotations, classes, cell counting, HPF fields and measurements for the eov whole-slide image viewer"
 repository = "https://github.com/eosin-platform/eov-annotations-plugin"
 license = "MIT OR Apache-2.0 OR GPL-3.0"
