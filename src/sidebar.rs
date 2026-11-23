@@ -13,12 +13,15 @@ use crate::actions;
 use crate::core::Core;
 use crate::counting;
 use crate::measure::{self, Calibration};
-use crate::model::{Class, Color, LayerRole, Status, clean_name, clean_properties, clean_text};
+use crate::model::{
+    Annotation, Class, Color, LayerRole, Status, clean_name, clean_properties, clean_text,
+};
 use crate::state::{DbStatus, ExportFormat, Load, Pending, State};
 use crate::stats::FieldSize;
 use crate::transfer;
 use eov_plugin_api::prelude::*;
 use serde::Serialize;
+use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::sync::Arc;
 
@@ -117,6 +120,68 @@ impl Default for SidebarView {
             limit: ROW_STEP,
         }
     }
+}
+
+/// An annotation as the list orders it.
+struct Listed<'a> {
+    annotation: &'a Arc<Annotation>,
+    class: Option<&'a Class>,
+    /// Where it is on the slide (worked out once, not per comparison).
+    anchor: [f64; 2],
+}
+
+/// The order of a layer's annotations in the list: by name as people read
+/// it, then by class, then by where they are on the slide (top to bottom,
+/// left to right), then by age and id. The order never depends on chance,
+/// such as the random ids that break ties in creation time.
+fn list_order(a: &Listed, b: &Listed) -> Ordering {
+    let (a_name, b_name) = (a.annotation.name_or_kind(), b.annotation.name_or_kind());
+    let a_class = a.class.map_or("", |c| c.name.as_str());
+    let b_class = b.class.map_or("", |c| c.name.as_str());
+    natural_cmp(a_name, b_name)
+        .then_with(|| a_name.cmp(b_name))
+        .then_with(|| natural_cmp(a_class, b_class))
+        .then_with(|| a.anchor[1].total_cmp(&b.anchor[1]))
+        .then_with(|| a.anchor[0].total_cmp(&b.anchor[0]))
+        .then_with(|| a.annotation.created_at.cmp(&b.annotation.created_at))
+        .then_with(|| a.annotation.id.cmp(&b.annotation.id))
+}
+
+/// Compares names as people read them: ignoring case, with runs of digits
+/// compared by value ("Region 2" before "Region 10"; "2" before "02").
+fn natural_cmp(mut a: &str, mut b: &str) -> Ordering {
+    loop {
+        let (Some(x), Some(y)) = (a.chars().next(), b.chars().next()) else {
+            // A name that is the start of the other comes first.
+            return b.is_empty().cmp(&a.is_empty());
+        };
+        let ordering = if x.is_ascii_digit() && y.is_ascii_digit() {
+            let (x_digits, a_rest) = split_digits(a);
+            let (y_digits, b_rest) = split_digits(b);
+            (a, b) = (a_rest, b_rest);
+            let x_value = x_digits.trim_start_matches('0');
+            let y_value = y_digits.trim_start_matches('0');
+            x_value
+                .len()
+                .cmp(&y_value.len())
+                .then_with(|| x_value.cmp(y_value))
+                .then_with(|| x_digits.len().cmp(&y_digits.len()))
+        } else {
+            (a, b) = (&a[x.len_utf8()..], &b[y.len_utf8()..]);
+            x.to_lowercase().cmp(y.to_lowercase())
+        };
+        if ordering.is_ne() {
+            return ordering;
+        }
+    }
+}
+
+/// The leading digits of `text`, and the rest.
+fn split_digits(text: &str) -> (&str, &str) {
+    text.split_at(
+        text.find(|c: char| !c.is_ascii_digit())
+            .unwrap_or(text.len()),
+    )
 }
 
 /// Whether a layer's annotations are folded away in the tree: what the
@@ -402,26 +467,46 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
             if collapsed && filter.is_empty() {
                 continue;
             }
-            for a in slide.in_layer(&layer.id) {
-                let class = a.class_id.as_deref().and_then(|id| state.class(id));
-                if !filter.is_empty() {
-                    let hay = format!(
-                        "{} {} {} {}",
-                        a.display_name().to_lowercase(),
-                        class.map_or("unclassified".to_string(), |c| c.name.to_lowercase()),
-                        a.geometry.kind().label().to_lowercase(),
-                        a.status.as_str()
-                    );
-                    if !hay.contains(&filter) {
-                        continue;
+            let mut listed: Vec<_> = slide
+                .in_layer(&layer.id)
+                .map(|a| (a, a.class_id.as_deref().and_then(|id| state.class(id))))
+                .filter(|(a, class)| {
+                    filter.is_empty() || {
+                        let hay = format!(
+                            "{} {} {} {}",
+                            a.name_or_kind().to_lowercase(),
+                            class.map_or("unclassified".to_string(), |c| c.name.to_lowercase()),
+                            a.geometry.kind().label().to_lowercase(),
+                            a.status.as_str()
+                        );
+                        hay.contains(&filter)
                     }
-                    matched += 1;
-                }
-                if budget == 0 {
-                    hidden_by_limit += 1;
-                    continue;
-                }
-                budget -= 1;
+                })
+                .map(|(annotation, class)| Listed {
+                    annotation,
+                    class,
+                    anchor: annotation.geometry.anchor(),
+                })
+                .collect();
+            if !filter.is_empty() {
+                matched += listed.len();
+            }
+            // Only the rows within the limit are put in order; the others
+            // are counted.
+            let shown = budget.min(listed.len());
+            if shown < listed.len() {
+                hidden_by_limit += listed.len() - shown;
+                listed.select_nth_unstable_by(shown, list_order);
+                listed.truncate(shown);
+            }
+            listed.sort_by(list_order);
+            budget -= shown;
+            for Listed {
+                annotation: a,
+                class,
+                ..
+            } in listed
+            {
                 let mut detail = class.map_or(String::new(), |c| c.name.clone());
                 if a.geometry.kind().is_area() {
                     let area_px = crate::geometry::area(&a.geometry);
@@ -1634,5 +1719,35 @@ mod tests {
         }
         assert_eq!(p["slide-title"], "No slide open");
         assert_eq!(p["editable"], false);
+    }
+
+    #[test]
+    fn names_compare_as_people_read_them() {
+        let mut names = vec![
+            "Region 10",
+            "region 2",
+            "Region 02",
+            "Region 1",
+            "point",
+            "Point",
+            "Region",
+            "Area 9b",
+            "Area 9a",
+        ];
+        names.sort_by(|a, b| natural_cmp(a, b).then_with(|| a.cmp(b)));
+        assert_eq!(
+            names,
+            [
+                "Area 9a",
+                "Area 9b",
+                "Point",
+                "point",
+                "Region",
+                "Region 1",
+                "region 2",
+                "Region 02",
+                "Region 10",
+            ]
+        );
     }
 }

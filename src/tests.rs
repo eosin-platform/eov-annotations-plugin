@@ -1390,6 +1390,96 @@ fn layers_can_be_created_renamed_hidden_and_deleted_with_undo() {
     assert_eq!(h.state().layers[&host_layer].objects.len(), 1);
 }
 
+/// The list shows a layer's annotations by name as people read it, and those
+/// of the same name by class, so their order never depends on the random ids
+/// that break ties in creation time.
+#[test]
+fn the_list_orders_annotations_by_name_then_class() {
+    let (h, dir) = fresh();
+    open(&h, info(1, "a", &dir));
+    let sidebar = open_sidebar(&h);
+    let ids = |h: &H| -> std::collections::HashSet<String> {
+        objects(h, 1)
+            .into_iter()
+            .map(|(_, o)| o.object_id)
+            .collect()
+    };
+    for (i, name) in ["Region 10", "region 2", "Region 1"]
+        .into_iter()
+        .enumerate()
+    {
+        let before = ids(&h);
+        draw(
+            &h,
+            RECTANGLE,
+            1,
+            square(1000.0 * (i as f64 + 1.0), 1000.0, 200.0),
+        );
+        let new = ids(&h).difference(&before).next().unwrap().clone();
+        callback(
+            &h,
+            &sidebar,
+            "detail-name-committed",
+            vec![json!(new), json!(name)],
+        );
+    }
+    let class_id = |name: &str| {
+        prop(&h, &sidebar, "classes")
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|c| c["name"] == name)
+            .unwrap()["id"]
+            .clone()
+    };
+    // Points of the same name and class are listed by where they are: the
+    // later one lies further left.
+    let mut points = Vec::new();
+    for (i, class) in ["Positive", "Negative", "Positive"].into_iter().enumerate() {
+        callback(&h, &sidebar, "class-activate", vec![class_id(class)]);
+        let before = ids(&h);
+        let x = 300.0 - 100.0 * i as f64;
+        draw(&h, POINT, 1, Shape::Point { x, y: 100.0 });
+        points.push(ids(&h).difference(&before).next().unwrap().clone());
+    }
+    let rows = prop(&h, &sidebar, "rows");
+    let rows: Vec<&Value> = rows
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|r| r["kind"] == 1)
+        .collect();
+    let listed: Vec<(String, String)> = rows
+        .iter()
+        .map(|r| {
+            let class = r["detail"].as_str().unwrap().split(" · ").next().unwrap();
+            (r["label"].as_str().unwrap().to_string(), class.to_string())
+        })
+        .collect();
+    let labels: Vec<&str> = listed.iter().map(|(label, _)| label.as_str()).collect();
+    assert_eq!(
+        labels,
+        [
+            "Point",
+            "Point",
+            "Point",
+            "Region 1",
+            "region 2",
+            "Region 10"
+        ]
+    );
+    let classes: Vec<&str> = listed[..3]
+        .iter()
+        .map(|(_, class)| class.as_str())
+        .collect();
+    assert_eq!(classes, ["Negative", "Positive", "Positive"]);
+    let first: Vec<&str> = rows[..3]
+        .iter()
+        .map(|r| r["id"].as_str().unwrap())
+        .collect();
+    assert_eq!(first, [&points[1], &points[2], &points[0]]);
+}
+
 #[test]
 fn text_annotations_show_their_name() {
     let (h, dir) = fresh();

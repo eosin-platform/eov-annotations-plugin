@@ -648,10 +648,15 @@ pub struct Comment {
 impl Annotation {
     /// The label shown in lists: its name, else its kind.
     pub fn display_name(&self) -> String {
+        self.name_or_kind().to_string()
+    }
+
+    /// [`Self::display_name`] without copying it.
+    pub fn name_or_kind(&self) -> &str {
         if self.name.trim().is_empty() {
-            self.geometry.kind().label().to_string()
+            self.geometry.kind().label()
         } else {
-            self.name.clone()
+            &self.name
         }
     }
 }
