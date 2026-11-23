@@ -166,10 +166,24 @@ export component CommitField inherits Rectangle {
     border-color: input.has-focus ? Theme.accent : Theme.border;
     background: root.enabled ? Theme.input : #ffffff06;
     clip: true;
+    // The field is the text input assistive technology sees: its TextInput
+    // and placeholder stay out of the accessibility tree.
     accessible-role: text-input;
+    accessible-enabled: root.enabled;
     accessible-value: input.text;
     accessible-placeholder-text: root.placeholder;
     accessible-read-only: !root.enabled;
+    accessible-action-set-value(new-text) => {
+        if root.enabled {
+            input.text = new-text;
+            root.dirty = true;
+            root.draft-owner = root.owner;
+            root.commit();
+        }
+    }
+    accessible-action-set-selection-offsets(anchor, focus) => {
+        input.set-selection-offsets(anchor, focus);
+    }
 
     function commit() {
         debounce.stop();
@@ -222,6 +236,7 @@ export component CommitField inherits Rectangle {
         font-size: Theme.font-size;
         vertical-alignment: center;
         overflow: elide;
+        accessible-role: none;
     }
 
     input := TextInput {
@@ -240,6 +255,7 @@ export component CommitField inherits Rectangle {
         selection-background-color: Theme.accent;
         selection-foreground-color: #ffffff;
         text-cursor-width: 1px;
+        accessible-role: none;
         edited => {
             if !root.dirty {
                 root.dirty = true;
@@ -282,9 +298,20 @@ export component PlainField inherits Rectangle {
     border-color: input.has-focus ? Theme.accent : Theme.border;
     background: root.enabled ? Theme.input : #ffffff06;
     clip: true;
+    // The field is the text input assistive technology sees (see
+    // CommitField).
     accessible-role: text-input;
+    accessible-enabled: root.enabled;
     accessible-value: root.text;
     accessible-placeholder-text: root.placeholder;
+    accessible-action-set-value(new-text) => {
+        if root.enabled {
+            root.text = new-text;
+        }
+    }
+    accessible-action-set-selection-offsets(anchor, focus) => {
+        input.set-selection-offsets(anchor, focus);
+    }
 
     if root.text == "" && !input.has-focus: Text {
         x: 6px;
@@ -295,6 +322,7 @@ export component PlainField inherits Rectangle {
         font-size: Theme.font-size;
         vertical-alignment: center;
         overflow: elide;
+        accessible-role: none;
     }
 
     input := TextInput {
@@ -310,6 +338,7 @@ export component PlainField inherits Rectangle {
         selection-background-color: Theme.accent;
         selection-foreground-color: #ffffff;
         text-cursor-width: 1px;
+        accessible-role: none;
         accepted => {
             root.accepted();
         }
@@ -328,9 +357,21 @@ export component TextArea inherits Rectangle {
     border-color: input.has-focus ? Theme.accent : Theme.border;
     background: root.enabled ? Theme.input : #ffffff06;
     clip: true;
+    // The field is the text input assistive technology sees (see
+    // CommitField).
     accessible-role: text-input;
+    accessible-enabled: root.enabled;
     accessible-value: root.text;
     accessible-placeholder-text: root.placeholder;
+    accessible-read-only: !root.enabled;
+    accessible-action-set-value(new-text) => {
+        if root.enabled {
+            root.text = new-text;
+        }
+    }
+    accessible-action-set-selection-offsets(anchor, focus) => {
+        input.set-selection-offsets(anchor, focus);
+    }
 
     if root.text == "" && !input.has-focus: Text {
         x: 6px;
@@ -342,6 +383,7 @@ export component TextArea inherits Rectangle {
         font-size: Theme.font-size;
         vertical-alignment: center;
         overflow: elide;
+        accessible-role: none;
     }
 
     input := TextInput {
@@ -360,6 +402,7 @@ export component TextArea inherits Rectangle {
         selection-background-color: Theme.accent;
         selection-foreground-color: #ffffff;
         text-cursor-width: 1px;
+        accessible-role: none;
     }
 }
 

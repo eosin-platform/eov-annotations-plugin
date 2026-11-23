@@ -1430,13 +1430,16 @@ export component AnnotationsSidebar inherits Rectangle {
                                 }
                             }
 
-                            if c.hotkey-note != "": Text {
-                                x: 28px;
-                                text: c.hotkey-note;
-                                font-size: Theme.small-font-size;
-                                color: Theme.warning;
-                                wrap: word-wrap;
-                                height: self.preferred-height;
+                            if c.hotkey-note != "": HorizontalLayout {
+                                padding-left: 28px;
+
+                                Text {
+                                    text: c.hotkey-note;
+                                    font-size: Theme.small-font-size;
+                                    color: Theme.warning;
+                                    wrap: word-wrap;
+                                    height: self.preferred-height;
+                                }
                             }
 
                             if root.editing-class == c.id: Rectangle {
@@ -1675,13 +1678,16 @@ export component AnnotationsSidebar inherits Rectangle {
                                 }
                             }
 
-                            if t.density != "" || t.per-hpf != "": Text {
-                                x: 16px;
-                                text: t.density + (t.density != "" && t.per-hpf != "" ? " · " : "") + t.per-hpf;
-                                font-size: Theme.small-font-size;
-                                color: Theme.text-secondary;
-                                wrap: word-wrap;
-                                height: self.preferred-height;
+                            if t.density != "" || t.per-hpf != "": HorizontalLayout {
+                                padding-left: 16px;
+
+                                Text {
+                                    text: t.density + (t.density != "" && t.per-hpf != "" ? " · " : "") + t.per-hpf;
+                                    font-size: Theme.small-font-size;
+                                    color: Theme.text-secondary;
+                                    wrap: word-wrap;
+                                    height: self.preferred-height;
+                                }
                             }
                         }
 
@@ -2048,22 +2054,28 @@ export component AnnotationsSidebar inherits Rectangle {
                                 }
                             }
 
-                            if r.points != "": Text {
-                                x: 16px;
-                                text: r.points;
-                                font-size: Theme.small-font-size;
-                                color: Theme.text-secondary;
-                                wrap: word-wrap;
-                                height: self.preferred-height;
+                            if r.points != "": HorizontalLayout {
+                                padding-left: 16px;
+
+                                Text {
+                                    text: r.points;
+                                    font-size: Theme.small-font-size;
+                                    color: Theme.text-secondary;
+                                    wrap: word-wrap;
+                                    height: self.preferred-height;
+                                }
                             }
 
-                            if r.regions != "": Text {
-                                x: 16px;
-                                text: r.regions;
-                                font-size: Theme.small-font-size;
-                                color: Theme.text-secondary;
-                                wrap: word-wrap;
-                                height: self.preferred-height;
+                            if r.regions != "": HorizontalLayout {
+                                padding-left: 16px;
+
+                                Text {
+                                    text: r.regions;
+                                    font-size: Theme.small-font-size;
+                                    color: Theme.text-secondary;
+                                    wrap: word-wrap;
+                                    height: self.preferred-height;
+                                }
                             }
                         }
 

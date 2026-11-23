@@ -15,7 +15,7 @@
 //! (exit status 1 on any problem).
 
 use annotations::sidebar;
-use i_slint_backend_testing::ElementHandle;
+use i_slint_backend_testing::{AccessibleRole, ElementHandle};
 use i_slint_compiler::langtype::Type;
 use i_slint_compiler::native_class::PropertyVisibility;
 use serde_json::{Map, Value as Json, json};
@@ -289,6 +289,29 @@ fn interactions(
     step("Layers", "tab-changed", vec![json!(0)], report);
     step("New layer", "layer-new", vec![], report);
     step("Zoom to the annotation", "detail-frame", vec![], report);
+    // A text field is one text input for assistive technology, and text set
+    // through it is committed like typed text.
+    let fields: Vec<ElementHandle> =
+        ElementHandle::find_by_accessible_label(&instance, "Annotation name").collect();
+    match fields.as_slice() {
+        [field] if field.accessible_role() == Some(AccessibleRole::TextInput) => {
+            field.set_accessible_value("Renamed");
+            expect_call(
+                report,
+                &calls,
+                "setting 'Annotation name'",
+                "detail-name-committed",
+                &[properties["detail-id"].clone(), json!("Renamed")],
+            );
+        }
+        _ => report.fail(format!(
+            "expected one text input labelled 'Annotation name', found {:?}",
+            fields
+                .iter()
+                .map(ElementHandle::accessible_role)
+                .collect::<Vec<_>>()
+        )),
+    }
     // A list row: click selects it.
     if let Some(row) = properties["rows"]
         .as_array()
