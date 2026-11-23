@@ -17,7 +17,7 @@
 use annotations::sidebar;
 use i_slint_backend_testing::ElementHandle;
 use i_slint_compiler::langtype::Type;
-use i_slint_compiler::object_tree::PropertyVisibility;
+use i_slint_compiler::native_class::PropertyVisibility;
 use serde_json::{Map, Value as Json, json};
 use slint_interpreter::{ComponentDefinition, ComponentInstance, Value};
 use std::cell::RefCell;

@@ -122,7 +122,7 @@ export component ImportDialog inherits Rectangle {
                 y: 0px;
                 width: parent.width;
                 height: parent.height;
-                viewport-width: self.width;
+                content-width: self.width;
 
                 VerticalLayout {
                     alignment: start;
@@ -229,11 +229,11 @@ export component ImportDialog inherits Rectangle {
                 x: parent.width - self.width;
                 y: 0px;
                 height: parent.height;
-                content-height: flick.viewport-height;
+                content-height: flick.content-height;
                 view-height: flick.height;
-                offset: -flick.viewport-y;
+                offset: -flick.content-y;
                 scrolled(offset) => {
-                    flick.viewport-y = -offset;
+                    flick.content-y = -offset;
                 }
             }
         }

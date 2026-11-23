@@ -434,7 +434,7 @@ cargo run --release --manifest-path tools/load-check/Cargo.toml                 
 ```
 
 `tools/ui-check` uses the Slint version eov 1.0 compiles plugin surfaces
-with (1.17.1). It compiles `ui/*.slint` as the host does and verifies that
+with (1.19.0). It compiles `ui/*.slint` as the host does and verifies that
 the components declare exactly the callbacks the plugin handles (with the
 argument types it reads), that every property the plugin pushes in a range
 of realistic states is a public input of the right type (struct fields
@@ -493,7 +493,7 @@ src/
   db/               schema, migrations (also from before 1.0), queries
   tests.rs          end-to-end tests
 ui/                 the panel and the import dialog (Slint)
-tools/ui-check/     surface check and renderer (Slint 1.17.1)
+tools/ui-check/     surface check and renderer (Slint 1.19.0)
 tools/load-check/   loads the built library like eov
 scripts/            packaging and release tooling
 ```

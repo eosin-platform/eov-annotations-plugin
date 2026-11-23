@@ -757,7 +757,7 @@ export component AnnotationsSidebar inherits Rectangle {
                     min-height: 96px;
 
                     list := Flickable {
-                        viewport-width: self.width;
+                        content-width: self.width;
                         x: 0px;
                         y: 0px;
                         width: parent.width;
@@ -938,11 +938,11 @@ export component AnnotationsSidebar inherits Rectangle {
                         x: parent.width - self.width;
                         y: 0px;
                         height: parent.height;
-                        content-height: list.viewport-height;
+                        content-height: list.content-height;
                         view-height: list.height;
-                        offset: -list.viewport-y;
+                        offset: -list.content-y;
                         scrolled(offset) => {
-                            list.viewport-y = -offset;
+                            list.content-y = -offset;
                         }
                     }
                 }
@@ -955,7 +955,7 @@ export component AnnotationsSidebar inherits Rectangle {
                         height: min(details.preferred-height, max(150px, content.height * 0.55));
 
                         detail-flick := Flickable {
-                            viewport-width: self.width;
+                            content-width: self.width;
                             x: 0px;
                             y: 0px;
                             width: parent.width;
@@ -1300,11 +1300,11 @@ export component AnnotationsSidebar inherits Rectangle {
                             x: parent.width - self.width;
                             y: 0px;
                             height: parent.height;
-                            content-height: detail-flick.viewport-height;
+                            content-height: detail-flick.content-height;
                             view-height: detail-flick.height;
-                            offset: -detail-flick.viewport-y;
+                            offset: -detail-flick.content-y;
                             scrolled(offset) => {
-                                detail-flick.viewport-y = -offset;
+                                detail-flick.content-y = -offset;
                             }
                         }
                     }
@@ -1322,7 +1322,7 @@ export component AnnotationsSidebar inherits Rectangle {
             // ---------------- Classes ----------------
             if root.tab == 1: Rectangle {
                 classes-flick := Flickable {
-                    viewport-width: self.width;
+                    content-width: self.width;
                     x: 0px;
                     y: 0px;
                     width: parent.width;
@@ -1522,11 +1522,11 @@ export component AnnotationsSidebar inherits Rectangle {
                     x: parent.width - self.width;
                     y: 0px;
                     height: parent.height;
-                    content-height: classes-flick.viewport-height;
+                    content-height: classes-flick.content-height;
                     view-height: classes-flick.height;
-                    offset: -classes-flick.viewport-y;
+                    offset: -classes-flick.content-y;
                     scrolled(offset) => {
-                        classes-flick.viewport-y = -offset;
+                        classes-flick.content-y = -offset;
                     }
                 }
             }
@@ -1534,7 +1534,7 @@ export component AnnotationsSidebar inherits Rectangle {
             // ---------------- Count ----------------
             if root.tab == 2: Rectangle {
                 count-flick := Flickable {
-                    viewport-width: self.width;
+                    content-width: self.width;
                     x: 0px;
                     y: 0px;
                     width: parent.width;
@@ -1835,11 +1835,11 @@ export component AnnotationsSidebar inherits Rectangle {
                     x: parent.width - self.width;
                     y: 0px;
                     height: parent.height;
-                    content-height: count-flick.viewport-height;
+                    content-height: count-flick.content-height;
                     view-height: count-flick.height;
-                    offset: -count-flick.viewport-y;
+                    offset: -count-flick.content-y;
                     scrolled(offset) => {
-                        count-flick.viewport-y = -offset;
+                        count-flick.content-y = -offset;
                     }
                 }
             }
@@ -1847,7 +1847,7 @@ export component AnnotationsSidebar inherits Rectangle {
             // ---------------- Data ----------------
             if root.tab == 3: Rectangle {
                 data-flick := Flickable {
-                    viewport-width: self.width;
+                    content-width: self.width;
                     x: 0px;
                     y: 0px;
                     width: parent.width;
@@ -2380,11 +2380,11 @@ export component AnnotationsSidebar inherits Rectangle {
                     x: parent.width - self.width;
                     y: 0px;
                     height: parent.height;
-                    content-height: data-flick.viewport-height;
+                    content-height: data-flick.content-height;
                     view-height: data-flick.height;
-                    offset: -data-flick.viewport-y;
+                    offset: -data-flick.content-y;
                     scrolled(offset) => {
-                        data-flick.viewport-y = -offset;
+                        data-flick.content-y = -offset;
                     }
                 }
             }
@@ -2428,7 +2428,7 @@ export component AnnotationsSidebar inherits Rectangle {
             TouchArea { }
 
             popup-flick := Flickable {
-                viewport-width: self.width;
+                content-width: self.width;
                 x: 0px;
                 y: 0px;
                 width: parent.width;

@@ -15,7 +15,8 @@ fn spin_on<T>(future: impl std::future::Future<Output = T>) -> T {
 }
 
 /// Compiles `file` (relative to the plugin root, which is also the include
-/// path) and returns `component`; warnings are printed.
+/// path) and returns `component`; warnings are printed. Notes (such as that
+/// no edition is set: the host sets none) are skipped, as Slint's build does.
 pub fn compile(
     root: &Path,
     file: &str,
@@ -28,6 +29,7 @@ pub fn compile(
     for d in result.diagnostics() {
         match d.level() {
             slint_interpreter::DiagnosticLevel::Error => errors.push(format!("{file}: {d}")),
+            slint_interpreter::DiagnosticLevel::Info => {}
             _ => eprintln!("warning: {file}: {d}"),
         }
     }
