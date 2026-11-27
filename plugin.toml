@@ -1,6 +1,6 @@
 id = "annotations"
 name = "Annotations"
-version = "1.0.0"
+version = "1.1.0"
 description = "Point, region, line and text annotations with reusable classes, cell counting, HPF fields and measurements; GeoJSON (QuPath) import and export, ASAP and Aperio ImageScope XML import."
 repository = "https://github.com/eosin-platform/eov-annotations-plugin"
 api = ">=1.0, <2"
