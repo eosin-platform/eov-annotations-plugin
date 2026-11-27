@@ -5,9 +5,13 @@
 // (menus, choice lists, the colour palette) are drawn inside the panel.
 
 import { Theme } from "theme.slint";
+import { Locale } from "locale.slint";
+
+// For tools/ui-check, which checks that `eov-rtl` reaches it.
+export { Locale }
 import {
-    IconButton, TextButton, Check, CommitField, PlainField, TextArea, ChoiceButton, Slider, Swatch, KeyField,
-    SectionTitle, Hint, Separator, TabButton, ScrollBar,
+    IconButton, TextButton, ButtonFlow, FlowButton, Check, CommitField, PlainField, TextArea, ChoiceButton, Slider,
+    Swatch, KeyField, SectionTitle, Hint, Separator, TabButton, ScrollBar,
 } from "widgets.slint";
 
 export struct TreeRow {
@@ -80,6 +84,7 @@ export struct OrphanRow {
 }
 
 component Label inherits Text {
+    horizontal-alignment: Locale.start;
     font-size: Theme.font-size;
     color: Theme.text-secondary;
     vertical-alignment: center;
@@ -106,7 +111,8 @@ component TreeItem inherits Rectangle {
     background: root.item.selected ? Theme.selection : (root.item.hovered || touch.has-hover) ? Theme.hover : transparent;
     accessible-role: list-item;
     accessible-label: root.item.label;
-    accessible-description: root.item.kind == 0 && root.item.current ? root.item.detail + " · new annotations go here" : root.item.detail;
+    // Translators: read out for the layer new annotations go into; {} is its number of annotations.
+    accessible-description: root.item.kind == 0 && root.item.current ? @tr("{} · new annotations go here", root.item.detail) : root.item.detail;
     accessible-item-selectable: root.item.kind == 1;
     accessible-item-selected: root.item.selected;
     accessible-expandable: root.item.kind == 0;
@@ -151,7 +157,7 @@ component TreeItem inherits Rectangle {
         IconButton {
             width: 20px;
             icon: root.item.collapsed ? @image-url("icons/chevron-right.svg") : @image-url("icons/chevron-down.svg");
-            label: root.item.collapsed ? "Expand layer" : "Collapse layer";
+            label: root.item.collapsed ? @tr("Expand layer") : @tr("Collapse layer");
             tint: Theme.text-secondary;
             clicked => {
                 root.toggle-collapsed();
@@ -176,6 +182,7 @@ component TreeItem inherits Rectangle {
             font-size: Theme.font-size;
             font-weight: root.item.current ? 700 : 500;
             color: root.item.visible ? Theme.text-primary : Theme.text-disabled;
+            horizontal-alignment: Locale.start;
             vertical-alignment: center;
             overflow: elide;
             horizontal-stretch: 1;
@@ -185,6 +192,7 @@ component TreeItem inherits Rectangle {
             text: root.item.detail;
             font-size: Theme.small-font-size;
             color: Theme.text-secondary;
+            horizontal-alignment: Locale.end;
             vertical-alignment: center;
             overflow: elide;
             max-width: 110px;
@@ -192,7 +200,7 @@ component TreeItem inherits Rectangle {
 
         IconButton {
             icon: root.item.visible ? @image-url("icons/eye.svg") : @image-url("icons/eye-off.svg");
-            label: root.item.visible ? "Hide layer" : "Show layer";
+            label: root.item.visible ? @tr("Hide layer") : @tr("Show layer");
             tint: root.item.visible ? Theme.text-primary : Theme.text-disabled;
             clicked => {
                 root.toggle-visible();
@@ -201,7 +209,7 @@ component TreeItem inherits Rectangle {
 
         IconButton {
             icon: root.item.locked ? @image-url("icons/lock.svg") : @image-url("icons/unlock.svg");
-            label: root.item.locked ? "Unlock layer" : "Lock layer";
+            label: root.item.locked ? @tr("Unlock layer") : @tr("Lock layer");
             enabled: root.editable;
             tint: root.item.locked ? Theme.warning : Theme.text-disabled;
             clicked => {
@@ -211,7 +219,7 @@ component TreeItem inherits Rectangle {
 
         IconButton {
             icon: @image-url("icons/more.svg");
-            label: "Layer settings";
+            label: @tr("Layer settings");
             active: root.editing;
             clicked => {
                 root.toggle-editor();
@@ -251,6 +259,7 @@ component TreeItem inherits Rectangle {
             text: root.item.label;
             font-size: Theme.font-size;
             color: root.item.visible ? Theme.text-primary : Theme.text-disabled;
+            horizontal-alignment: Locale.start;
             vertical-alignment: center;
             overflow: elide;
             horizontal-stretch: 1;
@@ -261,7 +270,7 @@ component TreeItem inherits Rectangle {
             font-size: Theme.small-font-size;
             color: Theme.text-secondary;
             vertical-alignment: center;
-            horizontal-alignment: right;
+            horizontal-alignment: Locale.end;
             overflow: elide;
             max-width: 130px;
         }
@@ -272,7 +281,7 @@ component TreeItem inherits Rectangle {
             color: root.item.status == 1 ? Theme.success : Theme.error;
             vertical-alignment: center;
             accessible-role: text;
-            accessible-label: root.item.status == 1 ? "Verified" : "Rejected";
+            accessible-label: root.item.status == 1 ? @tr("Review status" => "Verified") : @tr("Review status" => "Rejected");
         }
 
         if root.item.locked: Image {
@@ -280,7 +289,7 @@ component TreeItem inherits Rectangle {
             source: @image-url("icons/lock.svg");
             colorize: Theme.text-secondary;
             accessible-role: image;
-            accessible-label: "Locked";
+            accessible-label: @tr("Locked");
         }
     }
 
@@ -291,6 +300,7 @@ component TreeItem inherits Rectangle {
         text: root.item.label;
         font-size: Theme.font-size;
         color: touch.has-hover ? Theme.accent-hover : Theme.accent-text;
+        horizontal-alignment: Locale.start;
         vertical-alignment: center;
         overflow: elide;
     }
@@ -301,14 +311,14 @@ export component AnnotationsSidebar inherits Rectangle {
     // Pushed by the plugin.
     // ---------------------------------------------------------------
     in-out property <int> tab: 0;
-    in property <string> slide-title: "No slide open";
+    in property <string> slide-title: @tr("No slide open");
     in property <string> banner;
     // 0 info, 1 warning, 2 error
     in property <int> banner-level;
     in property <bool> banner-retry;
     in property <bool> editable;
     in property <bool> has-slide;
-    in property <[string]> class-names: ["Unclassified"];
+    in property <[string]> class-names: [@tr("Unclassified")];
 
     in property <[TreeRow]> rows;
     in property <string> rows-note;
@@ -371,6 +381,20 @@ export component AnnotationsSidebar inherits Rectangle {
     in property <bool> setting-show-labels;
     in property <float> setting-brush-size: 24;
     in property <bool> setting-brush-eraser;
+
+    // ---------------------------------------------------------------
+    // Set by eov.
+    // ---------------------------------------------------------------
+    // The interface is written from right to left.
+    in-out property <bool> eov-rtl <=> Locale.rtl;
+    // The language of the interface (a tag such as "pt-BR"). An open menu
+    // or list closes when it changes: its items are copies, in the language
+    // they were opened in.
+    in property <string> eov-language;
+    changed eov-language => {
+        Locale.language = root.eov-language;
+        root.popup = 0;
+    }
 
     // ---------------------------------------------------------------
     // Handled by the plugin.
@@ -454,21 +478,25 @@ export component AnnotationsSidebar inherits Rectangle {
     property <int> popup-current: -1;
     property <length> popup-x;
     property <length> popup-y;
+    // The list's least width; it is as wide as its widest item, within the
+    // panel.
     property <length> popup-w;
+    // `popup-x` is where the list ends (the menu), not where it starts.
+    property <bool> popup-x-is-end;
 
     property <[string]> menu-labels: [
-        "Import annotations…",
-        "Export as GeoJSON (QuPath)…",
-        "Export as eov JSON…",
-        "Export as ASAP XML…",
-        "Export as ImageScope XML…",
-        "Export as DICOM annotations…",
-        "Export measurements (CSV)…",
-        "Export a blinded copy…",
-        "Compare with another reader…",
-        "Export all slides…",
-        "Back up the database…",
-        "Merge a database…",
+        @tr("Import annotations…"),
+        @tr("Export as GeoJSON (QuPath)…"),
+        @tr("Export as eov JSON…"),
+        @tr("Export as ASAP XML…"),
+        @tr("Export as ImageScope XML…"),
+        @tr("Export as DICOM annotations…"),
+        @tr("Export measurements (CSV)…"),
+        @tr("Export a blinded copy…"),
+        @tr("Compare with another reader…"),
+        @tr("Export all slides…"),
+        @tr("Back up the database…"),
+        @tr("Merge a database…"),
     ];
     property <[string]> menu-ids: [
         "import",
@@ -484,8 +512,8 @@ export component AnnotationsSidebar inherits Rectangle {
         "backup",
         "merge-db",
     ];
-    property <[string]> status-names: ["Draft", "Verified", "Rejected"];
-    property <[string]> field-modes: ["Field number and objective", "Field area"];
+    property <[string]> status-names: [@tr("Review status" => "Draft"), @tr("Review status" => "Verified"), @tr("Review status" => "Rejected")];
+    property <[string]> field-modes: [@tr("Field number and objective"), @tr("Field area")];
     property <[{hex: string, color: color}]> palette: [
         { hex: "#E69F00", color: #E69F00 },
         { hex: "#56B4E9", color: #56B4E9 },
@@ -512,7 +540,14 @@ export component AnnotationsSidebar inherits Rectangle {
         root.popup-x = x - root.absolute-position.x;
         root.popup-y = y - root.absolute-position.y;
         root.popup-w = w;
+        root.popup-x-is-end = false;
         root.popup = 1;
+    }
+
+    // The import and export menu, under the button and ending where it ends.
+    function open-menu(end-x: length, y: length) {
+        root.open-list("menu", root.menu-labels, -1, end-x, y, 230px);
+        root.popup-x-is-end = true;
     }
 
     function open-palette(target: string, owner: string, x: length, y: length) {
@@ -562,7 +597,7 @@ export component AnnotationsSidebar inherits Rectangle {
 
     background: Theme.surface;
     accessible-role: complementary;
-    accessible-label: "Annotations";
+    accessible-label: @tr("Annotations");
 
     VerticalLayout {
         x: 0px;
@@ -589,6 +624,7 @@ export component AnnotationsSidebar inherits Rectangle {
                     font-size: 13px;
                     font-weight: 600;
                     color: root.has-slide ? Theme.text-primary : Theme.text-secondary;
+                    horizontal-alignment: Locale.start;
                     vertical-alignment: center;
                     overflow: elide;
                     horizontal-stretch: 1;
@@ -596,10 +632,10 @@ export component AnnotationsSidebar inherits Rectangle {
 
                 menu-button := IconButton {
                     icon: @image-url("icons/more.svg");
-                    label: "Import and export";
+                    label: @tr("Import and export");
                     active: root.popup == 1 && root.popup-target == "menu";
                     clicked => {
-                        root.open-list("menu", root.menu-labels, -1, self.absolute-position.x + self.width - 230px, self.absolute-position.y + self.height, 230px);
+                        root.open-menu(self.absolute-position.x + self.width, self.absolute-position.y + self.height);
                     }
                 }
             }
@@ -618,6 +654,7 @@ export component AnnotationsSidebar inherits Rectangle {
 
                     Text {
                         text: root.banner;
+                        horizontal-alignment: Locale.start;
                         font-size: Theme.font-size;
                         color: root.banner-level == 2 ? #ffb4ab : root.banner-level == 1 ? #ffd88a : Theme.text-primary;
                         wrap: word-wrap;
@@ -628,7 +665,7 @@ export component AnnotationsSidebar inherits Rectangle {
                         alignment: end;
 
                         TextButton {
-                            text: "Retry";
+                            text: @tr("Retry");
                             clicked => {
                                 root.retry();
                             }
@@ -643,7 +680,7 @@ export component AnnotationsSidebar inherits Rectangle {
             accessible-role: tab-list;
 
             TabButton {
-                text: "Layers";
+                text: @tr("Layers");
                 selected: root.tab == 0;
                 clicked => {
                     root.select-tab(0);
@@ -651,7 +688,7 @@ export component AnnotationsSidebar inherits Rectangle {
             }
 
             TabButton {
-                text: "Classes";
+                text: @tr("Classes");
                 selected: root.tab == 1;
                 clicked => {
                     root.select-tab(1);
@@ -659,7 +696,8 @@ export component AnnotationsSidebar inherits Rectangle {
             }
 
             TabButton {
-                text: "Count";
+                // Translators: the tab for counting cells.
+                text: @tr("Count");
                 selected: root.tab == 2;
                 clicked => {
                     root.select-tab(2);
@@ -667,7 +705,7 @@ export component AnnotationsSidebar inherits Rectangle {
             }
 
             TabButton {
-                text: "Data";
+                text: @tr("Data");
                 selected: root.tab == 3;
                 clicked => {
                     root.select-tab(3);
@@ -706,9 +744,10 @@ export component AnnotationsSidebar inherits Rectangle {
                             x: 6px;
                             width: parent.width - 12px;
                             height: parent.height;
-                            text: "Filter by name, class, kind or status";
+                            text: @tr("Filter by name, class, kind or status");
                             color: Theme.text-disabled;
                             font-size: Theme.font-size;
+                            horizontal-alignment: Locale.start;
                             vertical-alignment: center;
                             overflow: elide;
                         }
@@ -719,6 +758,7 @@ export component AnnotationsSidebar inherits Rectangle {
                             height: parent.height;
                             text: root.filter;
                             single-line: true;
+                            horizontal-alignment: Locale.start;
                             vertical-alignment: center;
                             font-size: Theme.font-size;
                             color: Theme.text-primary;
@@ -726,7 +766,7 @@ export component AnnotationsSidebar inherits Rectangle {
                             selection-foreground-color: #ffffff;
                             text-cursor-width: 1px;
                             accessible-role: text-input;
-                            accessible-label: "Filter annotations";
+                            accessible-label: @tr("Filter annotations");
                             edited => {
                                 root.filter-edited(self.text);
                             }
@@ -743,7 +783,7 @@ export component AnnotationsSidebar inherits Rectangle {
 
                     IconButton {
                         icon: @image-url("icons/plus.svg");
-                        label: "New layer";
+                        label: @tr("New layer");
                         enabled: root.editable;
                         clicked => {
                             root.layer-new();
@@ -827,15 +867,15 @@ export component AnnotationsSidebar inherits Rectangle {
                                             spacing: 6px;
 
                                             Label {
-                                                text: "Name";
+                                                text: @tr("Name");
                                             }
 
                                             CommitField {
                                                 owner: row.id;
                                                 value: row.label;
-                                                placeholder: "Layer name";
+                                                placeholder: @tr("Layer name");
                                                 enabled: root.editable;
-                                                accessible-label: "Layer name";
+                                                accessible-label: @tr("Layer name");
                                                 committed(owner, text) => {
                                                     root.layer-rename(owner, text);
                                                 }
@@ -846,7 +886,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                             spacing: 6px;
 
                                             Label {
-                                                text: "Colour";
+                                                text: @tr("Colour");
                                             }
 
                                             VerticalLayout {
@@ -855,7 +895,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                                 Swatch {
                                                     fill: row.color;
                                                     enabled: root.editable;
-                                                    label: "Layer colour";
+                                                    label: @tr("Layer colour");
                                                     clicked(x, y) => {
                                                         root.open-palette("layer", row.id, x, y);
                                                     }
@@ -863,13 +903,13 @@ export component AnnotationsSidebar inherits Rectangle {
                                             }
 
                                             Label {
-                                                text: "Opacity";
+                                                text: @tr("Opacity");
                                                 min-width: 0px;
                                             }
 
                                             Slider {
                                                 value: row.opacity;
-                                                label: "Layer opacity";
+                                                label: @tr("Layer opacity");
                                                 released(value) => {
                                                     root.layer-opacity(row.id, value);
                                                 }
@@ -880,7 +920,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                             spacing: 6px;
 
                                             Label {
-                                                text: "Notes";
+                                                text: @tr("Notes");
                                                 vertical-alignment: top;
                                             }
 
@@ -888,32 +928,26 @@ export component AnnotationsSidebar inherits Rectangle {
                                                 owner: row.id;
                                                 value: row.notes;
                                                 multiline: true;
-                                                placeholder: "Notes about this layer";
+                                                placeholder: @tr("Notes about this layer");
                                                 enabled: root.editable;
-                                                accessible-label: "Layer notes";
+                                                accessible-label: @tr("Layer notes");
                                                 committed(owner, text) => {
                                                     root.layer-notes(owner, text);
                                                 }
                                             }
                                         }
 
-                                        HorizontalLayout {
-                                            spacing: 6px;
-                                            alignment: end;
+                                        ButtonFlow {
+                                            property <FlowButton> draw-button: { text: @tr("Draw into this layer"), enabled: root.editable, primary: false, danger: false };
+                                            property <FlowButton> delete-button: { text: @tr("Delete layer…"), enabled: root.editable, primary: false, danger: true };
 
-                                            if !row.current: TextButton {
-                                                text: "Draw into this layer";
-                                                enabled: root.editable;
-                                                clicked => {
+                                            align-end: true;
+                                            // "Draw into this layer" unless it is the layer drawn into.
+                                            buttons: row.current ? [self.delete-button] : [self.draw-button, self.delete-button];
+                                            clicked(index) => {
+                                                if !row.current && index == 0 {
                                                     root.layer-current(row.id);
-                                                }
-                                            }
-
-                                            TextButton {
-                                                text: "Delete layer…";
-                                                danger: true;
-                                                enabled: root.editable;
-                                                clicked => {
+                                                } else {
                                                     root.editing-layer = "";
                                                     root.layer-delete(row.id);
                                                 }
@@ -975,6 +1009,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                         font-size: 13px;
                                         font-weight: 600;
                                         color: Theme.text-primary;
+                                        horizontal-alignment: Locale.start;
                                         vertical-alignment: center;
                                         overflow: elide;
                                         horizontal-stretch: 1;
@@ -982,7 +1017,7 @@ export component AnnotationsSidebar inherits Rectangle {
 
                                     IconButton {
                                         icon: @image-url("icons/frame.svg");
-                                        label: "Zoom to the annotation";
+                                        label: @tr("Zoom to the annotation");
                                         clicked => {
                                             root.detail-frame();
                                         }
@@ -990,7 +1025,7 @@ export component AnnotationsSidebar inherits Rectangle {
 
                                     IconButton {
                                         icon: @image-url("icons/copy.svg");
-                                        label: "Copy measurements";
+                                        label: @tr("Copy measurements");
                                         clicked => {
                                             root.copy-measurements();
                                         }
@@ -998,7 +1033,7 @@ export component AnnotationsSidebar inherits Rectangle {
 
                                     IconButton {
                                         icon: @image-url("icons/trash.svg");
-                                        label: root.selection-count > 1 ? "Delete the selected annotations" : "Delete the annotation";
+                                        label: root.selection-count > 1 ? @tr("Delete the selected annotations") : @tr("Delete the annotation");
                                         enabled: root.editable && !root.detail-locked;
                                         clicked => {
                                             root.detail-delete();
@@ -1018,6 +1053,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                             text: root.detail-warning;
                                             font-size: Theme.small-font-size;
                                             color: #ffd88a;
+                                            horizontal-alignment: Locale.start;
                                             wrap: word-wrap;
                                             height: self.preferred-height;
                                         }
@@ -1026,7 +1062,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                             alignment: end;
 
                                             TextButton {
-                                                text: "Repair";
+                                                text: @tr("Repair");
                                                 enabled: root.editable;
                                                 clicked => {
                                                     root.detail-repair();
@@ -1040,15 +1076,15 @@ export component AnnotationsSidebar inherits Rectangle {
                                     spacing: 6px;
 
                                     Label {
-                                        text: "Name";
+                                        text: @tr("Name");
                                     }
 
                                     CommitField {
                                         owner: root.detail-id;
                                         value: root.detail-name;
-                                        placeholder: "Unnamed";
+                                        placeholder: @tr("Unnamed");
                                         enabled: root.editable && !root.detail-locked;
-                                        accessible-label: "Annotation name";
+                                        accessible-label: @tr("Annotation name");
                                         committed(owner, text) => {
                                             root.detail-name-committed(owner, text);
                                         }
@@ -1059,13 +1095,13 @@ export component AnnotationsSidebar inherits Rectangle {
                                     spacing: 6px;
 
                                     Label {
-                                        text: "Class";
+                                        text: @tr("Class");
                                     }
 
                                     ChoiceButton {
                                         text: root.class-names[root.detail-class];
                                         enabled: root.editable && !root.detail-locked;
-                                        accessible-label: "Annotation class";
+                                        accessible-label: @tr("Annotation class");
                                         open(x, y, w) => {
                                             root.open-list("detail-class", root.class-names, root.detail-class, x, y, w);
                                         }
@@ -1076,13 +1112,13 @@ export component AnnotationsSidebar inherits Rectangle {
                                     spacing: 6px;
 
                                     Label {
-                                        text: "Status";
+                                        text: @tr("Status");
                                     }
 
                                     ChoiceButton {
                                         text: root.status-names[root.detail-status];
                                         enabled: root.editable && !root.detail-locked;
-                                        accessible-label: "Review status";
+                                        accessible-label: @tr("Review status");
                                         open(x, y, w) => {
                                             root.open-list("detail-status", root.status-names, root.detail-status, x, y, w);
                                         }
@@ -1093,13 +1129,13 @@ export component AnnotationsSidebar inherits Rectangle {
                                     spacing: 6px;
 
                                     Label {
-                                        text: "Layer";
+                                        text: @tr("Layer");
                                     }
 
                                     ChoiceButton {
                                         text: root.layer-names[root.detail-layer];
                                         enabled: root.editable && !root.detail-locked;
-                                        accessible-label: "Annotation layer";
+                                        accessible-label: @tr("Annotation layer");
                                         open(x, y, w) => {
                                             root.open-list("detail-layer", root.layer-names, root.detail-layer, x, y, w);
                                         }
@@ -1110,7 +1146,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                     padding-left: 70px;
 
                                     Check {
-                                        text: "Locked";
+                                        text: @tr("Locked");
                                         checked: root.detail-locked;
                                         enabled: root.editable;
                                         toggled(locked) => {
@@ -1123,7 +1159,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                     spacing: 6px;
 
                                     Label {
-                                        text: "Notes";
+                                        text: @tr("Notes");
                                         vertical-alignment: top;
                                     }
 
@@ -1131,9 +1167,9 @@ export component AnnotationsSidebar inherits Rectangle {
                                         owner: root.detail-id;
                                         value: root.detail-description;
                                         multiline: true;
-                                        placeholder: "Description";
+                                        placeholder: @tr("Description");
                                         enabled: root.editable && !root.detail-locked;
-                                        accessible-label: "Description";
+                                        accessible-label: @tr("Description");
                                         committed(owner, text) => {
                                             root.detail-description-committed(owner, text);
                                         }
@@ -1144,7 +1180,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                     spacing: 2px;
 
                                     SectionTitle {
-                                        text: "MEASUREMENTS";
+                                        text: @tr("MEASUREMENTS");
                                     }
 
                                     for m in root.detail-measurements: HorizontalLayout {
@@ -1154,6 +1190,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                             text: m.key;
                                             font-size: Theme.font-size;
                                             color: Theme.text-secondary;
+                                            horizontal-alignment: Locale.start;
                                             min-width: 96px;
                                             horizontal-stretch: 0;
                                         }
@@ -1162,6 +1199,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                             text: m.value;
                                             font-size: Theme.font-size;
                                             color: Theme.text-primary;
+                                            horizontal-alignment: Locale.start;
                                             overflow: elide;
                                             horizontal-stretch: 1;
                                         }
@@ -1172,7 +1210,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                     spacing: 4px;
 
                                     SectionTitle {
-                                        text: "PROPERTIES";
+                                        text: @tr("PROPERTIES");
                                     }
 
                                     for kv[i] in root.detail-properties: HorizontalLayout {
@@ -1181,9 +1219,9 @@ export component AnnotationsSidebar inherits Rectangle {
                                         CommitField {
                                             owner: root.detail-id;
                                             value: kv.key;
-                                            placeholder: "Name";
+                                            placeholder: @tr("Name");
                                             enabled: root.editable && !root.detail-locked;
-                                            accessible-label: "Property name";
+                                            accessible-label: @tr("Property name");
                                             committed(owner, text) => {
                                                 root.property-committed(owner, i, text, kv.value);
                                             }
@@ -1192,9 +1230,9 @@ export component AnnotationsSidebar inherits Rectangle {
                                         CommitField {
                                             owner: root.detail-id;
                                             value: kv.value;
-                                            placeholder: "Value";
+                                            placeholder: @tr("Value");
                                             enabled: root.editable && !root.detail-locked;
-                                            accessible-label: "Property value";
+                                            accessible-label: @tr("Property value");
                                             committed(owner, text) => {
                                                 root.property-committed(owner, i, kv.key, text);
                                             }
@@ -1202,7 +1240,7 @@ export component AnnotationsSidebar inherits Rectangle {
 
                                         IconButton {
                                             icon: @image-url("icons/trash.svg");
-                                            label: "Remove property";
+                                            label: @tr("Remove property");
                                             enabled: root.editable && !root.detail-locked;
                                             clicked => {
                                                 root.property-remove(root.detail-id, i);
@@ -1214,7 +1252,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                         alignment: start;
 
                                         TextButton {
-                                            text: "Add property";
+                                            text: @tr("Add property");
                                             enabled: root.editable && !root.detail-locked;
                                             clicked => {
                                                 root.property-add(root.detail-id);
@@ -1227,7 +1265,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                     spacing: 4px;
 
                                     SectionTitle {
-                                        text: root.detail-comments.length == 0 ? "COMMENTS" : "COMMENTS (\{root.detail-comments.length})";
+                                        text: root.detail-comments.length == 0 ? @tr("COMMENTS") : @tr("COMMENTS ({})", root.detail-comments.length);
                                     }
 
                                     for c in root.detail-comments: Rectangle {
@@ -1245,6 +1283,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                                     text: c.byline;
                                                     font-size: Theme.small-font-size;
                                                     color: Theme.text-secondary;
+                                                    horizontal-alignment: Locale.start;
                                                     vertical-alignment: center;
                                                     overflow: elide;
                                                     horizontal-stretch: 1;
@@ -1252,7 +1291,7 @@ export component AnnotationsSidebar inherits Rectangle {
 
                                                 IconButton {
                                                     icon: @image-url("icons/trash.svg");
-                                                    label: "Delete comment";
+                                                    label: @tr("Delete comment");
                                                     enabled: root.editable;
                                                     clicked => {
                                                         root.comment-remove(root.detail-id, c.id);
@@ -1264,6 +1303,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                                 text: c.text;
                                                 font-size: Theme.font-size;
                                                 color: Theme.text-primary;
+                                                horizontal-alignment: Locale.start;
                                                 wrap: word-wrap;
                                                 height: self.preferred-height;
                                             }
@@ -1271,16 +1311,17 @@ export component AnnotationsSidebar inherits Rectangle {
                                     }
 
                                     new-comment := TextArea {
-                                        placeholder: "Add a comment";
+                                        placeholder: @tr("Add a comment");
                                         enabled: root.editable;
-                                        accessible-label: "New comment";
+                                        accessible-label: @tr("New comment");
                                     }
 
                                     HorizontalLayout {
                                         alignment: end;
 
                                         TextButton {
-                                            text: "Comment";
+                                            // Translators: a button that adds the comment typed above.
+                                            text: @tr("Comment");
                                             enabled: root.editable && new-comment.text != "";
                                             clicked => {
                                                 root.comment-add(root.detail-id, new-comment.text);
@@ -1314,7 +1355,7 @@ export component AnnotationsSidebar inherits Rectangle {
                     padding: 10px;
 
                     Hint {
-                        text: "Select an annotation on the slide or in the list to see its details. Double-click a row to zoom to it; Ctrl+click selects several.";
+                        text: @tr("Select an annotation on the slide or in the list to see its details. Double-click a row to zoom to it; Ctrl+click selects several.");
                     }
                 }
             }
@@ -1335,7 +1376,7 @@ export component AnnotationsSidebar inherits Rectangle {
                         spacing: 6px;
 
                         Hint {
-                            text: "New annotations get the active class (●), and the Count tool counts it; Shift+click counts the second class (◐). Pressing a class's hotkey makes it active.";
+                            text: @tr("New annotations get the active class (●), and the Count tool counts it; Shift+click counts the second class (◐). Pressing a class's hotkey makes it active.");
                         }
 
                         for c in root.classes: VerticalLayout {
@@ -1374,7 +1415,7 @@ export component AnnotationsSidebar inherits Rectangle {
 
                                         Swatch {
                                             fill: c.color;
-                                            label: "Colour of " + c.name;
+                                            label: @tr("Colour of {}", c.name);
                                             clicked(x, y) => {
                                                 root.open-palette("class", c.id, x, y);
                                             }
@@ -1385,6 +1426,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                         text: c.name;
                                         font-size: Theme.font-size;
                                         font-weight: c.active ? 600 : 400;
+                                        horizontal-alignment: Locale.start;
                                         color: c.visible ? Theme.text-primary : Theme.text-disabled;
                                         vertical-alignment: center;
                                         overflow: elide;
@@ -1412,7 +1454,7 @@ export component AnnotationsSidebar inherits Rectangle {
 
                                     IconButton {
                                         icon: c.visible ? @image-url("icons/eye.svg") : @image-url("icons/eye-off.svg");
-                                        label: c.visible ? "Hide " + c.name : "Show " + c.name;
+                                        label: c.visible ? @tr("Hide {}", c.name) : @tr("Show {}", c.name);
                                         tint: c.visible ? Theme.text-primary : Theme.text-disabled;
                                         clicked => {
                                             root.class-visible(c.id, !c.visible);
@@ -1421,7 +1463,7 @@ export component AnnotationsSidebar inherits Rectangle {
 
                                     IconButton {
                                         icon: @image-url("icons/more.svg");
-                                        label: "Class settings";
+                                        label: @tr("Class settings");
                                         active: root.editing-class == c.id;
                                         clicked => {
                                             root.editing-class = root.editing-class == c.id ? "" : c.id;
@@ -1437,6 +1479,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                     text: c.hotkey-note;
                                     font-size: Theme.small-font-size;
                                     color: Theme.warning;
+                                    horizontal-alignment: Locale.start;
                                     wrap: word-wrap;
                                     height: self.preferred-height;
                                 }
@@ -1454,14 +1497,14 @@ export component AnnotationsSidebar inherits Rectangle {
                                         spacing: 6px;
 
                                         Label {
-                                            text: "Name";
+                                            text: @tr("Name");
                                         }
 
                                         CommitField {
                                             owner: c.id;
                                             value: c.name;
-                                            placeholder: "Class name";
-                                            accessible-label: "Class name";
+                                            placeholder: @tr("Class name");
+                                            accessible-label: @tr("Class name");
                                             committed(owner, text) => {
                                                 root.class-rename(owner, text);
                                             }
@@ -1472,33 +1515,33 @@ export component AnnotationsSidebar inherits Rectangle {
                                         spacing: 6px;
 
                                         Label {
-                                            text: "Opacity";
+                                            text: @tr("Opacity");
                                         }
 
                                         Slider {
                                             value: c.opacity;
-                                            label: "Class opacity";
+                                            label: @tr("Class opacity");
                                             released(value) => {
                                                 root.class-opacity(c.id, value);
                                             }
                                         }
                                     }
 
-                                    HorizontalLayout {
-                                        spacing: 6px;
-                                        alignment: end;
-
-                                        TextButton {
-                                            text: c.alternate ? "Not the second count class" : "Count with Shift+click";
-                                            clicked => {
+                                    ButtonFlow {
+                                        align-end: true;
+                                        buttons: [
+                                            {
+                                                text: c.alternate ? @tr("Stop counting with Shift+click") : @tr("Count with Shift+click"),
+                                                enabled: true,
+                                                primary: false,
+                                                danger: false,
+                                            },
+                                            { text: @tr("Delete…"), enabled: true, primary: false, danger: true },
+                                        ];
+                                        clicked(index) => {
+                                            if index == 0 {
                                                 root.class-alternate(c.alternate ? "" : c.id);
-                                            }
-                                        }
-
-                                        TextButton {
-                                            text: "Delete…";
-                                            danger: true;
-                                            clicked => {
+                                            } else {
                                                 root.editing-class = "";
                                                 root.class-delete(c.id);
                                             }
@@ -1512,7 +1555,7 @@ export component AnnotationsSidebar inherits Rectangle {
                             alignment: start;
 
                             TextButton {
-                                text: "New class";
+                                text: @tr("New class");
                                 clicked => {
                                     root.class-new();
                                 }
@@ -1550,28 +1593,16 @@ export component AnnotationsSidebar inherits Rectangle {
                         spacing: 8px;
 
                         Hint {
-                            text: "Pick the Count tool (C) and click cells; Shift+click and Alt+click count the second and third class. Select regions or HPF fields to count inside them.";
+                            text: @tr("Pick the Count tool (C) and click cells; Shift+click and Alt+click count the second and third class. Select regions or HPF fields to count inside them.");
                         }
 
-                        HorizontalLayout {
-                            spacing: 6px;
-                            alignment: start;
-
-                            TextButton {
-                                text: "Count tool (C)";
-                                primary: true;
-                                enabled: root.editable;
-                                clicked => {
-                                    root.tool("count");
-                                }
-                            }
-
-                            TextButton {
-                                text: "HPF field (H)";
-                                enabled: root.editable;
-                                clicked => {
-                                    root.tool("field");
-                                }
+                        ButtonFlow {
+                            buttons: [
+                                { text: @tr("Count tool (C)"), enabled: root.editable, primary: true, danger: false },
+                                { text: @tr("HPF field (H)"), enabled: root.editable, primary: false, danger: false },
+                            ];
+                            clicked(index) => {
+                                root.tool(index == 0 ? "count" : "field");
                             }
                         }
 
@@ -1579,13 +1610,14 @@ export component AnnotationsSidebar inherits Rectangle {
                             spacing: 6px;
 
                             Label {
-                                text: "Click";
+                                // Translators: the class a click with the Count tool counts.
+                                text: @tr("Click");
                                 min-width: 80px;
                             }
 
                             ChoiceButton {
                                 text: root.class-names[root.count-active-index];
-                                accessible-label: "Class counted by a click";
+                                accessible-label: @tr("Class counted by a click");
                                 open(x, y, w) => {
                                     root.open-list("count-active", root.class-names, root.count-active-index, x, y, w);
                                 }
@@ -1596,13 +1628,13 @@ export component AnnotationsSidebar inherits Rectangle {
                             spacing: 6px;
 
                             Label {
-                                text: "Shift+click";
+                                text: @tr("Shift+click");
                                 min-width: 80px;
                             }
 
                             ChoiceButton {
-                                text: root.count-alternate-index == 0 ? "(same as click)" : root.class-names[root.count-alternate-index];
-                                accessible-label: "Class counted by Shift+click";
+                                text: root.count-alternate-index == 0 ? @tr("(same as click)") : root.class-names[root.count-alternate-index];
+                                accessible-label: @tr("Class counted by Shift+click");
                                 open(x, y, w) => {
                                     root.open-list("count-alternate", root.class-names, root.count-alternate-index, x, y, w);
                                 }
@@ -1613,13 +1645,13 @@ export component AnnotationsSidebar inherits Rectangle {
                             spacing: 6px;
 
                             Label {
-                                text: "Alt+click";
+                                text: @tr("Alt+click");
                                 min-width: 80px;
                             }
 
                             ChoiceButton {
-                                text: root.count-immune-index == 0 ? "(none)" : root.class-names[root.count-immune-index];
-                                accessible-label: "Class counted by Alt+click: PD-L1-positive immune cells for the combined positive score";
+                                text: root.count-immune-index == 0 ? @tr("(none)") : root.class-names[root.count-immune-index];
+                                accessible-label: @tr("Class counted by Alt+click: PD-L1-positive immune cells for the combined positive score");
                                 open(x, y, w) => {
                                     root.open-list("count-immune", root.class-names, root.count-immune-index, x, y, w);
                                 }
@@ -1627,7 +1659,7 @@ export component AnnotationsSidebar inherits Rectangle {
                         }
 
                         if root.count-immune-index != 0: Hint {
-                            text: "Combined positive score: the click and Alt+click classes (PD-L1-positive tumour and immune cells) per 100 tumour cells (the click and Shift+click classes).";
+                            text: @tr("Combined positive score: the click and Alt+click classes (PD-L1-positive tumour cells and PD-L1-positive immune cells) per 100 tumour cells (the click and Shift+click classes).");
                         }
 
                         Separator { }
@@ -1636,12 +1668,13 @@ export component AnnotationsSidebar inherits Rectangle {
                             text: root.count-scope;
                             font-size: Theme.font-size;
                             color: Theme.text-primary;
+                            horizontal-alignment: Locale.start;
                             wrap: word-wrap;
                             height: self.preferred-height;
                         }
 
                         if root.has-slide && root.tally.length == 0: Hint {
-                            text: "Nothing counted here yet.";
+                            text: @tr("Nothing counted here yet.");
                         }
 
                         for t in root.tally: VerticalLayout {
@@ -1665,6 +1698,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                     text: t.name;
                                     font-size: Theme.font-size;
                                     color: Theme.text-primary;
+                                    horizontal-alignment: Locale.start;
                                     overflow: elide;
                                     horizontal-stretch: 1;
                                 }
@@ -1674,7 +1708,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                     font-size: 13px;
                                     font-weight: 600;
                                     color: Theme.text-primary;
-                                    horizontal-alignment: right;
+                                    horizontal-alignment: Locale.end;
                                 }
                             }
 
@@ -1685,6 +1719,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                     text: t.density + (t.density != "" && t.per-hpf != "" ? " · " : "") + t.per-hpf;
                                     font-size: Theme.small-font-size;
                                     color: Theme.text-secondary;
+                                    horizontal-alignment: Locale.start;
                                     wrap: word-wrap;
                                     height: self.preferred-height;
                                 }
@@ -1702,6 +1737,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                     text: root.count-index;
                                     font-size: Theme.font-size;
                                     color: Theme.text-primary;
+                                    horizontal-alignment: Locale.start;
                                     wrap: word-wrap;
                                     height: self.preferred-height;
                                 }
@@ -1709,7 +1745,7 @@ export component AnnotationsSidebar inherits Rectangle {
                         }
 
                         Check {
-                            text: "Count points in hidden layers";
+                            text: @tr("Count points in hidden layers");
                             checked: root.count-hidden;
                             toggled(value) => {
                                 root.count-hidden-toggled(value);
@@ -1720,7 +1756,7 @@ export component AnnotationsSidebar inherits Rectangle {
                             alignment: start;
 
                             TextButton {
-                                text: "Clear counts…";
+                                text: @tr("Clear counts…");
                                 danger: true;
                                 enabled: root.editable;
                                 clicked => {
@@ -1732,20 +1768,21 @@ export component AnnotationsSidebar inherits Rectangle {
                         Separator { }
 
                         SectionTitle {
-                            text: "HIGH-POWER FIELDS";
+                            text: @tr("HIGH-POWER FIELDS");
                         }
 
                         Text {
                             text: root.field-text;
                             font-size: Theme.font-size;
                             color: Theme.text-primary;
+                            horizontal-alignment: Locale.start;
                             wrap: word-wrap;
                             height: self.preferred-height;
                         }
 
                         ChoiceButton {
                             text: root.field-modes[root.local-field-mode];
-                            accessible-label: "How the field size is given";
+                            accessible-label: @tr("How the field size is given");
                             open(x, y, w) => {
                                 root.open-list("field-mode", root.field-modes, root.local-field-mode, x, y, w);
                             }
@@ -1755,35 +1792,40 @@ export component AnnotationsSidebar inherits Rectangle {
                             spacing: 6px;
 
                             Label {
-                                text: "FN (mm)";
+                                // Translators: FN is the eyepiece's field number, the diameter of the field of view.
+                                text: @tr("FN (mm)");
                                 min-width: 0px;
                             }
 
                             fn-field := PlainField {
                                 text: root.field-number;
                                 placeholder: "22";
-                                accessible-label: "Field number in mm";
+                                accessible-label: @tr("Field number in mm");
                                 accepted => {
                                     root.field-config(0, fn-field.text, objective-field.text, "");
                                 }
                             }
 
                             Label {
-                                text: "Objective ×";
-                                min-width: 0px;
+                                // Translators: the magnification of the objective, as in 40×.
+                                text: @tr("Objective ×");
+                                // The row is not mirrored right to left, where the label is
+                                // read after the field number on its left: kept apart from that
+                                // field, it stays with its own (its text hugs it).
+                                min-width: Locale.rtl ? self.preferred-width + 12px : 0px;
                             }
 
                             objective-field := PlainField {
                                 text: root.field-objective;
                                 placeholder: "40";
-                                accessible-label: "Objective magnification";
+                                accessible-label: @tr("Objective magnification");
                                 accepted => {
                                     root.field-config(0, fn-field.text, objective-field.text, "");
                                 }
                             }
 
                             TextButton {
-                                text: "Apply";
+                                text: @tr("Apply");
                                 clicked => {
                                     root.field-config(0, fn-field.text, objective-field.text, "");
                                 }
@@ -1794,40 +1836,53 @@ export component AnnotationsSidebar inherits Rectangle {
                             spacing: 6px;
 
                             Label {
-                                text: "Area (mm²)";
+                                text: @tr("Area (mm²)");
                                 min-width: 0px;
                             }
 
                             area-field := PlainField {
                                 text: root.field-area;
                                 placeholder: "0.237";
-                                accessible-label: "Field area in square millimetres";
+                                accessible-label: @tr("Field area in square millimetres");
                                 accepted => {
                                     root.field-config(1, "", "", area-field.text);
                                 }
                             }
 
                             TextButton {
-                                text: "Apply";
+                                text: @tr("Apply");
                                 clicked => {
                                     root.field-config(1, "", "", area-field.text);
                                 }
                             }
                         }
 
-                        HorizontalLayout {
-                            spacing: 6px;
+                        // The number of fields with "Select all fields" beside
+                        // it, or under it when the line is too short for both.
+                        Rectangle {
+                            property <bool> one-line: fields-placed.preferred-width + 6px + select-fields.min-width <= self.width;
+                            property <length> text-height: fields-placed.preferred-height;
 
-                            Text {
-                                text: root.field-count == 1 ? "1 field placed on this slide." : "\{root.field-count} fields placed on this slide.";
+                            height: self.one-line ? max(24px, self.text-height) : self.text-height + 6px + 24px;
+
+                            fields-placed := Text {
+                                x: 0px;
+                                y: 0px;
+                                width: parent.one-line ? max(0px, parent.width - select-fields.width - 6px) : parent.width;
+                                height: parent.one-line ? max(24px, parent.text-height) : parent.text-height;
+                                text: @tr("{n} field placed on this slide." | "{n} fields placed on this slide." % root.field-count);
                                 font-size: Theme.font-size;
                                 color: Theme.text-secondary;
+                                horizontal-alignment: Locale.start;
                                 vertical-alignment: center;
-                                horizontal-stretch: 1;
+                                wrap: word-wrap;
                             }
 
-                            TextButton {
-                                text: "Select all fields";
+                            select-fields := TextButton {
+                                x: parent.width - self.width;
+                                y: parent.one-line ? (parent.height - self.height) / 2 : parent.text-height + 6px;
+                                width: min(self.min-width, parent.width);
+                                text: @tr("Select all fields");
                                 enabled: root.field-count > 0;
                                 clicked => {
                                     root.fields-select();
@@ -1866,46 +1921,30 @@ export component AnnotationsSidebar inherits Rectangle {
                         spacing: 8px;
 
                         SectionTitle {
-                            text: "IMPORT AND EXPORT";
+                            text: @tr("IMPORT AND EXPORT");
                         }
 
                         Hint {
-                            text: "Imports: GeoJSON (QuPath and others), eov JSON, ASAP XML, Aperio ImageScope XML, Hamamatsu NDPA and DICOM bulk annotations. Coordinates are level-0 pixels with y pointing down.";
+                            text: @tr("Imports: GeoJSON (QuPath and others), eov JSON, ASAP XML, Aperio ImageScope XML, Hamamatsu NDPA and DICOM bulk annotations. Coordinates are level-0 pixels with y pointing down.");
                         }
 
-                        HorizontalLayout {
-                            spacing: 6px;
-                            alignment: start;
-
-                            TextButton {
-                                text: "Import…";
-                                primary: true;
-                                enabled: root.editable;
-                                clicked => {
+                        // Rows of buttons continue on a second line when the
+                        // language's words do not fit on one.
+                        ButtonFlow {
+                            buttons: [
+                                { text: @tr("Import…"), enabled: root.editable, primary: true, danger: false },
+                                { text: "GeoJSON…", enabled: root.has-slide, primary: false, danger: false },
+                                { text: "eov JSON…", enabled: root.has-slide, primary: false, danger: false },
+                                { text: "CSV…", enabled: root.has-slide, primary: false, danger: false },
+                            ];
+                            clicked(index) => {
+                                if index == 0 {
                                     root.menu("import");
-                                }
-                            }
-
-                            TextButton {
-                                text: "GeoJSON…";
-                                enabled: root.has-slide;
-                                clicked => {
+                                } else if index == 1 {
                                     root.menu("export-geojson");
-                                }
-                            }
-
-                            TextButton {
-                                text: "eov JSON…";
-                                enabled: root.has-slide;
-                                clicked => {
+                                } else if index == 2 {
                                     root.menu("export-eov");
-                                }
-                            }
-
-                            TextButton {
-                                text: "CSV…";
-                                enabled: root.has-slide;
-                                clicked => {
+                                } else {
                                     root.menu("export-csv");
                                 }
                             }
@@ -1940,27 +1979,24 @@ export component AnnotationsSidebar inherits Rectangle {
                             }
                         }
 
-                        HorizontalLayout {
-                            spacing: 6px;
-                            alignment: start;
-
-                            TextButton {
-                                text: "Export all slides…";
-                                clicked => {
+                        ButtonFlow {
+                            buttons: [
+                                {
+                                    // Translators: exports the annotations of every slide in the database to one annotation archive (a JSON file), not the slide images.
+                                    text: @tr("Export all slides…"),
+                                    enabled: true,
+                                    primary: false,
+                                    danger: false,
+                                },
+                                { text: @tr("Back up…"), enabled: true, primary: false, danger: false },
+                                { text: @tr("Merge…"), enabled: true, primary: false, danger: false },
+                            ];
+                            clicked(index) => {
+                                if index == 0 {
                                     root.menu("export-all");
-                                }
-                            }
-
-                            TextButton {
-                                text: "Back up…";
-                                clicked => {
+                                } else if index == 1 {
                                     root.menu("backup");
-                                }
-                            }
-
-                            TextButton {
-                                text: "Merge…";
-                                clicked => {
+                                } else {
                                     root.menu("merge-db");
                                 }
                             }
@@ -1969,43 +2005,44 @@ export component AnnotationsSidebar inherits Rectangle {
                         Separator { }
 
                         SectionTitle {
-                            text: "SECOND READER";
+                            // Translators: a reader is a person who annotates slides; a second reader annotates a blinded copy independently so two readers can be compared (as in a reader study); use the word for an observer or annotator, not the clinical term for a second diagnostic opinion.
+                            text: @tr("SECOND READER");
                         }
 
                         Hint {
-                            text: "A blinded copy holds the visible layers' shapes, classes and names, without authors, comments, statuses, descriptions or properties. Compare reads another reader's export and compares it with the visible layers: counts per class, matched points and overlapping regions.";
+                            text: @tr("A blinded copy holds the visible layers' shapes, classes and names, without authors, comments, statuses, descriptions or properties. Compare reads another reader's export and compares it with the visible layers: counts per class, matched points and overlapping regions.");
                         }
 
-                        HorizontalLayout {
-                            spacing: 6px;
-                            alignment: start;
+                        ButtonFlow {
+                            property <[FlowButton]> compare-buttons: [
+                                { text: @tr("Blinded copy…"), enabled: root.has-slide, primary: false, danger: false },
+                                { text: @tr("Compare…"), enabled: root.has-slide, primary: false, danger: false },
+                                {
+                                    // Translators: a button: compare with the same file again.
+                                    text: @tr("Again"),
+                                    enabled: true,
+                                    primary: false,
+                                    danger: false,
+                                },
+                                {
+                                    // Translators: a button: remove the comparison.
+                                    text: @tr("Clear"),
+                                    enabled: true,
+                                    primary: false,
+                                    danger: false,
+                                },
+                            ];
 
-                            TextButton {
-                                text: "Blinded copy…";
-                                enabled: root.has-slide;
-                                clicked => {
+                            // "Again" and "Clear" once there is a comparison.
+                            buttons: root.compare-title != "" ? self.compare-buttons : [self.compare-buttons[0], self.compare-buttons[1]];
+                            clicked(index) => {
+                                if index == 0 {
                                     root.menu("export-blinded");
-                                }
-                            }
-
-                            TextButton {
-                                text: "Compare…";
-                                enabled: root.has-slide;
-                                clicked => {
+                                } else if index == 1 {
                                     root.menu("compare");
-                                }
-                            }
-
-                            if root.compare-title != "": TextButton {
-                                text: "Again";
-                                clicked => {
+                                } else if index == 2 {
                                     root.menu("compare-again");
-                                }
-                            }
-
-                            if root.compare-title != "": TextButton {
-                                text: "Clear";
-                                clicked => {
+                                } else {
                                     root.menu("compare-clear");
                                 }
                             }
@@ -2016,6 +2053,7 @@ export component AnnotationsSidebar inherits Rectangle {
                             font-size: Theme.font-size;
                             font-weight: 600;
                             color: Theme.text-primary;
+                            horizontal-alignment: Locale.start;
                             wrap: word-wrap;
                             height: self.preferred-height;
                         }
@@ -2025,7 +2063,7 @@ export component AnnotationsSidebar inherits Rectangle {
                         }
 
                         if root.compare-title != "" && root.compare-rows.length == 0: Hint {
-                            text: "Neither reader has points or regions in the compared layers.";
+                            text: @tr("Neither reader has points or regions in the compared layers.");
                         }
 
                         for r in root.compare-rows: VerticalLayout {
@@ -2049,6 +2087,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                     text: r.name;
                                     font-size: Theme.font-size;
                                     color: Theme.text-primary;
+                                    horizontal-alignment: Locale.start;
                                     overflow: elide;
                                     horizontal-stretch: 1;
                                 }
@@ -2061,6 +2100,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                     text: r.points;
                                     font-size: Theme.small-font-size;
                                     color: Theme.text-secondary;
+                                    horizontal-alignment: Locale.start;
                                     wrap: word-wrap;
                                     height: self.preferred-height;
                                 }
@@ -2073,6 +2113,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                     text: r.regions;
                                     font-size: Theme.small-font-size;
                                     color: Theme.text-secondary;
+                                    horizontal-alignment: Locale.start;
                                     wrap: word-wrap;
                                     height: self.preferred-height;
                                 }
@@ -2082,13 +2123,14 @@ export component AnnotationsSidebar inherits Rectangle {
                         Separator { }
 
                         SectionTitle {
-                            text: "DATABASE";
+                            text: @tr("DATABASE");
                         }
 
                         Text {
                             text: root.db-status;
                             font-size: Theme.font-size;
                             color: Theme.text-primary;
+                            horizontal-alignment: Locale.start;
                             wrap: word-wrap;
                             height: self.preferred-height;
                         }
@@ -2098,13 +2140,14 @@ export component AnnotationsSidebar inherits Rectangle {
                             read-only: true;
                             single-line: false;
                             wrap: word-wrap;
+                            horizontal-alignment: Locale.start;
                             height: self.preferred-height;
                             font-size: Theme.small-font-size;
                             color: Theme.text-secondary;
                             selection-background-color: Theme.accent;
                             selection-foreground-color: #ffffff;
                             accessible-role: text;
-                            accessible-label: "Database file";
+                            accessible-label: @tr("Database file");
                         }
 
                         if root.db-notes != "": Hint {
@@ -2120,9 +2163,11 @@ export component AnnotationsSidebar inherits Rectangle {
                                 spacing: 6px;
 
                                 Text {
-                                    text: "Annotations made with eov before 1.0 are in " + root.legacy-db + ". Bring them into this database (the old file is not changed):";
+                                    // Translators: {} is the path of the old database file.
+                                    text: @tr("Annotations made with eov before 1.0 are in {}. Bring them into this database (the old file is not changed):", Locale.isolate(root.legacy-db));
                                     font-size: Theme.font-size;
                                     color: Theme.text-primary;
+                                    horizontal-alignment: Locale.start;
                                     wrap: word-wrap;
                                     height: self.preferred-height;
                                 }
@@ -2131,7 +2176,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                     alignment: end;
 
                                     TextButton {
-                                        text: "Bring them in";
+                                        text: @tr("Bring them in");
                                         primary: true;
                                         clicked => {
                                             root.legacy-merge();
@@ -2147,13 +2192,14 @@ export component AnnotationsSidebar inherits Rectangle {
                             spacing: 6px;
 
                             SectionTitle {
-                                text: "OTHER SLIDES";
+                                text: @tr("OTHER SLIDES");
                                 vertical-alignment: center;
                                 horizontal-stretch: 1;
                             }
 
                             TextButton {
-                                text: "List";
+                                // Translators: a button that lists the other slides in the database.
+                                text: @tr("List");
                                 clicked => {
                                     root.orphans-refresh();
                                 }
@@ -2179,13 +2225,15 @@ export component AnnotationsSidebar inherits Rectangle {
                                         text: o.title;
                                         font-size: Theme.font-size;
                                         color: Theme.text-primary;
+                                        horizontal-alignment: Locale.start;
                                         vertical-alignment: center;
                                         overflow: elide;
                                         horizontal-stretch: 1;
                                     }
 
                                     TextButton {
-                                        text: "Attach";
+                                        // Translators: a button: attach the annotations of this slide to the open slide.
+                                        text: @tr("Attach");
                                         enabled: root.editable;
                                         clicked => {
                                             root.orphan-relink(o.id);
@@ -2197,6 +2245,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                     text: o.detail;
                                     font-size: Theme.small-font-size;
                                     color: Theme.text-secondary;
+                                    horizontal-alignment: Locale.start;
                                     wrap: word-wrap;
                                     height: self.preferred-height;
                                 }
@@ -2206,22 +2255,22 @@ export component AnnotationsSidebar inherits Rectangle {
                         Separator { }
 
                         SectionTitle {
-                            text: "AUTHOR AND EXPORTS";
+                            text: @tr("AUTHOR AND EXPORTS");
                         }
 
                         HorizontalLayout {
                             spacing: 6px;
 
                             Label {
-                                text: "Author";
+                                text: @tr("Author");
                                 min-width: 84px;
                             }
 
                             CommitField {
                                 owner: "author";
                                 value: root.setting-author;
-                                placeholder: "Your name or initials";
-                                accessible-label: "Author";
+                                placeholder: @tr("Your name or initials");
+                                accessible-label: @tr("Author");
                                 committed(key, text) => {
                                     root.setting-text(key, text);
                                 }
@@ -2232,14 +2281,14 @@ export component AnnotationsSidebar inherits Rectangle {
                             spacing: 6px;
 
                             Label {
-                                text: "Organization";
+                                text: @tr("Organization");
                                 min-width: 84px;
                             }
 
                             CommitField {
                                 owner: "organization";
                                 value: root.setting-organization;
-                                accessible-label: "Organization";
+                                accessible-label: @tr("Organization");
                                 committed(key, text) => {
                                     root.setting-text(key, text);
                                 }
@@ -2250,14 +2299,14 @@ export component AnnotationsSidebar inherits Rectangle {
                             spacing: 6px;
 
                             Label {
-                                text: "Project";
+                                text: @tr("Project");
                                 min-width: 84px;
                             }
 
                             CommitField {
                                 owner: "project";
                                 value: root.setting-project;
-                                accessible-label: "Project";
+                                accessible-label: @tr("Project");
                                 committed(key, text) => {
                                     root.setting-text(key, text);
                                 }
@@ -2268,15 +2317,15 @@ export component AnnotationsSidebar inherits Rectangle {
                             spacing: 6px;
 
                             Label {
-                                text: "License";
+                                text: @tr("License");
                                 min-width: 84px;
                             }
 
                             CommitField {
                                 owner: "license";
                                 value: root.setting-license;
-                                placeholder: "e.g. CC-BY-4.0";
-                                accessible-label: "License";
+                                placeholder: @tr("e.g. CC-BY-4.0");
+                                accessible-label: @tr("License");
                                 committed(key, text) => {
                                     root.setting-text(key, text);
                                 }
@@ -2284,7 +2333,7 @@ export component AnnotationsSidebar inherits Rectangle {
                         }
 
                         Check {
-                            text: "Include the slide's file name in exports";
+                            text: @tr("Include the slide's file name in exports");
                             checked: root.setting-include-filename;
                             toggled(value) => {
                                 root.setting-bool("include-filename", value);
@@ -2294,11 +2343,11 @@ export component AnnotationsSidebar inherits Rectangle {
                         Separator { }
 
                         SectionTitle {
-                            text: "DISPLAY";
+                            text: @tr("DISPLAY");
                         }
 
                         Check {
-                            text: "Show names on the slide";
+                            text: @tr("Show names on the slide");
                             checked: root.setting-show-labels;
                             toggled(value) => {
                                 root.setting-bool("show-labels", value);
@@ -2309,7 +2358,7 @@ export component AnnotationsSidebar inherits Rectangle {
                             spacing: 6px;
 
                             Label {
-                                text: "Point size";
+                                text: @tr("Point size");
                                 min-width: 84px;
                             }
 
@@ -2317,7 +2366,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                 value: root.setting-point-radius;
                                 minimum: 1;
                                 maximum: 20;
-                                label: "Point size";
+                                label: @tr("Point size");
                                 released(value) => {
                                     root.setting-number("point-radius", value);
                                 }
@@ -2328,13 +2377,13 @@ export component AnnotationsSidebar inherits Rectangle {
                             spacing: 6px;
 
                             Label {
-                                text: "Fill opacity";
+                                text: @tr("Fill opacity");
                                 min-width: 84px;
                             }
 
                             Slider {
                                 value: root.setting-fill-opacity;
-                                label: "Fill opacity";
+                                label: @tr("Fill opacity");
                                 released(value) => {
                                     root.setting-number("fill-opacity", value);
                                 }
@@ -2344,14 +2393,16 @@ export component AnnotationsSidebar inherits Rectangle {
                         Separator { }
 
                         SectionTitle {
-                            text: "BRUSH (S)";
+                            // Translators: S is the brush tool's key.
+                            text: @tr("BRUSH (S)");
                         }
 
                         HorizontalLayout {
                             spacing: 6px;
 
                             Label {
-                                text: "Size";
+                                // Translators: the size of the brush.
+                                text: @tr("Size");
                                 min-width: 84px;
                             }
 
@@ -2359,7 +2410,7 @@ export component AnnotationsSidebar inherits Rectangle {
                                 value: root.setting-brush-size;
                                 minimum: 4;
                                 maximum: 200;
-                                label: "Brush size";
+                                label: @tr("Brush size");
                                 released(value) => {
                                     root.setting-number("brush-size", value);
                                 }
@@ -2375,7 +2426,7 @@ export component AnnotationsSidebar inherits Rectangle {
                         }
 
                         Check {
-                            text: "Erase from the selected region";
+                            text: @tr("Erase from the selected region");
                             checked: root.setting-brush-eraser;
                             toggled(value) => {
                                 root.setting-bool("brush-eraser", value);
@@ -2383,7 +2434,7 @@ export component AnnotationsSidebar inherits Rectangle {
                         }
 
                         Hint {
-                            text: "Paint over a selected region to extend it, elsewhere to make a new one. Hold Alt to erase; [ and ] change the size.";
+                            text: @tr("Paint over a selected region to extend it, elsewhere to make a new one. Hold Alt to erase; [ and ] change the size.");
                         }
                     }
                 }
@@ -2422,9 +2473,11 @@ export component AnnotationsSidebar inherits Rectangle {
             property <length> list-height: min(root.popup-items.length * 24px + 8px, root.height - 16px);
             property <bool> above: root.popup-y + self.list-height > root.height - 4px;
 
-            x: clamp(root.popup-x, 4px, max(4px, root.width - self.width - 4px));
+            x: clamp(root.popup-x-is-end ? root.popup-x - self.width : root.popup-x, 4px, max(4px, root.width - self.width - 4px));
             y: self.above ? max(4px, root.popup-y - self.list-height - 26px) : root.popup-y + 2px;
-            width: min(max(root.popup-w, 150px), root.width - 8px);
+            // As wide as the widest item (whose length depends on the
+            // language), within the panel.
+            width: min(max(max(root.popup-w, 150px), popup-items-layout.preferred-width), root.width - 8px);
             height: self.list-height;
             border-radius: 4px;
             border-width: 1px;
@@ -2446,7 +2499,7 @@ export component AnnotationsSidebar inherits Rectangle {
                 width: parent.width;
                 height: parent.height;
 
-                VerticalLayout {
+                popup-items-layout := VerticalLayout {
                     alignment: start;
                     padding: 4px;
 
@@ -2461,15 +2514,19 @@ export component AnnotationsSidebar inherits Rectangle {
                             root.choose(i);
                         }
 
-                        Text {
-                            x: 8px;
-                            width: parent.width - 16px;
-                            height: parent.height;
-                            text: item;
-                            font-size: Theme.font-size;
-                            color: item-touch.has-hover ? #ffffff : Theme.text-primary;
-                            vertical-alignment: center;
-                            overflow: elide;
+                        // In a layout, so that the list knows the item's width.
+                        HorizontalLayout {
+                            padding-left: 8px;
+                            padding-right: 8px;
+
+                            Text {
+                                text: item;
+                                font-size: Theme.font-size;
+                                color: item-touch.has-hover ? #ffffff : Theme.text-primary;
+                                horizontal-alignment: Locale.start;
+                                vertical-alignment: center;
+                                overflow: elide;
+                            }
                         }
 
                         item-touch := TouchArea {
@@ -2497,7 +2554,7 @@ export component AnnotationsSidebar inherits Rectangle {
             drop-shadow-offset-y: 2px;
             drop-shadow-color: #00000090;
             accessible-role: list;
-            accessible-label: "Colours";
+            accessible-label: @tr("Colours");
 
             TouchArea { }
 

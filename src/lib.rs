@@ -24,6 +24,7 @@ pub mod db;
 pub mod fileio;
 pub mod formats;
 pub mod geometry;
+pub mod import_fit;
 pub mod measure;
 pub mod model;
 pub mod overlay;
@@ -33,12 +34,13 @@ pub mod stats;
 pub mod tools;
 pub mod transfer;
 
-use crate::core::{Core, DbJob, HOTKEYS_TOKEN, Paths, REFRESH_TOKEN};
+use crate::core::{Core, DbJob, HOTKEYS_TOKEN, Paths, REFRESH_TOKEN, label};
 use crate::model::{Geometry, LayerRole};
 use crate::sidebar::{SidebarHost, SidebarView};
 use crate::state::{Pending, Settings, State};
+use eov_plugin_api::i18n;
 use eov_plugin_api::prelude::*;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex, MutexGuard};
 
@@ -53,18 +55,77 @@ struct Ui {
     sidebar: Option<Surface>,
     /// Open import dialogs: surface id → import plan id.
     imports: BTreeMap<String, u64>,
-    /// Class hotkeys registered, by hotkey id.
+    /// Class hotkeys registered, by hotkey id (also those eov refused).
     hotkeys: BTreeMap<String, HotkeySpec>,
+    /// Tools whose key eov refused: they are registered again without it
+    /// (offering the key again would only repeat eov's warning).
+    refused_tools: BTreeSet<String>,
     /// HUD "visibility" state per pane.
     hud: BTreeMap<PaneId, bool>,
     /// The annotation highlighted from the list.
     highlighted: Option<(FileId, String)>,
+    /// Why the settings could not be saved the last time: the user is told
+    /// once, not at each change in the panel (most of them save them).
+    settings_error: Option<String>,
 }
 
 pub struct AnnotationsPlugin {
     core: Arc<Core>,
     ui: Mutex<Ui>,
     view: Mutex<SidebarView>,
+}
+
+/// The tooltip of the toolbar button that opens the panel.
+fn sidebar_tooltip() -> String {
+    tr!("Annotations")
+}
+
+/// The tooltip of the HUD button that hides annotations in one pane.
+fn visibility_tooltip() -> String {
+    tr!("Show or hide annotations on this slide")
+}
+
+/// The status line while one of the plugin's tools is active.
+fn tool_status(state: &State, tool_id: &str) -> String {
+    // Names of classes, isolated in right-to-left languages.
+    let class_name = |id: Option<&str>| {
+        id.and_then(|id| state.class(id))
+            .map(|c| i18n::isolate(&c.name))
+    };
+    let class =
+        class_name(state.settings.active_class.as_deref()).unwrap_or_else(|| tr!("Unclassified"));
+    match tool_id {
+        tools::COUNT => {
+            let alternate = class_name(state.settings.alternate_class.as_deref());
+            let immune = class_name(state.settings.immune_class.as_deref());
+            match (alternate, immune) {
+                (None, None) => tr!("Counting {}", class),
+                (Some(alternate), None) => tr!(
+                    "Counting {class}, Shift+click: {alternate}",
+                    class = class,
+                    alternate = alternate
+                ),
+                (None, Some(immune)) => tr!(
+                    "Counting {class}, Alt+click: {immune}",
+                    class = class,
+                    immune = immune
+                ),
+                (Some(alternate), Some(immune)) => tr!(
+                    "Counting {class}, Shift+click: {alternate}, Alt+click: {immune}",
+                    class = class,
+                    alternate = alternate,
+                    immune = immune
+                ),
+            }
+        }
+        tools::FIELD => tr!(
+            // Translators: HPF is a high-power field.
+            "The dashed circle is one HPF: click to place a field, drag to pan, Esc to leave"
+        ),
+        tools::SELECT => tr!("Click to select, drag to select several; drag handles to edit"),
+        tools::BRUSH => actions::brush_status(state),
+        _ => tr!("Drawing {}", class),
+    }
 }
 
 /// Where the database lives: `database_path` from the settings, or
@@ -138,7 +199,7 @@ impl AnnotationsPlugin {
             sidebar::SIDEBAR_UI,
             sidebar::SIDEBAR_COMPONENT,
         )
-        .with_title("Annotations")
+        .with_title(tr!("Annotations"))
         .with_size(340.0, None);
         spec.properties = properties;
         let surface = self.core.host.open_surface(spec).map_err(String::from)?;
@@ -167,28 +228,53 @@ impl AnnotationsPlugin {
     }
 
     /// Keeps one key binding per class with a hotkey; pressing the key
-    /// makes the class active.
+    /// makes the class active. A key eov refused is not offered again
+    /// until the class's key changes: a new class name or language only
+    /// changes the binding's description, which is updated in place (after
+    /// a change of language, [`Self::offer_refused_hotkeys_again`] asks eov
+    /// for its reason in the new language).
     fn sync_hotkeys(&self) {
-        let desired: BTreeMap<String, HotkeySpec> = self
-            .core
-            .state()
-            .classes
-            .iter()
-            .filter_map(tools::class_hotkey)
-            .map(|spec| (spec.hotkey_id.clone(), spec))
-            .collect();
+        let (desired, refused): (BTreeMap<String, HotkeySpec>, BTreeSet<String>) = {
+            let state = self.core.state();
+            (
+                state
+                    .classes
+                    .iter()
+                    .filter_map(tools::class_hotkey)
+                    .map(|spec| (spec.hotkey_id.clone(), spec))
+                    .collect(),
+                state
+                    .refused_hotkeys
+                    .keys()
+                    .map(|class_id| format!("{}{class_id}", tools::CLASS_HOTKEY_PREFIX))
+                    .collect(),
+            )
+        };
         let mut ui = self.ui();
-        let stale: Vec<String> = ui
+        let changed: Vec<(String, Option<HotkeySpec>)> = ui
             .hotkeys
             .iter()
             .filter(|(id, spec)| desired.get(*id) != Some(spec))
-            .map(|(id, _)| id.clone())
+            .map(|(id, _)| (id.clone(), desired.get(id).cloned()))
             .collect();
-        for id in stale {
-            let _ = self.core.host.unregister_hotkey(&id);
-            ui.hotkeys.remove(&id);
-            if let Some(class_id) = id.strip_prefix(tools::CLASS_HOTKEY_PREFIX) {
-                self.core.state().refused_hotkeys.remove(class_id);
+        for (id, wanted) in changed {
+            match wanted {
+                // Only the description changed. Registering again replaces
+                // the binding (eov does not count it as taken by itself).
+                Some(spec) if spec.hotkey == ui.hotkeys[&id].hotkey => {
+                    if refused.contains(&id) || self.core.host.register_hotkey(spec.clone()).is_ok()
+                    {
+                        ui.hotkeys.insert(id, spec);
+                    }
+                }
+                // Gone, or another key (which is offered).
+                _ => {
+                    let _ = self.core.host.unregister_hotkey(&id);
+                    ui.hotkeys.remove(&id);
+                    if let Some(class_id) = id.strip_prefix(tools::CLASS_HOTKEY_PREFIX) {
+                        self.core.state().refused_hotkeys.remove(class_id);
+                    }
+                }
             }
         }
         for (id, spec) in desired {
@@ -201,46 +287,41 @@ impl AnnotationsPlugin {
         }
     }
 
+    /// After a change of language, offers eov the class keys it refused
+    /// once more: it answers with its reason in the new language, which the
+    /// Classes tab shows. eov does not warn the user twice (hosts before
+    /// 1.1 would, but they never change the language). A key eov accepts
+    /// now loses its note.
+    fn offer_refused_hotkeys_again(&self) {
+        let refused: Vec<String> = self
+            .core
+            .state()
+            .refused_hotkeys
+            .drain()
+            .map(|(id, _)| id)
+            .collect();
+        let specs: Vec<HotkeySpec> = {
+            let ui = self.ui();
+            refused
+                .iter()
+                .filter_map(|class_id| {
+                    ui.hotkeys
+                        .get(&format!("{}{class_id}", tools::CLASS_HOTKEY_PREFIX))
+                        .cloned()
+                })
+                .collect()
+        };
+        for spec in specs {
+            let _ = self.core.host.register_hotkey(spec);
+        }
+    }
+
     fn on_tool_activated(&self, tool_id: String) {
         let field = tool_id == tools::FIELD;
         {
             let mut state = self.core.state();
             state.active_tool = Some(tool_id.clone());
-            let class = state
-                .settings
-                .active_class
-                .as_deref()
-                .and_then(|id| state.class(id))
-                .map_or("Unclassified".to_string(), |c| c.name.clone());
-            let status = match tool_id.as_str() {
-                tools::COUNT => {
-                    let alternate = state
-                        .settings
-                        .alternate_class
-                        .as_deref()
-                        .and_then(|id| state.class(id))
-                        .map(|c| format!(", Shift+click: {}", c.name))
-                        .unwrap_or_default();
-                    let immune = state
-                        .settings
-                        .immune_class
-                        .as_deref()
-                        .and_then(|id| state.class(id))
-                        .map(|c| format!(", Alt+click: {}", c.name))
-                        .unwrap_or_default();
-                    format!("Counting {class}{alternate}{immune}")
-                }
-                tools::FIELD => {
-                    "The dashed circle is one HPF: click to place a field, drag to pan, \
-                                 Esc to leave"
-                        .to_string()
-                }
-                tools::SELECT => {
-                    "Click to select, drag to select several; drag handles to edit".to_string()
-                }
-                tools::BRUSH => actions::brush_status(&state),
-                _ => format!("Drawing {class}"),
-            };
+            let status = tool_status(&state, &tool_id);
             self.core.host.set_status(Some(&status));
         }
         if field {
@@ -341,7 +422,7 @@ impl AnnotationsPlugin {
     }
 
     fn open_import_dialog(&self, plan_id: u64) {
-        let properties = {
+        let (properties, height) = {
             let mut state = self.core.state();
             let Some(plan) = state.imports.get(&plan_id) else {
                 return;
@@ -352,21 +433,51 @@ impl AnnotationsPlugin {
             }
             let mut p = Map::new();
             p.insert("source".into(), json!(plan.source));
-            let summary = if plan.blocked.is_some() {
-                format!("{} · cannot be placed on this slide", plan.format)
-            } else {
-                format!(
-                    "{} · {} annotation(s) in {} layer(s){}",
-                    plan.format,
-                    plan.annotation_count(),
-                    plan.layers.len(),
-                    if plan.classes.is_empty() {
-                        String::new()
-                    } else {
-                        format!(" · {} class(es)", plan.classes.len())
+            // In English too, to see how much longer the language's texts are.
+            let (summary, summary_english) = i18n::shown_and_english(|| {
+                if plan.blocked.is_some() {
+                    // Translators: {} is the name of a file format ("GeoJSON").
+                    tr!(
+                        "{} · cannot be placed on this slide",
+                        i18n::isolate(plan.format)
+                    )
+                } else {
+                    let mut summary = tr!(
+                        // Translators: {format} is the name of a file format ("GeoJSON");
+                        // {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+                        "{format} · {n} annotation {layers}"
+                            | "{format} · {n} annotations {layers}" % plan.annotation_count(),
+                        format = i18n::isolate(plan.format),
+                        layers = sidebar::in_layers(plan.layers.len())
+                    );
+                    if !plan.classes.is_empty() {
+                        summary.push_str(" · ");
+                        summary.push_str(&tr!("{n} class" | "{n} classes" % plan.classes.len()));
                     }
-                )
-            };
+                    summary
+                }
+            });
+            let (conflicts, conflicts_english) = i18n::shown_and_english(|| {
+                if plan.conflicts.is_empty() {
+                    String::new()
+                } else {
+                    tr!(
+                        "Layers with the same name already exist: {}",
+                        plan.conflicts
+                            .iter()
+                            .map(i18n::isolate)
+                            .collect::<Vec<_>>()
+                            .join(", ")
+                    )
+                }
+            });
+            let height = import_fit::height(
+                plan.blocked.is_none() && !conflicts.is_empty(),
+                &[
+                    (&summary, &summary_english, import_fit::ColumnKind::Text),
+                    (&conflicts, &conflicts_english, import_fit::ColumnKind::Text),
+                ],
+            );
             p.insert("summary".into(), json!(summary));
             p.insert("match-text".into(), json!(plan.match_text));
             p.insert(
@@ -375,26 +486,16 @@ impl AnnotationsPlugin {
             );
             p.insert("mismatch".into(), json!(plan.mismatch));
             p.insert("notes".into(), json!(plan.notes.join("\n")));
-            p.insert(
-                "conflicts".into(),
-                json!(if plan.conflicts.is_empty() {
-                    String::new()
-                } else {
-                    format!(
-                        "Layers with the same name already exist: {}",
-                        plan.conflicts.join(", ")
-                    )
-                }),
-            );
-            p
+            p.insert("conflicts".into(), json!(conflicts));
+            (p, height)
         };
         let mut spec = SurfaceSpec::new(
             SurfaceKind::Modal,
             sidebar::IMPORT_UI,
             sidebar::IMPORT_COMPONENT,
         )
-        .with_title("Import annotations")
-        .with_size(520.0, Some(400.0));
+        .with_title(tr!("Import annotations"))
+        .with_size(import_fit::WIDTH, Some(height));
         spec.properties = properties;
         match self.core.host.open_surface(spec) {
             Ok(surface) => {
@@ -402,7 +503,8 @@ impl AnnotationsPlugin {
             }
             Err(e) => {
                 self.core.state().imports.remove(&plan_id);
-                self.core.error("Cannot show the import dialog", e.message);
+                self.core
+                    .error(tr!("Cannot show the import dialog"), e.message);
             }
         }
     }
@@ -508,7 +610,7 @@ impl AnnotationsPlugin {
                     class,
                     "",
                     true,
-                    "Add point",
+                    label!(tr!("Add point")),
                 );
             }
             "add-field" => actions::shape_drawn(
@@ -535,7 +637,11 @@ impl AnnotationsPlugin {
                     &self.core,
                     file_id,
                     targets,
-                    if locked { "Lock" } else { "Unlock" },
+                    if locked {
+                        label!(tr!("Lock"))
+                    } else {
+                        label!(tr!("Unlock"))
+                    },
                     move |a| {
                         a.locked = locked;
                         Ok(())
@@ -554,6 +660,55 @@ impl AnnotationsPlugin {
             _ => {}
         }
         Ok(())
+    }
+
+    /// The user chose another language for the interface. `tr!` answers in
+    /// it already, and the panel's `@tr` texts follow by themselves: hand
+    /// eov again the texts made here that it shows.
+    fn language_changed(&self) {
+        let host = &self.core.host;
+        // Tool names (re-registering keeps each tool's place and state),
+        // without the keys eov refused.
+        let refused = self.ui().refused_tools.clone();
+        for mut spec in tools::tool_specs() {
+            if refused.contains(&spec.tool_id) {
+                spec.hotkey = None;
+            }
+            if let Err(e) = host.register_tool(spec) {
+                host.info(format!("cannot rename a tool: {e}"));
+            }
+        }
+        let _ = host.update_toolbar_button(ButtonUpdate {
+            button_id: tools::SIDEBAR_BUTTON.into(),
+            tooltip: Some(sidebar_tooltip()),
+            ..Default::default()
+        });
+        let _ = host.update_hud_button(ButtonUpdate {
+            button_id: tools::VISIBILITY_HUD.into(),
+            tooltip: Some(visibility_tooltip()),
+            ..Default::default()
+        });
+        // The descriptions of the class hotkeys, and eov's reasons for the
+        // keys it refused.
+        self.sync_hotkeys();
+        self.offer_refused_hotkeys_again();
+        // The status line of the active tool.
+        let status = {
+            let state = self.core.state();
+            state
+                .active_tool
+                .as_deref()
+                .filter(|tool| tools::is_tool(tool))
+                .map(|tool| tool_status(&state, tool))
+        };
+        if let Some(status) = status {
+            host.set_status(Some(&status));
+        }
+        // On the slides: the objects' tooltips and the HPF reticle's label.
+        sidebar::restyle_all(&self.core);
+        actions::refresh_reticles(&self.core);
+        // The panel's texts made here (lists, details, counts, notes).
+        self.refresh_sidebar();
     }
 
     fn file_closed(&self, file_id: FileId) {
@@ -619,10 +774,25 @@ impl SidebarHost for AnnotationsPlugin {
 
     fn save_settings(&self) {
         let settings = self.core.state().settings.clone();
-        if let Err(e) = self.core.host.set_setting(SETTINGS_KEY, &settings) {
-            self.core
-                .host
-                .warn(format!("cannot save the annotation settings: {e}"));
+        let error = self
+            .core
+            .host
+            .set_setting(SETTINGS_KEY, &settings)
+            .err()
+            .map(|e| e.to_string());
+        let new = std::mem::replace(&mut self.ui().settings_error, error.clone()) != error;
+        if let Some(error) = error {
+            let log = format!("cannot save the annotation settings: {error}");
+            if new {
+                self.core.report(
+                    NotifyLevel::Warning,
+                    tr!("Could not save the annotation settings"),
+                    Some(error),
+                    log,
+                );
+            } else {
+                self.core.host.info(log);
+            }
         }
     }
 }
@@ -649,7 +819,7 @@ impl Plugin for AnnotationsPlugin {
         }
         host.add_toolbar_button(ToolbarButtonSpec {
             button_id: tools::SIDEBAR_BUTTON.into(),
-            tooltip: "Annotations".into(),
+            tooltip: sidebar_tooltip(),
             icon_svg: tools::sidebar_icon(),
             order: 50,
             ..Default::default()
@@ -657,7 +827,7 @@ impl Plugin for AnnotationsPlugin {
         .map_err(String::from)?;
         let _ = host.add_hud_button(HudButtonSpec {
             button_id: tools::VISIBILITY_HUD.into(),
-            tooltip: "Show or hide annotations on this slide".into(),
+            tooltip: visibility_tooltip(),
             icon_svg: tools::visible_icon(),
             toggled_icon_svg: Some(tools::hidden_icon()),
             ..Default::default()
@@ -717,15 +887,28 @@ impl Plugin for AnnotationsPlugin {
                     actions::set_active_class(core, Some(class_id.to_string()));
                 }
             }
-            HostEvent::RegistrationRefused { what, id, reason } if what == "hotkey" => {
+            HostEvent::RegistrationRefused {
+                what,
+                id,
+                reason,
+                shown_reason,
+                ..
+            } if what == "hotkey" => {
                 // eov warns the user too; the Classes tab says which class.
                 // The binding stays listed as tried, so it is not offered
-                // again until the class's key changes.
+                // again until the class's key or the language changes.
                 if let Some(class_id) = id.strip_prefix(tools::CLASS_HOTKEY_PREFIX) {
-                    core.state()
-                        .refused_hotkeys
-                        .insert(class_id.to_string(), reason);
+                    core.state().refused_hotkeys.insert(
+                        class_id.to_string(),
+                        state::RefusedHotkey {
+                            reason,
+                            shown_reason,
+                        },
+                    );
                     core.request_refresh();
+                } else if tools::is_tool(&id) {
+                    // eov keeps the tool, without the key.
+                    self.ui().refused_tools.insert(id);
                 }
             }
             HostEvent::Pointer {
@@ -824,6 +1007,7 @@ impl Plugin for AnnotationsPlugin {
                 }
             }
             HostEvent::DialogResult { request_id, paths } => self.dialog_result(&request_id, paths),
+            HostEvent::LanguageChanged { .. } => self.language_changed(),
             HostEvent::ConfirmResult {
                 request_id,
                 confirmed,
@@ -860,9 +1044,9 @@ impl Plugin for AnnotationsPlugin {
             return Vec::new();
         };
         let editable = state.writable().is_ok();
-        let item = |id: &str, label: &str, icon: &str, enabled: bool| MenuItem {
+        let item = |id: &str, label: String, icon: &str, enabled: bool| MenuItem {
             item_id: id.into(),
-            label: label.into(),
+            label,
             icon: icon.into(),
             enabled,
             ..Default::default()
@@ -876,21 +1060,29 @@ impl Plugin for AnnotationsPlugin {
             })
             .and_then(|h| slide.annotations.get(&h.object_id));
         if let Some(a) = hit {
-            items.push(item("show", "Show in annotations panel", "", true));
-            items.push(item("copy", "Copy measurements", "copy", true));
+            items.push(item("show", tr!("Show in annotations panel"), "", true));
+            items.push(item("copy", tr!("Copy measurements"), "copy", true));
             if a.locked {
-                items.push(item("unlock", "Unlock annotation", "", editable));
+                items.push(item("unlock", tr!("Unlock annotation"), "", editable));
             } else {
-                items.push(item("lock", "Lock annotation", "", editable));
+                items.push(item("lock", tr!("Lock annotation"), "", editable));
             }
             items.push(MenuItem {
                 separator_after: true,
-                ..item("delete", "Delete annotation", "delete", editable)
+                // Its own text: "Delete annotation" without a context is
+                // the singular of "Delete {n} annotations", whose first
+                // form has the number in many languages.
+                ..item(
+                    "delete",
+                    tr!("Context menu" => "Delete annotation"),
+                    "delete",
+                    editable,
+                )
             });
         }
-        items.push(item("add-point", "Add point here", "", editable));
-        items.push(item("add-field", "Place HPF field here", "", editable));
-        items.push(item("panel", "Annotations panel", "", true));
+        items.push(item("add-point", tr!("Add point here"), "", editable));
+        items.push(item("add-field", tr!("Place HPF field here"), "", editable));
+        items.push(item("panel", tr!("Annotations panel"), "", true));
         items
     }
 

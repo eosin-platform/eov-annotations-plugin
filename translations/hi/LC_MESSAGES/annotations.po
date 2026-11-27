@@ -1,0 +1,3243 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: annotations\n"
+"Report-Msgid-Bugs-To: https://github.com/eosin-platform/eov-annotations-"
+"plugin/issues\n"
+"Language-Team: Hindi\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Review-Status: machine-translated; not yet reviewed by a native speaker\n"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid "Annotations"
+msgstr "एनोटेशन"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid ""
+"Point, region, line and text annotations with reusable classes, cell "
+"counting, HPF fields and measurements; GeoJSON (QuPath) import and export, "
+"ASAP and Aperio ImageScope XML import."
+msgstr ""
+"पुनः उपयोग योग्य वर्गों के साथ बिंदु, क्षेत्र, रेखा और टेक्स्ट एनोटेशन, कोशिका गणना, HPF "
+"फ़ील्ड और माप; GeoJSON (QuPath) आयात और निर्यात, ASAP और Aperio ImageScope XML "
+"आयात।"
+
+#: src/actions.rs:23
+msgid "The annotations of this slide are still loading; try again in a moment."
+msgstr "इस स्लाइड के एनोटेशन अभी लोड हो रहे हैं; थोड़ी देर में फिर से प्रयास करें।"
+
+#: src/actions.rs:27 src/sidebar.rs:1390 src/sidebar.rs:1474
+msgid "That layer no longer exists."
+msgstr "वह परत अब मौजूद नहीं है।"
+
+#: src/actions.rs:31
+msgid "That annotation no longer exists."
+msgstr "वह एनोटेशन अब मौजूद नहीं है।"
+
+#: src/actions.rs:35 src/sidebar.rs:1605
+msgid "That class no longer exists."
+msgstr "वह वर्ग अब मौजूद नहीं है।"
+
+#: src/actions.rs:39 src/transfer.rs:648 src/transfer.rs:658
+msgid "Layer \"{}\" is locked."
+msgstr "परत “{}” लॉक है।"
+
+#: src/actions.rs:43
+msgid "Parts outside the slide were cut off."
+msgstr "स्लाइड के बाहर के हिस्से काट दिए गए।"
+
+#: src/actions.rs:62
+msgid "The slide is not open any more."
+msgstr "स्लाइड अब खुली नहीं है।"
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:136
+msgid "The outline crossed itself and was split into {n} parts."
+msgid_plural "The outline crossed itself and was split into {n} parts."
+msgstr[0] "रूपरेखा स्वयं को काटती थी, इसलिए उसे {n} भाग में विभाजित किया गया।"
+msgstr[1] "रूपरेखा स्वयं को काटती थी, इसलिए उसे {n} भागों में विभाजित किया गया।"
+
+#: src/actions.rs:140
+msgid "The outline crossed itself and was repaired."
+msgstr "रूपरेखा स्वयं को काटती थी, इसलिए उसे सुधारा गया।"
+
+#: src/actions.rs:156
+msgid "The HPF size is not valid; check it in the Count tab."
+msgstr "HPF का आकार मान्य नहीं है; गणना टैब में इसकी जाँच करें।"
+
+#: src/actions.rs:160
+msgid "This slide has no pixel size, so HPF fields cannot be sized."
+msgstr ""
+"इस स्लाइड का कोई पिक्सेल आकार नहीं है, इसलिए HPF फ़ील्ड का आकार तय नहीं किया जा सकता।"
+
+#: src/actions.rs:207
+msgid "Count cell"
+msgstr "कोशिका गिनना"
+
+#: src/actions.rs:218 src/lib.rs:613
+msgid "Add point"
+msgstr "बिंदु जोड़ना"
+
+#: src/actions.rs:228
+msgid "Add line"
+msgstr "रेखा जोड़ना"
+
+#: src/actions.rs:242
+msgid "Add arrow"
+msgstr "तीर जोड़ना"
+
+#: src/actions.rs:258
+msgid "Add text"
+msgstr "टेक्स्ट जोड़ना"
+
+#: src/actions.rs:303
+msgid ""
+"To add the shape to a region (Shift) or cut it from a region (Alt), select "
+"exactly one region first. The shape was added as a new annotation."
+msgstr ""
+"आकृति को किसी क्षेत्र में जोड़ने (Shift) या किसी क्षेत्र से काटने (Alt) के लिए पहले ठीक एक "
+"क्षेत्र चुनें। आकृति नए एनोटेशन के रूप में जोड़ी गई।"
+
+#: src/actions.rs:314 src/actions.rs:325
+msgid "Add region"
+msgstr "क्षेत्र जोड़ना"
+
+#: src/actions.rs:378
+msgid "Place HPF field"
+msgstr "HPF फ़ील्ड रखना"
+
+#: src/actions.rs:399
+msgid "This field extends past the slide edge; its area includes empty canvas."
+msgstr ""
+"यह फ़ील्ड स्लाइड के किनारे से आगे तक फैला है; इसके क्षेत्रफल में खाली कैनवास भी शामिल है।"
+
+#: src/actions.rs:429
+msgid "Add to region"
+msgstr "क्षेत्र में जोड़ना"
+
+#: src/actions.rs:431
+msgid "Cut from region"
+msgstr "क्षेत्र से काटना"
+
+#: src/actions.rs:439
+msgid "The selected region no longer exists."
+msgstr "चुना गया क्षेत्र अब मौजूद नहीं है।"
+
+#: src/actions.rs:441
+msgid "The selected region is locked."
+msgstr "चुना गया क्षेत्र लॉक है।"
+
+#: src/actions.rs:452
+msgid "Only regions can be combined."
+msgstr "केवल क्षेत्रों को ही संयोजित किया जा सकता है।"
+
+#: src/actions.rs:460
+msgid "The cut removed the whole region."
+msgstr "काटने से पूरा क्षेत्र हट गया।"
+
+#: src/actions.rs:483
+msgid ""
+"The shapes do not touch; the new shape was added as a separate annotation."
+msgstr "आकृतियाँ एक-दूसरे को नहीं छूतीं; नई आकृति अलग एनोटेशन के रूप में जोड़ी गई।"
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:488
+msgid "The cut split the region into {n} parts."
+msgid_plural "The cut split the region into {n} parts."
+msgstr[0] "काटने से क्षेत्र {n} भाग में बँट गया।"
+msgstr[1] "काटने से क्षेत्र {n} भागों में बँट गया।"
+
+#: src/actions.rs:522
+msgid "Edit shape"
+msgstr "आकृति संपादित करना"
+
+#: src/actions.rs:544
+msgid "The annotation is locked."
+msgstr "एनोटेशन लॉक है।"
+
+#: src/actions.rs:560
+msgid "That edit would turn the arrow into another shape, so it was undone."
+msgstr "उस संपादन से तीर किसी अन्य आकृति में बदल जाता, इसलिए उसे पूर्ववत कर दिया गया।"
+
+#: src/actions.rs:564
+msgid "That edit was undone."
+msgstr "वह संपादन पूर्ववत कर दिया गया।"
+
+#: src/actions.rs:591
+msgid "The edit was undone: {}"
+msgstr "संपादन पूर्ववत कर दिया गया: {}"
+
+#: src/actions.rs:596
+msgid "That edit would make the outline cross itself, so it was undone."
+msgstr "उस संपादन से रूपरेखा स्वयं को काटने लगती, इसलिए उसे पूर्ववत कर दिया गया।"
+
+#: src/actions.rs:629
+msgid "Delete annotation"
+msgid_plural "Delete {n} annotations"
+msgstr[0] "{n} एनोटेशन हटाना"
+msgstr[1] "{n} एनोटेशन हटाना"
+
+#: src/actions.rs:649
+msgid "{n} locked annotation was kept."
+msgid_plural "{n} locked annotations were kept."
+msgstr[0] "{n} लॉक एनोटेशन बनाए रखा गया।"
+msgstr[1] "{n} लॉक एनोटेशन बनाए रखे गए।"
+
+#: src/actions.rs:703
+msgid "The target layer is locked or gone."
+msgstr "लक्ष्य परत लॉक है या अब मौजूद नहीं है।"
+
+#: src/actions.rs:712
+msgid "{n} locked annotation was not changed."
+msgid_plural "{n} locked annotations were not changed."
+msgstr[0] "{n} लॉक एनोटेशन नहीं बदला गया।"
+msgstr[1] "{n} लॉक एनोटेशन नहीं बदले गए।"
+
+#: src/actions.rs:777
+msgid "Could not zoom to the annotation"
+msgstr "एनोटेशन पर ज़ूम नहीं किया जा सका"
+
+#: src/actions.rs:790
+msgid "New layer"
+msgstr "नई परत"
+
+#: src/actions.rs:865
+msgid "Rename layer"
+msgstr "परत का नाम बदलना"
+
+#: src/actions.rs:877
+msgid "Delete layer"
+msgstr "परत हटाना"
+
+#: src/actions.rs:887
+msgid "Delete layer \"{}\""
+msgstr "परत “{}” हटाना"
+
+#: src/actions.rs:897
+msgid "Choose layer"
+msgstr "परत चुनना"
+
+#: src/actions.rs:902
+msgid ""
+"New annotations go to a regular layer; count points and HPF fields have "
+"their own."
+msgstr ""
+"नए एनोटेशन किसी सामान्य परत में जाते हैं; गणना बिंदुओं और HPF फ़ील्ड की अपनी अलग परतें "
+"होती हैं।"
+
+#. Translators: an undo step, shown by eov as "Undo {}".
+#: src/actions.rs:918
+msgid "Clear counts"
+msgstr "गणनाएँ साफ़ करना"
+
+#: src/actions.rs:950
+msgid ""
+"There are no HPF fields on this slide yet. Use the HPF field tool (H) to "
+"place them."
+msgstr ""
+"इस स्लाइड पर अभी कोई HPF फ़ील्ड नहीं है। उन्हें रखने के लिए HPF फ़ील्ड टूल (H) का उपयोग "
+"करें।"
+
+#: src/actions.rs:960
+msgid "Repair outline"
+msgstr "रूपरेखा सुधारना"
+
+#: src/actions.rs:975
+msgid "Nothing is left of the outline."
+msgstr "रूपरेखा का कुछ भी शेष नहीं बचा।"
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:997
+msgid "The outline was split into {n} parts."
+msgid_plural "The outline was split into {n} parts."
+msgstr[0] "रूपरेखा को {n} भाग में विभाजित किया गया।"
+msgstr[1] "रूपरेखा को {n} भागों में विभाजित किया गया।"
+
+#: src/actions.rs:1012
+msgid "Could not attach the annotations"
+msgstr "एनोटेशन संलग्न नहीं किए जा सके"
+
+#: src/actions.rs:1018
+msgid "Attach annotations of another slide"
+msgstr "किसी अन्य स्लाइड के एनोटेशन संलग्न करना"
+
+#: src/actions.rs:1024
+msgid "Those annotations already belong to this slide."
+msgstr "वे एनोटेशन पहले से ही इस स्लाइड के हैं।"
+
+#: src/actions.rs:1027
+msgid "That slide has no annotations left."
+msgstr "उस स्लाइड में अब कोई एनोटेशन शेष नहीं है।"
+
+#: src/actions.rs:1035
+msgid "Attached {n} layer to this slide."
+msgid_plural "Attached {n} layers to this slide."
+msgstr[0] "इस स्लाइड से {n} परत संलग्न की गई।"
+msgstr[1] "इस स्लाइड से {n} परतें संलग्न की गईं।"
+
+#: src/actions.rs:1076
+msgid "New class"
+msgstr "नया वर्ग"
+
+#: src/actions.rs:1138
+msgid "Rename class"
+msgstr "वर्ग का नाम बदलना"
+
+#: src/actions.rs:1147
+msgid "A class named \"{}\" already exists."
+msgstr "“{}” नाम का वर्ग पहले से मौजूद है।"
+
+#: src/actions.rs:1161
+msgid "Set class hotkey"
+msgstr "वर्ग की हॉटकी सेट करना"
+
+#: src/actions.rs:1186
+msgid "Change class colour"
+msgstr "वर्ग का रंग बदलना"
+
+#: src/actions.rs:1190 src/sidebar.rs:1358
+msgid "\"{}\" is not a colour."
+msgstr "“{}” कोई रंग नहीं है।"
+
+#: src/actions.rs:1197
+msgid "Delete class"
+msgstr "वर्ग हटाना"
+
+#: src/actions.rs:1201
+msgid "Delete class \"{}\""
+msgstr "वर्ग “{}” हटाना"
+
+#: src/actions.rs:1243 src/lib.rs:96 src/overlay.rs:164 src/sidebar.rs:151
+#: src/sidebar.rs:384
+msgid "Unclassified"
+msgstr "अवर्गीकृत"
+
+#: src/actions.rs:1244
+msgid "Class: {}"
+msgstr "वर्ग: {}"
+
+#. Translators: on the slide, beside the HPF field that follows the
+#. pointer: its area and how many points (such as counted cells) lie in it.
+#: src/actions.rs:1274
+msgid "1 HPF · {area} mm² · {n} point"
+msgid_plural "1 HPF · {area} mm² · {n} points"
+msgstr[0] "1 HPF · {area} mm² · {n} बिंदु"
+msgstr[1] "1 HPF · {area} mm² · {n} बिंदु"
+
+#: src/actions.rs:1466
+msgid "Add comment"
+msgstr "टिप्पणी जोड़ना"
+
+#: src/actions.rs:1472
+msgid "Write the comment first."
+msgstr "पहले टिप्पणी लिखें।"
+
+#: src/actions.rs:1481
+msgid "An annotation can have at most {n} comments."
+msgid_plural "An annotation can have at most {n} comments."
+msgstr[0] "एक एनोटेशन में अधिकतम {n} टिप्पणी हो सकती है।"
+msgstr[1] "एक एनोटेशन में अधिकतम {n} टिप्पणियाँ हो सकती हैं।"
+
+#: src/actions.rs:1511
+msgid "Delete comment"
+msgstr "टिप्पणी हटाना"
+
+#: src/actions.rs:1524
+msgid "That comment no longer exists."
+msgstr "वह टिप्पणी अब मौजूद नहीं है।"
+
+#: src/actions.rs:1723
+msgid ""
+"Brush {} px, eraser: paint over a selected region to erase from it; [ and ] "
+"change the size"
+msgstr ""
+"ब्रश {} px, इरेज़र: किसी चुने गए क्षेत्र से मिटाने के लिए उसके ऊपर पेंट करें; [ और ] आकार "
+"बदलते हैं"
+
+#: src/actions.rs:1728
+msgid ""
+"Brush {} px: paint a region (over a selected region to extend it); Alt "
+"erases; [ and ] change the size"
+msgstr ""
+"ब्रश {} px: क्षेत्र पेंट करें (किसी चुने गए क्षेत्र को बढ़ाने के लिए उसके ऊपर); Alt मिटाता है; "
+"[ और ] आकार बदलते हैं"
+
+#: src/actions.rs:1742
+msgid "Erase"
+msgstr "मिटाना"
+
+#: src/actions.rs:1744
+msgid "Brush stroke"
+msgstr "ब्रश स्ट्रोक"
+
+#: src/actions.rs:1768
+msgid "The stroke is outside the slide."
+msgstr "स्ट्रोक स्लाइड के बाहर है।"
+
+#: src/actions.rs:1818
+msgid "Select the region to erase from."
+msgstr "वह क्षेत्र चुनें जिससे मिटाना है।"
+
+#: src/actions.rs:1843
+msgid "The eraser did not touch the selected region."
+msgstr "इरेज़र ने चुने गए क्षेत्र को नहीं छुआ।"
+
+#. Translators: a part of the plugin that works in the background.
+#: src/core.rs:228
+msgid "Could not start a worker thread"
+msgstr "वर्कर थ्रेड शुरू नहीं किया जा सका"
+
+#: src/core.rs:385
+msgid "Internal error while opening the database"
+msgstr "डेटाबेस खोलते समय आंतरिक त्रुटि"
+
+#: src/core.rs:393
+msgid "Internal error while loading annotations"
+msgstr "एनोटेशन लोड करते समय आंतरिक त्रुटि"
+
+#: src/core.rs:398
+msgid "Internal error while saving annotations"
+msgstr "एनोटेशन सहेजते समय आंतरिक त्रुटि"
+
+#: src/core.rs:403
+msgid "Internal error while undoing"
+msgstr "पूर्ववत करते समय आंतरिक त्रुटि"
+
+#: src/core.rs:408
+msgid "Internal error while working on the database"
+msgstr "डेटाबेस पर कार्य करते समय आंतरिक त्रुटि"
+
+#: src/core.rs:427
+msgid "Internal error while reading or writing a file"
+msgstr "फ़ाइल पढ़ते या लिखते समय आंतरिक त्रुटि"
+
+#: src/core.rs:561
+msgid "The annotation database could not be opened"
+msgstr "एनोटेशन डेटाबेस खोला नहीं जा सका"
+
+#: src/core.rs:590
+msgid "Annotations from eov before 1.0"
+msgstr "eov 1.0 से पहले के एनोटेशन"
+
+#: src/core.rs:592
+msgid ""
+"The annotations plugin of eov before 1.0 left a database at {}. Bring its "
+"annotations into the current database? The old file is not changed. You can "
+"also do this later in the Data tab of the annotations panel."
+msgstr ""
+"eov 1.0 से पहले के एनोटेशन प्लगइन ने {} पर एक डेटाबेस छोड़ा है। क्या इसके एनोटेशन वर्तमान "
+"डेटाबेस में लाने हैं? पुरानी फ़ाइल नहीं बदली जाती। आप यह बाद में एनोटेशन पैनल के डेटा टैब में "
+"भी कर सकते हैं।"
+
+#: src/core.rs:597
+msgid "Bring them in"
+msgstr "उन्हें लाएँ"
+
+#: src/core.rs:598
+msgid "Not now"
+msgstr "अभी नहीं"
+
+#. Translators: the plugin could not ask whether to bring in the annotations made
+#. with eov before 1.0 (the title of that question is "Annotations from eov before 1.0").
+#: src/core.rs:612
+msgid "Could not offer the annotations from eov before 1.0"
+msgstr "eov 1.0 से पहले के एनोटेशन लाने की पेशकश नहीं की जा सकी"
+
+#: src/core.rs:657 src/sidebar.rs:457
+msgid "Could not load this slide's annotations: {}"
+msgstr "इस स्लाइड के एनोटेशन लोड नहीं किए जा सके: {}"
+
+#. Translators: a second read is an independent annotation of the slide by another person
+#. (as in a reader study), not a clinical second opinion. Data, Second reader and Blinded
+#. copy are the tab, section and button of the annotations panel: use their translations.
+#: src/core.rs:670
+msgid ""
+"{opened} has the same content as {annotated}, so it shows and edits the same "
+"annotations. For an independent second read, use Data → Second reader → "
+"Blinded copy."
+msgstr ""
+"{opened} की सामग्री {annotated} जैसी ही है, इसलिए इसमें वही एनोटेशन दिखते और संपादित "
+"होते हैं। स्वतंत्र दूसरे पाठन के लिए डेटा → दूसरा पाठक → ब्लाइंडेड प्रतिलिपि का उपयोग करें।"
+
+#: src/core.rs:721 src/core.rs:1019 src/core.rs:1156
+msgid "the database is not open"
+msgstr "डेटाबेस खुला नहीं है"
+
+#: src/core.rs:809
+msgid "{n} annotation of {file} could not be read and was skipped."
+msgid_plural "{n} annotations of {file} could not be read and were skipped."
+msgstr[0] "{file} का {n} एनोटेशन पढ़ा नहीं जा सका और छोड़ दिया गया।"
+msgstr[1] "{file} के {n} एनोटेशन पढ़े नहीं जा सके और छोड़ दिए गए।"
+
+#: src/core.rs:900
+msgid "Could not reload annotations"
+msgstr "एनोटेशन फिर से लोड नहीं किए जा सके"
+
+#: src/core.rs:931
+msgid "Annotations were changed by another eov window and have been reloaded."
+msgstr "एनोटेशन किसी अन्य eov विंडो में बदले गए थे और उन्हें फिर से लोड किया गया है।"
+
+#: src/core.rs:957
+msgid "the database stayed locked"
+msgstr "डेटाबेस लॉक ही रहा"
+
+#: src/core.rs:964
+msgid "a class with that name already exists"
+msgstr "उस नाम का वर्ग पहले से मौजूद है"
+
+#: src/core.rs:966
+msgid "the annotation database is read-only"
+msgstr "एनोटेशन डेटाबेस केवल पढ़ने के लिए है"
+
+#: src/core.rs:969
+msgid "the annotation was changed elsewhere in the meantime"
+msgstr "इस बीच एनोटेशन को कहीं और बदल दिया गया"
+
+#: src/core.rs:971
+msgid "the layer was changed elsewhere in the meantime"
+msgstr "इस बीच परत को कहीं और बदल दिया गया"
+
+#: src/core.rs:972
+msgid "the class was changed elsewhere in the meantime"
+msgstr "इस बीच वर्ग को कहीं और बदल दिया गया"
+
+#: src/core.rs:973
+msgid "a layer being moved was changed elsewhere in the meantime"
+msgstr "ले जाई जा रही एक परत को इस बीच कहीं और बदल दिया गया"
+
+#: src/core.rs:1053
+msgid "Could not save \"{}\""
+msgstr "“{}” को सहेजा नहीं जा सका"
+
+#: src/core.rs:1123
+msgid "This annotation change can no longer be undone."
+msgstr "एनोटेशन के इस परिवर्तन को अब पूर्ववत नहीं किया जा सकता।"
+
+#: src/core.rs:1137
+msgid "The slide of this change is not open any more."
+msgstr "इस परिवर्तन की स्लाइड अब खुली नहीं है।"
+
+#: src/core.rs:1176
+msgid "Could not redo \"{}\""
+msgstr "“{}” को फिर से नहीं किया जा सका"
+
+#: src/core.rs:1178
+msgid "Could not undo \"{}\""
+msgstr "“{}” को पूर्ववत नहीं किया जा सका"
+
+#. Translators: cells per square millimetre, with the 95% confidence interval.
+#: src/counting.rs:185
+msgid "{density} /mm² (95% {low}–{high})"
+msgstr "{density} /mm² (95% {low}–{high})"
+
+#. Translators: cells per 10 high-power fields.
+#: src/counting.rs:194
+msgid "{} /10 HPF"
+msgstr "{} /10 HPF"
+
+#: src/counting.rs:222
+msgid "100 (capped; the ratio is higher)"
+msgstr "100 (सीमित; अनुपात इससे अधिक है)"
+
+#. Translators: CPS is the PD-L1 combined positive score; {positive},
+#. {negative} and {immune} are names of classes of cells.
+#: src/counting.rs:234
+msgid ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cell "
+"({positive} + {negative}) × 100."
+msgid_plural ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cells "
+"({positive} + {negative}) × 100."
+msgstr[0] ""
+"CPS {score} — ({a} {positive} + {c} {immune}) प्रति {n} ट्यूमर कोशिका "
+"({positive} + {negative}) × 100।"
+msgstr[1] ""
+"CPS {score} — ({a} {positive} + {c} {immune}) प्रति {n} ट्यूमर कोशिकाएँ "
+"({positive} + {negative}) × 100।"
+
+#: src/counting.rs:248
+msgid "Fewer than {n} tumour cells: below the minimum for a valid score."
+msgid_plural ""
+"Fewer than {n} tumour cells: below the minimum for a valid score."
+msgstr[0] "{n} से कम ट्यूमर कोशिकाएँ: वैध स्कोर के लिए आवश्यक न्यूनतम संख्या से कम।"
+msgstr[1] "{n} से कम ट्यूमर कोशिकाएँ: वैध स्कोर के लिए आवश्यक न्यूनतम संख्या से कम।"
+
+#. Translators: e.g. "Ki-67+ index: 25.0 % (95% 20.1–30.4 %) — 25 of 100 (Ki-67+ + Ki-67-)";
+#. {class} and {other} are names of classes of cells.
+#: src/counting.rs:263
+msgid ""
+"{class} index: {value} % (95% {low}–{high} %) — {k} of {total} ({class} + "
+"{other})"
+msgstr ""
+"{class} सूचकांक: {value}% (95% {low}–{high}%) — {total} में से {k} ({class} + "
+"{other})"
+
+#: src/db/mod.rs:116
+msgid "The annotation database is read-only; editing is disabled."
+msgstr "एनोटेशन डेटाबेस केवल पढ़ने के लिए है; संपादन अक्षम है।"
+
+#: src/db/mod.rs:119
+msgid "{n} layer colour was unreadable and was replaced."
+msgid_plural "{n} layer colours were unreadable and were replaced."
+msgstr[0] "परत का {n} रंग पढ़ा नहीं जा सका और उसे बदल दिया गया।"
+msgstr[1] "परतों के {n} रंग पढ़े नहीं जा सके और उन्हें बदल दिया गया।"
+
+#. Translators: {slides} in "Upgraded the annotation database from the pre-1.0 format: {slides}, …".
+#: src/db/mod.rs:131
+msgid "{n} slide"
+msgid_plural "{n} slides"
+msgstr[0] "{n} स्लाइड"
+msgstr[1] "{n} स्लाइडें"
+
+#. Translators: {slides} is "1 slide" or "3 slides" (translated on its own).
+#: src/db/mod.rs:136
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotation."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotations."
+msgstr[0] ""
+"एनोटेशन डेटाबेस को 1.0 से पहले के प्रारूप से अपग्रेड किया गया: {slides}, {n} एनोटेशन।"
+msgstr[1] ""
+"एनोटेशन डेटाबेस को 1.0 से पहले के प्रारूप से अपग्रेड किया गया: {slides}, {n} एनोटेशन।"
+
+#. Translators: {slides} is "1 slide" or "3 slides", {annotations} is
+#. "1 annotation" or "5 annotations" (each translated on its own).
+#: src/db/mod.rs:145
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotation skipped."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotations skipped."
+msgstr[0] ""
+"एनोटेशन डेटाबेस को 1.0 से पहले के प्रारूप से अपग्रेड किया गया: {slides}, {annotations}, "
+"{n} अपठनीय एनोटेशन छोड़ा गया।"
+msgstr[1] ""
+"एनोटेशन डेटाबेस को 1.0 से पहले के प्रारूप से अपग्रेड किया गया: {slides}, {annotations}, "
+"{n} अपठनीय एनोटेशन छोड़े गए।"
+
+#. Translators: a number of annotations on its own, in two texts: {annotations} in
+#. "Upgraded the annotation database from the pre-1.0 format: {slides}, {annotations}, …"
+#. and {ours} in "This slide's visible layers ({ours}) against the {n} annotations in {name}, …".
+#: src/db/mod.rs:153 src/state.rs:516
+msgid "{n} annotation"
+msgid_plural "{n} annotations"
+msgstr[0] "{n} एनोटेशन"
+msgstr[1] "{n} एनोटेशन"
+
+#: src/db/mod.rs:159
+msgid ""
+"New database. If you annotated with eov before 1.0, those annotations are in "
+"annotations.db in eov's old settings folder (~/.config/eov on Linux, ~/"
+"Library/Application Support/eov on macOS, %APPDATA%\\eov on Windows): bring "
+"them in with Merge… above."
+msgstr ""
+"नया डेटाबेस। यदि आपने eov 1.0 से पहले एनोटेशन किए थे, तो वे eov के पुराने सेटिंग्स फ़ोल्डर "
+"(Linux पर ~/.config/eov, macOS पर ~/Library/Application Support/eov, Windows "
+"पर %APPDATA%\\eov) की annotations.db फ़ाइल में हैं: उन्हें ऊपर दिए गए “मर्ज करें…” से "
+"लाएँ।"
+
+#: src/fileio.rs:105 src/fileio.rs:115
+msgid "cannot read {file}: {error}"
+msgstr "{file} को पढ़ा नहीं जा सकता: {error}"
+
+#: src/fileio.rs:109
+msgid "{file} is {size} MB; imports are limited to {limit} MB"
+msgstr "{file} का आकार {size} MB है; आयात {limit} MB तक सीमित हैं"
+
+#: src/formats/dicom/mod.rs:605
+msgid "There are too many coordinates for one DICOM annotation group."
+msgstr "एक DICOM एनोटेशन समूह के लिए बहुत अधिक निर्देशांक हैं।"
+
+#: src/formats/dicom/mod.rs:674
+msgid "There are too many annotation groups."
+msgstr "बहुत अधिक एनोटेशन समूह हैं।"
+
+#: src/formats/dicom/mod.rs:695
+msgid "There are too many annotations in one group."
+msgstr "एक समूह में बहुत अधिक एनोटेशन हैं।"
+
+#: src/formats/dicom/mod.rs:736
+msgid "The slide has no annotations to export."
+msgstr "स्लाइड में निर्यात करने के लिए कोई एनोटेशन नहीं है।"
+
+#: src/formats/dicom/mod.rs:872
+msgid ""
+"It refers to this slide's DICOM image (series {}) and joins its study; the "
+"patient and study attributes are the slide's."
+msgstr ""
+"यह इस स्लाइड की DICOM छवि (शृंखला {}) का संदर्भ देती है और उसकी स्टडी में शामिल होती "
+"है; रोगी और स्टडी के एट्रिब्यूट स्लाइड के ही हैं।"
+
+#: src/formats/dicom/mod.rs:876
+msgid ""
+"This slide is not a DICOM image, so the file refers to no image: it is a "
+"study of its own with empty patient attributes, and DICOM viewers cannot "
+"attach it to a slide by themselves."
+msgstr ""
+"यह स्लाइड DICOM छवि नहीं है, इसलिए फ़ाइल किसी छवि का संदर्भ नहीं देती: यह खाली रोगी "
+"एट्रिब्यूट वाली एक अलग स्टडी है, और DICOM व्यूअर इसे अपने-आप किसी स्लाइड से नहीं जोड़ सकते।"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot
+#. hold {}: …"; {regions} is "in 1 region" or "in 2 regions"; "drawn
+#. without it/them": other viewers draw these regions without their holes.
+#: src/formats/dicom/mod.rs:886
+msgid "{n} hole {regions} (drawn without it)"
+msgid_plural "{n} holes {regions} (drawn without them)"
+msgstr[0] "{regions} {n} छेद (जो बनाया नहीं जाता)"
+msgstr[1] "{regions} {n} छेद (जो बनाए नहीं जाते)"
+
+#. Translators: in "{n} holes {regions} (drawn without them)".
+#: src/formats/dicom/mod.rs:890
+msgid "in {n} region"
+msgid_plural "in {n} regions"
+msgstr[0] "{n} क्षेत्र में"
+msgstr[1] "{n} क्षेत्रों में"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:897
+msgid "the text of {n} text label (written as points)"
+msgid_plural "the text of {n} text labels (written as points)"
+msgstr[0] "{n} टेक्स्ट लेबल का टेक्स्ट (लेबल बिंदु के रूप में लिखा गया)"
+msgstr[1] "{n} टेक्स्ट लेबलों का टेक्स्ट (लेबल बिंदुओं के रूप में लिखे गए)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:904
+msgid "the heads of {n} arrow (written as lines)"
+msgid_plural "the heads of {n} arrows (written as lines)"
+msgstr[0] "{n} तीर का सिरा (तीर रेखा के रूप में लिखा गया)"
+msgstr[1] "{n} तीरों के सिरे (तीर रेखाओं के रूप में लिखे गए)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:911
+msgid "the names, descriptions and statuses of {n} annotation"
+msgid_plural "the names, descriptions and statuses of {n} annotations"
+msgstr[0] "{n} एनोटेशन के नाम, विवरण और स्थितियाँ"
+msgstr[1] "{n} एनोटेशन के नाम, विवरण और स्थितियाँ"
+
+#. Translators: {} lists what is lost, such as "the heads of 2 arrows (written
+#. as lines) and the text of 1 text label (written as points)".
+#: src/formats/dicom/mod.rs:919
+msgid ""
+"DICOM bulk annotations cannot hold {}: other viewers do not see them, but "
+"eov reads them back from its private attributes."
+msgstr ""
+"DICOM बल्क एनोटेशन में ये संग्रहीत नहीं किए जा सकते: {}। अन्य व्यूअर इन्हें नहीं देखते, लेकिन "
+"eov इन्हें अपने निजी एट्रिब्यूट से वापस पढ़ लेता है।"
+
+#: src/formats/dicom/mod.rs:924
+msgid ""
+"Each layer, class and kind of shape is a group labelled with its class (or "
+"its layer). Authors, comments, properties and times are not exported (eov "
+"JSON keeps everything)."
+msgstr ""
+"हर परत, वर्ग और आकृति का प्रकार एक समूह होता है, जिस पर उसके वर्ग (या उसकी परत) का "
+"लेबल होता है। लेखक, टिप्पणियाँ, गुण और समय निर्यात नहीं किए जाते (eov JSON सब कुछ रखता "
+"है)।"
+
+#: src/formats/dicom/mod.rs:928
+msgid ""
+"{n} annotation with too few points or unusable coordinates was left out."
+msgid_plural ""
+"{n} annotations with too few points or unusable coordinates were left out."
+msgstr[0] "बहुत कम बिंदुओं या अनुपयोगी निर्देशांकों वाला {n} एनोटेशन छोड़ दिया गया।"
+msgstr[1] "बहुत कम बिंदुओं या अनुपयोगी निर्देशांकों वाले {n} एनोटेशन छोड़ दिए गए।"
+
+#. Translators: the end of a list, "a, b and c": {first} is "a, b".
+#: src/formats/dicom/mod.rs:943
+msgid "{first} and {last}"
+msgstr "{first} और {last}"
+
+#. Translators: between the items of a list ("a, b and c").
+#: src/formats/dicom/mod.rs:946
+msgid ", "
+msgstr ", "
+
+#: src/formats/dicom/mod.rs:978
+msgid ""
+"Made for a DICOM slide; this one is not a DICOM image, so whether the "
+"annotations belong to it cannot be checked. Coordinates are taken as level-0 "
+"pixels of this slide."
+msgstr ""
+"किसी DICOM स्लाइड के लिए बनाया गया; यह स्लाइड DICOM छवि नहीं है, इसलिए यह जाँचा "
+"नहीं जा सकता कि एनोटेशन इसी के हैं या नहीं। निर्देशांकों को इस स्लाइड के स्तर-0 पिक्सेल "
+"माना जाता है।"
+
+#: src/formats/dicom/mod.rs:987
+msgid "Made for this slide (its DICOM image)."
+msgstr "इस स्लाइड (इसकी DICOM छवि) के लिए बनाया गया।"
+
+#: src/formats/dicom/mod.rs:994
+msgid "Made for this slide (its DICOM series)."
+msgstr "इस स्लाइड (इसकी DICOM शृंखला) के लिए बनाया गया।"
+
+#: src/formats/dicom/mod.rs:998
+msgid ""
+"Made for another image of this slide's DICOM series (another resolution "
+"level?), whose pixels may not be level-0 pixels."
+msgstr ""
+"इस स्लाइड की DICOM शृंखला की किसी अन्य छवि (शायद किसी अन्य रिज़ॉल्यूशन स्तर?) के लिए "
+"बनाया गया, जिसके पिक्सेल स्तर-0 पिक्सेल न भी हों।"
+
+#: src/formats/dicom/mod.rs:1005
+msgid "Made for a different DICOM slide (it refers to other images)."
+msgstr "किसी अलग DICOM स्लाइड के लिए बनाया गया (यह अन्य छवियों का संदर्भ देता है)।"
+
+#: src/formats/dicom/mod.rs:1014
+msgid ""
+"This DICOM file is a slide image (VL Whole Slide Microscopy), not "
+"annotations: open it as a slide. Annotations are read from Microscopy Bulk "
+"Simple Annotations objects (modality ANN)."
+msgstr ""
+"यह DICOM फ़ाइल एक स्लाइड छवि (VL Whole Slide Microscopy) है, एनोटेशन नहीं: इसे "
+"स्लाइड के रूप में खोलें। एनोटेशन Microscopy Bulk Simple Annotations ऑब्जेक्ट (मोडैलिटी "
+"ANN) से पढ़े जाते हैं।"
+
+#: src/formats/dicom/mod.rs:1018
+msgid ""
+"This DICOM file is a structured report (SR). eov reads DICOM annotations "
+"from Microscopy Bulk Simple Annotations objects (modality ANN), not from "
+"structured reports."
+msgstr ""
+"यह DICOM फ़ाइल एक संरचित रिपोर्ट (SR) है। eov DICOM एनोटेशन Microscopy Bulk "
+"Simple Annotations ऑब्जेक्ट (मोडैलिटी ANN) से पढ़ता है, संरचित रिपोर्टों से नहीं।"
+
+#: src/formats/dicom/mod.rs:1021
+msgid "This DICOM file does not say what it holds (it has no SOP Class UID)."
+msgstr "यह DICOM फ़ाइल नहीं बताती कि इसमें क्या है (इसमें कोई SOP Class UID नहीं है)।"
+
+#: src/formats/dicom/mod.rs:1024
+msgid ""
+"This DICOM file is not an annotation object (SOP class {}); eov reads "
+"Microscopy Bulk Simple Annotations (modality ANN)."
+msgstr ""
+"यह DICOM फ़ाइल एनोटेशन ऑब्जेक्ट नहीं है (SOP class {}); eov Microscopy Bulk Simple "
+"Annotations (मोडैलिटी ANN) पढ़ता है।"
+
+#: src/formats/dicom/mod.rs:1047
+msgid "eov's private description of the slide is unreadable and was ignored."
+msgstr "स्लाइड का eov वाला निजी विवरण पढ़ा नहीं जा सका और उसे अनदेखा किया गया।"
+
+#. Translators: {} says what is wrong with the file, in English.
+#: src/formats/dicom/mod.rs:1080
+msgid "The DICOM file cannot be read: {}."
+msgstr "DICOM फ़ाइल पढ़ी नहीं जा सकती: {}।"
+
+#: src/formats/dicom/mod.rs:1099
+msgid ""
+"This file holds 3D annotations: their coordinates are millimetres in the "
+"slide's frame of reference (DICOM SCOORD3D), and eov places annotations by "
+"level-0 pixels. Only 2D (pixel) annotations can be imported."
+msgstr ""
+"इस फ़ाइल में 3D एनोटेशन हैं: उनके निर्देशांक स्लाइड के संदर्भ फ़्रेम (DICOM SCOORD3D) में "
+"मिलीमीटर में हैं, जबकि eov एनोटेशन को स्तर-0 पिक्सेल के आधार पर रखता है। केवल 2D "
+"(पिक्सेल) एनोटेशन आयात किए जा सकते हैं।"
+
+#: src/formats/dicom/mod.rs:1104
+msgid ""
+"The file does not say whether its coordinates are 2D or 3D (Annotation "
+"Coordinate Type is missing)."
+msgstr ""
+"फ़ाइल यह नहीं बताती कि उसके निर्देशांक 2D हैं या 3D (Annotation Coordinate Type मौजूद "
+"नहीं है)।"
+
+#: src/formats/dicom/mod.rs:1109
+msgid ""
+"The file's coordinates are of an unknown type (\"{}\"); 2D annotations can "
+"be imported."
+msgstr "फ़ाइल के निर्देशांक अज्ञात प्रकार (“{}”) के हैं; 2D एनोटेशन आयात किए जा सकते हैं।"
+
+#: src/formats/dicom/mod.rs:1126
+msgid ""
+"The annotations' pixel coordinates are relative to single frames (tiles) of "
+"the image (Pixel Origin Interpretation FRAME), which eov cannot place; "
+"coordinates relative to the whole image (VOLUME) can be imported."
+msgstr ""
+"एनोटेशन के पिक्सेल निर्देशांक छवि के अलग-अलग फ़्रेम (टाइलों) के सापेक्ष हैं (Pixel Origin "
+"Interpretation FRAME), जिन्हें eov नहीं रख सकता; पूरी छवि के सापेक्ष निर्देशांक "
+"(VOLUME) आयात किए जा सकते हैं।"
+
+#: src/formats/dicom/mod.rs:1130
+msgid ""
+"Unknown pixel origin interpretation \"{}\"; coordinates are taken relative "
+"to the whole image."
+msgstr ""
+"अज्ञात Pixel Origin Interpretation “{}”; निर्देशांकों को पूरी छवि के सापेक्ष माना "
+"जाता है।"
+
+#: src/formats/dicom/mod.rs:1136
+msgid "The DICOM file has no annotation groups."
+msgstr "DICOM फ़ाइल में कोई एनोटेशन समूह नहीं है।"
+
+#: src/formats/dicom/mod.rs:1146
+msgid ""
+"{n} rectangle or ellipse not aligned with the image axes became a polygon."
+msgid_plural ""
+"{n} rectangles and ellipses not aligned with the image axes became polygons."
+msgstr[0] "छवि के अक्षों से संरेखित न होने वाला {n} आयत या दीर्घवृत्त बहुभुज में बदल गया।"
+msgstr[1] "छवि के अक्षों से संरेखित न होने वाले {n} आयत और दीर्घवृत्त बहुभुजों में बदल गए।"
+
+#: src/formats/dicom/mod.rs:1178
+msgid "annotation group with lines or polygons without a point index list"
+msgstr "बिंदु सूचकांक सूची के बिना रेखाओं या बहुभुजों वाला एनोटेशन समूह"
+
+#: src/formats/dicom/mod.rs:1182
+msgid "annotation group with an unreadable point index list"
+msgstr "अपठनीय बिंदु सूचकांक सूची वाला एनोटेशन समूह"
+
+#: src/formats/dicom/mod.rs:1197
+msgid "annotation group with lines or polygons with an empty point index list"
+msgstr "खाली बिंदु सूचकांक सूची के साथ रेखाओं या बहुभुजों वाला एनोटेशन समूह"
+
+#: src/formats/dicom/mod.rs:1211
+msgid ""
+"The point index list of \"{}\" counts points rather than coordinate values; "
+"it was read that way."
+msgstr ""
+"“{}” की बिंदु सूचकांक सूची निर्देशांक मानों के बजाय बिंदुओं को गिनती है; उसे उसी तरह पढ़ा "
+"गया।"
+
+#: src/formats/dicom/mod.rs:1217
+msgid ""
+"annotation group with a point index list that does not fit its coordinates"
+msgstr "ऐसी बिंदु सूचकांक सूची वाला एनोटेशन समूह जो उसके निर्देशांकों से मेल नहीं खाती"
+
+#. Translators: a reason why a measurement of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1333
+msgid "measurement without values"
+msgstr "मानों के बिना माप"
+
+#: src/formats/dicom/mod.rs:1340
+msgid "measurement with unreadable values"
+msgstr "अपठनीय मानों वाला माप"
+
+#: src/formats/dicom/mod.rs:1352
+msgid "measurement that does not match its annotations"
+msgstr "ऐसा माप जो अपने एनोटेशन से मेल नहीं खाता"
+
+#. Translators: a reason why a group of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1398
+msgid "annotation group without coordinates"
+msgstr "निर्देशांकों के बिना एनोटेशन समूह"
+
+#: src/formats/dicom/mod.rs:1402
+msgid "annotation group with unreadable coordinates"
+msgstr "अपठनीय निर्देशांकों वाला एनोटेशन समूह"
+
+#: src/formats/dicom/mod.rs:1408
+msgid "annotation group whose coordinates are not (column, row) pairs"
+msgstr "ऐसा एनोटेशन समूह जिसके निर्देशांक (स्तंभ, पंक्ति) युग्म नहीं हैं"
+
+#: src/formats/dicom/mod.rs:1426
+msgid "rectangles or ellipses without four points each"
+msgstr "ऐसे आयत या दीर्घवृत्त जिनमें से प्रत्येक में चार बिंदु नहीं हैं"
+
+#: src/formats/dicom/mod.rs:1439
+msgid "annotation group without a graphic type"
+msgstr "ग्राफ़िक प्रकार के बिना एनोटेशन समूह"
+
+#: src/formats/dicom/mod.rs:1443
+msgid "annotation group of graphic type {}"
+msgstr "ग्राफ़िक प्रकार {} वाला एनोटेशन समूह"
+
+#: src/formats/dicom/mod.rs:1451
+msgid ""
+"\"{name}\" says it has {n} annotation, but its coordinates hold {held}; the "
+"coordinates were read."
+msgid_plural ""
+"\"{name}\" says it has {n} annotations, but its coordinates hold {held}; the "
+"coordinates were read."
+msgstr[0] ""
+"“{name}” के अनुसार इसमें {n} एनोटेशन है, लेकिन इसके निर्देशांकों में {held} हैं; निर्देशांक पढ़े "
+"गए।"
+msgstr[1] ""
+"“{name}” के अनुसार इसमें {n} एनोटेशन हैं, लेकिन इसके निर्देशांकों में {held} हैं; निर्देशांक पढ़े "
+"गए।"
+
+#: src/formats/dicom/mod.rs:1463
+msgid ""
+"eov's private attributes of \"{}\" are unreadable; the group was read from "
+"its DICOM attributes alone."
+msgstr ""
+"“{}” के eov वाले निजी एट्रिब्यूट अपठनीय हैं; समूह को केवल उसके DICOM एट्रिब्यूट से पढ़ा गया।"
+
+#: src/formats/dicom/mod.rs:1529
+msgid "annotations beyond the limit of {} per file"
+msgstr "प्रति फ़ाइल {} की सीमा से अधिक एनोटेशन"
+
+#: src/formats/dicom/mod.rs:1537
+msgid "annotation with non-finite coordinates"
+msgstr "अपरिमित निर्देशांकों वाला एनोटेशन"
+
+#: src/formats/eov.rs:209
+msgid ""
+"This file uses eov annotation format {version}; this plugin reads up to "
+"{supported}. Update the plugin."
+msgstr ""
+"यह फ़ाइल eov एनोटेशन प्रारूप {version} का उपयोग करती है; यह प्लगइन {supported} तक "
+"पढ़ता है। प्लगइन अपडेट करें।"
+
+#: src/formats/eov.rs:261
+msgid "The file has no \"layers\"."
+msgstr "फ़ाइल में \"layers\" नहीं है।"
+
+#: src/formats/eov.rs:277
+msgid "Layer \"{}\" has an unreadable colour; a palette colour is used."
+msgstr "परत “{}” का रंग अपठनीय है; पैलेट के एक रंग का उपयोग किया जाता है।"
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/eov.rs:292
+msgid "unreadable geometry"
+msgstr "अपठनीय ज्यामिति"
+
+#: src/formats/eov.rs:332
+msgid "The file has no \"annotation_layers\"."
+msgstr "फ़ाइल में \"annotation_layers\" नहीं है।"
+
+#: src/formats/eov.rs:359
+msgid "point without coordinates"
+msgstr "निर्देशांकों के बिना बिंदु"
+
+#: src/formats/eov.rs:384
+msgid "polygon with unreadable vertices"
+msgstr "अपठनीय शीर्षों वाला बहुभुज"
+
+#: src/formats/eov.rs:390
+msgid "unknown annotation type"
+msgstr "अज्ञात एनोटेशन प्रकार"
+
+#: src/formats/eov.rs:426
+msgid "The archive has no \"slides\"."
+msgstr "आर्काइव में \"slides\" नहीं है।"
+
+#: src/formats/eov.rs:432
+msgid "An archive entry was skipped: {}"
+msgstr "आर्काइव की एक प्रविष्टि छोड़ दी गई: {}"
+
+#. Translators: reasons why a shape of an imported file was skipped,
+#. listed as "2 × unreadable point".
+#: src/formats/geojson.rs:68
+msgid "unreadable point"
+msgstr "अपठनीय बिंदु"
+
+#: src/formats/geojson.rs:69
+msgid "unreadable line"
+msgstr "अपठनीय रेखा"
+
+#: src/formats/geojson.rs:70
+msgid "unreadable polygon"
+msgstr "अपठनीय बहुभुज"
+
+#: src/formats/geojson.rs:74
+msgid "geometry without a type"
+msgstr "प्रकार के बिना ज्यामिति"
+
+#: src/formats/geojson.rs:84
+msgid "unreadable points"
+msgstr "अपठनीय बिंदु-समूह"
+
+#: src/formats/geojson.rs:103
+msgid "unreadable lines"
+msgstr "अपठनीय रेखा-समूह"
+
+#: src/formats/geojson.rs:119
+msgid "unreadable polygons"
+msgstr "अपठनीय बहुभुज-समूह"
+
+#: src/formats/geojson.rs:128
+msgid "unreadable geometry collection"
+msgstr "अपठनीय ज्यामिति संग्रह"
+
+#: src/formats/geojson.rs:133
+msgid "unsupported geometry type"
+msgstr "असमर्थित ज्यामिति प्रकार"
+
+#: src/formats/geojson.rs:221
+msgid "The FeatureCollection has no features."
+msgstr "FeatureCollection में कोई फ़ीचर नहीं है।"
+
+#: src/formats/geojson.rs:224 src/formats/geojson.rs:226
+msgid "Not GeoJSON."
+msgstr "यह GeoJSON नहीं है।"
+
+#. Translators: a reason why an element of an imported file was skipped.
+#: src/formats/geojson.rs:242
+msgid "not a GeoJSON feature"
+msgstr "GeoJSON फ़ीचर नहीं"
+
+#: src/formats/geojson.rs:259
+msgid "feature without geometry"
+msgstr "ज्यामिति के बिना फ़ीचर"
+
+#: src/formats/geojson.rs:318
+msgid "properties beyond the limit of {} per annotation"
+msgstr "प्रति एनोटेशन {} की सीमा से अधिक गुण"
+
+#: src/formats/geojson.rs:351
+msgid "The GeoJSON file contains no features."
+msgstr "GeoJSON फ़ाइल में कोई फ़ीचर नहीं है।"
+
+#: src/formats/mod.rs:240
+msgid "This .dcm file is not a DICOM file (\"DICM\" is missing at byte 128)."
+msgstr "यह .dcm फ़ाइल DICOM फ़ाइल नहीं है (बाइट 128 पर \"DICM\" नहीं है)।"
+
+#: src/formats/mod.rs:242
+msgid ""
+"The file is not UTF-8 text or DICOM, so it is not a supported annotation "
+"file."
+msgstr ""
+"फ़ाइल न तो UTF-8 टेक्स्ट है और न ही DICOM, इसलिए यह समर्थित एनोटेशन फ़ाइल नहीं है।"
+
+#: src/formats/mod.rs:250
+msgid "The file is not valid JSON: {}"
+msgstr "फ़ाइल मान्य JSON नहीं है: {}"
+
+#: src/formats/mod.rs:257
+msgid "This JSON file is neither GeoJSON nor an eov annotation export."
+msgstr "यह JSON फ़ाइल न तो GeoJSON है और न ही eov एनोटेशन निर्यात।"
+
+#: src/formats/mod.rs:263
+msgid ""
+"Unsupported file: expected GeoJSON, eov JSON, ASAP XML, ImageScope XML, NDPA "
+"or DICOM bulk annotations."
+msgstr ""
+"असमर्थित फ़ाइल: GeoJSON, eov JSON, ASAP XML, ImageScope XML, NDPA या DICOM बल्क "
+"एनोटेशन अपेक्षित थे।"
+
+#: src/formats/ndpa.rs:62
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide is not one, so they cannot be placed on it."
+msgstr ""
+"NDPA निर्देशांक Hamamatsu स्लाइड (NDPI) के केंद्र से मापे जाते हैं, लेकिन यह स्लाइड वैसी नहीं "
+"है, इसलिए उन्हें इस पर नहीं रखा जा सकता।"
+
+#. Translators: {} is the vendor of the slide's format ("aperio").
+#: src/formats/ndpa.rs:68
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide ({}) is not one, so they cannot be placed on it."
+msgstr ""
+"NDPA निर्देशांक Hamamatsu स्लाइड (NDPI) के केंद्र से मापे जाते हैं, लेकिन यह स्लाइड ({}) "
+"वैसी नहीं है, इसलिए उन्हें इस पर नहीं रखा जा सकता।"
+
+#: src/formats/ndpa.rs:79
+msgid ""
+"This NDPI does not give its offsets from the slide centre (hamamatsu."
+"XOffsetFromSlideCentre and YOffsetFromSlideCentre), so the NDPA coordinates "
+"cannot be placed on it."
+msgstr ""
+"यह NDPI स्लाइड के केंद्र से अपने ऑफ़सेट (hamamatsu.XOffsetFromSlideCentre और "
+"YOffsetFromSlideCentre) नहीं बताती, इसलिए NDPA निर्देशांक इस पर नहीं रखे जा सकते।"
+
+#: src/formats/ndpa.rs:88
+msgid ""
+"This slide has no pixel size, so the NDPA's nanometre coordinates cannot be "
+"converted to pixels."
+msgstr ""
+"इस स्लाइड का कोई पिक्सेल आकार नहीं है, इसलिए NDPA के नैनोमीटर निर्देशांकों को पिक्सेल में "
+"रूपांतरित नहीं किया जा सकता।"
+
+#: src/formats/ndpa.rs:92
+msgid "The slide's size is unknown."
+msgstr "स्लाइड का आकार अज्ञात है।"
+
+#. Translators: a reason why an annotation of an imported file was skipped; {} is
+#. its type in the file ("freehand", "circle", "pin", …).
+#: src/formats/ndpa.rs:211
+msgid "{} annotation with unreadable coordinates"
+msgstr "अपठनीय निर्देशांकों वाला {} एनोटेशन"
+
+#: src/formats/ndpa.rs:267
+msgid "unsupported NDPA annotation type '{}'"
+msgstr "असमर्थित NDPA एनोटेशन प्रकार '{}'"
+
+#: src/formats/ndpa.rs:296
+msgid "annotation in unsupported coordinates ({})"
+msgstr "असमर्थित निर्देशांकों ({}) में एनोटेशन"
+
+#: src/formats/ndpa.rs:300
+msgid "view state without an annotation"
+msgstr "एनोटेशन के बिना दृश्य स्थिति (view state)"
+
+#: src/formats/xml.rs:28
+msgid "The XML is not well-formed: {}"
+msgstr "XML सुगठित नहीं है: {}"
+
+#: src/formats/xml.rs:37
+msgid ""
+"Unsupported XML annotations (root element <{}>); ASAP, Aperio ImageScope and "
+"Hamamatsu NDPA files are supported."
+msgstr ""
+"असमर्थित XML एनोटेशन (रूट एलिमेंट <{}>); ASAP, Aperio ImageScope और Hamamatsu "
+"NDPA फ़ाइलें समर्थित हैं।"
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/xml.rs:96
+msgid "annotation with unreadable coordinates"
+msgstr "अपठनीय निर्देशांकों वाला एनोटेशन"
+
+#: src/formats/xml.rs:158
+msgid "unsupported ASAP annotation type"
+msgstr "असमर्थित ASAP एनोटेशन प्रकार"
+
+#: src/formats/xml.rs:198
+msgid "hole of a shape that is not a polygon"
+msgstr "ऐसी आकृति का छेद जो बहुभुज नहीं है"
+
+#: src/formats/xml.rs:200
+msgid "hole of a missing polygon"
+msgstr "अनुपस्थित बहुभुज का छेद"
+
+#: src/formats/xml.rs:275
+msgid "region with unreadable vertices"
+msgstr "अपठनीय शीर्षों वाला क्षेत्र"
+
+#: src/formats/xml.rs:357
+msgid "negative region outside every region"
+msgstr "सभी क्षेत्रों के बाहर स्थित नेगेटिव क्षेत्र"
+
+#: src/geometry.rs:252
+msgid "The shape has invalid (non-finite) coordinates."
+msgstr "आकृति के निर्देशांक अमान्य (अपरिमित) हैं।"
+
+#: src/geometry.rs:256
+msgid "The shape has {n} vertices; the limit is {limit}."
+msgid_plural "The shape has {n} vertices; the limit is {limit}."
+msgstr[0] "आकृति में {n} शीर्ष है; सीमा {limit} है।"
+msgstr[1] "आकृति में {n} शीर्ष हैं; सीमा {limit} है।"
+
+#: src/geometry.rs:266
+msgid "The point is outside the slide."
+msgstr "बिंदु स्लाइड के बाहर है।"
+
+#: src/geometry.rs:288
+msgid "An arrow needs two distinct points."
+msgstr "तीर के लिए दो अलग-अलग बिंदु चाहिए।"
+
+#: src/geometry.rs:290
+msgid "A line needs at least two distinct points."
+msgstr "रेखा के लिए कम से कम दो अलग-अलग बिंदु चाहिए।"
+
+#: src/geometry.rs:317
+msgid "The rectangle is outside the slide."
+msgstr "आयत स्लाइड के बाहर है।"
+
+#: src/geometry.rs:325
+msgid "The rectangle has no area."
+msgstr "आयत का कोई क्षेत्रफल नहीं है।"
+
+#: src/geometry.rs:337
+msgid "The ellipse has no area."
+msgstr "दीर्घवृत्त का कोई क्षेत्रफल नहीं है।"
+
+#: src/geometry.rs:340
+msgid "The ellipse is centred outside the slide."
+msgstr "दीर्घवृत्त का केंद्र स्लाइड के बाहर है।"
+
+#: src/geometry.rs:352
+msgid "A polygon needs at least three distinct corners."
+msgstr "बहुभुज के लिए कम से कम तीन अलग-अलग कोने चाहिए।"
+
+#: src/geometry.rs:355 src/geometry.rs:393
+msgid "The polygon encloses no area."
+msgstr "बहुभुज कोई क्षेत्रफल नहीं घेरता।"
+
+#: src/geometry.rs:391
+msgid "The polygon is outside the slide."
+msgstr "बहुभुज स्लाइड के बाहर है।"
+
+#: src/lib.rs:80 src/lib.rs:202
+msgid "Annotations"
+msgstr "एनोटेशन"
+
+#: src/lib.rs:85
+msgid "Show or hide annotations on this slide"
+msgstr "इस स्लाइड पर एनोटेशन दिखाएँ या छिपाएँ"
+
+#: src/lib.rs:102
+msgid "Counting {}"
+msgstr "गणना: {}"
+
+#: src/lib.rs:104
+msgid "Counting {class}, Shift+click: {alternate}"
+msgstr "गणना: {class}, Shift+क्लिक: {alternate}"
+
+#: src/lib.rs:109
+msgid "Counting {class}, Alt+click: {immune}"
+msgstr "गणना: {class}, Alt+क्लिक: {immune}"
+
+#: src/lib.rs:114
+msgid "Counting {class}, Shift+click: {alternate}, Alt+click: {immune}"
+msgstr "गणना: {class}, Shift+क्लिक: {alternate}, Alt+क्लिक: {immune}"
+
+#. Translators: HPF is a high-power field.
+#: src/lib.rs:123
+msgid ""
+"The dashed circle is one HPF: click to place a field, drag to pan, Esc to "
+"leave"
+msgstr ""
+"टूटी रेखा वाला वृत्त एक HPF है: फ़ील्ड रखने के लिए क्लिक करें, पैन करने के लिए खींचें, बाहर "
+"निकलने के लिए Esc दबाएँ"
+
+#: src/lib.rs:125
+msgid "Click to select, drag to select several; drag handles to edit"
+msgstr "चुनने के लिए क्लिक करें, कई चुनने के लिए खींचें; संपादित करने के लिए हैंडल खींचें"
+
+#: src/lib.rs:127
+msgid "Drawing {}"
+msgstr "आरेखण: {}"
+
+#. Translators: {} is the name of a file format ("GeoJSON").
+#: src/lib.rs:441
+msgid "{} · cannot be placed on this slide"
+msgstr "{} · इस स्लाइड पर नहीं रखा जा सकता"
+
+#. Translators: {format} is the name of a file format ("GeoJSON");
+#. {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/lib.rs:448
+msgid "{format} · {n} annotation {layers}"
+msgid_plural "{format} · {n} annotations {layers}"
+msgstr[0] "{format} · {layers} {n} एनोटेशन"
+msgstr[1] "{format} · {layers} {n} एनोटेशन"
+
+#: src/lib.rs:455
+msgid "{n} class"
+msgid_plural "{n} classes"
+msgstr[0] "{n} वर्ग"
+msgstr[1] "{n} वर्ग"
+
+#: src/lib.rs:465
+msgid "Layers with the same name already exist: {}"
+msgstr "समान नाम वाली परतें पहले से मौजूद हैं: {}"
+
+#: src/lib.rs:497 src/transfer.rs:373
+msgid "Import annotations"
+msgstr "एनोटेशन आयात करें"
+
+#: src/lib.rs:507
+msgid "Cannot show the import dialog"
+msgstr "आयात संवाद नहीं दिखाया जा सकता"
+
+#: src/lib.rs:641 src/sidebar.rs:1490
+msgid "Lock"
+msgstr "लॉक करना"
+
+#: src/lib.rs:643 src/sidebar.rs:1492
+msgid "Unlock"
+msgstr "अनलॉक करना"
+
+#: src/lib.rs:789
+msgid "Could not save the annotation settings"
+msgstr "एनोटेशन सेटिंग्स सहेजी नहीं जा सकीं"
+
+#: src/lib.rs:1063
+msgid "Show in annotations panel"
+msgstr "एनोटेशन पैनल में दिखाएँ"
+
+#: src/lib.rs:1064
+msgid "Copy measurements"
+msgstr "माप कॉपी करें"
+
+#: src/lib.rs:1066
+msgid "Unlock annotation"
+msgstr "एनोटेशन अनलॉक करें"
+
+#: src/lib.rs:1068
+msgid "Lock annotation"
+msgstr "एनोटेशन लॉक करें"
+
+#: src/lib.rs:1077
+msgctxt "Context menu"
+msgid "Delete annotation"
+msgstr "एनोटेशन हटाएँ"
+
+#: src/lib.rs:1083
+msgid "Add point here"
+msgstr "यहाँ बिंदु जोड़ें"
+
+#: src/lib.rs:1084
+msgid "Place HPF field here"
+msgstr "यहाँ HPF फ़ील्ड रखें"
+
+#: src/lib.rs:1085
+msgid "Annotations panel"
+msgstr "एनोटेशन पैनल"
+
+#: src/measure.rs:276
+msgid "Area"
+msgstr "क्षेत्रफल"
+
+#: src/measure.rs:281
+msgid "Length"
+msgstr "लंबाई"
+
+#: src/measure.rs:283
+msgid "Perimeter"
+msgstr "परिधि"
+
+#: src/measure.rs:289
+msgid "Max diameter (Feret)"
+msgstr "अधिकतम व्यास (Feret)"
+
+#: src/measure.rs:292
+msgid "Min diameter (Feret)"
+msgstr "न्यूनतम व्यास (Feret)"
+
+#: src/measure.rs:297
+msgid "Centre (px)"
+msgstr "केंद्र (px)"
+
+#: src/measure.rs:302 src/measure.rs:307
+msgid "Calibration"
+msgstr "अंशांकन"
+
+#: src/measure.rs:303
+msgid "No pixel size: values in level-0 pixels"
+msgstr "कोई पिक्सेल आकार नहीं: मान स्तर-0 पिक्सेल में"
+
+#: src/measure.rs:308
+msgid "One pixel axis missing; assumed square pixels"
+msgstr "एक पिक्सेल अक्ष अनुपस्थित; वर्गाकार पिक्सेल माने गए"
+
+#: src/model.rs:49 ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Draft"
+msgstr "मसौदा"
+
+#: src/model.rs:50 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Verified"
+msgstr "सत्यापित"
+
+#: src/model.rs:51 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Rejected"
+msgstr "अस्वीकृत"
+
+#: src/model.rs:118
+msgctxt "Annotation kind"
+msgid "Point"
+msgstr "बिंदु"
+
+#: src/model.rs:119
+msgctxt "Annotation kind"
+msgid "Line"
+msgstr "रेखा"
+
+#: src/model.rs:120
+msgctxt "Annotation kind"
+msgid "Arrow"
+msgstr "तीर"
+
+#: src/model.rs:121
+msgctxt "Annotation kind"
+msgid "Polygon"
+msgstr "बहुभुज"
+
+#: src/model.rs:122
+msgctxt "Annotation kind"
+msgid "Rectangle"
+msgstr "आयत"
+
+#: src/model.rs:123
+msgctxt "Annotation kind"
+msgid "Ellipse"
+msgstr "दीर्घवृत्त"
+
+#: src/model.rs:124
+msgctxt "Annotation kind"
+msgid "Text"
+msgstr "टेक्स्ट"
+
+#: src/model.rs:750
+msgid "The layer name cannot be empty."
+msgstr "परत का नाम खाली नहीं हो सकता।"
+
+#: src/model.rs:751
+msgid "The class name cannot be empty."
+msgstr "वर्ग का नाम खाली नहीं हो सकता।"
+
+#: src/model.rs:752
+msgid "The name cannot be empty."
+msgstr "नाम खाली नहीं हो सकता।"
+
+#: src/model.rs:759
+msgid "The name is {n} characters long; the limit is {limit}."
+msgid_plural "The name is {n} characters long; the limit is {limit}."
+msgstr[0] "नाम {n} वर्ण लंबा है; सीमा {limit} है।"
+msgstr[1] "नाम {n} वर्ण लंबा है; सीमा {limit} है।"
+
+#: src/model.rs:764
+msgid "The layer name is {n} characters long; the limit is {limit}."
+msgid_plural "The layer name is {n} characters long; the limit is {limit}."
+msgstr[0] "परत का नाम {n} वर्ण लंबा है; सीमा {limit} है।"
+msgstr[1] "परत का नाम {n} वर्ण लंबा है; सीमा {limit} है।"
+
+#: src/model.rs:769
+msgid "The class name is {n} characters long; the limit is {limit}."
+msgid_plural "The class name is {n} characters long; the limit is {limit}."
+msgstr[0] "वर्ग का नाम {n} वर्ण लंबा है; सीमा {limit} है।"
+msgstr[1] "वर्ग का नाम {n} वर्ण लंबा है; सीमा {limit} है।"
+
+#: src/model.rs:774
+msgid "The author is {n} characters long; the limit is {limit}."
+msgid_plural "The author is {n} characters long; the limit is {limit}."
+msgstr[0] "लेखक का नाम {n} वर्ण लंबा है; सीमा {limit} है।"
+msgstr[1] "लेखक का नाम {n} वर्ण लंबा है; सीमा {limit} है।"
+
+#: src/model.rs:779
+msgid "The setting is {n} characters long; the limit is {limit}."
+msgid_plural "The setting is {n} characters long; the limit is {limit}."
+msgstr[0] "सेटिंग {n} वर्ण लंबी है; सीमा {limit} है।"
+msgstr[1] "सेटिंग {n} वर्ण लंबी है; सीमा {limit} है।"
+
+#: src/model.rs:784
+msgid "The notes are {n} characters long; the limit is {limit}."
+msgid_plural "The notes are {n} characters long; the limit is {limit}."
+msgstr[0] "नोट्स {n} वर्ण लंबे हैं; सीमा {limit} है।"
+msgstr[1] "नोट्स {n} वर्ण लंबे हैं; सीमा {limit} है।"
+
+#: src/model.rs:789
+msgid "The description is {n} characters long; the limit is {limit}."
+msgid_plural "The description is {n} characters long; the limit is {limit}."
+msgstr[0] "विवरण {n} वर्ण लंबा है; सीमा {limit} है।"
+msgstr[1] "विवरण {n} वर्ण लंबा है; सीमा {limit} है।"
+
+#: src/model.rs:794
+msgid "The comment is {n} characters long; the limit is {limit}."
+msgid_plural "The comment is {n} characters long; the limit is {limit}."
+msgstr[0] "टिप्पणी {n} वर्ण लंबी है; सीमा {limit} है।"
+msgstr[1] "टिप्पणी {n} वर्ण लंबी है; सीमा {limit} है।"
+
+#: src/model.rs:837
+msgid "An annotation can have at most {n} properties."
+msgid_plural "An annotation can have at most {n} properties."
+msgstr[0] "एक एनोटेशन में अधिकतम {n} गुण हो सकता है।"
+msgstr[1] "एक एनोटेशन में अधिकतम {n} गुण हो सकते हैं।"
+
+#: src/model.rs:851
+msgid "Property names are limited to {n} characters."
+msgid_plural "Property names are limited to {n} characters."
+msgstr[0] "गुणों के नाम अधिकतम {n} वर्ण के हो सकते हैं।"
+msgstr[1] "गुणों के नाम अधिकतम {n} वर्णों के हो सकते हैं।"
+
+#: src/model.rs:856
+msgid "Property values are limited to {n} characters."
+msgid_plural "Property values are limited to {n} characters."
+msgstr[0] "गुणों के मान अधिकतम {n} वर्ण के हो सकते हैं।"
+msgstr[1] "गुणों के मान अधिकतम {n} वर्णों के हो सकते हैं।"
+
+#: src/model.rs:884
+msgid "A hotkey is a single character (a letter or a symbol), not {}."
+msgstr "हॉटकी एक ही वर्ण (कोई अक्षर या चिह्न) होती है, {} नहीं।"
+
+#: src/model.rs:889
+msgid "A hotkey must be a visible character."
+msgstr "हॉटकी के लिए कोई दिखाई देने वाला वर्ण होना चाहिए।"
+
+#: src/model.rs:892
+msgid "eov already uses the '{}' key."
+msgstr "eov पहले से '{}' कुंजी का उपयोग करता है।"
+
+#: src/model.rs:896
+msgid "'{}' is already used by an annotation tool or class."
+msgstr "'{}' का उपयोग पहले से किसी एनोटेशन टूल या वर्ग द्वारा किया जा रहा है।"
+
+#. Translators: in the tooltip of a locked annotation, after its class and name.
+#: src/overlay.rs:171
+msgid "locked"
+msgstr "लॉक"
+
+#. Translators: this slide's points against the other reader's; F1 is the F1 score.
+#: src/sidebar.rs:360
+msgid "Points {ours} vs {theirs} · {matched} matched · F1 {f1}"
+msgstr "बिंदु {ours} बनाम {theirs} · {matched} मिलान · F1 {f1}"
+
+#. Translators: this slide's regions and their area against the other reader's;
+#. Dice is the Dice coefficient of the areas.
+#: src/sidebar.rs:373
+msgid "Regions {ours} vs {theirs} · {our_area} vs {their_area} · Dice {dice}"
+msgstr "क्षेत्र {ours} बनाम {theirs} · {our_area} बनाम {their_area} · Dice {dice}"
+
+#: src/sidebar.rs:385
+msgid "All regions"
+msgstr "सभी क्षेत्र"
+
+#. Translators: {layers} in texts such as "{n} annotations {layers}" ("12 annotations in 3 layers").
+#: src/sidebar.rs:431
+msgid "in {n} layer"
+msgid_plural "in {n} layers"
+msgstr[0] "{n} परत में"
+msgstr[1] "{n} परतों में"
+
+#: src/sidebar.rs:447
+msgid "No slide open"
+msgstr "कोई स्लाइड खुली नहीं है"
+
+#: src/sidebar.rs:453
+msgid "Annotation database unavailable: {}"
+msgstr "एनोटेशन डेटाबेस उपलब्ध नहीं है: {}"
+
+#: src/sidebar.rs:455
+msgid "Opening the annotation database…"
+msgstr "एनोटेशन डेटाबेस खोला जा रहा है…"
+
+#: src/sidebar.rs:461
+msgid "Loading annotations…"
+msgstr "एनोटेशन लोड हो रहे हैं…"
+
+#: src/sidebar.rs:469
+msgid ""
+"The annotation database is read-only: annotations can be viewed and "
+"exported, not edited."
+msgstr ""
+"एनोटेशन डेटाबेस केवल पढ़ने के लिए है: एनोटेशन देखे और निर्यात किए जा सकते हैं, संपादित नहीं।"
+
+#: src/sidebar.rs:477
+msgid ""
+"This slide has no stable identity; its annotations are keyed by file name "
+"and size."
+msgstr ""
+"इस स्लाइड की कोई स्थिर पहचान नहीं है; इसके एनोटेशन फ़ाइल के नाम और आकार से पहचाने जाते "
+"हैं।"
+
+#. Translators: beside a layer of count points: the number of points.
+#: src/sidebar.rs:526
+msgid "{} · counts"
+msgstr "{} · गणनाएँ"
+
+#. Translators: beside the layer of HPF fields: the number of fields.
+#: src/sidebar.rs:528
+msgid "{} · HPF fields"
+msgstr "{} · HPF फ़ील्ड"
+
+#: src/sidebar.rs:615
+msgid "{n} comment"
+msgid_plural "{n} comments"
+msgstr[0] "{n} टिप्पणी"
+msgstr[1] "{n} टिप्पणियाँ"
+
+#: src/sidebar.rs:649
+msgid "Show more ({n} not shown)"
+msgid_plural "Show more ({n} not shown)"
+msgstr[0] "और दिखाएँ (शेष: {n})"
+msgstr[1] "और दिखाएँ (शेष: {n})"
+
+#: src/sidebar.rs:667
+msgid "{n} match"
+msgid_plural "{n} matches"
+msgstr[0] "{n} मिलान"
+msgstr[1] "{n} मिलान"
+
+#: src/sidebar.rs:670
+msgid ""
+"No annotations yet. Pick a tool in the toolbar (P polygon, . point, C count) "
+"and draw on the slide."
+msgstr ""
+"अभी कोई एनोटेशन नहीं है। टूलबार में कोई टूल चुनें (P बहुभुज, . बिंदु, C गणना) और स्लाइड पर "
+"बनाएँ।"
+
+#: src/sidebar.rs:674
+msgid "Open a slide to see and draw its annotations."
+msgstr "किसी स्लाइड के एनोटेशन देखने और बनाने के लिए उसे खोलें।"
+
+#: src/sidebar.rs:724
+msgid "created {created} · edited {edited}"
+msgstr "बनाया गया {created} · संपादित {edited}"
+
+#: src/sidebar.rs:730
+msgid "By {author} · created {created} · edited {edited}"
+msgstr "{author} द्वारा · बनाया गया {created} · संपादित {edited}"
+
+#: src/sidebar.rs:750
+msgid "Unknown author"
+msgstr "अज्ञात लेखक"
+
+#: src/sidebar.rs:769
+msgid ""
+"This outline crosses itself (it was drawn with an older version). Its area "
+"uses the even-odd rule, like the display; Repair turns it into simple parts."
+msgstr ""
+"यह रूपरेखा स्वयं को काटती है (इसे पुराने संस्करण से बनाया गया था)। प्रदर्शन की तरह इसके "
+"क्षेत्रफल में सम-विषम नियम का उपयोग होता है; “सुधारें” इसे सरल भागों में बदल देता है।"
+
+#: src/sidebar.rs:775
+msgid "{n} annotation selected"
+msgid_plural "{n} annotations selected"
+msgstr[0] "{n} एनोटेशन चुना गया"
+msgstr[1] "{n} एनोटेशन चुने गए"
+
+#: src/sidebar.rs:778
+msgid "Mixed classes; changes apply to all selected."
+msgstr "मिश्रित वर्ग; परिवर्तन सभी चुने गए एनोटेशन पर लागू होते हैं।"
+
+#: src/sidebar.rs:780
+msgid "Changes apply to all selected."
+msgstr "परिवर्तन सभी चुने गए एनोटेशन पर लागू होते हैं।"
+
+#. Translators: under a class whose key does nothing; {} is
+#. eov's reason, a whole sentence such as "Hotkey 'q' of …
+#. was ignored: it is a key eov already uses."
+#: src/sidebar.rs:828
+msgid "eov refused the hotkey: {}"
+msgstr "eov ने हॉटकी अस्वीकार कर दी: {}"
+
+#: src/sidebar.rs:861
+msgid ""
+"Whole slide. Select regions or HPF fields to count inside them and get "
+"densities."
+msgstr "पूरी स्लाइड। क्षेत्रों या HPF फ़ील्ड के भीतर गिनने और घनत्व जानने के लिए उन्हें चुनें।"
+
+#. Translators: {fields} is "1 HPF field" or "3 HPF fields"
+#. (translated on its own; HPF is a high-power field).
+#: src/sidebar.rs:873
+msgid "Inside {n} selected region ({fields}): {area}"
+msgid_plural "Inside {n} selected regions ({fields}): {area}"
+msgstr[0] "{n} चुने गए क्षेत्र के भीतर ({fields}): {area}"
+msgstr[1] "{n} चुने गए क्षेत्रों के भीतर ({fields}): {area}"
+
+#. Translators: {fields} in "Inside {n} selected regions ({fields}): {area}".
+#: src/sidebar.rs:877
+msgid "{n} HPF field"
+msgid_plural "{n} HPF fields"
+msgstr[0] "{n} HPF फ़ील्ड"
+msgstr[1] "{n} HPF फ़ील्ड"
+
+#: src/sidebar.rs:883
+msgid "Inside {n} selected region: {area}"
+msgid_plural "Inside {n} selected regions: {area}"
+msgstr[0] "{n} चुने गए क्षेत्र के भीतर: {area}"
+msgstr[1] "{n} चुने गए क्षेत्रों के भीतर: {area}"
+
+#: src/sidebar.rs:890
+msgid "Inside {n} selected region: {area} (no pixel size, so no density)"
+msgid_plural ""
+"Inside {n} selected regions: {area} (no pixel size, so no density)"
+msgstr[0] "{n} चुने गए क्षेत्र के भीतर: {area} (पिक्सेल आकार नहीं है, इसलिए घनत्व नहीं)"
+msgstr[1] "{n} चुने गए क्षेत्रों के भीतर: {area} (पिक्सेल आकार नहीं है, इसलिए घनत्व नहीं)"
+
+#. Translators: cells per high-power field.
+#: src/sidebar.rs:905
+msgid "{} /HPF field"
+msgstr "{} /HPF फ़ील्ड"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1000
+msgid "Read-only"
+msgstr "केवल पढ़ने के लिए"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1003
+msgid "Ready"
+msgstr "तैयार"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1007
+msgid "Opening…"
+msgstr "खुल रहा है…"
+
+#: src/sidebar.rs:1008
+msgid "Unavailable: {}"
+msgstr "अनुपलब्ध: {}"
+
+#. Translators: a slide whose file name an older eov did not record; {} is its number in the annotation database.
+#: src/sidebar.rs:1068
+msgid "Slide #{} (from an older version)"
+msgstr "स्लाइड #{} (पुराने संस्करण से)"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/sidebar.rs:1075
+msgid "{n} annotation {layers} · last opened {date}"
+msgid_plural "{n} annotations {layers} · last opened {date}"
+msgstr[0] "{layers} {n} एनोटेशन · अंतिम बार खोली गई: {date}"
+msgstr[1] "{layers} {n} एनोटेशन · अंतिम बार खोली गई: {date}"
+
+#. Translators: "List" is the label of the button beside this text.
+#: src/sidebar.rs:1093
+msgid "Press \"List\" to see the other slides in the database."
+msgstr "डेटाबेस की अन्य स्लाइडें देखने के लिए “सूची” दबाएँ।"
+
+#: src/sidebar.rs:1094
+msgid "No other slides have annotations."
+msgstr "किसी अन्य स्लाइड में एनोटेशन नहीं हैं।"
+
+#: src/sidebar.rs:1096
+msgid ""
+"If a slide was re-saved or de-identified, its annotations stay with the old "
+"file. Attach them to the open slide here."
+msgstr ""
+"यदि किसी स्लाइड को दोबारा सहेजा गया या पहचान-रहित किया गया, तो उसके एनोटेशन "
+"पुरानी फ़ाइल के साथ रहते हैं। उन्हें यहाँ खुली स्लाइड से संलग्न करें।"
+
+#: src/sidebar.rs:1161
+msgid "Cannot ask for confirmation"
+msgstr "पुष्टि नहीं माँगी जा सकती"
+
+#: src/sidebar.rs:1173
+msgid "Open a slide first."
+msgstr "पहले कोई स्लाइड खोलें।"
+
+#: src/sidebar.rs:1213
+msgid "Compare with another reader's file first."
+msgstr "पहले किसी अन्य पाठक की फ़ाइल से तुलना करें।"
+
+#: src/sidebar.rs:1219
+msgid "Export all annotations"
+msgstr "सभी एनोटेशन निर्यात करें"
+
+#: src/sidebar.rs:1222
+msgid "eov annotation archive"
+msgstr "eov एनोटेशन आर्काइव"
+
+#: src/sidebar.rs:1229
+msgid "Back up the annotation database"
+msgstr "एनोटेशन डेटाबेस का बैकअप लें"
+
+#: src/sidebar.rs:1232 src/sidebar.rs:1242
+msgid "SQLite database"
+msgstr "SQLite डेटाबेस"
+
+#: src/sidebar.rs:1239
+msgid ""
+"Merge an annotation database (a backup, or annotations.db of eov before 1.0)"
+msgstr "एनोटेशन डेटाबेस मर्ज करें (कोई बैकअप, या eov 1.0 से पहले की annotations.db)"
+
+#: src/sidebar.rs:1308
+msgid "Show or hide layer"
+msgstr "परत दिखाना या छिपाना"
+
+#: src/sidebar.rs:1322
+msgid "Layer opacity"
+msgstr "परत की अपारदर्शिता"
+
+#: src/sidebar.rs:1337
+msgid "Lock layer"
+msgstr "परत लॉक करना"
+
+#: src/sidebar.rs:1339
+msgid "Unlock layer"
+msgstr "परत अनलॉक करना"
+
+#: src/sidebar.rs:1354
+msgid "Change layer colour"
+msgstr "परत का रंग बदलना"
+
+#: src/sidebar.rs:1370
+msgid "Edit layer notes"
+msgstr "परत के नोट्स संपादित करना"
+
+#: src/sidebar.rs:1387
+msgid "The slide is still loading."
+msgstr "स्लाइड अभी लोड हो रही है।"
+
+#: src/sidebar.rs:1396
+msgctxt "Dialog title"
+msgid "Delete layer"
+msgstr "परत हटाएँ"
+
+#: src/sidebar.rs:1398
+msgid ""
+"Delete layer \"{name}\" and its {n} annotation? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgid_plural ""
+"Delete layer \"{name}\" and its {n} annotations? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgstr[0] ""
+"परत “{name}” और उसका {n} एनोटेशन हटाएँ? आप इसे Ctrl+Z (⌘Z) से पूर्ववत कर सकते हैं।"
+msgstr[1] ""
+"परत “{name}” और उसके {n} एनोटेशन हटाएँ? आप इसे Ctrl+Z (⌘Z) से पूर्ववत कर सकते हैं।"
+
+#: src/sidebar.rs:1403 src/sidebar.rs:1620
+msgid "Delete"
+msgstr "हटाएँ"
+
+#: src/sidebar.rs:1404 src/sidebar.rs:1621 src/sidebar.rs:1679
+#: src/sidebar.rs:1772
+msgid "Cancel"
+msgstr "रद्द करें"
+
+#: src/sidebar.rs:1420
+msgid "Rename annotation"
+msgstr "एनोटेशन का नाम बदलना"
+
+#: src/sidebar.rs:1432
+msgid "Edit description"
+msgstr "विवरण संपादित करना"
+
+#: src/sidebar.rs:1444
+msgid "Set class"
+msgstr "वर्ग निर्धारित करना"
+
+#: src/sidebar.rs:1458
+msgid "Mark draft"
+msgstr "मसौदे के रूप में चिह्नित करना"
+
+#: src/sidebar.rs:1459
+msgid "Mark verified"
+msgstr "सत्यापित के रूप में चिह्नित करना"
+
+#: src/sidebar.rs:1460
+msgid "Mark rejected"
+msgstr "अस्वीकृत के रूप में चिह्नित करना"
+
+#: src/sidebar.rs:1476
+msgid "Move to layer"
+msgstr "परत में ले जाना"
+
+#: src/sidebar.rs:1529
+msgid "Edit properties"
+msgstr "गुण संपादित करना"
+
+#: src/sidebar.rs:1553
+msgid "Select one annotation to comment on."
+msgstr "टिप्पणी करने के लिए एक एनोटेशन चुनें।"
+
+#: src/sidebar.rs:1566
+msgid "Measurements copied."
+msgstr "माप कॉपी किए गए।"
+
+#: src/sidebar.rs:1578
+msgid "Show or hide class"
+msgstr "वर्ग दिखाना या छिपाना"
+
+#: src/sidebar.rs:1591
+msgid "Class opacity"
+msgstr "वर्ग की अपारदर्शिता"
+
+#: src/sidebar.rs:1611
+msgctxt "Dialog title"
+msgid "Delete class"
+msgstr "वर्ग हटाएँ"
+
+#: src/sidebar.rs:1613
+msgid ""
+"Delete class \"{name}\"? {n} annotation on open slides uses it; it will show "
+"as unclassified. You can undo this."
+msgid_plural ""
+"Delete class \"{name}\"? {n} annotations on open slides use it; they will "
+"show as unclassified. You can undo this."
+msgstr[0] ""
+"वर्ग “{name}” हटाएँ? खुली स्लाइडों पर {n} एनोटेशन इसका उपयोग करता है; वह अवर्गीकृत के "
+"रूप में दिखेगा। आप इसे पूर्ववत कर सकते हैं।"
+msgstr[1] ""
+"वर्ग “{name}” हटाएँ? खुली स्लाइडों पर {n} एनोटेशन इसका उपयोग करते हैं; वे अवर्गीकृत के रूप "
+"में दिखेंगे। आप इसे पूर्ववत कर सकते हैं।"
+
+#: src/sidebar.rs:1668
+msgctxt "Dialog title"
+msgid "Clear counts"
+msgstr "गणनाएँ साफ़ करें"
+
+#. Translators: the question of the "Clear counts" dialog, whose
+#. button is "Clear": use the same verb.
+#: src/sidebar.rs:1672
+msgid "Clear the {n} count point of this slide? You can undo this."
+msgid_plural "Clear all {n} count points of this slide? You can undo this."
+msgstr[0] "इस स्लाइड का {n} गणना बिंदु साफ़ करें? आप इसे पूर्ववत कर सकते हैं।"
+msgstr[1] "इस स्लाइड के सभी {n} गणना बिंदु साफ़ करें? आप इसे पूर्ववत कर सकते हैं।"
+
+#. Translators: the button that removes the count points, in the
+#. "Clear counts" dialog.
+#: src/sidebar.rs:1678
+msgid "Clear"
+msgstr "साफ़ करें"
+
+#: src/sidebar.rs:1694
+msgid "Enter the field area in mm², e.g. {}."
+msgstr "फ़ील्ड का क्षेत्रफल mm² में दर्ज करें, जैसे {}।"
+
+#: src/sidebar.rs:1702
+msgid "Enter the field number in mm, e.g. 22."
+msgstr "फ़ील्ड संख्या mm में दर्ज करें, जैसे 22।"
+
+#: src/sidebar.rs:1704
+msgid "Enter the objective magnification, e.g. 40."
+msgstr "अभिदृश्यक आवर्धन दर्ज करें, जैसे 40।"
+
+#: src/sidebar.rs:1708
+msgid "That field size is not usable."
+msgstr "वह फ़ील्ड आकार उपयोग योग्य नहीं है।"
+
+#: src/sidebar.rs:1720
+msgid "There is no database from before eov 1.0 to merge."
+msgstr "मर्ज करने के लिए eov 1.0 से पहले का कोई डेटाबेस नहीं है।"
+
+#: src/sidebar.rs:1737
+msgid "That slide is not listed any more."
+msgstr "वह स्लाइड अब सूची में नहीं है।"
+
+#: src/sidebar.rs:1748
+msgid ""
+"Attach the annotations of an older slide to the open slide? Use this when "
+"the slide file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"किसी पुरानी स्लाइड के एनोटेशन खुली स्लाइड से संलग्न करें? इसका उपयोग तब करें जब स्लाइड "
+"फ़ाइल को दोबारा सहेजा, रूपांतरित या पहचान-रहित किया गया हो। आप इसे पूर्ववत कर सकते हैं।"
+
+#: src/sidebar.rs:1753
+msgid ""
+"Attach the annotations of \"{}\" to the open slide? Use this when the slide "
+"file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"“{}” के एनोटेशन खुली स्लाइड से संलग्न करें? इसका उपयोग तब करें जब स्लाइड फ़ाइल को दोबारा "
+"सहेजा, रूपांतरित या पहचान-रहित किया गया हो। आप इसे पूर्ववत कर सकते हैं।"
+
+#: src/sidebar.rs:1762
+msgid ""
+"Warning: the two slides have different sizes, so the annotations may not "
+"line up."
+msgstr ""
+"चेतावनी: दोनों स्लाइडों के आकार अलग-अलग हैं, इसलिए हो सकता है कि एनोटेशन ठीक से मेल न "
+"खाएँ।"
+
+#: src/sidebar.rs:1769
+msgid "Attach annotations"
+msgstr "एनोटेशन संलग्न करें"
+
+#: src/sidebar.rs:1771
+msgid "Attach"
+msgstr "संलग्न करें"
+
+#: src/state.rs:501
+msgid "Compared with {}"
+msgstr "{} से तुलना की गई"
+
+#. Translators: {ours} is "1 annotation" or "5 annotations" (translated on its own).
+#: src/state.rs:509
+msgid ""
+"This slide's visible layers ({ours}) against the {n} annotation in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgid_plural ""
+"This slide's visible layers ({ours}) against the {n} annotations in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgstr[0] ""
+"इस स्लाइड की दृश्यमान परतें ({ours}) बनाम {name} का {n} एनोटेशन, HPF फ़ील्ड के बिना; "
+"गणनाएँ पहले इस स्लाइड की, फिर दूसरे पाठक की हैं। किसी वर्ग के बिंदुओं का मिलान {radius} "
+"के भीतर एक-से-एक होता है (F1 = 2 · मिलान / दोनों गणनाएँ); क्षेत्रों का मिलान उनके "
+"अतिव्यापन से होता है (Dice = 2 · साझा क्षेत्रफल / दोनों क्षेत्रफल)।"
+msgstr[1] ""
+"इस स्लाइड की दृश्यमान परतें ({ours}) बनाम {name} के {n} एनोटेशन, HPF फ़ील्ड के बिना; "
+"गणनाएँ पहले इस स्लाइड की, फिर दूसरे पाठक की हैं। किसी वर्ग के बिंदुओं का मिलान {radius} "
+"के भीतर एक-से-एक होता है (F1 = 2 · मिलान / दोनों गणनाएँ); क्षेत्रों का मिलान उनके "
+"अतिव्यापन से होता है (Dice = 2 · साझा क्षेत्रफल / दोनों क्षेत्रफल)।"
+
+#: src/state.rs:522
+msgid "Check the file: {}"
+msgstr "फ़ाइल की जाँच करें: {}"
+
+#: src/state.rs:664
+msgid "The annotation database is read-only."
+msgstr "एनोटेशन डेटाबेस केवल पढ़ने के लिए है।"
+
+#: src/state.rs:665
+msgid "The annotation database is still opening."
+msgstr "एनोटेशन डेटाबेस अभी खुल रहा है।"
+
+#: src/state.rs:667
+msgid "The annotation database is unavailable: {}"
+msgstr "एनोटेशन डेटाबेस उपलब्ध नहीं है: {}"
+
+#: src/stats.rs:97
+msgid "Invalid field size"
+msgstr "अमान्य फ़ील्ड आकार"
+
+#. Translators: HPF is a high-power field; ⌀ its diameter.
+#: src/stats.rs:110
+msgid "1 HPF = {area} mm² (field number {number} at {objective}×, ⌀ {d} mm)"
+msgstr "1 HPF = {area} mm² ({objective}× पर फ़ील्ड संख्या {number}, ⌀ {d} mm)"
+
+#: src/stats.rs:116
+msgid "1 HPF = {area} mm² (⌀ {d} mm)"
+msgstr "1 HPF = {area} mm² (⌀ {d} mm)"
+
+#: src/tools.rs:63
+msgid "Select and edit annotations"
+msgstr "एनोटेशन चुनें और संपादित करें"
+
+#: src/tools.rs:64
+msgid "Point annotation"
+msgstr "बिंदु एनोटेशन"
+
+#: src/tools.rs:65
+msgid "Count cells (Shift+click: second class)"
+msgstr "कोशिकाएँ गिनें (Shift+क्लिक: दूसरा वर्ग)"
+
+#: src/tools.rs:66
+msgid "Polygon (Shift: add to selection, Alt: cut from it)"
+msgstr "बहुभुज (Shift: चयन में जोड़ें, Alt: उससे काटें)"
+
+#: src/tools.rs:67
+msgid "Freehand outline (Shift: add, Alt: cut)"
+msgstr "फ़्रीहैंड रूपरेखा (Shift: जोड़ें, Alt: काटें)"
+
+#: src/tools.rs:68
+msgid "Rectangle"
+msgstr "आयत"
+
+#: src/tools.rs:69
+msgid "Ellipse"
+msgstr "दीर्घवृत्त"
+
+#: src/tools.rs:70
+msgid "Line / path"
+msgstr "रेखा / पथ"
+
+#: src/tools.rs:72
+msgid ""
+"Brush (paint a region, over a selected region to extend it; Alt or the "
+"eraser erases; [ and ] change the size)"
+msgstr ""
+"ब्रश (क्षेत्र पेंट करें, किसी चुने गए क्षेत्र को बढ़ाने के लिए उसके ऊपर; Alt या इरेज़र मिटाता "
+"है; [ और ] आकार बदलते हैं)"
+
+#: src/tools.rs:74
+msgid "Arrow (click the tail, double-click the tip; more clicks bend it)"
+msgstr "तीर (पूँछ पर क्लिक करें, सिरे पर डबल-क्लिक करें; अधिक क्लिक करने से वह मुड़ता है)"
+
+#: src/tools.rs:75
+msgid "Text label"
+msgstr "टेक्स्ट लेबल"
+
+#: src/tools.rs:77
+msgid ""
+"HPF field (a field of the configured size follows the pointer; click to "
+"place it, drag to pan)"
+msgstr ""
+"HPF फ़ील्ड (कॉन्फ़िगर किए गए आकार का फ़ील्ड पॉइंटर के साथ चलता है; उसे रखने के लिए क्लिक "
+"करें, पैन करने के लिए खींचें)"
+
+#: src/tools.rs:225
+msgid "Annotation class: {}"
+msgstr "एनोटेशन वर्ग: {}"
+
+#. Translators: {} lists what was skipped, as "2 × reason; 1 × other reason".
+#: src/transfer.rs:249
+msgid "Skipped: {}."
+msgstr "छोड़े गए: {}।"
+
+#: src/transfer.rs:253
+msgid "{n} outline crossed itself and was repaired with the even-odd rule."
+msgid_plural ""
+"{n} outlines crossed themselves and were repaired with the even-odd rule."
+msgstr[0] "{n} रूपरेखा स्वयं को काटती थी और उसे सम-विषम नियम से सुधारा गया।"
+msgstr[1] "{n} रूपरेखाएँ स्वयं को काटती थीं और उन्हें सम-विषम नियम से सुधारा गया।"
+
+#: src/transfer.rs:260
+msgid "{n} shape extended past the slide and was cut at its edge."
+msgid_plural "{n} shapes extended past the slide and were cut at its edge."
+msgstr[0] "{n} आकृति स्लाइड से बाहर तक फैली थी और उसे किनारे पर काट दिया गया।"
+msgstr[1] "{n} आकृतियाँ स्लाइड से बाहर तक फैली थीं और उन्हें किनारे पर काट दिया गया।"
+
+#: src/transfer.rs:265
+msgid "{n} over-long name or text was shortened."
+msgid_plural "{n} over-long names or texts were shortened."
+msgstr[0] "{n} बहुत लंबा नाम या टेक्स्ट छोटा किया गया।"
+msgstr[1] "{n} बहुत लंबे नाम या टेक्स्ट छोटे किए गए।"
+
+#: src/transfer.rs:270
+msgid "The file contains no annotations."
+msgstr "फ़ाइल में कोई एनोटेशन नहीं है।"
+
+#: src/transfer.rs:272
+msgid "Nothing could be imported. {}"
+msgstr "कुछ भी आयात नहीं किया जा सका। {}"
+
+#: src/transfer.rs:339
+msgid "Made for this slide."
+msgstr "इस स्लाइड के लिए बनाया गया।"
+
+#: src/transfer.rs:342
+msgid "Made for a different slide (its identity does not match)."
+msgstr "किसी अलग स्लाइड के लिए बनाया गया (इसकी पहचान मेल नहीं खाती)।"
+
+#: src/transfer.rs:352
+msgid "Made for a slide of {theirs}; this one is {ours}."
+msgstr "{theirs} आकार की स्लाइड के लिए बनाया गया; यह स्लाइड {ours} की है।"
+
+#: src/transfer.rs:360
+msgid "Made for a slide of the same size."
+msgstr "समान आकार की स्लाइड के लिए बनाया गया।"
+
+#: src/transfer.rs:364
+msgid ""
+"The file does not say which slide it belongs to; coordinates are taken as "
+"level-0 pixels of this slide."
+msgstr ""
+"फ़ाइल यह नहीं बताती कि वह किस स्लाइड की है; निर्देशांकों को इस स्लाइड के स्तर-0 पिक्सेल "
+"माना जाता है।"
+
+#: src/transfer.rs:376
+msgid "Annotations (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "एनोटेशन (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:386
+msgid "All files"
+msgstr "सभी फ़ाइलें"
+
+#: src/transfer.rs:398 src/transfer.rs:853 src/transfer.rs:1007
+msgid "Cannot show the file dialog"
+msgstr "फ़ाइल संवाद नहीं दिखाया जा सकता"
+
+#: src/transfer.rs:413
+msgid "The annotations of this slide are still loading."
+msgstr "इस स्लाइड के एनोटेशन अभी लोड हो रहे हैं।"
+
+#: src/transfer.rs:434
+msgid "Importing {}"
+msgstr "{} का आयात किया जा रहा है"
+
+#. Translators: the step of an import that reads the file.
+#: src/transfer.rs:447
+msgid "Reading"
+msgstr "पढ़ा जा रहा है"
+
+#: src/transfer.rs:474
+msgid ""
+"NDP.view annotations, placed with this slide's offsets from the slide centre "
+"and its pixel size."
+msgstr ""
+"NDP.view एनोटेशन, जिन्हें स्लाइड के केंद्र से इस स्लाइड के ऑफ़सेट और इसके पिक्सेल आकार के आधार "
+"पर रखा गया है।"
+
+#: src/transfer.rs:486
+msgid "Checking the slide"
+msgstr "स्लाइड की जाँच की जा रही है"
+
+#: src/transfer.rs:489
+msgid "cannot read the slide to check the import: {}"
+msgstr "आयात की जाँच के लिए स्लाइड पढ़ी नहीं जा सकती: {}"
+
+#: src/transfer.rs:494
+msgid "Made for this slide (checked by content)."
+msgstr "इस स्लाइड के लिए बनाया गया (सामग्री से जाँचा गया)।"
+
+#: src/transfer.rs:497
+msgid "Made for a different slide (its checksum does not match)."
+msgstr "किसी अलग स्लाइड के लिए बनाया गया (इसका चेकसम मेल नहीं खाता)।"
+
+#: src/transfer.rs:521
+msgid "Import cancelled."
+msgstr "आयात रद्द किया गया।"
+
+#: src/transfer.rs:522
+msgid "Could not import {}"
+msgstr "{} का आयात नहीं किया जा सका"
+
+#. Translators: "Merge a database…" is the item of the Import and export
+#. menu: quote it as it is translated there.
+#: src/transfer.rs:560
+msgid ""
+"This archive has no annotations for the current slide. Restore whole backups "
+"with \"Merge a database…\"."
+msgstr ""
+"इस आर्काइव में वर्तमान स्लाइड के लिए कोई एनोटेशन नहीं है। पूरे बैकअप “डेटाबेस मर्ज करें…” से "
+"पुनर्स्थापित करें।"
+
+#: src/transfer.rs:574
+msgid "Import {n} annotation"
+msgid_plural "Import {n} annotations"
+msgstr[0] "{n} एनोटेशन आयात करना"
+msgstr[1] "{n} एनोटेशन आयात करना"
+
+#: src/transfer.rs:581
+msgid "The slide this import was started on is not open any more."
+msgstr "जिस स्लाइड पर यह आयात शुरू किया गया था, वह अब खुली नहीं है।"
+
+#: src/transfer.rs:737
+msgid "Imported {n} annotation from {file}."
+msgid_plural "Imported {n} annotations from {file}."
+msgstr[0] "{file} से {n} एनोटेशन आयात किया गया।"
+msgstr[1] "{file} से {n} एनोटेशन आयात किए गए।"
+
+#: src/transfer.rs:783 src/transfer.rs:818
+msgid "eov annotations"
+msgstr "eov एनोटेशन"
+
+#: src/transfer.rs:811
+msgid "DICOM bulk annotations"
+msgstr "DICOM बल्क एनोटेशन"
+
+#: src/transfer.rs:824
+msgid "Export a blinded copy for another reader"
+msgstr "किसी अन्य पाठक के लिए ब्लाइंडेड प्रतिलिपि निर्यात करें"
+
+#: src/transfer.rs:825
+msgid "Export annotations"
+msgstr "एनोटेशन निर्यात करें"
+
+#: src/transfer.rs:942
+msgid "Exported {n} annotation to {file}."
+msgid_plural "Exported {n} annotations to {file}."
+msgstr[0] "{n} एनोटेशन {file} में निर्यात किया गया।"
+msgstr[1] "{n} एनोटेशन {file} में निर्यात किए गए।"
+
+#: src/transfer.rs:948
+msgid "Could not export to {}"
+msgstr "{} में निर्यात नहीं किया जा सका"
+
+#: src/transfer.rs:988
+msgid "Compare with another reader's annotations"
+msgstr "किसी अन्य पाठक के एनोटेशन से तुलना करें"
+
+#: src/transfer.rs:990
+msgid "Annotations (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "एनोटेशन (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:1114
+msgid "Could not compare with {}"
+msgstr "{} से तुलना नहीं की जा सकी"
+
+#: src/transfer.rs:1123
+msgid "Exporting all annotations"
+msgstr "सभी एनोटेशन निर्यात किए जा रहे हैं"
+
+#: src/transfer.rs:1176
+msgid "Exported the annotations of {n} slide."
+msgid_plural "Exported the annotations of {n} slides."
+msgstr[0] "{n} स्लाइड के एनोटेशन निर्यात किए गए।"
+msgstr[1] "{n} स्लाइडों के एनोटेशन निर्यात किए गए।"
+
+#: src/transfer.rs:1184
+msgid "Could not export all annotations"
+msgstr "सभी एनोटेशन निर्यात नहीं किए जा सके"
+
+#: src/transfer.rs:1201
+msgid "Annotation database backed up."
+msgstr "एनोटेशन डेटाबेस का बैकअप लिया गया।"
+
+#: src/transfer.rs:1203
+msgid "Could not back up the annotation database"
+msgstr "एनोटेशन डेटाबेस का बैकअप नहीं लिया जा सका"
+
+#: src/transfer.rs:1217
+msgid "Merging annotation database"
+msgstr "एनोटेशन डेटाबेस मर्ज किया जा रहा है"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers", {slides}
+#. is "1 new slide" or "3 new slides" (each translated on its own).
+#: src/transfer.rs:1232
+msgid "Merged {n} annotation {layers} ({slides})."
+msgid_plural "Merged {n} annotations {layers} ({slides})."
+msgstr[0] "{layers} {n} एनोटेशन मर्ज किया गया ({slides})।"
+msgstr[1] "{layers} {n} एनोटेशन मर्ज किए गए ({slides})।"
+
+#. Translators: {slides} in "Merged {n} annotations {layers} ({slides})."
+#: src/transfer.rs:1237
+msgid "{n} new slide"
+msgid_plural "{n} new slides"
+msgstr[0] "{n} नई स्लाइड"
+msgstr[1] "{n} नई स्लाइडें"
+
+#: src/transfer.rs:1249
+msgid "Could not merge the database"
+msgstr "डेटाबेस मर्ज नहीं किया जा सका"
+
+#. Translators: read out for the layer new annotations go into; {} is its
+#. number of annotations.
+#: ui/annotations-sidebar.slint:115
+msgctxt "TreeItem"
+msgid "{} · new annotations go here"
+msgstr "{} · नए एनोटेशन यहाँ जाते हैं"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Collapse layer"
+msgstr "परत संक्षिप्त करें"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Expand layer"
+msgstr "परत विस्तृत करें"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Hide layer"
+msgstr "परत छिपाएँ"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Show layer"
+msgstr "परत दिखाएँ"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Lock layer"
+msgstr "परत लॉक करें"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Unlock layer"
+msgstr "परत अनलॉक करें"
+
+#: ui/annotations-sidebar.slint:222
+msgctxt "TreeItem"
+msgid "Layer settings"
+msgstr "परत की सेटिंग्स"
+
+#: ui/annotations-sidebar.slint:292
+msgctxt "TreeItem"
+msgid "Locked"
+msgstr "लॉक"
+
+#: ui/annotations-sidebar.slint:314
+msgctxt "AnnotationsSidebar"
+msgid "No slide open"
+msgstr "कोई स्लाइड खुली नहीं है"
+
+#: ui/annotations-sidebar.slint:321
+msgctxt "AnnotationsSidebar"
+msgid "Unclassified"
+msgstr "अवर्गीकृत"
+
+#: ui/annotations-sidebar.slint:488
+msgctxt "AnnotationsSidebar"
+msgid "Import annotations…"
+msgstr "एनोटेशन आयात करें…"
+
+#: ui/annotations-sidebar.slint:489
+msgctxt "AnnotationsSidebar"
+msgid "Export as GeoJSON (QuPath)…"
+msgstr "GeoJSON (QuPath) के रूप में निर्यात करें…"
+
+#: ui/annotations-sidebar.slint:490
+msgctxt "AnnotationsSidebar"
+msgid "Export as eov JSON…"
+msgstr "eov JSON के रूप में निर्यात करें…"
+
+#: ui/annotations-sidebar.slint:491
+msgctxt "AnnotationsSidebar"
+msgid "Export as ASAP XML…"
+msgstr "ASAP XML के रूप में निर्यात करें…"
+
+#: ui/annotations-sidebar.slint:492
+msgctxt "AnnotationsSidebar"
+msgid "Export as ImageScope XML…"
+msgstr "ImageScope XML के रूप में निर्यात करें…"
+
+#: ui/annotations-sidebar.slint:493
+msgctxt "AnnotationsSidebar"
+msgid "Export as DICOM annotations…"
+msgstr "DICOM एनोटेशन के रूप में निर्यात करें…"
+
+#: ui/annotations-sidebar.slint:494
+msgctxt "AnnotationsSidebar"
+msgid "Export measurements (CSV)…"
+msgstr "माप निर्यात करें (CSV)…"
+
+#: ui/annotations-sidebar.slint:495
+msgctxt "AnnotationsSidebar"
+msgid "Export a blinded copy…"
+msgstr "ब्लाइंडेड प्रतिलिपि निर्यात करें…"
+
+#: ui/annotations-sidebar.slint:496
+msgctxt "AnnotationsSidebar"
+msgid "Compare with another reader…"
+msgstr "किसी अन्य पाठक से तुलना करें…"
+
+#. Translators: exports the annotations of every slide in the database to one
+#. annotation archive (a JSON file), not the slide images.
+#: ui/annotations-sidebar.slint:497 ui/annotations-sidebar.slint:1986
+msgctxt "AnnotationsSidebar"
+msgid "Export all slides…"
+msgstr "सभी स्लाइडें निर्यात करें…"
+
+#: ui/annotations-sidebar.slint:498
+msgctxt "AnnotationsSidebar"
+msgid "Back up the database…"
+msgstr "डेटाबेस का बैकअप लें…"
+
+#: ui/annotations-sidebar.slint:499
+msgctxt "AnnotationsSidebar"
+msgid "Merge a database…"
+msgstr "डेटाबेस मर्ज करें…"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field area"
+msgstr "फ़ील्ड क्षेत्रफल"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field number and objective"
+msgstr "फ़ील्ड संख्या और अभिदृश्यक"
+
+#: ui/annotations-sidebar.slint:600
+msgctxt "AnnotationsSidebar"
+msgid "Annotations"
+msgstr "एनोटेशन"
+
+#: ui/annotations-sidebar.slint:635
+msgctxt "AnnotationsSidebar"
+msgid "Import and export"
+msgstr "आयात और निर्यात"
+
+#: ui/annotations-sidebar.slint:668
+msgctxt "AnnotationsSidebar"
+msgid "Retry"
+msgstr "पुनः प्रयास करें"
+
+#: ui/annotations-sidebar.slint:683
+msgctxt "AnnotationsSidebar"
+msgid "Layers"
+msgstr "परतें"
+
+#: ui/annotations-sidebar.slint:691
+msgctxt "AnnotationsSidebar"
+msgid "Classes"
+msgstr "वर्ग"
+
+#. Translators: the tab for counting cells.
+#: ui/annotations-sidebar.slint:700
+msgctxt "AnnotationsSidebar"
+msgid "Count"
+msgstr "गणना"
+
+#: ui/annotations-sidebar.slint:708
+msgctxt "AnnotationsSidebar"
+msgid "Data"
+msgstr "डेटा"
+
+#: ui/annotations-sidebar.slint:747
+msgctxt "AnnotationsSidebar"
+msgid "Filter by name, class, kind or status"
+msgstr "नाम, वर्ग, प्रकार या स्थिति से फ़िल्टर करें"
+
+#: ui/annotations-sidebar.slint:769
+msgctxt "AnnotationsSidebar"
+msgid "Filter annotations"
+msgstr "एनोटेशन फ़िल्टर करें"
+
+#: ui/annotations-sidebar.slint:786
+msgctxt "AnnotationsSidebar"
+msgid "New layer"
+msgstr "नई परत"
+
+#: ui/annotations-sidebar.slint:870 ui/annotations-sidebar.slint:1079
+#: ui/annotations-sidebar.slint:1500
+msgctxt "AnnotationsSidebar"
+msgid "Name"
+msgstr "नाम"
+
+#: ui/annotations-sidebar.slint:876 ui/annotations-sidebar.slint:878
+msgctxt "AnnotationsSidebar"
+msgid "Layer name"
+msgstr "परत का नाम"
+
+#: ui/annotations-sidebar.slint:889
+msgctxt "AnnotationsSidebar"
+msgid "Colour"
+msgstr "रंग"
+
+#: ui/annotations-sidebar.slint:898
+msgctxt "AnnotationsSidebar"
+msgid "Layer colour"
+msgstr "परत का रंग"
+
+#: ui/annotations-sidebar.slint:906 ui/annotations-sidebar.slint:1518
+msgctxt "AnnotationsSidebar"
+msgid "Opacity"
+msgstr "अपारदर्शिता"
+
+#: ui/annotations-sidebar.slint:912
+msgctxt "AnnotationsSidebar"
+msgid "Layer opacity"
+msgstr "परत की अपारदर्शिता"
+
+#: ui/annotations-sidebar.slint:923 ui/annotations-sidebar.slint:1162
+msgctxt "AnnotationsSidebar"
+msgid "Notes"
+msgstr "नोट्स"
+
+#: ui/annotations-sidebar.slint:931
+msgctxt "AnnotationsSidebar"
+msgid "Notes about this layer"
+msgstr "इस परत के बारे में नोट्स"
+
+#: ui/annotations-sidebar.slint:933
+msgctxt "AnnotationsSidebar"
+msgid "Layer notes"
+msgstr "परत के नोट्स"
+
+#: ui/annotations-sidebar.slint:941
+msgctxt "AnnotationsSidebar"
+msgid "Draw into this layer"
+msgstr "इस परत में बनाएँ"
+
+#: ui/annotations-sidebar.slint:942
+msgctxt "AnnotationsSidebar"
+msgid "Delete layer…"
+msgstr "परत हटाएँ…"
+
+#: ui/annotations-sidebar.slint:1020
+msgctxt "AnnotationsSidebar"
+msgid "Zoom to the annotation"
+msgstr "एनोटेशन पर ज़ूम करें"
+
+#: ui/annotations-sidebar.slint:1028
+msgctxt "AnnotationsSidebar"
+msgid "Copy measurements"
+msgstr "माप कॉपी करें"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the annotation"
+msgstr "एनोटेशन हटाएँ"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the selected annotations"
+msgstr "चुने गए एनोटेशन हटाएँ"
+
+#: ui/annotations-sidebar.slint:1065
+msgctxt "AnnotationsSidebar"
+msgid "Repair"
+msgstr "सुधारें"
+
+#: ui/annotations-sidebar.slint:1085
+msgctxt "AnnotationsSidebar"
+msgid "Unnamed"
+msgstr "अनाम"
+
+#: ui/annotations-sidebar.slint:1087
+msgctxt "AnnotationsSidebar"
+msgid "Annotation name"
+msgstr "एनोटेशन का नाम"
+
+#: ui/annotations-sidebar.slint:1098
+msgctxt "AnnotationsSidebar"
+msgid "Class"
+msgstr "वर्ग"
+
+#: ui/annotations-sidebar.slint:1104
+msgctxt "AnnotationsSidebar"
+msgid "Annotation class"
+msgstr "एनोटेशन वर्ग"
+
+#: ui/annotations-sidebar.slint:1115
+msgctxt "AnnotationsSidebar"
+msgid "Status"
+msgstr "स्थिति"
+
+#: ui/annotations-sidebar.slint:1121
+msgctxt "AnnotationsSidebar"
+msgid "Review status"
+msgstr "समीक्षा स्थिति"
+
+#: ui/annotations-sidebar.slint:1132
+msgctxt "AnnotationsSidebar"
+msgid "Layer"
+msgstr "परत"
+
+#: ui/annotations-sidebar.slint:1138
+msgctxt "AnnotationsSidebar"
+msgid "Annotation layer"
+msgstr "एनोटेशन परत"
+
+#: ui/annotations-sidebar.slint:1149
+msgctxt "AnnotationsSidebar"
+msgid "Locked"
+msgstr "लॉक"
+
+#: ui/annotations-sidebar.slint:1170 ui/annotations-sidebar.slint:1172
+msgctxt "AnnotationsSidebar"
+msgid "Description"
+msgstr "विवरण"
+
+#: ui/annotations-sidebar.slint:1183
+msgctxt "AnnotationsSidebar"
+msgid "MEASUREMENTS"
+msgstr "माप"
+
+#: ui/annotations-sidebar.slint:1213
+msgctxt "AnnotationsSidebar"
+msgid "PROPERTIES"
+msgstr "गुण"
+
+#: ui/annotations-sidebar.slint:1224
+msgctxt "AnnotationsSidebar"
+msgid "Property name"
+msgstr "गुण का नाम"
+
+#: ui/annotations-sidebar.slint:1233
+msgctxt "AnnotationsSidebar"
+msgid "Value"
+msgstr "मान"
+
+#: ui/annotations-sidebar.slint:1235
+msgctxt "AnnotationsSidebar"
+msgid "Property value"
+msgstr "गुण का मान"
+
+#: ui/annotations-sidebar.slint:1243
+msgctxt "AnnotationsSidebar"
+msgid "Remove property"
+msgstr "गुण निकालें"
+
+#: ui/annotations-sidebar.slint:1255
+msgctxt "AnnotationsSidebar"
+msgid "Add property"
+msgstr "गुण जोड़ें"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS"
+msgstr "टिप्पणियाँ"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS ({})"
+msgstr "टिप्पणियाँ ({})"
+
+#: ui/annotations-sidebar.slint:1294
+msgctxt "AnnotationsSidebar"
+msgid "Delete comment"
+msgstr "टिप्पणी हटाएँ"
+
+#: ui/annotations-sidebar.slint:1314
+msgctxt "AnnotationsSidebar"
+msgid "Add a comment"
+msgstr "टिप्पणी जोड़ें"
+
+#: ui/annotations-sidebar.slint:1316
+msgctxt "AnnotationsSidebar"
+msgid "New comment"
+msgstr "नई टिप्पणी"
+
+#. Translators: a button that adds the comment typed above.
+#: ui/annotations-sidebar.slint:1324
+msgctxt "AnnotationsSidebar"
+msgid "Comment"
+msgstr "टिप्पणी करें"
+
+#: ui/annotations-sidebar.slint:1358
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Select an annotation on the slide or in the list to see its details. Double-"
+"click a row to zoom to it; Ctrl+click selects several."
+msgstr ""
+"किसी एनोटेशन का विवरण देखने के लिए उसे स्लाइड पर या सूची में चुनें। किसी पंक्ति के एनोटेशन "
+"पर ज़ूम करने के लिए उस पंक्ति पर डबल-क्लिक करें; Ctrl+क्लिक से कई एनोटेशन चुने जाते हैं।"
+
+#: ui/annotations-sidebar.slint:1379
+msgctxt "AnnotationsSidebar"
+msgid ""
+"New annotations get the active class (●), and the Count tool counts it; "
+"Shift+click counts the second class (◐). Pressing a class's hotkey makes it "
+"active."
+msgstr ""
+"नए एनोटेशन को सक्रिय वर्ग (●) मिलता है, और गणना टूल उसी को गिनता है; Shift+क्लिक "
+"दूसरे वर्ग (◐) को गिनता है। किसी वर्ग की हॉटकी दबाने से वह सक्रिय हो जाता है।"
+
+#: ui/annotations-sidebar.slint:1418
+msgctxt "AnnotationsSidebar"
+msgid "Colour of {}"
+msgstr "{} का रंग"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Hide {}"
+msgstr "{} छिपाएँ"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Show {}"
+msgstr "{} दिखाएँ"
+
+#: ui/annotations-sidebar.slint:1466
+msgctxt "AnnotationsSidebar"
+msgid "Class settings"
+msgstr "वर्ग की सेटिंग्स"
+
+#: ui/annotations-sidebar.slint:1506 ui/annotations-sidebar.slint:1507
+msgctxt "AnnotationsSidebar"
+msgid "Class name"
+msgstr "वर्ग का नाम"
+
+#: ui/annotations-sidebar.slint:1523
+msgctxt "AnnotationsSidebar"
+msgid "Class opacity"
+msgstr "वर्ग की अपारदर्शिता"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Count with Shift+click"
+msgstr "Shift+क्लिक से गिनें"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Stop counting with Shift+click"
+msgstr "Shift+क्लिक से गिनना बंद करें"
+
+#: ui/annotations-sidebar.slint:1539
+msgctxt "AnnotationsSidebar"
+msgid "Delete…"
+msgstr "हटाएँ…"
+
+#: ui/annotations-sidebar.slint:1558
+msgctxt "AnnotationsSidebar"
+msgid "New class"
+msgstr "नया वर्ग"
+
+#: ui/annotations-sidebar.slint:1596
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Pick the Count tool (C) and click cells; Shift+click and Alt+click count the "
+"second and third class. Select regions or HPF fields to count inside them."
+msgstr ""
+"गणना टूल (C) चुनें और कोशिकाओं पर क्लिक करें; Shift+क्लिक और Alt+क्लिक दूसरे और तीसरे वर्ग "
+"को गिनते हैं। क्षेत्रों या HPF फ़ील्ड के भीतर गिनने के लिए उन्हें चुनें।"
+
+#: ui/annotations-sidebar.slint:1601
+msgctxt "AnnotationsSidebar"
+msgid "Count tool (C)"
+msgstr "गणना टूल (C)"
+
+#: ui/annotations-sidebar.slint:1602
+msgctxt "AnnotationsSidebar"
+msgid "HPF field (H)"
+msgstr "HPF फ़ील्ड (H)"
+
+#. Translators: the class a click with the Count tool counts.
+#: ui/annotations-sidebar.slint:1614
+msgctxt "AnnotationsSidebar"
+msgid "Click"
+msgstr "क्लिक"
+
+#: ui/annotations-sidebar.slint:1620
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by a click"
+msgstr "क्लिक से गिना जाने वाला वर्ग"
+
+#: ui/annotations-sidebar.slint:1631
+msgctxt "AnnotationsSidebar"
+msgid "Shift+click"
+msgstr "Shift+क्लिक"
+
+#: ui/annotations-sidebar.slint:1636
+msgctxt "AnnotationsSidebar"
+msgid "(same as click)"
+msgstr "(क्लिक जैसा)"
+
+#: ui/annotations-sidebar.slint:1637
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by Shift+click"
+msgstr "Shift+क्लिक से गिना जाने वाला वर्ग"
+
+#: ui/annotations-sidebar.slint:1648
+msgctxt "AnnotationsSidebar"
+msgid "Alt+click"
+msgstr "Alt+क्लिक"
+
+#: ui/annotations-sidebar.slint:1653
+msgctxt "AnnotationsSidebar"
+msgid "(none)"
+msgstr "(कोई नहीं)"
+
+#: ui/annotations-sidebar.slint:1654
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Class counted by Alt+click: PD-L1-positive immune cells for the combined "
+"positive score"
+msgstr ""
+"Alt+क्लिक से गिना जाने वाला वर्ग: संयुक्त पॉज़िटिव स्कोर के लिए PD-L1-पॉज़िटिव प्रतिरक्षा "
+"कोशिकाएँ"
+
+#: ui/annotations-sidebar.slint:1662
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Combined positive score: the click and Alt+click classes (PD-L1-positive "
+"tumour cells and PD-L1-positive immune cells) per 100 tumour cells (the "
+"click and Shift+click classes)."
+msgstr ""
+"संयुक्त पॉज़िटिव स्कोर: क्लिक और Alt+क्लिक वर्ग (PD-L1-पॉज़िटिव ट्यूमर कोशिकाएँ और PD-L1-"
+"पॉज़िटिव प्रतिरक्षा कोशिकाएँ) प्रति 100 ट्यूमर कोशिकाएँ (क्लिक और Shift+क्लिक वर्ग)।"
+
+#: ui/annotations-sidebar.slint:1677
+msgctxt "AnnotationsSidebar"
+msgid "Nothing counted here yet."
+msgstr "यहाँ अभी कुछ नहीं गिना गया है।"
+
+#: ui/annotations-sidebar.slint:1748
+msgctxt "AnnotationsSidebar"
+msgid "Count points in hidden layers"
+msgstr "छिपी परतों के बिंदु भी गिनें"
+
+#: ui/annotations-sidebar.slint:1759
+msgctxt "AnnotationsSidebar"
+msgid "Clear counts…"
+msgstr "गणनाएँ साफ़ करें…"
+
+#: ui/annotations-sidebar.slint:1771
+msgctxt "AnnotationsSidebar"
+msgid "HIGH-POWER FIELDS"
+msgstr "हाई-पावर फ़ील्ड"
+
+#: ui/annotations-sidebar.slint:1785
+msgctxt "AnnotationsSidebar"
+msgid "How the field size is given"
+msgstr "फ़ील्ड का आकार कैसे दिया गया है"
+
+#. Translators: FN is the eyepiece's field number, the diameter of the field
+#. of view.
+#: ui/annotations-sidebar.slint:1796
+msgctxt "AnnotationsSidebar"
+msgid "FN (mm)"
+msgstr "FN (mm)"
+
+#: ui/annotations-sidebar.slint:1803
+msgctxt "AnnotationsSidebar"
+msgid "Field number in mm"
+msgstr "mm में फ़ील्ड संख्या"
+
+#. Translators: the magnification of the objective, as in 40×.
+#: ui/annotations-sidebar.slint:1811
+msgctxt "AnnotationsSidebar"
+msgid "Objective ×"
+msgstr "अभिदृश्यक ×"
+
+#: ui/annotations-sidebar.slint:1821
+msgctxt "AnnotationsSidebar"
+msgid "Objective magnification"
+msgstr "अभिदृश्यक आवर्धन"
+
+#: ui/annotations-sidebar.slint:1828 ui/annotations-sidebar.slint:1853
+msgctxt "AnnotationsSidebar"
+msgid "Apply"
+msgstr "लागू करें"
+
+#: ui/annotations-sidebar.slint:1839
+msgctxt "AnnotationsSidebar"
+msgid "Area (mm²)"
+msgstr "क्षेत्रफल (mm²)"
+
+#: ui/annotations-sidebar.slint:1846
+msgctxt "AnnotationsSidebar"
+msgid "Field area in square millimetres"
+msgstr "वर्ग मिलीमीटर में फ़ील्ड का क्षेत्रफल"
+
+#: ui/annotations-sidebar.slint:1873
+msgctxt "AnnotationsSidebar"
+msgid "{n} field placed on this slide."
+msgid_plural "{n} fields placed on this slide."
+msgstr[0] "इस स्लाइड पर {n} फ़ील्ड रखा गया है।"
+msgstr[1] "इस स्लाइड पर {n} फ़ील्ड रखे गए हैं।"
+
+#: ui/annotations-sidebar.slint:1885
+msgctxt "AnnotationsSidebar"
+msgid "Select all fields"
+msgstr "सभी फ़ील्ड चुनें"
+
+#: ui/annotations-sidebar.slint:1924
+msgctxt "AnnotationsSidebar"
+msgid "IMPORT AND EXPORT"
+msgstr "आयात और निर्यात"
+
+#: ui/annotations-sidebar.slint:1928
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Imports: GeoJSON (QuPath and others), eov JSON, ASAP XML, Aperio ImageScope "
+"XML, Hamamatsu NDPA and DICOM bulk annotations. Coordinates are level-0 "
+"pixels with y pointing down."
+msgstr ""
+"आयात: GeoJSON (QuPath और अन्य), eov JSON, ASAP XML, Aperio ImageScope XML, "
+"Hamamatsu NDPA और DICOM बल्क एनोटेशन। निर्देशांक स्तर-0 पिक्सेल हैं, जिनमें y नीचे की ओर "
+"बढ़ता है।"
+
+#: ui/annotations-sidebar.slint:1935
+msgctxt "AnnotationsSidebar"
+msgid "Import…"
+msgstr "आयात करें…"
+
+#: ui/annotations-sidebar.slint:1991
+msgctxt "AnnotationsSidebar"
+msgid "Back up…"
+msgstr "बैकअप लें…"
+
+#: ui/annotations-sidebar.slint:1992
+msgctxt "AnnotationsSidebar"
+msgid "Merge…"
+msgstr "मर्ज करें…"
+
+#. Translators: a reader is a person who annotates slides; a second reader
+#. annotates a blinded copy independently so two readers can be compared (as
+#. in a reader study); use the word for an observer or annotator, not the
+#. clinical term for a second diagnostic opinion.
+#: ui/annotations-sidebar.slint:2009
+msgctxt "AnnotationsSidebar"
+msgid "SECOND READER"
+msgstr "दूसरा पाठक"
+
+#: ui/annotations-sidebar.slint:2013
+msgctxt "AnnotationsSidebar"
+msgid ""
+"A blinded copy holds the visible layers' shapes, classes and names, without "
+"authors, comments, statuses, descriptions or properties. Compare reads "
+"another reader's export and compares it with the visible layers: counts per "
+"class, matched points and overlapping regions."
+msgstr ""
+"ब्लाइंडेड प्रतिलिपि में दृश्यमान परतों की आकृतियाँ, वर्ग और नाम होते हैं; लेखक, टिप्पणियाँ, "
+"स्थितियाँ, विवरण या गुण नहीं। “तुलना करें” किसी अन्य पाठक का निर्यात पढ़कर उसकी तुलना "
+"दृश्यमान परतों से करता है: प्रति वर्ग गणनाएँ, मिलान किए गए बिंदु और अतिव्यापी क्षेत्र।"
+
+#: ui/annotations-sidebar.slint:2018
+msgctxt "AnnotationsSidebar"
+msgid "Blinded copy…"
+msgstr "ब्लाइंडेड प्रतिलिपि…"
+
+#: ui/annotations-sidebar.slint:2019
+msgctxt "AnnotationsSidebar"
+msgid "Compare…"
+msgstr "तुलना करें…"
+
+#. Translators: a button: compare with the same file again.
+#: ui/annotations-sidebar.slint:2022
+msgctxt "AnnotationsSidebar"
+msgid "Again"
+msgstr "फिर से"
+
+#. Translators: a button: remove the comparison.
+#: ui/annotations-sidebar.slint:2029
+msgctxt "AnnotationsSidebar"
+msgid "Clear"
+msgstr "साफ़ करें"
+
+#: ui/annotations-sidebar.slint:2066
+msgctxt "AnnotationsSidebar"
+msgid "Neither reader has points or regions in the compared layers."
+msgstr "तुलना की गई परतों में किसी भी पाठक के बिंदु या क्षेत्र नहीं हैं।"
+
+#: ui/annotations-sidebar.slint:2126
+msgctxt "AnnotationsSidebar"
+msgid "DATABASE"
+msgstr "डेटाबेस"
+
+#: ui/annotations-sidebar.slint:2150
+msgctxt "AnnotationsSidebar"
+msgid "Database file"
+msgstr "डेटाबेस फ़ाइल"
+
+#. Translators: {} is the path of the old database file.
+#: ui/annotations-sidebar.slint:2167
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Annotations made with eov before 1.0 are in {}. Bring them into this "
+"database (the old file is not changed):"
+msgstr ""
+"eov 1.0 से पहले बनाए गए एनोटेशन {} में हैं। उन्हें इस डेटाबेस में लाएँ (पुरानी फ़ाइल नहीं बदली "
+"जाती):"
+
+#: ui/annotations-sidebar.slint:2179
+msgctxt "AnnotationsSidebar"
+msgid "Bring them in"
+msgstr "उन्हें लाएँ"
+
+#: ui/annotations-sidebar.slint:2195
+msgctxt "AnnotationsSidebar"
+msgid "OTHER SLIDES"
+msgstr "अन्य स्लाइडें"
+
+#. Translators: a button that lists the other slides in the database.
+#: ui/annotations-sidebar.slint:2202
+msgctxt "AnnotationsSidebar"
+msgid "List"
+msgstr "सूची"
+
+#. Translators: a button: attach the annotations of this slide to the open
+#. slide.
+#: ui/annotations-sidebar.slint:2236
+msgctxt "AnnotationsSidebar"
+msgid "Attach"
+msgstr "संलग्न करें"
+
+#: ui/annotations-sidebar.slint:2258
+msgctxt "AnnotationsSidebar"
+msgid "AUTHOR AND EXPORTS"
+msgstr "लेखक और निर्यात"
+
+#: ui/annotations-sidebar.slint:2265 ui/annotations-sidebar.slint:2273
+msgctxt "AnnotationsSidebar"
+msgid "Author"
+msgstr "लेखक"
+
+#: ui/annotations-sidebar.slint:2272
+msgctxt "AnnotationsSidebar"
+msgid "Your name or initials"
+msgstr "आपका नाम या आद्याक्षर"
+
+#: ui/annotations-sidebar.slint:2284 ui/annotations-sidebar.slint:2291
+msgctxt "AnnotationsSidebar"
+msgid "Organization"
+msgstr "संगठन"
+
+#: ui/annotations-sidebar.slint:2302 ui/annotations-sidebar.slint:2309
+msgctxt "AnnotationsSidebar"
+msgid "Project"
+msgstr "परियोजना"
+
+#: ui/annotations-sidebar.slint:2320 ui/annotations-sidebar.slint:2328
+msgctxt "AnnotationsSidebar"
+msgid "License"
+msgstr "लाइसेंस"
+
+#: ui/annotations-sidebar.slint:2327
+msgctxt "AnnotationsSidebar"
+msgid "e.g. CC-BY-4.0"
+msgstr "जैसे CC-BY-4.0"
+
+#: ui/annotations-sidebar.slint:2336
+msgctxt "AnnotationsSidebar"
+msgid "Include the slide's file name in exports"
+msgstr "निर्यात में स्लाइड की फ़ाइल का नाम शामिल करें"
+
+#: ui/annotations-sidebar.slint:2346
+msgctxt "AnnotationsSidebar"
+msgid "DISPLAY"
+msgstr "प्रदर्शन"
+
+#: ui/annotations-sidebar.slint:2350
+msgctxt "AnnotationsSidebar"
+msgid "Show names on the slide"
+msgstr "स्लाइड पर नाम दिखाएँ"
+
+#: ui/annotations-sidebar.slint:2361 ui/annotations-sidebar.slint:2369
+msgctxt "AnnotationsSidebar"
+msgid "Point size"
+msgstr "बिंदु का आकार"
+
+#: ui/annotations-sidebar.slint:2380 ui/annotations-sidebar.slint:2386
+msgctxt "AnnotationsSidebar"
+msgid "Fill opacity"
+msgstr "भराव की अपारदर्शिता"
+
+#. Translators: S is the brush tool's key.
+#: ui/annotations-sidebar.slint:2397
+msgctxt "AnnotationsSidebar"
+msgid "BRUSH (S)"
+msgstr "ब्रश (S)"
+
+#. Translators: the size of the brush.
+#: ui/annotations-sidebar.slint:2405
+msgctxt "AnnotationsSidebar"
+msgid "Size"
+msgstr "आकार"
+
+#: ui/annotations-sidebar.slint:2413
+msgctxt "AnnotationsSidebar"
+msgid "Brush size"
+msgstr "ब्रश का आकार"
+
+#: ui/annotations-sidebar.slint:2429
+msgctxt "AnnotationsSidebar"
+msgid "Erase from the selected region"
+msgstr "चुने गए क्षेत्र से मिटाएँ"
+
+#: ui/annotations-sidebar.slint:2437
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Paint over a selected region to extend it, elsewhere to make a new one. Hold "
+"Alt to erase; [ and ] change the size."
+msgstr ""
+"किसी चुने गए क्षेत्र को बढ़ाने के लिए उसके ऊपर पेंट करें, नया क्षेत्र बनाने के लिए कहीं और। "
+"मिटाने के लिए Alt दबाए रखें; [ और ] आकार बदलते हैं।"
+
+#: ui/annotations-sidebar.slint:2557
+msgctxt "AnnotationsSidebar"
+msgid "Colours"
+msgstr "रंग"
+
+#: ui/import-dialog.slint:117 ui/import-dialog.slint:124
+msgctxt "ImportDialog"
+msgid "Import annotations"
+msgstr "एनोटेशन आयात करें"
+
+#: ui/import-dialog.slint:186
+msgctxt "ImportDialog"
+msgid "NOTES"
+msgstr "नोट्स"
+
+#: ui/import-dialog.slint:214
+msgctxt "ImportDialog"
+msgid "Add to the existing layers"
+msgstr "मौजूदा परतों में जोड़ें"
+
+#: ui/import-dialog.slint:215
+msgctxt "ImportDialog"
+msgid "Imported annotations join the layer with the same name."
+msgstr "आयात किए गए एनोटेशन समान नाम वाली परत में जुड़ जाते हैं।"
+
+#: ui/import-dialog.slint:223
+msgctxt "ImportDialog"
+msgid "Replace the existing layers"
+msgstr "मौजूदा परतों को बदलें"
+
+#: ui/import-dialog.slint:224
+msgctxt "ImportDialog"
+msgid "The existing layers are deleted (this can be undone)."
+msgstr "मौजूदा परतें हटा दी जाती हैं (इसे पूर्ववत किया जा सकता है)।"
+
+#: ui/import-dialog.slint:232
+msgctxt "ImportDialog"
+msgid "Keep both"
+msgstr "दोनों रखें"
+
+#. Translators: "Tumour" is only an example of a layer name from the imported
+#. file: translate it, and keep the " (2)" that eov adds.
+#: ui/import-dialog.slint:234
+msgctxt "ImportDialog"
+msgid "Imported layers get a new name, such as \"Tumour (2)\"."
+msgstr "आयात की गई परतों को नया नाम मिलता है, जैसे “ट्यूमर (2)”।"
+
+#: ui/import-dialog.slint:243
+msgctxt "ImportDialog"
+msgid "The import is one step: Ctrl+Z (⌘Z) removes everything it added."
+msgstr "आयात एक ही चरण है: Ctrl+Z (⌘Z) उसके द्वारा जोड़ी गई हर चीज़ हटा देता है।"
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Cancel"
+msgstr "रद्द करें"
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Close"
+msgstr "बंद करें"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import"
+msgstr "आयात करें"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import anyway"
+msgstr "फिर भी आयात करें"
+
+#: ui/widgets.slint:655
+msgctxt "Swatch"
+msgid "Change colour"
+msgstr "रंग बदलें"
+
+#: ui/widgets.slint:694
+msgctxt "KeyField"
+msgid "Hotkey"
+msgstr "हॉटकी"
+
+#: ui/widgets.slint:696
+msgctxt "KeyField"
+msgid "Click, then press a key. Backspace removes the hotkey."
+msgstr "क्लिक करें, फिर कोई कुंजी दबाएँ। Backspace हॉटकी हटा देता है।"

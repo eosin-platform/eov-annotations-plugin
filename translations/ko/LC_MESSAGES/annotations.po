@@ -1,0 +1,3180 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: annotations\n"
+"Report-Msgid-Bugs-To: https://github.com/eosin-platform/eov-annotations-"
+"plugin/issues\n"
+"Language-Team: Korean\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Review-Status: machine-translated; not yet reviewed by a native speaker\n"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid "Annotations"
+msgstr "주석"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid ""
+"Point, region, line and text annotations with reusable classes, cell "
+"counting, HPF fields and measurements; GeoJSON (QuPath) import and export, "
+"ASAP and Aperio ImageScope XML import."
+msgstr ""
+"점, 영역, 선, 텍스트 주석과 재사용 가능한 클래스, 세포 계수, HPF 시야, 측정 "
+"기능을 제공합니다. GeoJSON(QuPath) 가져오기 및 내보내기와 ASAP, Aperio "
+"ImageScope XML 가져오기를 지원합니다."
+
+#: src/actions.rs:23
+msgid "The annotations of this slide are still loading; try again in a moment."
+msgstr "이 슬라이드의 주석을 아직 불러오는 중입니다. 잠시 후 다시 시도하세요."
+
+#: src/actions.rs:27 src/sidebar.rs:1390 src/sidebar.rs:1474
+msgid "That layer no longer exists."
+msgstr "해당 레이어가 더 이상 없습니다."
+
+#: src/actions.rs:31
+msgid "That annotation no longer exists."
+msgstr "해당 주석이 더 이상 없습니다."
+
+#: src/actions.rs:35 src/sidebar.rs:1605
+msgid "That class no longer exists."
+msgstr "해당 클래스가 더 이상 없습니다."
+
+#: src/actions.rs:39 src/transfer.rs:648 src/transfer.rs:658
+msgid "Layer \"{}\" is locked."
+msgstr "레이어 \"{}\"이(가) 잠겨 있습니다."
+
+#: src/actions.rs:43
+msgid "Parts outside the slide were cut off."
+msgstr "슬라이드 바깥 부분은 잘라 냈습니다."
+
+#: src/actions.rs:62
+msgid "The slide is not open any more."
+msgstr "슬라이드가 더 이상 열려 있지 않습니다."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:136
+msgid "The outline crossed itself and was split into {n} parts."
+msgid_plural "The outline crossed itself and was split into {n} parts."
+msgstr[0] "윤곽선이 자기 교차하여 {n}개 부분으로 나뉘었습니다."
+
+#: src/actions.rs:140
+msgid "The outline crossed itself and was repaired."
+msgstr "윤곽선이 자기 교차하여 복구되었습니다."
+
+#: src/actions.rs:156
+msgid "The HPF size is not valid; check it in the Count tab."
+msgstr "HPF 크기가 올바르지 않습니다. 계수 탭에서 확인하세요."
+
+#: src/actions.rs:160
+msgid "This slide has no pixel size, so HPF fields cannot be sized."
+msgstr ""
+"이 슬라이드에는 픽셀 크기 정보가 없어 HPF 시야의 크기를 정할 수 없습니다."
+
+#: src/actions.rs:207
+msgid "Count cell"
+msgstr "세포 계수"
+
+#: src/actions.rs:218 src/lib.rs:613
+msgid "Add point"
+msgstr "점 추가"
+
+#: src/actions.rs:228
+msgid "Add line"
+msgstr "선 추가"
+
+#: src/actions.rs:242
+msgid "Add arrow"
+msgstr "화살표 추가"
+
+#: src/actions.rs:258
+msgid "Add text"
+msgstr "텍스트 추가"
+
+#: src/actions.rs:303
+msgid ""
+"To add the shape to a region (Shift) or cut it from a region (Alt), select "
+"exactly one region first. The shape was added as a new annotation."
+msgstr ""
+"도형을 영역에 추가하거나(Shift) 영역에서 잘라 내려면(Alt) 먼저 영역을 정확히 "
+"하나만 선택하세요. 도형은 새 주석으로 추가되었습니다."
+
+#: src/actions.rs:314 src/actions.rs:325
+msgid "Add region"
+msgstr "영역 추가"
+
+#: src/actions.rs:378
+msgid "Place HPF field"
+msgstr "HPF 시야 배치"
+
+#: src/actions.rs:399
+msgid "This field extends past the slide edge; its area includes empty canvas."
+msgstr ""
+"이 시야는 슬라이드 가장자리를 벗어나므로 면적에 빈 캔버스가 포함됩니다."
+
+#: src/actions.rs:429
+msgid "Add to region"
+msgstr "영역에 추가"
+
+#: src/actions.rs:431
+msgid "Cut from region"
+msgstr "영역에서 잘라 내기"
+
+#: src/actions.rs:439
+msgid "The selected region no longer exists."
+msgstr "선택한 영역이 더 이상 없습니다."
+
+#: src/actions.rs:441
+msgid "The selected region is locked."
+msgstr "선택한 영역이 잠겨 있습니다."
+
+#: src/actions.rs:452
+msgid "Only regions can be combined."
+msgstr "영역끼리만 결합할 수 있습니다."
+
+#: src/actions.rs:460
+msgid "The cut removed the whole region."
+msgstr "잘라 내기로 영역 전체가 제거되었습니다."
+
+#: src/actions.rs:483
+msgid ""
+"The shapes do not touch; the new shape was added as a separate annotation."
+msgstr "도형이 서로 닿지 않아 새 도형을 별도의 주석으로 추가했습니다."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:488
+msgid "The cut split the region into {n} parts."
+msgid_plural "The cut split the region into {n} parts."
+msgstr[0] "잘라 내기로 영역이 {n}개 부분으로 나뉘었습니다."
+
+#: src/actions.rs:522
+msgid "Edit shape"
+msgstr "도형 편집"
+
+#: src/actions.rs:544
+msgid "The annotation is locked."
+msgstr "주석이 잠겨 있습니다."
+
+#: src/actions.rs:560
+msgid "That edit would turn the arrow into another shape, so it was undone."
+msgstr ""
+"해당 편집으로 화살표가 다른 도형으로 바뀌게 되므로 편집을 되돌렸습니다."
+
+#: src/actions.rs:564
+msgid "That edit was undone."
+msgstr "해당 편집을 되돌렸습니다."
+
+#: src/actions.rs:591
+msgid "The edit was undone: {}"
+msgstr "편집을 되돌렸습니다: {}"
+
+#: src/actions.rs:596
+msgid "That edit would make the outline cross itself, so it was undone."
+msgstr "해당 편집으로 윤곽선이 자기 교차하게 되므로 편집을 되돌렸습니다."
+
+#: src/actions.rs:629
+msgid "Delete annotation"
+msgid_plural "Delete {n} annotations"
+msgstr[0] "주석 {n}개 삭제"
+
+#: src/actions.rs:649
+msgid "{n} locked annotation was kept."
+msgid_plural "{n} locked annotations were kept."
+msgstr[0] "잠긴 주석 {n}개는 그대로 두었습니다."
+
+#: src/actions.rs:703
+msgid "The target layer is locked or gone."
+msgstr "대상 레이어가 잠겨 있거나 없어졌습니다."
+
+#: src/actions.rs:712
+msgid "{n} locked annotation was not changed."
+msgid_plural "{n} locked annotations were not changed."
+msgstr[0] "잠긴 주석 {n}개는 변경하지 않았습니다."
+
+#: src/actions.rs:777
+msgid "Could not zoom to the annotation"
+msgstr "주석으로 확대/축소할 수 없습니다"
+
+#: src/actions.rs:790
+msgid "New layer"
+msgstr "새 레이어"
+
+#: src/actions.rs:865
+msgid "Rename layer"
+msgstr "레이어 이름 바꾸기"
+
+#: src/actions.rs:877
+msgid "Delete layer"
+msgstr "레이어 삭제"
+
+#: src/actions.rs:887
+msgid "Delete layer \"{}\""
+msgstr "레이어 \"{}\" 삭제"
+
+#: src/actions.rs:897
+msgid "Choose layer"
+msgstr "레이어 선택"
+
+#: src/actions.rs:902
+msgid ""
+"New annotations go to a regular layer; count points and HPF fields have "
+"their own."
+msgstr ""
+"새 주석은 일반 레이어에 추가됩니다. 계수 점과 HPF 시야에는 전용 레이어가 있습"
+"니다."
+
+#. Translators: an undo step, shown by eov as "Undo {}".
+#: src/actions.rs:918
+msgid "Clear counts"
+msgstr "계수 지우기"
+
+#: src/actions.rs:950
+msgid ""
+"There are no HPF fields on this slide yet. Use the HPF field tool (H) to "
+"place them."
+msgstr ""
+"이 슬라이드에는 아직 HPF 시야가 없습니다. HPF 시야 도구(H)로 배치하세요."
+
+#: src/actions.rs:960
+msgid "Repair outline"
+msgstr "윤곽선 복구"
+
+#: src/actions.rs:975
+msgid "Nothing is left of the outline."
+msgstr "윤곽선이 남아 있지 않습니다."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:997
+msgid "The outline was split into {n} parts."
+msgid_plural "The outline was split into {n} parts."
+msgstr[0] "윤곽선이 {n}개 부분으로 나뉘었습니다."
+
+#: src/actions.rs:1012
+msgid "Could not attach the annotations"
+msgstr "주석을 연결할 수 없습니다"
+
+#: src/actions.rs:1018
+msgid "Attach annotations of another slide"
+msgstr "다른 슬라이드의 주석 연결"
+
+#: src/actions.rs:1024
+msgid "Those annotations already belong to this slide."
+msgstr "해당 주석은 이미 이 슬라이드에 속해 있습니다."
+
+#: src/actions.rs:1027
+msgid "That slide has no annotations left."
+msgstr "해당 슬라이드에 남은 주석이 없습니다."
+
+#: src/actions.rs:1035
+msgid "Attached {n} layer to this slide."
+msgid_plural "Attached {n} layers to this slide."
+msgstr[0] "레이어 {n}개를 이 슬라이드에 연결했습니다."
+
+#: src/actions.rs:1076
+msgid "New class"
+msgstr "새 클래스"
+
+#: src/actions.rs:1138
+msgid "Rename class"
+msgstr "클래스 이름 바꾸기"
+
+#: src/actions.rs:1147
+msgid "A class named \"{}\" already exists."
+msgstr "이름이 \"{}\"인 클래스가 이미 있습니다."
+
+#: src/actions.rs:1161
+msgid "Set class hotkey"
+msgstr "클래스 단축키 설정"
+
+#: src/actions.rs:1186
+msgid "Change class colour"
+msgstr "클래스 색 변경"
+
+#: src/actions.rs:1190 src/sidebar.rs:1358
+msgid "\"{}\" is not a colour."
+msgstr "\"{}\"은(는) 올바른 색이 아닙니다."
+
+#: src/actions.rs:1197
+msgid "Delete class"
+msgstr "클래스 삭제"
+
+#: src/actions.rs:1201
+msgid "Delete class \"{}\""
+msgstr "클래스 \"{}\" 삭제"
+
+#: src/actions.rs:1243 src/lib.rs:96 src/overlay.rs:164 src/sidebar.rs:151
+#: src/sidebar.rs:384
+msgid "Unclassified"
+msgstr "미분류"
+
+#: src/actions.rs:1244
+msgid "Class: {}"
+msgstr "클래스: {}"
+
+#. Translators: on the slide, beside the HPF field that follows the
+#. pointer: its area and how many points (such as counted cells) lie in it.
+#: src/actions.rs:1274
+msgid "1 HPF · {area} mm² · {n} point"
+msgid_plural "1 HPF · {area} mm² · {n} points"
+msgstr[0] "1 HPF · {area} mm² · 점 {n}개"
+
+#: src/actions.rs:1466
+msgid "Add comment"
+msgstr "댓글 추가"
+
+#: src/actions.rs:1472
+msgid "Write the comment first."
+msgstr "먼저 댓글을 작성하세요."
+
+#: src/actions.rs:1481
+msgid "An annotation can have at most {n} comments."
+msgid_plural "An annotation can have at most {n} comments."
+msgstr[0] "주석 하나에는 댓글을 최대 {n}개까지 달 수 있습니다."
+
+#: src/actions.rs:1511
+msgid "Delete comment"
+msgstr "댓글 삭제"
+
+#: src/actions.rs:1524
+msgid "That comment no longer exists."
+msgstr "해당 댓글이 더 이상 없습니다."
+
+#: src/actions.rs:1723
+msgid ""
+"Brush {} px, eraser: paint over a selected region to erase from it; [ and ] "
+"change the size"
+msgstr ""
+"브러시 {} px, 지우개: 선택한 영역 위를 칠해서 지우기, [ 및 ]: 크기 변경"
+
+#: src/actions.rs:1728
+msgid ""
+"Brush {} px: paint a region (over a selected region to extend it); Alt "
+"erases; [ and ] change the size"
+msgstr ""
+"브러시 {} px: 영역 칠하기(선택한 영역 위에서는 그 영역을 확장), Alt: 지우기, "
+"[ 및 ]: 크기 변경"
+
+#: src/actions.rs:1742
+msgid "Erase"
+msgstr "지우기"
+
+#: src/actions.rs:1744
+msgid "Brush stroke"
+msgstr "브러시 획"
+
+#: src/actions.rs:1768
+msgid "The stroke is outside the slide."
+msgstr "획이 슬라이드 밖에 있습니다."
+
+#: src/actions.rs:1818
+msgid "Select the region to erase from."
+msgstr "지울 영역을 선택하세요."
+
+#: src/actions.rs:1843
+msgid "The eraser did not touch the selected region."
+msgstr "지우개가 선택한 영역에 닿지 않았습니다."
+
+#. Translators: a part of the plugin that works in the background.
+#: src/core.rs:228
+msgid "Could not start a worker thread"
+msgstr "작업 스레드를 시작할 수 없습니다"
+
+#: src/core.rs:385
+msgid "Internal error while opening the database"
+msgstr "데이터베이스를 여는 중 내부 오류가 발생했습니다"
+
+#: src/core.rs:393
+msgid "Internal error while loading annotations"
+msgstr "주석을 불러오는 중 내부 오류가 발생했습니다"
+
+#: src/core.rs:398
+msgid "Internal error while saving annotations"
+msgstr "주석을 저장하는 중 내부 오류가 발생했습니다"
+
+#: src/core.rs:403
+msgid "Internal error while undoing"
+msgstr "실행 취소 중 내부 오류가 발생했습니다"
+
+#: src/core.rs:408
+msgid "Internal error while working on the database"
+msgstr "데이터베이스 작업 중 내부 오류가 발생했습니다"
+
+#: src/core.rs:427
+msgid "Internal error while reading or writing a file"
+msgstr "파일을 읽거나 쓰는 중 내부 오류가 발생했습니다"
+
+#: src/core.rs:561
+msgid "The annotation database could not be opened"
+msgstr "주석 데이터베이스를 열 수 없습니다"
+
+#: src/core.rs:590
+msgid "Annotations from eov before 1.0"
+msgstr "eov 1.0 이전 버전의 주석"
+
+#: src/core.rs:592
+msgid ""
+"The annotations plugin of eov before 1.0 left a database at {}. Bring its "
+"annotations into the current database? The old file is not changed. You can "
+"also do this later in the Data tab of the annotations panel."
+msgstr ""
+"eov 1.0 이전 버전의 주석 플러그인이 {}에 데이터베이스를 남겼습니다. 그 주석"
+"을 현재 데이터베이스로 가져오시겠습니까? 이전 파일은 변경되지 않습니다. 나중"
+"에 주석 패널의 데이터 탭에서 가져올 수도 있습니다."
+
+#: src/core.rs:597
+msgid "Bring them in"
+msgstr "가져오기"
+
+#: src/core.rs:598
+msgid "Not now"
+msgstr "나중에"
+
+#. Translators: the plugin could not ask whether to bring in the annotations made
+#. with eov before 1.0 (the title of that question is "Annotations from eov before 1.0").
+#: src/core.rs:612
+msgid "Could not offer the annotations from eov before 1.0"
+msgstr "eov 1.0 이전 버전의 주석을 가져올지 물어볼 수 없습니다"
+
+#: src/core.rs:657 src/sidebar.rs:457
+msgid "Could not load this slide's annotations: {}"
+msgstr "이 슬라이드의 주석을 불러올 수 없습니다: {}"
+
+#. Translators: a second read is an independent annotation of the slide by another person
+#. (as in a reader study), not a clinical second opinion. Data, Second reader and Blinded
+#. copy are the tab, section and button of the annotations panel: use their translations.
+#: src/core.rs:670
+msgid ""
+"{opened} has the same content as {annotated}, so it shows and edits the same "
+"annotations. For an independent second read, use Data → Second reader → "
+"Blinded copy."
+msgstr ""
+"{opened}은(는) {annotated}와(과) 내용이 같으므로 같은 주석을 표시하고 편집합"
+"니다. 독립적인 제2 판독을 하려면 데이터 → 제2 판독자 → 맹검 사본을 사용하세"
+"요."
+
+#: src/core.rs:721 src/core.rs:1019 src/core.rs:1156
+msgid "the database is not open"
+msgstr "데이터베이스가 열려 있지 않습니다"
+
+#: src/core.rs:809
+msgid "{n} annotation of {file} could not be read and was skipped."
+msgid_plural "{n} annotations of {file} could not be read and were skipped."
+msgstr[0] "{file}의 주석 {n}개를 읽을 수 없어 건너뛰었습니다."
+
+#: src/core.rs:900
+msgid "Could not reload annotations"
+msgstr "주석을 다시 불러올 수 없습니다"
+
+#: src/core.rs:931
+msgid "Annotations were changed by another eov window and have been reloaded."
+msgstr "다른 eov 창에서 주석이 변경되어 다시 불러왔습니다."
+
+#: src/core.rs:957
+msgid "the database stayed locked"
+msgstr "데이터베이스가 계속 잠겨 있었습니다"
+
+#: src/core.rs:964
+msgid "a class with that name already exists"
+msgstr "같은 이름의 클래스가 이미 있습니다"
+
+#: src/core.rs:966
+msgid "the annotation database is read-only"
+msgstr "주석 데이터베이스가 읽기 전용입니다"
+
+#: src/core.rs:969
+msgid "the annotation was changed elsewhere in the meantime"
+msgstr "그사이 다른 곳에서 주석이 변경되었습니다"
+
+#: src/core.rs:971
+msgid "the layer was changed elsewhere in the meantime"
+msgstr "그사이 다른 곳에서 레이어가 변경되었습니다"
+
+#: src/core.rs:972
+msgid "the class was changed elsewhere in the meantime"
+msgstr "그사이 다른 곳에서 클래스가 변경되었습니다"
+
+#: src/core.rs:973
+msgid "a layer being moved was changed elsewhere in the meantime"
+msgstr "이동 중인 레이어가 그사이 다른 곳에서 변경되었습니다"
+
+#: src/core.rs:1053
+msgid "Could not save \"{}\""
+msgstr "\"{}\" 작업을 저장할 수 없습니다"
+
+#: src/core.rs:1123
+msgid "This annotation change can no longer be undone."
+msgstr "이 주석 변경은 더 이상 실행 취소할 수 없습니다."
+
+#: src/core.rs:1137
+msgid "The slide of this change is not open any more."
+msgstr "이 변경이 적용된 슬라이드가 더 이상 열려 있지 않습니다."
+
+#: src/core.rs:1176
+msgid "Could not redo \"{}\""
+msgstr "\"{}\" 작업을 다시 실행할 수 없습니다"
+
+#: src/core.rs:1178
+msgid "Could not undo \"{}\""
+msgstr "\"{}\" 작업을 실행 취소할 수 없습니다"
+
+#. Translators: cells per square millimetre, with the 95% confidence interval.
+#: src/counting.rs:185
+msgid "{density} /mm² (95% {low}–{high})"
+msgstr "{density} /mm²(95% {low}–{high})"
+
+#. Translators: cells per 10 high-power fields.
+#: src/counting.rs:194
+msgid "{} /10 HPF"
+msgstr "{} /10 HPF"
+
+#: src/counting.rs:222
+msgid "100 (capped; the ratio is higher)"
+msgstr "100(상한값, 실제 비율은 더 높음)"
+
+#. Translators: CPS is the PD-L1 combined positive score; {positive},
+#. {negative} and {immune} are names of classes of cells.
+#: src/counting.rs:234
+msgid ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cell "
+"({positive} + {negative}) × 100."
+msgid_plural ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cells "
+"({positive} + {negative}) × 100."
+msgstr[0] ""
+"CPS {score} — 종양 세포({positive} + {negative}) {n}개당 ({a} {positive} + "
+"{c} {immune}) × 100."
+
+#: src/counting.rs:248
+msgid "Fewer than {n} tumour cells: below the minimum for a valid score."
+msgid_plural ""
+"Fewer than {n} tumour cells: below the minimum for a valid score."
+msgstr[0] ""
+"종양 세포가 {n}개 미만입니다. 유효한 점수를 내기 위한 최소 개수에 못 미칩니"
+"다."
+
+#. Translators: e.g. "Ki-67+ index: 25.0 % (95% 20.1–30.4 %) — 25 of 100 (Ki-67+ + Ki-67-)";
+#. {class} and {other} are names of classes of cells.
+#: src/counting.rs:263
+msgid ""
+"{class} index: {value} % (95% {low}–{high} %) — {k} of {total} ({class} + "
+"{other})"
+msgstr ""
+"{class} 지수: {value}%(95% {low}–{high}%) — {total}개 중 {k}개({class} + "
+"{other})"
+
+#: src/db/mod.rs:116
+msgid "The annotation database is read-only; editing is disabled."
+msgstr "주석 데이터베이스가 읽기 전용이므로 편집할 수 없습니다."
+
+#: src/db/mod.rs:119
+msgid "{n} layer colour was unreadable and was replaced."
+msgid_plural "{n} layer colours were unreadable and were replaced."
+msgstr[0] "레이어 색 {n}개를 읽을 수 없어 다른 색으로 바꿨습니다."
+
+#. Translators: {slides} in "Upgraded the annotation database from the pre-1.0 format: {slides}, …".
+#: src/db/mod.rs:131
+msgid "{n} slide"
+msgid_plural "{n} slides"
+msgstr[0] "슬라이드 {n}개"
+
+#. Translators: {slides} is "1 slide" or "3 slides" (translated on its own).
+#: src/db/mod.rs:136
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotation."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotations."
+msgstr[0] ""
+"주석 데이터베이스를 1.0 이전 형식에서 업그레이드했습니다: {slides}, 주석 {n}"
+"개."
+
+#. Translators: {slides} is "1 slide" or "3 slides", {annotations} is
+#. "1 annotation" or "5 annotations" (each translated on its own).
+#: src/db/mod.rs:145
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotation skipped."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotations skipped."
+msgstr[0] ""
+"주석 데이터베이스를 1.0 이전 형식에서 업그레이드했습니다: {slides}, "
+"{annotations}, 읽을 수 없어 건너뛴 주석 {n}개."
+
+#. Translators: a number of annotations on its own, in two texts: {annotations} in
+#. "Upgraded the annotation database from the pre-1.0 format: {slides}, {annotations}, …"
+#. and {ours} in "This slide's visible layers ({ours}) against the {n} annotations in {name}, …".
+#: src/db/mod.rs:153 src/state.rs:516
+msgid "{n} annotation"
+msgid_plural "{n} annotations"
+msgstr[0] "주석 {n}개"
+
+#: src/db/mod.rs:159
+msgid ""
+"New database. If you annotated with eov before 1.0, those annotations are in "
+"annotations.db in eov's old settings folder (~/.config/eov on Linux, ~/"
+"Library/Application Support/eov on macOS, %APPDATA%\\eov on Windows): bring "
+"them in with Merge… above."
+msgstr ""
+"새 데이터베이스입니다. eov 1.0 이전 버전에서 주석을 작성했다면 그 주석은 eov"
+"의 이전 설정 폴더(Linux: ~/.config/eov, macOS: ~/Library/Application Support/"
+"eov, Windows: %APPDATA%\\eov)의 annotations.db에 있습니다. 위의 병합…으로 가"
+"져오세요."
+
+#: src/fileio.rs:105 src/fileio.rs:115
+msgid "cannot read {file}: {error}"
+msgstr "{file}을(를) 읽을 수 없습니다: {error}"
+
+#: src/fileio.rs:109
+msgid "{file} is {size} MB; imports are limited to {limit} MB"
+msgstr "{file}의 크기는 {size} MB입니다. 가져오기는 {limit} MB로 제한됩니다"
+
+#: src/formats/dicom/mod.rs:605
+msgid "There are too many coordinates for one DICOM annotation group."
+msgstr "DICOM 주석 그룹 하나에 담기에는 좌표가 너무 많습니다."
+
+#: src/formats/dicom/mod.rs:674
+msgid "There are too many annotation groups."
+msgstr "주석 그룹이 너무 많습니다."
+
+#: src/formats/dicom/mod.rs:695
+msgid "There are too many annotations in one group."
+msgstr "한 그룹에 주석이 너무 많습니다."
+
+#: src/formats/dicom/mod.rs:736
+msgid "The slide has no annotations to export."
+msgstr "슬라이드에 내보낼 주석이 없습니다."
+
+#: src/formats/dicom/mod.rs:872
+msgid ""
+"It refers to this slide's DICOM image (series {}) and joins its study; the "
+"patient and study attributes are the slide's."
+msgstr ""
+"이 파일은 이 슬라이드의 DICOM 이미지(시리즈 {})를 참조하며 해당 스터디에 포함"
+"됩니다. 환자 및 스터디 속성은 슬라이드의 속성을 따릅니다."
+
+#: src/formats/dicom/mod.rs:876
+msgid ""
+"This slide is not a DICOM image, so the file refers to no image: it is a "
+"study of its own with empty patient attributes, and DICOM viewers cannot "
+"attach it to a slide by themselves."
+msgstr ""
+"이 슬라이드는 DICOM 이미지가 아니므로 파일이 참조하는 이미지가 없습니다. 환"
+"자 속성이 비어 있는 별도의 스터디가 되며, DICOM 뷰어는 이 파일을 스스로 슬라"
+"이드에 연결할 수 없습니다."
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot
+#. hold {}: …"; {regions} is "in 1 region" or "in 2 regions"; "drawn
+#. without it/them": other viewers draw these regions without their holes.
+#: src/formats/dicom/mod.rs:886
+msgid "{n} hole {regions} (drawn without it)"
+msgid_plural "{n} holes {regions} (drawn without them)"
+msgstr[0] "{regions} 구멍 {n}개(구멍 없이 그려짐)"
+
+#. Translators: in "{n} holes {regions} (drawn without them)".
+#: src/formats/dicom/mod.rs:890
+msgid "in {n} region"
+msgid_plural "in {n} regions"
+msgstr[0] "영역 {n}개에 있는"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:897
+msgid "the text of {n} text label (written as points)"
+msgid_plural "the text of {n} text labels (written as points)"
+msgstr[0] "텍스트 라벨 {n}개의 텍스트(점으로 기록됨)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:904
+msgid "the heads of {n} arrow (written as lines)"
+msgid_plural "the heads of {n} arrows (written as lines)"
+msgstr[0] "화살표 {n}개의 화살촉(선으로 기록됨)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:911
+msgid "the names, descriptions and statuses of {n} annotation"
+msgid_plural "the names, descriptions and statuses of {n} annotations"
+msgstr[0] "주석 {n}개의 이름, 설명, 상태"
+
+#. Translators: {} lists what is lost, such as "the heads of 2 arrows (written
+#. as lines) and the text of 1 text label (written as points)".
+#: src/formats/dicom/mod.rs:919
+msgid ""
+"DICOM bulk annotations cannot hold {}: other viewers do not see them, but "
+"eov reads them back from its private attributes."
+msgstr ""
+"DICOM 벌크 주석에는 {}을(를) 담을 수 없습니다. 다른 뷰어에서는 보이지 않지만 "
+"eov는 자체 전용 속성에서 이를 다시 읽어 옵니다."
+
+#: src/formats/dicom/mod.rs:924
+msgid ""
+"Each layer, class and kind of shape is a group labelled with its class (or "
+"its layer). Authors, comments, properties and times are not exported (eov "
+"JSON keeps everything)."
+msgstr ""
+"레이어, 클래스, 도형 종류마다 해당 클래스(또는 레이어) 이름이 붙은 그룹이 됩"
+"니다. 작성자, 댓글, 속성, 시간은 내보내지 않습니다(eov JSON에는 모두 보존됨)."
+
+#: src/formats/dicom/mod.rs:928
+msgid ""
+"{n} annotation with too few points or unusable coordinates was left out."
+msgid_plural ""
+"{n} annotations with too few points or unusable coordinates were left out."
+msgstr[0] "점이 너무 적거나 좌표를 사용할 수 없는 주석 {n}개를 제외했습니다."
+
+#. Translators: the end of a list, "a, b and c": {first} is "a, b".
+#: src/formats/dicom/mod.rs:943
+msgid "{first} and {last}"
+msgstr "{first} 및 {last}"
+
+#. Translators: between the items of a list ("a, b and c").
+#: src/formats/dicom/mod.rs:946
+msgid ", "
+msgstr ", "
+
+#: src/formats/dicom/mod.rs:978
+msgid ""
+"Made for a DICOM slide; this one is not a DICOM image, so whether the "
+"annotations belong to it cannot be checked. Coordinates are taken as level-0 "
+"pixels of this slide."
+msgstr ""
+"DICOM 슬라이드용으로 작성되었습니다. 이 슬라이드는 DICOM 이미지가 아니므로 주"
+"석이 이 슬라이드에 속하는지 확인할 수 없습니다. 좌표는 이 슬라이드의 레벨 0 "
+"픽셀로 간주합니다."
+
+#: src/formats/dicom/mod.rs:987
+msgid "Made for this slide (its DICOM image)."
+msgstr "이 슬라이드(해당 DICOM 이미지)용으로 작성되었습니다."
+
+#: src/formats/dicom/mod.rs:994
+msgid "Made for this slide (its DICOM series)."
+msgstr "이 슬라이드(해당 DICOM 시리즈)용으로 작성되었습니다."
+
+#: src/formats/dicom/mod.rs:998
+msgid ""
+"Made for another image of this slide's DICOM series (another resolution "
+"level?), whose pixels may not be level-0 pixels."
+msgstr ""
+"이 슬라이드의 DICOM 시리즈에 속한 다른 이미지(다른 해상도 레벨?)용으로 작성되"
+"었으며, 그 픽셀은 레벨 0 픽셀이 아닐 수 있습니다."
+
+#: src/formats/dicom/mod.rs:1005
+msgid "Made for a different DICOM slide (it refers to other images)."
+msgstr "다른 DICOM 슬라이드용으로 작성되었습니다(다른 이미지를 참조함)."
+
+#: src/formats/dicom/mod.rs:1014
+msgid ""
+"This DICOM file is a slide image (VL Whole Slide Microscopy), not "
+"annotations: open it as a slide. Annotations are read from Microscopy Bulk "
+"Simple Annotations objects (modality ANN)."
+msgstr ""
+"이 DICOM 파일은 주석이 아니라 슬라이드 이미지(VL Whole Slide Microscopy)입니"
+"다. 슬라이드로 여세요. 주석은 Microscopy Bulk Simple Annotations 객체(모달리"
+"티 ANN)에서 읽습니다."
+
+#: src/formats/dicom/mod.rs:1018
+msgid ""
+"This DICOM file is a structured report (SR). eov reads DICOM annotations "
+"from Microscopy Bulk Simple Annotations objects (modality ANN), not from "
+"structured reports."
+msgstr ""
+"이 DICOM 파일은 구조화 보고서(SR)입니다. eov는 구조화 보고서가 아니라 "
+"Microscopy Bulk Simple Annotations 객체(모달리티 ANN)에서 DICOM 주석을 읽습니"
+"다."
+
+#: src/formats/dicom/mod.rs:1021
+msgid "This DICOM file does not say what it holds (it has no SOP Class UID)."
+msgstr ""
+"이 DICOM 파일에는 담고 있는 내용의 종류가 명시되어 있지 않습니다(SOP Class "
+"UID 없음)."
+
+#: src/formats/dicom/mod.rs:1024
+msgid ""
+"This DICOM file is not an annotation object (SOP class {}); eov reads "
+"Microscopy Bulk Simple Annotations (modality ANN)."
+msgstr ""
+"이 DICOM 파일은 주석 객체가 아닙니다(SOP 클래스 {}). eov는 Microscopy Bulk "
+"Simple Annotations(모달리티 ANN)를 읽습니다."
+
+#: src/formats/dicom/mod.rs:1047
+msgid "eov's private description of the slide is unreadable and was ignored."
+msgstr "슬라이드에 대한 eov 전용 설명을 읽을 수 없어 무시했습니다."
+
+#. Translators: {} says what is wrong with the file, in English.
+#: src/formats/dicom/mod.rs:1080
+msgid "The DICOM file cannot be read: {}."
+msgstr "DICOM 파일을 읽을 수 없습니다: {}."
+
+#: src/formats/dicom/mod.rs:1099
+msgid ""
+"This file holds 3D annotations: their coordinates are millimetres in the "
+"slide's frame of reference (DICOM SCOORD3D), and eov places annotations by "
+"level-0 pixels. Only 2D (pixel) annotations can be imported."
+msgstr ""
+"이 파일에는 3D 주석이 들어 있습니다. 좌표가 슬라이드 기준 좌표계(DICOM "
+"SCOORD3D)의 밀리미터 값이지만 eov는 레벨 0 픽셀 기준으로 주석을 배치합니다. "
+"2D(픽셀) 주석만 가져올 수 있습니다."
+
+#: src/formats/dicom/mod.rs:1104
+msgid ""
+"The file does not say whether its coordinates are 2D or 3D (Annotation "
+"Coordinate Type is missing)."
+msgstr ""
+"파일에 좌표가 2D인지 3D인지 명시되어 있지 않습니다(Annotation Coordinate "
+"Type 없음)."
+
+#: src/formats/dicom/mod.rs:1109
+msgid ""
+"The file's coordinates are of an unknown type (\"{}\"); 2D annotations can "
+"be imported."
+msgstr ""
+"파일의 좌표 유형(\"{}\")을 알 수 없습니다. 2D 주석은 가져올 수 있습니다."
+
+#: src/formats/dicom/mod.rs:1126
+msgid ""
+"The annotations' pixel coordinates are relative to single frames (tiles) of "
+"the image (Pixel Origin Interpretation FRAME), which eov cannot place; "
+"coordinates relative to the whole image (VOLUME) can be imported."
+msgstr ""
+"주석의 픽셀 좌표가 이미지의 개별 프레임(타일) 기준(Pixel Origin "
+"Interpretation FRAME)이어서 eov가 배치할 수 없습니다. 전체 이미지 기준 좌표"
+"(VOLUME)는 가져올 수 있습니다."
+
+#: src/formats/dicom/mod.rs:1130
+msgid ""
+"Unknown pixel origin interpretation \"{}\"; coordinates are taken relative "
+"to the whole image."
+msgstr ""
+"픽셀 원점 해석 값 \"{}\"을(를) 알 수 없습니다. 좌표를 전체 이미지 기준으로 간"
+"주합니다."
+
+#: src/formats/dicom/mod.rs:1136
+msgid "The DICOM file has no annotation groups."
+msgstr "DICOM 파일에 주석 그룹이 없습니다."
+
+#: src/formats/dicom/mod.rs:1146
+msgid ""
+"{n} rectangle or ellipse not aligned with the image axes became a polygon."
+msgid_plural ""
+"{n} rectangles and ellipses not aligned with the image axes became polygons."
+msgstr[0] ""
+"이미지 축과 나란하지 않은 사각형 또는 타원 {n}개를 다각형으로 변환했습니다."
+
+#: src/formats/dicom/mod.rs:1178
+msgid "annotation group with lines or polygons without a point index list"
+msgstr "점 인덱스 목록이 없는 선 또는 다각형 주석 그룹"
+
+#: src/formats/dicom/mod.rs:1182
+msgid "annotation group with an unreadable point index list"
+msgstr "점 인덱스 목록을 읽을 수 없는 주석 그룹"
+
+#: src/formats/dicom/mod.rs:1197
+msgid "annotation group with lines or polygons with an empty point index list"
+msgstr "점 인덱스 목록이 비어 있는 선 또는 다각형 주석 그룹"
+
+#: src/formats/dicom/mod.rs:1211
+msgid ""
+"The point index list of \"{}\" counts points rather than coordinate values; "
+"it was read that way."
+msgstr ""
+"\"{}\"의 점 인덱스 목록이 좌표값이 아니라 점 단위로 세어져 있어 그렇게 읽었습"
+"니다."
+
+#: src/formats/dicom/mod.rs:1217
+msgid ""
+"annotation group with a point index list that does not fit its coordinates"
+msgstr "점 인덱스 목록이 좌표와 맞지 않는 주석 그룹"
+
+#. Translators: a reason why a measurement of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1333
+msgid "measurement without values"
+msgstr "값이 없는 측정"
+
+#: src/formats/dicom/mod.rs:1340
+msgid "measurement with unreadable values"
+msgstr "값을 읽을 수 없는 측정"
+
+#: src/formats/dicom/mod.rs:1352
+msgid "measurement that does not match its annotations"
+msgstr "주석과 맞지 않는 측정"
+
+#. Translators: a reason why a group of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1398
+msgid "annotation group without coordinates"
+msgstr "좌표가 없는 주석 그룹"
+
+#: src/formats/dicom/mod.rs:1402
+msgid "annotation group with unreadable coordinates"
+msgstr "좌표를 읽을 수 없는 주석 그룹"
+
+#: src/formats/dicom/mod.rs:1408
+msgid "annotation group whose coordinates are not (column, row) pairs"
+msgstr "좌표가 (열, 행) 쌍이 아닌 주석 그룹"
+
+#: src/formats/dicom/mod.rs:1426
+msgid "rectangles or ellipses without four points each"
+msgstr "각각 점 4개로 이루어지지 않은 사각형 또는 타원"
+
+#: src/formats/dicom/mod.rs:1439
+msgid "annotation group without a graphic type"
+msgstr "그래픽 유형이 없는 주석 그룹"
+
+#: src/formats/dicom/mod.rs:1443
+msgid "annotation group of graphic type {}"
+msgstr "그래픽 유형이 {}인 주석 그룹"
+
+#: src/formats/dicom/mod.rs:1451
+msgid ""
+"\"{name}\" says it has {n} annotation, but its coordinates hold {held}; the "
+"coordinates were read."
+msgid_plural ""
+"\"{name}\" says it has {n} annotations, but its coordinates hold {held}; the "
+"coordinates were read."
+msgstr[0] ""
+"\"{name}\"에는 주석이 {n}개라고 기록되어 있지만 좌표에는 {held}개가 들어 있습"
+"니다. 좌표대로 읽었습니다."
+
+#: src/formats/dicom/mod.rs:1463
+msgid ""
+"eov's private attributes of \"{}\" are unreadable; the group was read from "
+"its DICOM attributes alone."
+msgstr ""
+"\"{}\"의 eov 전용 속성을 읽을 수 없어 DICOM 속성만으로 그룹을 읽었습니다."
+
+#: src/formats/dicom/mod.rs:1529
+msgid "annotations beyond the limit of {} per file"
+msgstr "파일당 한도 {}개를 넘는 주석"
+
+#: src/formats/dicom/mod.rs:1537
+msgid "annotation with non-finite coordinates"
+msgstr "좌표가 유한하지 않은 주석"
+
+#: src/formats/eov.rs:209
+msgid ""
+"This file uses eov annotation format {version}; this plugin reads up to "
+"{supported}. Update the plugin."
+msgstr ""
+"이 파일은 eov 주석 형식 {version}을(를) 사용하지만 이 플러그인은 {supported}"
+"까지만 읽을 수 있습니다. 플러그인을 업데이트하세요."
+
+#: src/formats/eov.rs:261
+msgid "The file has no \"layers\"."
+msgstr "파일에 \"layers\"가 없습니다."
+
+#: src/formats/eov.rs:277
+msgid "Layer \"{}\" has an unreadable colour; a palette colour is used."
+msgstr "레이어 \"{}\"의 색을 읽을 수 없어 팔레트 색을 사용합니다."
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/eov.rs:292
+msgid "unreadable geometry"
+msgstr "읽을 수 없는 도형"
+
+#: src/formats/eov.rs:332
+msgid "The file has no \"annotation_layers\"."
+msgstr "파일에 \"annotation_layers\"가 없습니다."
+
+#: src/formats/eov.rs:359
+msgid "point without coordinates"
+msgstr "좌표가 없는 점"
+
+#: src/formats/eov.rs:384
+msgid "polygon with unreadable vertices"
+msgstr "꼭짓점을 읽을 수 없는 다각형"
+
+#: src/formats/eov.rs:390
+msgid "unknown annotation type"
+msgstr "알 수 없는 주석 유형"
+
+#: src/formats/eov.rs:426
+msgid "The archive has no \"slides\"."
+msgstr "아카이브에 \"slides\"가 없습니다."
+
+#: src/formats/eov.rs:432
+msgid "An archive entry was skipped: {}"
+msgstr "아카이브 항목 하나를 건너뛰었습니다: {}"
+
+#. Translators: reasons why a shape of an imported file was skipped,
+#. listed as "2 × unreadable point".
+#: src/formats/geojson.rs:68
+msgid "unreadable point"
+msgstr "읽을 수 없는 점"
+
+#: src/formats/geojson.rs:69
+msgid "unreadable line"
+msgstr "읽을 수 없는 선"
+
+#: src/formats/geojson.rs:70
+msgid "unreadable polygon"
+msgstr "읽을 수 없는 다각형"
+
+#: src/formats/geojson.rs:74
+msgid "geometry without a type"
+msgstr "유형이 없는 도형"
+
+#: src/formats/geojson.rs:84
+msgid "unreadable points"
+msgstr "읽을 수 없는 점 목록"
+
+#: src/formats/geojson.rs:103
+msgid "unreadable lines"
+msgstr "읽을 수 없는 선 목록"
+
+#: src/formats/geojson.rs:119
+msgid "unreadable polygons"
+msgstr "읽을 수 없는 다각형 목록"
+
+#: src/formats/geojson.rs:128
+msgid "unreadable geometry collection"
+msgstr "읽을 수 없는 도형 컬렉션"
+
+#: src/formats/geojson.rs:133
+msgid "unsupported geometry type"
+msgstr "지원되지 않는 도형 유형"
+
+#: src/formats/geojson.rs:221
+msgid "The FeatureCollection has no features."
+msgstr "FeatureCollection에 피처가 없습니다."
+
+#: src/formats/geojson.rs:224 src/formats/geojson.rs:226
+msgid "Not GeoJSON."
+msgstr "GeoJSON이 아닙니다."
+
+#. Translators: a reason why an element of an imported file was skipped.
+#: src/formats/geojson.rs:242
+msgid "not a GeoJSON feature"
+msgstr "GeoJSON 피처가 아닌 요소"
+
+#: src/formats/geojson.rs:259
+msgid "feature without geometry"
+msgstr "도형이 없는 피처"
+
+#: src/formats/geojson.rs:318
+msgid "properties beyond the limit of {} per annotation"
+msgstr "주석당 한도 {}개를 넘는 속성"
+
+#: src/formats/geojson.rs:351
+msgid "The GeoJSON file contains no features."
+msgstr "GeoJSON 파일에 피처가 없습니다."
+
+#: src/formats/mod.rs:240
+msgid "This .dcm file is not a DICOM file (\"DICM\" is missing at byte 128)."
+msgstr ""
+"이 .dcm 파일은 DICOM 파일이 아닙니다(바이트 128 위치에 \"DICM\"이 없음)."
+
+#: src/formats/mod.rs:242
+msgid ""
+"The file is not UTF-8 text or DICOM, so it is not a supported annotation "
+"file."
+msgstr ""
+"이 파일은 UTF-8 텍스트나 DICOM이 아니므로 지원되는 주석 파일이 아닙니다."
+
+#: src/formats/mod.rs:250
+msgid "The file is not valid JSON: {}"
+msgstr "파일이 올바른 JSON이 아닙니다: {}"
+
+#: src/formats/mod.rs:257
+msgid "This JSON file is neither GeoJSON nor an eov annotation export."
+msgstr "이 JSON 파일은 GeoJSON도 아니고 eov에서 내보낸 주석도 아닙니다."
+
+#: src/formats/mod.rs:263
+msgid ""
+"Unsupported file: expected GeoJSON, eov JSON, ASAP XML, ImageScope XML, NDPA "
+"or DICOM bulk annotations."
+msgstr ""
+"지원되지 않는 파일입니다. GeoJSON, eov JSON, ASAP XML, ImageScope XML, NDPA "
+"또는 DICOM 벌크 주석 파일이어야 합니다."
+
+#: src/formats/ndpa.rs:62
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide is not one, so they cannot be placed on it."
+msgstr ""
+"NDPA 좌표는 Hamamatsu 슬라이드(NDPI)의 중심을 기준으로 측정되는데, 이 슬라이"
+"드는 Hamamatsu 슬라이드가 아니므로 좌표를 배치할 수 없습니다."
+
+#. Translators: {} is the vendor of the slide's format ("aperio").
+#: src/formats/ndpa.rs:68
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide ({}) is not one, so they cannot be placed on it."
+msgstr ""
+"NDPA 좌표는 Hamamatsu 슬라이드(NDPI)의 중심을 기준으로 측정되는데, 이 슬라이"
+"드({})는 Hamamatsu 슬라이드가 아니므로 좌표를 배치할 수 없습니다."
+
+#: src/formats/ndpa.rs:79
+msgid ""
+"This NDPI does not give its offsets from the slide centre (hamamatsu."
+"XOffsetFromSlideCentre and YOffsetFromSlideCentre), so the NDPA coordinates "
+"cannot be placed on it."
+msgstr ""
+"이 NDPI에는 슬라이드 중심으로부터의 오프셋(hamamatsu.XOffsetFromSlideCentre "
+"및 YOffsetFromSlideCentre)이 없어 NDPA 좌표를 배치할 수 없습니다."
+
+#: src/formats/ndpa.rs:88
+msgid ""
+"This slide has no pixel size, so the NDPA's nanometre coordinates cannot be "
+"converted to pixels."
+msgstr ""
+"이 슬라이드에는 픽셀 크기 정보가 없어 NDPA의 나노미터 좌표를 픽셀로 변환할 "
+"수 없습니다."
+
+#: src/formats/ndpa.rs:92
+msgid "The slide's size is unknown."
+msgstr "슬라이드의 크기를 알 수 없습니다."
+
+#. Translators: a reason why an annotation of an imported file was skipped; {} is
+#. its type in the file ("freehand", "circle", "pin", …).
+#: src/formats/ndpa.rs:211
+msgid "{} annotation with unreadable coordinates"
+msgstr "좌표를 읽을 수 없는 {} 주석"
+
+#: src/formats/ndpa.rs:267
+msgid "unsupported NDPA annotation type '{}'"
+msgstr "지원되지 않는 NDPA 주석 유형 '{}'"
+
+#: src/formats/ndpa.rs:296
+msgid "annotation in unsupported coordinates ({})"
+msgstr "지원되지 않는 좌표계({})의 주석"
+
+#: src/formats/ndpa.rs:300
+msgid "view state without an annotation"
+msgstr "주석이 없는 보기 상태"
+
+#: src/formats/xml.rs:28
+msgid "The XML is not well-formed: {}"
+msgstr "XML 형식이 올바르지 않습니다: {}"
+
+#: src/formats/xml.rs:37
+msgid ""
+"Unsupported XML annotations (root element <{}>); ASAP, Aperio ImageScope and "
+"Hamamatsu NDPA files are supported."
+msgstr ""
+"지원되지 않는 XML 주석입니다(루트 요소 <{}>). ASAP, Aperio ImageScope, "
+"Hamamatsu NDPA 파일을 지원합니다."
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/xml.rs:96
+msgid "annotation with unreadable coordinates"
+msgstr "좌표를 읽을 수 없는 주석"
+
+#: src/formats/xml.rs:158
+msgid "unsupported ASAP annotation type"
+msgstr "지원되지 않는 ASAP 주석 유형"
+
+#: src/formats/xml.rs:198
+msgid "hole of a shape that is not a polygon"
+msgstr "다각형이 아닌 도형의 구멍"
+
+#: src/formats/xml.rs:200
+msgid "hole of a missing polygon"
+msgstr "존재하지 않는 다각형의 구멍"
+
+#: src/formats/xml.rs:275
+msgid "region with unreadable vertices"
+msgstr "꼭짓점을 읽을 수 없는 영역"
+
+#: src/formats/xml.rs:357
+msgid "negative region outside every region"
+msgstr "어떤 영역에도 속하지 않는 제외 영역"
+
+#: src/geometry.rs:252
+msgid "The shape has invalid (non-finite) coordinates."
+msgstr "도형의 좌표가 올바르지 않습니다(유한하지 않은 값)."
+
+#: src/geometry.rs:256
+msgid "The shape has {n} vertices; the limit is {limit}."
+msgid_plural "The shape has {n} vertices; the limit is {limit}."
+msgstr[0] "도형의 꼭짓점이 {n}개입니다. 한도는 {limit}개입니다."
+
+#: src/geometry.rs:266
+msgid "The point is outside the slide."
+msgstr "점이 슬라이드 밖에 있습니다."
+
+#: src/geometry.rs:288
+msgid "An arrow needs two distinct points."
+msgstr "화살표에는 서로 다른 점 2개가 필요합니다."
+
+#: src/geometry.rs:290
+msgid "A line needs at least two distinct points."
+msgstr "선에는 서로 다른 점이 2개 이상 필요합니다."
+
+#: src/geometry.rs:317
+msgid "The rectangle is outside the slide."
+msgstr "사각형이 슬라이드 밖에 있습니다."
+
+#: src/geometry.rs:325
+msgid "The rectangle has no area."
+msgstr "사각형의 면적이 0입니다."
+
+#: src/geometry.rs:337
+msgid "The ellipse has no area."
+msgstr "타원의 면적이 0입니다."
+
+#: src/geometry.rs:340
+msgid "The ellipse is centred outside the slide."
+msgstr "타원의 중심이 슬라이드 밖에 있습니다."
+
+#: src/geometry.rs:352
+msgid "A polygon needs at least three distinct corners."
+msgstr "다각형에는 서로 다른 꼭짓점이 3개 이상 필요합니다."
+
+#: src/geometry.rs:355 src/geometry.rs:393
+msgid "The polygon encloses no area."
+msgstr "다각형이 둘러싼 면적이 0입니다."
+
+#: src/geometry.rs:391
+msgid "The polygon is outside the slide."
+msgstr "다각형이 슬라이드 밖에 있습니다."
+
+#: src/lib.rs:80 src/lib.rs:202
+msgid "Annotations"
+msgstr "주석"
+
+#: src/lib.rs:85
+msgid "Show or hide annotations on this slide"
+msgstr "이 슬라이드의 주석 표시/숨기기"
+
+#: src/lib.rs:102
+msgid "Counting {}"
+msgstr "{} 계수 중"
+
+#: src/lib.rs:104
+msgid "Counting {class}, Shift+click: {alternate}"
+msgstr "{class} 계수 중, Shift+클릭: {alternate}"
+
+#: src/lib.rs:109
+msgid "Counting {class}, Alt+click: {immune}"
+msgstr "{class} 계수 중, Alt+클릭: {immune}"
+
+#: src/lib.rs:114
+msgid "Counting {class}, Shift+click: {alternate}, Alt+click: {immune}"
+msgstr "{class} 계수 중, Shift+클릭: {alternate}, Alt+클릭: {immune}"
+
+#. Translators: HPF is a high-power field.
+#: src/lib.rs:123
+msgid ""
+"The dashed circle is one HPF: click to place a field, drag to pan, Esc to "
+"leave"
+msgstr "점선 원이 1 HPF입니다. 클릭: 시야 배치, 끌기: 이동, Esc: 나가기"
+
+#: src/lib.rs:125
+msgid "Click to select, drag to select several; drag handles to edit"
+msgstr "클릭: 선택, 끌기: 여러 개 선택, 핸들 끌기: 편집"
+
+#: src/lib.rs:127
+msgid "Drawing {}"
+msgstr "{} 그리는 중"
+
+#. Translators: {} is the name of a file format ("GeoJSON").
+#: src/lib.rs:441
+msgid "{} · cannot be placed on this slide"
+msgstr "{} · 이 슬라이드에 배치할 수 없음"
+
+#. Translators: {format} is the name of a file format ("GeoJSON");
+#. {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/lib.rs:448
+msgid "{format} · {n} annotation {layers}"
+msgid_plural "{format} · {n} annotations {layers}"
+msgstr[0] "{format} · {layers} 주석 {n}개"
+
+#: src/lib.rs:455
+msgid "{n} class"
+msgid_plural "{n} classes"
+msgstr[0] "클래스 {n}개"
+
+#: src/lib.rs:465
+msgid "Layers with the same name already exist: {}"
+msgstr "같은 이름의 레이어가 이미 있습니다: {}"
+
+#: src/lib.rs:497 src/transfer.rs:373
+msgid "Import annotations"
+msgstr "주석 가져오기"
+
+#: src/lib.rs:507
+msgid "Cannot show the import dialog"
+msgstr "가져오기 대화 상자를 표시할 수 없습니다"
+
+#: src/lib.rs:641 src/sidebar.rs:1490
+msgid "Lock"
+msgstr "잠금"
+
+#: src/lib.rs:643 src/sidebar.rs:1492
+msgid "Unlock"
+msgstr "잠금 해제"
+
+#: src/lib.rs:789
+msgid "Could not save the annotation settings"
+msgstr "주석 설정을 저장할 수 없습니다"
+
+#: src/lib.rs:1063
+msgid "Show in annotations panel"
+msgstr "주석 패널에 표시"
+
+#: src/lib.rs:1064
+msgid "Copy measurements"
+msgstr "측정값 복사"
+
+#: src/lib.rs:1066
+msgid "Unlock annotation"
+msgstr "주석 잠금 해제"
+
+#: src/lib.rs:1068
+msgid "Lock annotation"
+msgstr "주석 잠금"
+
+#: src/lib.rs:1077
+msgctxt "Context menu"
+msgid "Delete annotation"
+msgstr "주석 삭제"
+
+#: src/lib.rs:1083
+msgid "Add point here"
+msgstr "여기에 점 추가"
+
+#: src/lib.rs:1084
+msgid "Place HPF field here"
+msgstr "여기에 HPF 시야 배치"
+
+#: src/lib.rs:1085
+msgid "Annotations panel"
+msgstr "주석 패널"
+
+#: src/measure.rs:276
+msgid "Area"
+msgstr "면적"
+
+#: src/measure.rs:281
+msgid "Length"
+msgstr "길이"
+
+#: src/measure.rs:283
+msgid "Perimeter"
+msgstr "둘레"
+
+#: src/measure.rs:289
+msgid "Max diameter (Feret)"
+msgstr "최대 직경(Feret)"
+
+#: src/measure.rs:292
+msgid "Min diameter (Feret)"
+msgstr "최소 직경(Feret)"
+
+#: src/measure.rs:297
+msgid "Centre (px)"
+msgstr "중심(px)"
+
+#: src/measure.rs:302 src/measure.rs:307
+msgid "Calibration"
+msgstr "보정"
+
+#: src/measure.rs:303
+msgid "No pixel size: values in level-0 pixels"
+msgstr "픽셀 크기 없음: 값은 레벨 0 픽셀 단위"
+
+#: src/measure.rs:308
+msgid "One pixel axis missing; assumed square pixels"
+msgstr "한 축의 픽셀 크기 없음: 정사각형 픽셀로 가정"
+
+#: src/model.rs:49 ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Draft"
+msgstr "초안"
+
+#: src/model.rs:50 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Verified"
+msgstr "검증됨"
+
+#: src/model.rs:51 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Rejected"
+msgstr "거부됨"
+
+#: src/model.rs:118
+msgctxt "Annotation kind"
+msgid "Point"
+msgstr "점"
+
+#: src/model.rs:119
+msgctxt "Annotation kind"
+msgid "Line"
+msgstr "선"
+
+#: src/model.rs:120
+msgctxt "Annotation kind"
+msgid "Arrow"
+msgstr "화살표"
+
+#: src/model.rs:121
+msgctxt "Annotation kind"
+msgid "Polygon"
+msgstr "다각형"
+
+#: src/model.rs:122
+msgctxt "Annotation kind"
+msgid "Rectangle"
+msgstr "사각형"
+
+#: src/model.rs:123
+msgctxt "Annotation kind"
+msgid "Ellipse"
+msgstr "타원"
+
+#: src/model.rs:124
+msgctxt "Annotation kind"
+msgid "Text"
+msgstr "텍스트"
+
+#: src/model.rs:750
+msgid "The layer name cannot be empty."
+msgstr "레이어 이름은 비워 둘 수 없습니다."
+
+#: src/model.rs:751
+msgid "The class name cannot be empty."
+msgstr "클래스 이름은 비워 둘 수 없습니다."
+
+#: src/model.rs:752
+msgid "The name cannot be empty."
+msgstr "이름은 비워 둘 수 없습니다."
+
+#: src/model.rs:759
+msgid "The name is {n} characters long; the limit is {limit}."
+msgid_plural "The name is {n} characters long; the limit is {limit}."
+msgstr[0] "이름이 {n}자입니다. 최대 {limit}자까지 입력할 수 있습니다."
+
+#: src/model.rs:764
+msgid "The layer name is {n} characters long; the limit is {limit}."
+msgid_plural "The layer name is {n} characters long; the limit is {limit}."
+msgstr[0] "레이어 이름이 {n}자입니다. 최대 {limit}자까지 입력할 수 있습니다."
+
+#: src/model.rs:769
+msgid "The class name is {n} characters long; the limit is {limit}."
+msgid_plural "The class name is {n} characters long; the limit is {limit}."
+msgstr[0] "클래스 이름이 {n}자입니다. 최대 {limit}자까지 입력할 수 있습니다."
+
+#: src/model.rs:774
+msgid "The author is {n} characters long; the limit is {limit}."
+msgid_plural "The author is {n} characters long; the limit is {limit}."
+msgstr[0] "작성자 이름이 {n}자입니다. 최대 {limit}자까지 입력할 수 있습니다."
+
+#: src/model.rs:779
+msgid "The setting is {n} characters long; the limit is {limit}."
+msgid_plural "The setting is {n} characters long; the limit is {limit}."
+msgstr[0] "설정값이 {n}자입니다. 최대 {limit}자까지 입력할 수 있습니다."
+
+#: src/model.rs:784
+msgid "The notes are {n} characters long; the limit is {limit}."
+msgid_plural "The notes are {n} characters long; the limit is {limit}."
+msgstr[0] "메모가 {n}자입니다. 최대 {limit}자까지 입력할 수 있습니다."
+
+#: src/model.rs:789
+msgid "The description is {n} characters long; the limit is {limit}."
+msgid_plural "The description is {n} characters long; the limit is {limit}."
+msgstr[0] "설명이 {n}자입니다. 최대 {limit}자까지 입력할 수 있습니다."
+
+#: src/model.rs:794
+msgid "The comment is {n} characters long; the limit is {limit}."
+msgid_plural "The comment is {n} characters long; the limit is {limit}."
+msgstr[0] "댓글이 {n}자입니다. 최대 {limit}자까지 입력할 수 있습니다."
+
+#: src/model.rs:837
+msgid "An annotation can have at most {n} properties."
+msgid_plural "An annotation can have at most {n} properties."
+msgstr[0] "주석 하나에는 속성을 최대 {n}개까지 지정할 수 있습니다."
+
+#: src/model.rs:851
+msgid "Property names are limited to {n} characters."
+msgid_plural "Property names are limited to {n} characters."
+msgstr[0] "속성 이름은 최대 {n}자까지 입력할 수 있습니다."
+
+#: src/model.rs:856
+msgid "Property values are limited to {n} characters."
+msgid_plural "Property values are limited to {n} characters."
+msgstr[0] "속성 값은 최대 {n}자까지 입력할 수 있습니다."
+
+#: src/model.rs:884
+msgid "A hotkey is a single character (a letter or a symbol), not {}."
+msgstr ""
+"단축키는 한 글자(문자 또는 기호)여야 합니다. {}은(는) 사용할 수 없습니다."
+
+#: src/model.rs:889
+msgid "A hotkey must be a visible character."
+msgstr "단축키는 눈에 보이는 문자여야 합니다."
+
+#: src/model.rs:892
+msgid "eov already uses the '{}' key."
+msgstr "eov가 이미 '{}' 키를 사용합니다."
+
+#: src/model.rs:896
+msgid "'{}' is already used by an annotation tool or class."
+msgstr "'{}'은(는) 이미 주석 도구나 클래스에서 사용 중입니다."
+
+#. Translators: in the tooltip of a locked annotation, after its class and name.
+#: src/overlay.rs:171
+msgid "locked"
+msgstr "잠김"
+
+#. Translators: this slide's points against the other reader's; F1 is the F1 score.
+#: src/sidebar.rs:360
+msgid "Points {ours} vs {theirs} · {matched} matched · F1 {f1}"
+msgstr "점 {ours} 대 {theirs} · 일치 {matched} · F1 {f1}"
+
+#. Translators: this slide's regions and their area against the other reader's;
+#. Dice is the Dice coefficient of the areas.
+#: src/sidebar.rs:373
+msgid "Regions {ours} vs {theirs} · {our_area} vs {their_area} · Dice {dice}"
+msgstr "영역 {ours} 대 {theirs} · {our_area} 대 {their_area} · Dice {dice}"
+
+#: src/sidebar.rs:385
+msgid "All regions"
+msgstr "모든 영역"
+
+#. Translators: {layers} in texts such as "{n} annotations {layers}" ("12 annotations in 3 layers").
+#: src/sidebar.rs:431
+msgid "in {n} layer"
+msgid_plural "in {n} layers"
+msgstr[0] "레이어 {n}개에 있는"
+
+#: src/sidebar.rs:447
+msgid "No slide open"
+msgstr "열린 슬라이드 없음"
+
+#: src/sidebar.rs:453
+msgid "Annotation database unavailable: {}"
+msgstr "주석 데이터베이스를 사용할 수 없음: {}"
+
+#: src/sidebar.rs:455
+msgid "Opening the annotation database…"
+msgstr "주석 데이터베이스를 여는 중…"
+
+#: src/sidebar.rs:461
+msgid "Loading annotations…"
+msgstr "주석을 불러오는 중…"
+
+#: src/sidebar.rs:469
+msgid ""
+"The annotation database is read-only: annotations can be viewed and "
+"exported, not edited."
+msgstr ""
+"주석 데이터베이스가 읽기 전용입니다. 주석을 보고 내보낼 수는 있지만 편집할 수"
+"는 없습니다."
+
+#: src/sidebar.rs:477
+msgid ""
+"This slide has no stable identity; its annotations are keyed by file name "
+"and size."
+msgstr ""
+"이 슬라이드에는 고정된 식별 정보가 없어 주석이 파일 이름과 크기를 기준으로 연"
+"결됩니다."
+
+#. Translators: beside a layer of count points: the number of points.
+#: src/sidebar.rs:526
+msgid "{} · counts"
+msgstr "{} · 계수"
+
+#. Translators: beside the layer of HPF fields: the number of fields.
+#: src/sidebar.rs:528
+msgid "{} · HPF fields"
+msgstr "{} · HPF 시야"
+
+#: src/sidebar.rs:615
+msgid "{n} comment"
+msgid_plural "{n} comments"
+msgstr[0] "댓글 {n}개"
+
+#: src/sidebar.rs:649
+msgid "Show more ({n} not shown)"
+msgid_plural "Show more ({n} not shown)"
+msgstr[0] "더 보기({n}개 표시 안 됨)"
+
+#: src/sidebar.rs:667
+msgid "{n} match"
+msgid_plural "{n} matches"
+msgstr[0] "일치 항목 {n}개"
+
+#: src/sidebar.rs:670
+msgid ""
+"No annotations yet. Pick a tool in the toolbar (P polygon, . point, C count) "
+"and draw on the slide."
+msgstr ""
+"아직 주석이 없습니다. 도구 모음에서 도구(P 다각형, . 점, C 계수)를 선택하고 "
+"슬라이드에 그리세요."
+
+#: src/sidebar.rs:674
+msgid "Open a slide to see and draw its annotations."
+msgstr "주석을 보고 그리려면 슬라이드를 여세요."
+
+#: src/sidebar.rs:724
+msgid "created {created} · edited {edited}"
+msgstr "생성 {created} · 편집 {edited}"
+
+#: src/sidebar.rs:730
+msgid "By {author} · created {created} · edited {edited}"
+msgstr "작성자 {author} · 생성 {created} · 편집 {edited}"
+
+#: src/sidebar.rs:750
+msgid "Unknown author"
+msgstr "알 수 없는 작성자"
+
+#: src/sidebar.rs:769
+msgid ""
+"This outline crosses itself (it was drawn with an older version). Its area "
+"uses the even-odd rule, like the display; Repair turns it into simple parts."
+msgstr ""
+"이 윤곽선은 자기 교차합니다(이전 버전에서 그려짐). 면적은 화면 표시와 마찬가"
+"지로 짝수-홀수 규칙으로 계산되며, 복구하면 단순한 부분들로 바뀝니다."
+
+#: src/sidebar.rs:775
+msgid "{n} annotation selected"
+msgid_plural "{n} annotations selected"
+msgstr[0] "주석 {n}개 선택됨"
+
+#: src/sidebar.rs:778
+msgid "Mixed classes; changes apply to all selected."
+msgstr ""
+"여러 클래스가 섞여 있습니다. 변경 사항은 선택한 모든 항목에 적용됩니다."
+
+#: src/sidebar.rs:780
+msgid "Changes apply to all selected."
+msgstr "변경 사항은 선택한 모든 항목에 적용됩니다."
+
+#. Translators: under a class whose key does nothing; {} is
+#. eov's reason, a whole sentence such as "Hotkey 'q' of …
+#. was ignored: it is a key eov already uses."
+#: src/sidebar.rs:828
+msgid "eov refused the hotkey: {}"
+msgstr "eov가 단축키를 거부했습니다: {}"
+
+#: src/sidebar.rs:861
+msgid ""
+"Whole slide. Select regions or HPF fields to count inside them and get "
+"densities."
+msgstr ""
+"슬라이드 전체입니다. 영역이나 HPF 시야를 선택하면 그 안에서 계수하고 밀도를 "
+"구할 수 있습니다."
+
+#. Translators: {fields} is "1 HPF field" or "3 HPF fields"
+#. (translated on its own; HPF is a high-power field).
+#: src/sidebar.rs:873
+msgid "Inside {n} selected region ({fields}): {area}"
+msgid_plural "Inside {n} selected regions ({fields}): {area}"
+msgstr[0] "선택한 영역 {n}개 내부({fields}): {area}"
+
+#. Translators: {fields} in "Inside {n} selected regions ({fields}): {area}".
+#: src/sidebar.rs:877
+msgid "{n} HPF field"
+msgid_plural "{n} HPF fields"
+msgstr[0] "HPF 시야 {n}개"
+
+#: src/sidebar.rs:883
+msgid "Inside {n} selected region: {area}"
+msgid_plural "Inside {n} selected regions: {area}"
+msgstr[0] "선택한 영역 {n}개 내부: {area}"
+
+#: src/sidebar.rs:890
+msgid "Inside {n} selected region: {area} (no pixel size, so no density)"
+msgid_plural ""
+"Inside {n} selected regions: {area} (no pixel size, so no density)"
+msgstr[0] "선택한 영역 {n}개 내부: {area}(픽셀 크기 정보가 없어 밀도 없음)"
+
+#. Translators: cells per high-power field.
+#: src/sidebar.rs:905
+msgid "{} /HPF field"
+msgstr "{} /HPF 시야"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1000
+msgid "Read-only"
+msgstr "읽기 전용"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1003
+msgid "Ready"
+msgstr "준비"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1007
+msgid "Opening…"
+msgstr "여는 중…"
+
+#: src/sidebar.rs:1008
+msgid "Unavailable: {}"
+msgstr "사용할 수 없음: {}"
+
+#. Translators: a slide whose file name an older eov did not record; {} is its number in the annotation database.
+#: src/sidebar.rs:1068
+msgid "Slide #{} (from an older version)"
+msgstr "슬라이드 #{}(이전 버전에서 생성)"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/sidebar.rs:1075
+msgid "{n} annotation {layers} · last opened {date}"
+msgid_plural "{n} annotations {layers} · last opened {date}"
+msgstr[0] "{layers} 주석 {n}개 · 마지막으로 연 날짜 {date}"
+
+#. Translators: "List" is the label of the button beside this text.
+#: src/sidebar.rs:1093
+msgid "Press \"List\" to see the other slides in the database."
+msgstr "데이터베이스의 다른 슬라이드를 보려면 \"목록\"을 누르세요."
+
+#: src/sidebar.rs:1094
+msgid "No other slides have annotations."
+msgstr "주석이 있는 다른 슬라이드가 없습니다."
+
+#: src/sidebar.rs:1096
+msgid ""
+"If a slide was re-saved or de-identified, its annotations stay with the old "
+"file. Attach them to the open slide here."
+msgstr ""
+"슬라이드를 다시 저장하거나 비식별화하면 주석은 이전 파일에 남습니다. 여기에"
+"서 열린 슬라이드에 연결하세요."
+
+#: src/sidebar.rs:1161
+msgid "Cannot ask for confirmation"
+msgstr "확인을 요청할 수 없습니다"
+
+#: src/sidebar.rs:1173
+msgid "Open a slide first."
+msgstr "먼저 슬라이드를 여세요."
+
+#: src/sidebar.rs:1213
+msgid "Compare with another reader's file first."
+msgstr "먼저 다른 판독자의 파일과 비교하세요."
+
+#: src/sidebar.rs:1219
+msgid "Export all annotations"
+msgstr "모든 주석 내보내기"
+
+#: src/sidebar.rs:1222
+msgid "eov annotation archive"
+msgstr "eov 주석 아카이브"
+
+#: src/sidebar.rs:1229
+msgid "Back up the annotation database"
+msgstr "주석 데이터베이스 백업"
+
+#: src/sidebar.rs:1232 src/sidebar.rs:1242
+msgid "SQLite database"
+msgstr "SQLite 데이터베이스"
+
+#: src/sidebar.rs:1239
+msgid ""
+"Merge an annotation database (a backup, or annotations.db of eov before 1.0)"
+msgstr "주석 데이터베이스 병합(백업 또는 eov 1.0 이전 버전의 annotations.db)"
+
+#: src/sidebar.rs:1308
+msgid "Show or hide layer"
+msgstr "레이어 표시/숨기기"
+
+#: src/sidebar.rs:1322
+msgid "Layer opacity"
+msgstr "레이어 불투명도"
+
+#: src/sidebar.rs:1337
+msgid "Lock layer"
+msgstr "레이어 잠금"
+
+#: src/sidebar.rs:1339
+msgid "Unlock layer"
+msgstr "레이어 잠금 해제"
+
+#: src/sidebar.rs:1354
+msgid "Change layer colour"
+msgstr "레이어 색 변경"
+
+#: src/sidebar.rs:1370
+msgid "Edit layer notes"
+msgstr "레이어 메모 편집"
+
+#: src/sidebar.rs:1387
+msgid "The slide is still loading."
+msgstr "슬라이드를 아직 불러오는 중입니다."
+
+#: src/sidebar.rs:1396
+msgctxt "Dialog title"
+msgid "Delete layer"
+msgstr "레이어 삭제"
+
+#: src/sidebar.rs:1398
+msgid ""
+"Delete layer \"{name}\" and its {n} annotation? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgid_plural ""
+"Delete layer \"{name}\" and its {n} annotations? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgstr[0] ""
+"레이어 \"{name}\"과(와) 그 안의 주석 {n}개를 삭제하시겠습니까? Ctrl+Z(⌘Z)로 "
+"실행 취소할 수 있습니다."
+
+#: src/sidebar.rs:1403 src/sidebar.rs:1620
+msgid "Delete"
+msgstr "삭제"
+
+#: src/sidebar.rs:1404 src/sidebar.rs:1621 src/sidebar.rs:1679
+#: src/sidebar.rs:1772
+msgid "Cancel"
+msgstr "취소"
+
+#: src/sidebar.rs:1420
+msgid "Rename annotation"
+msgstr "주석 이름 바꾸기"
+
+#: src/sidebar.rs:1432
+msgid "Edit description"
+msgstr "설명 편집"
+
+#: src/sidebar.rs:1444
+msgid "Set class"
+msgstr "클래스 지정"
+
+#: src/sidebar.rs:1458
+msgid "Mark draft"
+msgstr "초안으로 표시"
+
+#: src/sidebar.rs:1459
+msgid "Mark verified"
+msgstr "검증됨으로 표시"
+
+#: src/sidebar.rs:1460
+msgid "Mark rejected"
+msgstr "거부됨으로 표시"
+
+#: src/sidebar.rs:1476
+msgid "Move to layer"
+msgstr "레이어로 이동"
+
+#: src/sidebar.rs:1529
+msgid "Edit properties"
+msgstr "속성 편집"
+
+#: src/sidebar.rs:1553
+msgid "Select one annotation to comment on."
+msgstr "댓글을 달 주석을 하나 선택하세요."
+
+#: src/sidebar.rs:1566
+msgid "Measurements copied."
+msgstr "측정값을 복사했습니다."
+
+#: src/sidebar.rs:1578
+msgid "Show or hide class"
+msgstr "클래스 표시/숨기기"
+
+#: src/sidebar.rs:1591
+msgid "Class opacity"
+msgstr "클래스 불투명도"
+
+#: src/sidebar.rs:1611
+msgctxt "Dialog title"
+msgid "Delete class"
+msgstr "클래스 삭제"
+
+#: src/sidebar.rs:1613
+msgid ""
+"Delete class \"{name}\"? {n} annotation on open slides uses it; it will show "
+"as unclassified. You can undo this."
+msgid_plural ""
+"Delete class \"{name}\"? {n} annotations on open slides use it; they will "
+"show as unclassified. You can undo this."
+msgstr[0] ""
+"클래스 \"{name}\"을(를) 삭제하시겠습니까? 열린 슬라이드의 주석 {n}개가 이 클"
+"래스를 사용하며, 삭제하면 미분류로 표시됩니다. 실행 취소할 수 있습니다."
+
+#: src/sidebar.rs:1668
+msgctxt "Dialog title"
+msgid "Clear counts"
+msgstr "계수 지우기"
+
+#. Translators: the question of the "Clear counts" dialog, whose
+#. button is "Clear": use the same verb.
+#: src/sidebar.rs:1672
+msgid "Clear the {n} count point of this slide? You can undo this."
+msgid_plural "Clear all {n} count points of this slide? You can undo this."
+msgstr[0] ""
+"이 슬라이드의 모든 계수 점({n}개)을 지우시겠습니까? 실행 취소할 수 있습니다."
+
+#. Translators: the button that removes the count points, in the
+#. "Clear counts" dialog.
+#: src/sidebar.rs:1678
+msgid "Clear"
+msgstr "지우기"
+
+#: src/sidebar.rs:1694
+msgid "Enter the field area in mm², e.g. {}."
+msgstr "시야 면적을 mm² 단위로 입력하세요(예: {})."
+
+#: src/sidebar.rs:1702
+msgid "Enter the field number in mm, e.g. 22."
+msgstr "시야수를 mm 단위로 입력하세요(예: 22)."
+
+#: src/sidebar.rs:1704
+msgid "Enter the objective magnification, e.g. 40."
+msgstr "대물렌즈 배율을 입력하세요(예: 40)."
+
+#: src/sidebar.rs:1708
+msgid "That field size is not usable."
+msgstr "해당 시야 크기는 사용할 수 없습니다."
+
+#: src/sidebar.rs:1720
+msgid "There is no database from before eov 1.0 to merge."
+msgstr "병합할 eov 1.0 이전 버전의 데이터베이스가 없습니다."
+
+#: src/sidebar.rs:1737
+msgid "That slide is not listed any more."
+msgstr "해당 슬라이드가 더 이상 목록에 없습니다."
+
+#: src/sidebar.rs:1748
+msgid ""
+"Attach the annotations of an older slide to the open slide? Use this when "
+"the slide file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"이전 슬라이드의 주석을 열린 슬라이드에 연결하시겠습니까? 슬라이드 파일을 다"
+"시 저장, 변환 또는 비식별화한 경우에 사용하세요. 실행 취소할 수 있습니다."
+
+#: src/sidebar.rs:1753
+msgid ""
+"Attach the annotations of \"{}\" to the open slide? Use this when the slide "
+"file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"\"{}\"의 주석을 열린 슬라이드에 연결하시겠습니까? 슬라이드 파일을 다시 저장, "
+"변환 또는 비식별화한 경우에 사용하세요. 실행 취소할 수 있습니다."
+
+#: src/sidebar.rs:1762
+msgid ""
+"Warning: the two slides have different sizes, so the annotations may not "
+"line up."
+msgstr "경고: 두 슬라이드의 크기가 달라 주석이 맞지 않을 수 있습니다."
+
+#: src/sidebar.rs:1769
+msgid "Attach annotations"
+msgstr "주석 연결"
+
+#: src/sidebar.rs:1771
+msgid "Attach"
+msgstr "연결"
+
+#: src/state.rs:501
+msgid "Compared with {}"
+msgstr "{}와(과) 비교함"
+
+#. Translators: {ours} is "1 annotation" or "5 annotations" (translated on its own).
+#: src/state.rs:509
+msgid ""
+"This slide's visible layers ({ours}) against the {n} annotation in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgid_plural ""
+"This slide's visible layers ({ours}) against the {n} annotations in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgstr[0] ""
+"이 슬라이드의 표시된 레이어({ours})를 {name}의 주석 {n}개와 비교합니다(HPF 시"
+"야 제외). 개수는 이 슬라이드, 다른 판독자 순입니다. 같은 클래스의 점은 "
+"{radius} 이내에서 일대일로 대응시키고(F1 = 2 · 일치 수 / 양쪽 개수의 합), 영"
+"역은 겹치는 정도로 비교합니다(Dice = 2 · 공통 면적 / 양쪽 면적의 합)."
+
+#: src/state.rs:522
+msgid "Check the file: {}"
+msgstr "파일을 확인하세요: {}"
+
+#: src/state.rs:664
+msgid "The annotation database is read-only."
+msgstr "주석 데이터베이스가 읽기 전용입니다."
+
+#: src/state.rs:665
+msgid "The annotation database is still opening."
+msgstr "주석 데이터베이스를 아직 여는 중입니다."
+
+#: src/state.rs:667
+msgid "The annotation database is unavailable: {}"
+msgstr "주석 데이터베이스를 사용할 수 없습니다: {}"
+
+#: src/stats.rs:97
+msgid "Invalid field size"
+msgstr "잘못된 시야 크기"
+
+#. Translators: HPF is a high-power field; ⌀ its diameter.
+#: src/stats.rs:110
+msgid "1 HPF = {area} mm² (field number {number} at {objective}×, ⌀ {d} mm)"
+msgstr "1 HPF = {area} mm²(시야수 {number}, {objective}×, ⌀ {d} mm)"
+
+#: src/stats.rs:116
+msgid "1 HPF = {area} mm² (⌀ {d} mm)"
+msgstr "1 HPF = {area} mm²(⌀ {d} mm)"
+
+#: src/tools.rs:63
+msgid "Select and edit annotations"
+msgstr "주석 선택 및 편집"
+
+#: src/tools.rs:64
+msgid "Point annotation"
+msgstr "점 주석"
+
+#: src/tools.rs:65
+msgid "Count cells (Shift+click: second class)"
+msgstr "세포 계수(Shift+클릭: 두 번째 클래스)"
+
+#: src/tools.rs:66
+msgid "Polygon (Shift: add to selection, Alt: cut from it)"
+msgstr "다각형(Shift: 선택 영역에 추가, Alt: 선택 영역에서 잘라 내기)"
+
+#: src/tools.rs:67
+msgid "Freehand outline (Shift: add, Alt: cut)"
+msgstr "자유형 윤곽선(Shift: 추가, Alt: 잘라 내기)"
+
+#: src/tools.rs:68
+msgid "Rectangle"
+msgstr "사각형"
+
+#: src/tools.rs:69
+msgid "Ellipse"
+msgstr "타원"
+
+#: src/tools.rs:70
+msgid "Line / path"
+msgstr "선 / 경로"
+
+#: src/tools.rs:72
+msgid ""
+"Brush (paint a region, over a selected region to extend it; Alt or the "
+"eraser erases; [ and ] change the size)"
+msgstr ""
+"브러시(영역 칠하기, 선택한 영역 위에서는 그 영역을 확장, Alt 또는 지우개: 지"
+"우기, [ 및 ]: 크기 변경)"
+
+#: src/tools.rs:74
+msgid "Arrow (click the tail, double-click the tip; more clicks bend it)"
+msgstr "화살표(꼬리 클릭, 끝 더블클릭, 중간에 더 클릭하면 꺾임)"
+
+#: src/tools.rs:75
+msgid "Text label"
+msgstr "텍스트 라벨"
+
+#: src/tools.rs:77
+msgid ""
+"HPF field (a field of the configured size follows the pointer; click to "
+"place it, drag to pan)"
+msgstr ""
+"HPF 시야(설정한 크기의 시야가 포인터를 따라 움직임, 클릭: 배치, 끌기: 이동)"
+
+#: src/tools.rs:225
+msgid "Annotation class: {}"
+msgstr "주석 클래스: {}"
+
+#. Translators: {} lists what was skipped, as "2 × reason; 1 × other reason".
+#: src/transfer.rs:249
+msgid "Skipped: {}."
+msgstr "건너뜀: {}."
+
+#: src/transfer.rs:253
+msgid "{n} outline crossed itself and was repaired with the even-odd rule."
+msgid_plural ""
+"{n} outlines crossed themselves and were repaired with the even-odd rule."
+msgstr[0] "자기 교차하는 윤곽선 {n}개를 짝수-홀수 규칙으로 복구했습니다."
+
+#: src/transfer.rs:260
+msgid "{n} shape extended past the slide and was cut at its edge."
+msgid_plural "{n} shapes extended past the slide and were cut at its edge."
+msgstr[0] "슬라이드를 벗어난 도형 {n}개를 가장자리에서 잘라 냈습니다."
+
+#: src/transfer.rs:265
+msgid "{n} over-long name or text was shortened."
+msgid_plural "{n} over-long names or texts were shortened."
+msgstr[0] "너무 긴 이름 또는 텍스트 {n}개를 줄였습니다."
+
+#: src/transfer.rs:270
+msgid "The file contains no annotations."
+msgstr "파일에 주석이 없습니다."
+
+#: src/transfer.rs:272
+msgid "Nothing could be imported. {}"
+msgstr "가져올 수 있는 항목이 없습니다. {}"
+
+#: src/transfer.rs:339
+msgid "Made for this slide."
+msgstr "이 슬라이드용으로 작성되었습니다."
+
+#: src/transfer.rs:342
+msgid "Made for a different slide (its identity does not match)."
+msgstr "다른 슬라이드용으로 작성되었습니다(식별 정보가 일치하지 않음)."
+
+#: src/transfer.rs:352
+msgid "Made for a slide of {theirs}; this one is {ours}."
+msgstr "{theirs} 슬라이드용으로 작성되었습니다. 이 슬라이드는 {ours}입니다."
+
+#: src/transfer.rs:360
+msgid "Made for a slide of the same size."
+msgstr "같은 크기의 슬라이드용으로 작성되었습니다."
+
+#: src/transfer.rs:364
+msgid ""
+"The file does not say which slide it belongs to; coordinates are taken as "
+"level-0 pixels of this slide."
+msgstr ""
+"파일에 어느 슬라이드용인지 명시되어 있지 않습니다. 좌표는 이 슬라이드의 레벨 "
+"0 픽셀로 간주합니다."
+
+#: src/transfer.rs:376
+msgid "Annotations (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "주석(GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:386
+msgid "All files"
+msgstr "모든 파일"
+
+#: src/transfer.rs:398 src/transfer.rs:853 src/transfer.rs:1007
+msgid "Cannot show the file dialog"
+msgstr "파일 대화 상자를 표시할 수 없습니다"
+
+#: src/transfer.rs:413
+msgid "The annotations of this slide are still loading."
+msgstr "이 슬라이드의 주석을 아직 불러오는 중입니다."
+
+#: src/transfer.rs:434
+msgid "Importing {}"
+msgstr "{} 가져오는 중"
+
+#. Translators: the step of an import that reads the file.
+#: src/transfer.rs:447
+msgid "Reading"
+msgstr "읽는 중"
+
+#: src/transfer.rs:474
+msgid ""
+"NDP.view annotations, placed with this slide's offsets from the slide centre "
+"and its pixel size."
+msgstr ""
+"NDP.view 주석입니다. 이 슬라이드의 중심 오프셋과 픽셀 크기를 사용해 배치합니"
+"다."
+
+#: src/transfer.rs:486
+msgid "Checking the slide"
+msgstr "슬라이드 확인 중"
+
+#: src/transfer.rs:489
+msgid "cannot read the slide to check the import: {}"
+msgstr "슬라이드를 읽을 수 없어 가져오기를 확인할 수 없습니다: {}"
+
+#: src/transfer.rs:494
+msgid "Made for this slide (checked by content)."
+msgstr "이 슬라이드용으로 작성되었습니다(내용으로 확인함)."
+
+#: src/transfer.rs:497
+msgid "Made for a different slide (its checksum does not match)."
+msgstr "다른 슬라이드용으로 작성되었습니다(체크섬이 일치하지 않음)."
+
+#: src/transfer.rs:521
+msgid "Import cancelled."
+msgstr "가져오기를 취소했습니다."
+
+#: src/transfer.rs:522
+msgid "Could not import {}"
+msgstr "{}을(를) 가져올 수 없습니다"
+
+#. Translators: "Merge a database…" is the item of the Import and export
+#. menu: quote it as it is translated there.
+#: src/transfer.rs:560
+msgid ""
+"This archive has no annotations for the current slide. Restore whole backups "
+"with \"Merge a database…\"."
+msgstr ""
+"이 아카이브에는 현재 슬라이드의 주석이 없습니다. 백업 전체를 복원하려면 \"데"
+"이터베이스 병합…\"을 사용하세요."
+
+#: src/transfer.rs:574
+msgid "Import {n} annotation"
+msgid_plural "Import {n} annotations"
+msgstr[0] "주석 {n}개 가져오기"
+
+#: src/transfer.rs:581
+msgid "The slide this import was started on is not open any more."
+msgstr "가져오기를 시작한 슬라이드가 더 이상 열려 있지 않습니다."
+
+#: src/transfer.rs:737
+msgid "Imported {n} annotation from {file}."
+msgid_plural "Imported {n} annotations from {file}."
+msgstr[0] "{file}에서 주석 {n}개를 가져왔습니다."
+
+#: src/transfer.rs:783 src/transfer.rs:818
+msgid "eov annotations"
+msgstr "eov 주석"
+
+#: src/transfer.rs:811
+msgid "DICOM bulk annotations"
+msgstr "DICOM 벌크 주석"
+
+#: src/transfer.rs:824
+msgid "Export a blinded copy for another reader"
+msgstr "다른 판독자용 맹검 사본 내보내기"
+
+#: src/transfer.rs:825
+msgid "Export annotations"
+msgstr "주석 내보내기"
+
+#: src/transfer.rs:942
+msgid "Exported {n} annotation to {file}."
+msgid_plural "Exported {n} annotations to {file}."
+msgstr[0] "주석 {n}개를 {file}에 내보냈습니다."
+
+#: src/transfer.rs:948
+msgid "Could not export to {}"
+msgstr "{}에 내보낼 수 없습니다"
+
+#: src/transfer.rs:988
+msgid "Compare with another reader's annotations"
+msgstr "다른 판독자의 주석과 비교"
+
+#: src/transfer.rs:990
+msgid "Annotations (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "주석(eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:1114
+msgid "Could not compare with {}"
+msgstr "{}와(과) 비교할 수 없습니다"
+
+#: src/transfer.rs:1123
+msgid "Exporting all annotations"
+msgstr "모든 주석을 내보내는 중"
+
+#: src/transfer.rs:1176
+msgid "Exported the annotations of {n} slide."
+msgid_plural "Exported the annotations of {n} slides."
+msgstr[0] "슬라이드 {n}개의 주석을 내보냈습니다."
+
+#: src/transfer.rs:1184
+msgid "Could not export all annotations"
+msgstr "모든 주석을 내보낼 수 없습니다"
+
+#: src/transfer.rs:1201
+msgid "Annotation database backed up."
+msgstr "주석 데이터베이스를 백업했습니다."
+
+#: src/transfer.rs:1203
+msgid "Could not back up the annotation database"
+msgstr "주석 데이터베이스를 백업할 수 없습니다"
+
+#: src/transfer.rs:1217
+msgid "Merging annotation database"
+msgstr "주석 데이터베이스를 병합하는 중"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers", {slides}
+#. is "1 new slide" or "3 new slides" (each translated on its own).
+#: src/transfer.rs:1232
+msgid "Merged {n} annotation {layers} ({slides})."
+msgid_plural "Merged {n} annotations {layers} ({slides})."
+msgstr[0] "{layers} 주석 {n}개를 병합했습니다({slides})."
+
+#. Translators: {slides} in "Merged {n} annotations {layers} ({slides})."
+#: src/transfer.rs:1237
+msgid "{n} new slide"
+msgid_plural "{n} new slides"
+msgstr[0] "새 슬라이드 {n}개"
+
+#: src/transfer.rs:1249
+msgid "Could not merge the database"
+msgstr "데이터베이스를 병합할 수 없습니다"
+
+#. Translators: read out for the layer new annotations go into; {} is its
+#. number of annotations.
+#: ui/annotations-sidebar.slint:115
+msgctxt "TreeItem"
+msgid "{} · new annotations go here"
+msgstr "{} · 새 주석이 여기에 추가됨"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Collapse layer"
+msgstr "레이어 접기"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Expand layer"
+msgstr "레이어 펼치기"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Hide layer"
+msgstr "레이어 숨기기"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Show layer"
+msgstr "레이어 표시"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Lock layer"
+msgstr "레이어 잠금"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Unlock layer"
+msgstr "레이어 잠금 해제"
+
+#: ui/annotations-sidebar.slint:222
+msgctxt "TreeItem"
+msgid "Layer settings"
+msgstr "레이어 설정"
+
+#: ui/annotations-sidebar.slint:292
+msgctxt "TreeItem"
+msgid "Locked"
+msgstr "잠김"
+
+#: ui/annotations-sidebar.slint:314
+msgctxt "AnnotationsSidebar"
+msgid "No slide open"
+msgstr "열린 슬라이드 없음"
+
+#: ui/annotations-sidebar.slint:321
+msgctxt "AnnotationsSidebar"
+msgid "Unclassified"
+msgstr "미분류"
+
+#: ui/annotations-sidebar.slint:488
+msgctxt "AnnotationsSidebar"
+msgid "Import annotations…"
+msgstr "주석 가져오기…"
+
+#: ui/annotations-sidebar.slint:489
+msgctxt "AnnotationsSidebar"
+msgid "Export as GeoJSON (QuPath)…"
+msgstr "GeoJSON(QuPath)으로 내보내기…"
+
+#: ui/annotations-sidebar.slint:490
+msgctxt "AnnotationsSidebar"
+msgid "Export as eov JSON…"
+msgstr "eov JSON으로 내보내기…"
+
+#: ui/annotations-sidebar.slint:491
+msgctxt "AnnotationsSidebar"
+msgid "Export as ASAP XML…"
+msgstr "ASAP XML로 내보내기…"
+
+#: ui/annotations-sidebar.slint:492
+msgctxt "AnnotationsSidebar"
+msgid "Export as ImageScope XML…"
+msgstr "ImageScope XML로 내보내기…"
+
+#: ui/annotations-sidebar.slint:493
+msgctxt "AnnotationsSidebar"
+msgid "Export as DICOM annotations…"
+msgstr "DICOM 주석으로 내보내기…"
+
+#: ui/annotations-sidebar.slint:494
+msgctxt "AnnotationsSidebar"
+msgid "Export measurements (CSV)…"
+msgstr "측정값 내보내기(CSV)…"
+
+#: ui/annotations-sidebar.slint:495
+msgctxt "AnnotationsSidebar"
+msgid "Export a blinded copy…"
+msgstr "맹검 사본 내보내기…"
+
+#: ui/annotations-sidebar.slint:496
+msgctxt "AnnotationsSidebar"
+msgid "Compare with another reader…"
+msgstr "다른 판독자와 비교…"
+
+#. Translators: exports the annotations of every slide in the database to one
+#. annotation archive (a JSON file), not the slide images.
+#: ui/annotations-sidebar.slint:497 ui/annotations-sidebar.slint:1986
+msgctxt "AnnotationsSidebar"
+msgid "Export all slides…"
+msgstr "모든 슬라이드 내보내기…"
+
+#: ui/annotations-sidebar.slint:498
+msgctxt "AnnotationsSidebar"
+msgid "Back up the database…"
+msgstr "데이터베이스 백업…"
+
+#: ui/annotations-sidebar.slint:499
+msgctxt "AnnotationsSidebar"
+msgid "Merge a database…"
+msgstr "데이터베이스 병합…"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field area"
+msgstr "시야 면적"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field number and objective"
+msgstr "시야수 및 대물렌즈"
+
+#: ui/annotations-sidebar.slint:600
+msgctxt "AnnotationsSidebar"
+msgid "Annotations"
+msgstr "주석"
+
+#: ui/annotations-sidebar.slint:635
+msgctxt "AnnotationsSidebar"
+msgid "Import and export"
+msgstr "가져오기 및 내보내기"
+
+#: ui/annotations-sidebar.slint:668
+msgctxt "AnnotationsSidebar"
+msgid "Retry"
+msgstr "다시 시도"
+
+#: ui/annotations-sidebar.slint:683
+msgctxt "AnnotationsSidebar"
+msgid "Layers"
+msgstr "레이어"
+
+#: ui/annotations-sidebar.slint:691
+msgctxt "AnnotationsSidebar"
+msgid "Classes"
+msgstr "클래스"
+
+#. Translators: the tab for counting cells.
+#: ui/annotations-sidebar.slint:700
+msgctxt "AnnotationsSidebar"
+msgid "Count"
+msgstr "계수"
+
+#: ui/annotations-sidebar.slint:708
+msgctxt "AnnotationsSidebar"
+msgid "Data"
+msgstr "데이터"
+
+#: ui/annotations-sidebar.slint:747
+msgctxt "AnnotationsSidebar"
+msgid "Filter by name, class, kind or status"
+msgstr "이름, 클래스, 종류 또는 상태로 필터링"
+
+#: ui/annotations-sidebar.slint:769
+msgctxt "AnnotationsSidebar"
+msgid "Filter annotations"
+msgstr "주석 필터링"
+
+#: ui/annotations-sidebar.slint:786
+msgctxt "AnnotationsSidebar"
+msgid "New layer"
+msgstr "새 레이어"
+
+#: ui/annotations-sidebar.slint:870 ui/annotations-sidebar.slint:1079
+#: ui/annotations-sidebar.slint:1500
+msgctxt "AnnotationsSidebar"
+msgid "Name"
+msgstr "이름"
+
+#: ui/annotations-sidebar.slint:876 ui/annotations-sidebar.slint:878
+msgctxt "AnnotationsSidebar"
+msgid "Layer name"
+msgstr "레이어 이름"
+
+#: ui/annotations-sidebar.slint:889
+msgctxt "AnnotationsSidebar"
+msgid "Colour"
+msgstr "색"
+
+#: ui/annotations-sidebar.slint:898
+msgctxt "AnnotationsSidebar"
+msgid "Layer colour"
+msgstr "레이어 색"
+
+#: ui/annotations-sidebar.slint:906 ui/annotations-sidebar.slint:1518
+msgctxt "AnnotationsSidebar"
+msgid "Opacity"
+msgstr "불투명도"
+
+#: ui/annotations-sidebar.slint:912
+msgctxt "AnnotationsSidebar"
+msgid "Layer opacity"
+msgstr "레이어 불투명도"
+
+#: ui/annotations-sidebar.slint:923 ui/annotations-sidebar.slint:1162
+msgctxt "AnnotationsSidebar"
+msgid "Notes"
+msgstr "메모"
+
+#: ui/annotations-sidebar.slint:931
+msgctxt "AnnotationsSidebar"
+msgid "Notes about this layer"
+msgstr "이 레이어에 대한 메모"
+
+#: ui/annotations-sidebar.slint:933
+msgctxt "AnnotationsSidebar"
+msgid "Layer notes"
+msgstr "레이어 메모"
+
+#: ui/annotations-sidebar.slint:941
+msgctxt "AnnotationsSidebar"
+msgid "Draw into this layer"
+msgstr "이 레이어에 그리기"
+
+#: ui/annotations-sidebar.slint:942
+msgctxt "AnnotationsSidebar"
+msgid "Delete layer…"
+msgstr "레이어 삭제…"
+
+#: ui/annotations-sidebar.slint:1020
+msgctxt "AnnotationsSidebar"
+msgid "Zoom to the annotation"
+msgstr "주석으로 확대/축소"
+
+#: ui/annotations-sidebar.slint:1028
+msgctxt "AnnotationsSidebar"
+msgid "Copy measurements"
+msgstr "측정값 복사"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the annotation"
+msgstr "주석 삭제"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the selected annotations"
+msgstr "선택한 주석 삭제"
+
+#: ui/annotations-sidebar.slint:1065
+msgctxt "AnnotationsSidebar"
+msgid "Repair"
+msgstr "복구"
+
+#: ui/annotations-sidebar.slint:1085
+msgctxt "AnnotationsSidebar"
+msgid "Unnamed"
+msgstr "이름 없음"
+
+#: ui/annotations-sidebar.slint:1087
+msgctxt "AnnotationsSidebar"
+msgid "Annotation name"
+msgstr "주석 이름"
+
+#: ui/annotations-sidebar.slint:1098
+msgctxt "AnnotationsSidebar"
+msgid "Class"
+msgstr "클래스"
+
+#: ui/annotations-sidebar.slint:1104
+msgctxt "AnnotationsSidebar"
+msgid "Annotation class"
+msgstr "주석 클래스"
+
+#: ui/annotations-sidebar.slint:1115
+msgctxt "AnnotationsSidebar"
+msgid "Status"
+msgstr "상태"
+
+#: ui/annotations-sidebar.slint:1121
+msgctxt "AnnotationsSidebar"
+msgid "Review status"
+msgstr "검토 상태"
+
+#: ui/annotations-sidebar.slint:1132
+msgctxt "AnnotationsSidebar"
+msgid "Layer"
+msgstr "레이어"
+
+#: ui/annotations-sidebar.slint:1138
+msgctxt "AnnotationsSidebar"
+msgid "Annotation layer"
+msgstr "주석 레이어"
+
+#: ui/annotations-sidebar.slint:1149
+msgctxt "AnnotationsSidebar"
+msgid "Locked"
+msgstr "잠김"
+
+#: ui/annotations-sidebar.slint:1170 ui/annotations-sidebar.slint:1172
+msgctxt "AnnotationsSidebar"
+msgid "Description"
+msgstr "설명"
+
+#: ui/annotations-sidebar.slint:1183
+msgctxt "AnnotationsSidebar"
+msgid "MEASUREMENTS"
+msgstr "측정값"
+
+#: ui/annotations-sidebar.slint:1213
+msgctxt "AnnotationsSidebar"
+msgid "PROPERTIES"
+msgstr "속성"
+
+#: ui/annotations-sidebar.slint:1224
+msgctxt "AnnotationsSidebar"
+msgid "Property name"
+msgstr "속성 이름"
+
+#: ui/annotations-sidebar.slint:1233
+msgctxt "AnnotationsSidebar"
+msgid "Value"
+msgstr "값"
+
+#: ui/annotations-sidebar.slint:1235
+msgctxt "AnnotationsSidebar"
+msgid "Property value"
+msgstr "속성 값"
+
+#: ui/annotations-sidebar.slint:1243
+msgctxt "AnnotationsSidebar"
+msgid "Remove property"
+msgstr "속성 제거"
+
+#: ui/annotations-sidebar.slint:1255
+msgctxt "AnnotationsSidebar"
+msgid "Add property"
+msgstr "속성 추가"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS"
+msgstr "댓글"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS ({})"
+msgstr "댓글({})"
+
+#: ui/annotations-sidebar.slint:1294
+msgctxt "AnnotationsSidebar"
+msgid "Delete comment"
+msgstr "댓글 삭제"
+
+#: ui/annotations-sidebar.slint:1314
+msgctxt "AnnotationsSidebar"
+msgid "Add a comment"
+msgstr "댓글 입력"
+
+#: ui/annotations-sidebar.slint:1316
+msgctxt "AnnotationsSidebar"
+msgid "New comment"
+msgstr "새 댓글"
+
+#. Translators: a button that adds the comment typed above.
+#: ui/annotations-sidebar.slint:1324
+msgctxt "AnnotationsSidebar"
+msgid "Comment"
+msgstr "댓글 달기"
+
+#: ui/annotations-sidebar.slint:1358
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Select an annotation on the slide or in the list to see its details. Double-"
+"click a row to zoom to it; Ctrl+click selects several."
+msgstr ""
+"슬라이드나 목록에서 주석을 선택하면 세부 정보가 표시됩니다. 행을 더블클릭하"
+"면 해당 주석으로 확대/축소되며, Ctrl+클릭으로 여러 개를 선택할 수 있습니다."
+
+#: ui/annotations-sidebar.slint:1379
+msgctxt "AnnotationsSidebar"
+msgid ""
+"New annotations get the active class (●), and the Count tool counts it; "
+"Shift+click counts the second class (◐). Pressing a class's hotkey makes it "
+"active."
+msgstr ""
+"새 주석에는 활성 클래스(●)가 지정되며 계수 도구도 이 클래스를 계수합니다. "
+"Shift+클릭하면 두 번째 클래스(◐)를 계수합니다. 클래스의 단축키를 누르면 해당 "
+"클래스가 활성화됩니다."
+
+#: ui/annotations-sidebar.slint:1418
+msgctxt "AnnotationsSidebar"
+msgid "Colour of {}"
+msgstr "{} 색"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Hide {}"
+msgstr "{} 숨기기"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Show {}"
+msgstr "{} 표시"
+
+#: ui/annotations-sidebar.slint:1466
+msgctxt "AnnotationsSidebar"
+msgid "Class settings"
+msgstr "클래스 설정"
+
+#: ui/annotations-sidebar.slint:1506 ui/annotations-sidebar.slint:1507
+msgctxt "AnnotationsSidebar"
+msgid "Class name"
+msgstr "클래스 이름"
+
+#: ui/annotations-sidebar.slint:1523
+msgctxt "AnnotationsSidebar"
+msgid "Class opacity"
+msgstr "클래스 불투명도"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Count with Shift+click"
+msgstr "Shift+클릭으로 계수"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Stop counting with Shift+click"
+msgstr "Shift+클릭으로 계수 중지"
+
+#: ui/annotations-sidebar.slint:1539
+msgctxt "AnnotationsSidebar"
+msgid "Delete…"
+msgstr "삭제…"
+
+#: ui/annotations-sidebar.slint:1558
+msgctxt "AnnotationsSidebar"
+msgid "New class"
+msgstr "새 클래스"
+
+#: ui/annotations-sidebar.slint:1596
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Pick the Count tool (C) and click cells; Shift+click and Alt+click count the "
+"second and third class. Select regions or HPF fields to count inside them."
+msgstr ""
+"계수 도구(C)를 선택하고 세포를 클릭하세요. Shift+클릭과 Alt+클릭으로 두 번째"
+"와 세 번째 클래스를 계수합니다. 영역이나 HPF 시야를 선택하면 그 안에서 계수합"
+"니다."
+
+#: ui/annotations-sidebar.slint:1601
+msgctxt "AnnotationsSidebar"
+msgid "Count tool (C)"
+msgstr "계수 도구(C)"
+
+#: ui/annotations-sidebar.slint:1602
+msgctxt "AnnotationsSidebar"
+msgid "HPF field (H)"
+msgstr "HPF 시야(H)"
+
+#. Translators: the class a click with the Count tool counts.
+#: ui/annotations-sidebar.slint:1614
+msgctxt "AnnotationsSidebar"
+msgid "Click"
+msgstr "클릭"
+
+#: ui/annotations-sidebar.slint:1620
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by a click"
+msgstr "클릭으로 계수할 클래스"
+
+#: ui/annotations-sidebar.slint:1631
+msgctxt "AnnotationsSidebar"
+msgid "Shift+click"
+msgstr "Shift+클릭"
+
+#: ui/annotations-sidebar.slint:1636
+msgctxt "AnnotationsSidebar"
+msgid "(same as click)"
+msgstr "(클릭과 같음)"
+
+#: ui/annotations-sidebar.slint:1637
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by Shift+click"
+msgstr "Shift+클릭으로 계수할 클래스"
+
+#: ui/annotations-sidebar.slint:1648
+msgctxt "AnnotationsSidebar"
+msgid "Alt+click"
+msgstr "Alt+클릭"
+
+#: ui/annotations-sidebar.slint:1653
+msgctxt "AnnotationsSidebar"
+msgid "(none)"
+msgstr "(없음)"
+
+#: ui/annotations-sidebar.slint:1654
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Class counted by Alt+click: PD-L1-positive immune cells for the combined "
+"positive score"
+msgstr ""
+"Alt+클릭으로 계수할 클래스: 복합 양성 점수(CPS)에 쓰이는 PD-L1 양성 면역 세포"
+
+#: ui/annotations-sidebar.slint:1662
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Combined positive score: the click and Alt+click classes (PD-L1-positive "
+"tumour cells and PD-L1-positive immune cells) per 100 tumour cells (the "
+"click and Shift+click classes)."
+msgstr ""
+"복합 양성 점수(CPS): 종양 세포(클릭 및 Shift+클릭 클래스) 100개당 클릭 및 "
+"Alt+클릭 클래스(PD-L1 양성 종양 세포 및 PD-L1 양성 면역 세포)의 수."
+
+#: ui/annotations-sidebar.slint:1677
+msgctxt "AnnotationsSidebar"
+msgid "Nothing counted here yet."
+msgstr "아직 여기에서 계수한 항목이 없습니다."
+
+#: ui/annotations-sidebar.slint:1748
+msgctxt "AnnotationsSidebar"
+msgid "Count points in hidden layers"
+msgstr "숨겨진 레이어의 점도 계수"
+
+#: ui/annotations-sidebar.slint:1759
+msgctxt "AnnotationsSidebar"
+msgid "Clear counts…"
+msgstr "계수 지우기…"
+
+#: ui/annotations-sidebar.slint:1771
+msgctxt "AnnotationsSidebar"
+msgid "HIGH-POWER FIELDS"
+msgstr "고배율 시야"
+
+#: ui/annotations-sidebar.slint:1785
+msgctxt "AnnotationsSidebar"
+msgid "How the field size is given"
+msgstr "시야 크기 지정 방식"
+
+#. Translators: FN is the eyepiece's field number, the diameter of the field
+#. of view.
+#: ui/annotations-sidebar.slint:1796
+msgctxt "AnnotationsSidebar"
+msgid "FN (mm)"
+msgstr "시야수(mm)"
+
+#: ui/annotations-sidebar.slint:1803
+msgctxt "AnnotationsSidebar"
+msgid "Field number in mm"
+msgstr "시야수(mm 단위)"
+
+#. Translators: the magnification of the objective, as in 40×.
+#: ui/annotations-sidebar.slint:1811
+msgctxt "AnnotationsSidebar"
+msgid "Objective ×"
+msgstr "대물렌즈 ×"
+
+#: ui/annotations-sidebar.slint:1821
+msgctxt "AnnotationsSidebar"
+msgid "Objective magnification"
+msgstr "대물렌즈 배율"
+
+#: ui/annotations-sidebar.slint:1828 ui/annotations-sidebar.slint:1853
+msgctxt "AnnotationsSidebar"
+msgid "Apply"
+msgstr "적용"
+
+#: ui/annotations-sidebar.slint:1839
+msgctxt "AnnotationsSidebar"
+msgid "Area (mm²)"
+msgstr "면적(mm²)"
+
+#: ui/annotations-sidebar.slint:1846
+msgctxt "AnnotationsSidebar"
+msgid "Field area in square millimetres"
+msgstr "시야 면적(제곱밀리미터)"
+
+#: ui/annotations-sidebar.slint:1873
+msgctxt "AnnotationsSidebar"
+msgid "{n} field placed on this slide."
+msgid_plural "{n} fields placed on this slide."
+msgstr[0] "이 슬라이드에 시야 {n}개가 배치되어 있습니다."
+
+#: ui/annotations-sidebar.slint:1885
+msgctxt "AnnotationsSidebar"
+msgid "Select all fields"
+msgstr "모든 시야 선택"
+
+#: ui/annotations-sidebar.slint:1924
+msgctxt "AnnotationsSidebar"
+msgid "IMPORT AND EXPORT"
+msgstr "가져오기 및 내보내기"
+
+#: ui/annotations-sidebar.slint:1928
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Imports: GeoJSON (QuPath and others), eov JSON, ASAP XML, Aperio ImageScope "
+"XML, Hamamatsu NDPA and DICOM bulk annotations. Coordinates are level-0 "
+"pixels with y pointing down."
+msgstr ""
+"가져오기 지원 형식: GeoJSON(QuPath 등), eov JSON, ASAP XML, Aperio "
+"ImageScope XML, Hamamatsu NDPA, DICOM 벌크 주석. 좌표는 레벨 0 픽셀 단위이며 "
+"y축은 아래쪽을 향합니다."
+
+#: ui/annotations-sidebar.slint:1935
+msgctxt "AnnotationsSidebar"
+msgid "Import…"
+msgstr "가져오기…"
+
+#: ui/annotations-sidebar.slint:1991
+msgctxt "AnnotationsSidebar"
+msgid "Back up…"
+msgstr "백업…"
+
+#: ui/annotations-sidebar.slint:1992
+msgctxt "AnnotationsSidebar"
+msgid "Merge…"
+msgstr "병합…"
+
+#. Translators: a reader is a person who annotates slides; a second reader
+#. annotates a blinded copy independently so two readers can be compared (as
+#. in a reader study); use the word for an observer or annotator, not the
+#. clinical term for a second diagnostic opinion.
+#: ui/annotations-sidebar.slint:2009
+msgctxt "AnnotationsSidebar"
+msgid "SECOND READER"
+msgstr "제2 판독자"
+
+#: ui/annotations-sidebar.slint:2013
+msgctxt "AnnotationsSidebar"
+msgid ""
+"A blinded copy holds the visible layers' shapes, classes and names, without "
+"authors, comments, statuses, descriptions or properties. Compare reads "
+"another reader's export and compares it with the visible layers: counts per "
+"class, matched points and overlapping regions."
+msgstr ""
+"맹검 사본에는 표시된 레이어의 도형, 클래스, 이름만 담기며 작성자, 댓글, 상"
+"태, 설명, 속성은 포함되지 않습니다. 비교는 다른 판독자가 내보낸 파일을 읽어 "
+"표시된 레이어와 비교합니다(클래스별 개수, 일치하는 점, 겹치는 영역)."
+
+#: ui/annotations-sidebar.slint:2018
+msgctxt "AnnotationsSidebar"
+msgid "Blinded copy…"
+msgstr "맹검 사본…"
+
+#: ui/annotations-sidebar.slint:2019
+msgctxt "AnnotationsSidebar"
+msgid "Compare…"
+msgstr "비교…"
+
+#. Translators: a button: compare with the same file again.
+#: ui/annotations-sidebar.slint:2022
+msgctxt "AnnotationsSidebar"
+msgid "Again"
+msgstr "다시 비교"
+
+#. Translators: a button: remove the comparison.
+#: ui/annotations-sidebar.slint:2029
+msgctxt "AnnotationsSidebar"
+msgid "Clear"
+msgstr "지우기"
+
+#: ui/annotations-sidebar.slint:2066
+msgctxt "AnnotationsSidebar"
+msgid "Neither reader has points or regions in the compared layers."
+msgstr "비교한 레이어에 두 판독자 모두 점이나 영역이 없습니다."
+
+#: ui/annotations-sidebar.slint:2126
+msgctxt "AnnotationsSidebar"
+msgid "DATABASE"
+msgstr "데이터베이스"
+
+#: ui/annotations-sidebar.slint:2150
+msgctxt "AnnotationsSidebar"
+msgid "Database file"
+msgstr "데이터베이스 파일"
+
+#. Translators: {} is the path of the old database file.
+#: ui/annotations-sidebar.slint:2167
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Annotations made with eov before 1.0 are in {}. Bring them into this "
+"database (the old file is not changed):"
+msgstr ""
+"eov 1.0 이전 버전에서 작성한 주석이 {}에 있습니다. 이 데이터베이스로 가져오세"
+"요(이전 파일은 변경되지 않음):"
+
+#: ui/annotations-sidebar.slint:2179
+msgctxt "AnnotationsSidebar"
+msgid "Bring them in"
+msgstr "가져오기"
+
+#: ui/annotations-sidebar.slint:2195
+msgctxt "AnnotationsSidebar"
+msgid "OTHER SLIDES"
+msgstr "다른 슬라이드"
+
+#. Translators: a button that lists the other slides in the database.
+#: ui/annotations-sidebar.slint:2202
+msgctxt "AnnotationsSidebar"
+msgid "List"
+msgstr "목록"
+
+#. Translators: a button: attach the annotations of this slide to the open
+#. slide.
+#: ui/annotations-sidebar.slint:2236
+msgctxt "AnnotationsSidebar"
+msgid "Attach"
+msgstr "연결"
+
+#: ui/annotations-sidebar.slint:2258
+msgctxt "AnnotationsSidebar"
+msgid "AUTHOR AND EXPORTS"
+msgstr "작성자 및 내보내기"
+
+#: ui/annotations-sidebar.slint:2265 ui/annotations-sidebar.slint:2273
+msgctxt "AnnotationsSidebar"
+msgid "Author"
+msgstr "작성자"
+
+#: ui/annotations-sidebar.slint:2272
+msgctxt "AnnotationsSidebar"
+msgid "Your name or initials"
+msgstr "이름 또는 이니셜"
+
+#: ui/annotations-sidebar.slint:2284 ui/annotations-sidebar.slint:2291
+msgctxt "AnnotationsSidebar"
+msgid "Organization"
+msgstr "기관"
+
+#: ui/annotations-sidebar.slint:2302 ui/annotations-sidebar.slint:2309
+msgctxt "AnnotationsSidebar"
+msgid "Project"
+msgstr "프로젝트"
+
+#: ui/annotations-sidebar.slint:2320 ui/annotations-sidebar.slint:2328
+msgctxt "AnnotationsSidebar"
+msgid "License"
+msgstr "라이선스"
+
+#: ui/annotations-sidebar.slint:2327
+msgctxt "AnnotationsSidebar"
+msgid "e.g. CC-BY-4.0"
+msgstr "예: CC-BY-4.0"
+
+#: ui/annotations-sidebar.slint:2336
+msgctxt "AnnotationsSidebar"
+msgid "Include the slide's file name in exports"
+msgstr "내보낼 때 슬라이드 파일 이름 포함"
+
+#: ui/annotations-sidebar.slint:2346
+msgctxt "AnnotationsSidebar"
+msgid "DISPLAY"
+msgstr "표시 설정"
+
+#: ui/annotations-sidebar.slint:2350
+msgctxt "AnnotationsSidebar"
+msgid "Show names on the slide"
+msgstr "슬라이드에 이름 표시"
+
+#: ui/annotations-sidebar.slint:2361 ui/annotations-sidebar.slint:2369
+msgctxt "AnnotationsSidebar"
+msgid "Point size"
+msgstr "점 크기"
+
+#: ui/annotations-sidebar.slint:2380 ui/annotations-sidebar.slint:2386
+msgctxt "AnnotationsSidebar"
+msgid "Fill opacity"
+msgstr "채우기 불투명도"
+
+#. Translators: S is the brush tool's key.
+#: ui/annotations-sidebar.slint:2397
+msgctxt "AnnotationsSidebar"
+msgid "BRUSH (S)"
+msgstr "브러시(S)"
+
+#. Translators: the size of the brush.
+#: ui/annotations-sidebar.slint:2405
+msgctxt "AnnotationsSidebar"
+msgid "Size"
+msgstr "크기"
+
+#: ui/annotations-sidebar.slint:2413
+msgctxt "AnnotationsSidebar"
+msgid "Brush size"
+msgstr "브러시 크기"
+
+#: ui/annotations-sidebar.slint:2429
+msgctxt "AnnotationsSidebar"
+msgid "Erase from the selected region"
+msgstr "선택한 영역에서 지우기"
+
+#: ui/annotations-sidebar.slint:2437
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Paint over a selected region to extend it, elsewhere to make a new one. Hold "
+"Alt to erase; [ and ] change the size."
+msgstr ""
+"선택한 영역 위에 칠하면 그 영역이 확장되고, 다른 곳에 칠하면 새 영역이 만들어"
+"집니다. Alt 키를 누른 채 칠하면 지워지며, [ 및 ] 키로 크기를 바꿉니다."
+
+#: ui/annotations-sidebar.slint:2557
+msgctxt "AnnotationsSidebar"
+msgid "Colours"
+msgstr "색"
+
+#: ui/import-dialog.slint:117 ui/import-dialog.slint:124
+msgctxt "ImportDialog"
+msgid "Import annotations"
+msgstr "주석 가져오기"
+
+#: ui/import-dialog.slint:186
+msgctxt "ImportDialog"
+msgid "NOTES"
+msgstr "참고 사항"
+
+#: ui/import-dialog.slint:214
+msgctxt "ImportDialog"
+msgid "Add to the existing layers"
+msgstr "기존 레이어에 추가"
+
+#: ui/import-dialog.slint:215
+msgctxt "ImportDialog"
+msgid "Imported annotations join the layer with the same name."
+msgstr "가져온 주석은 이름이 같은 레이어에 추가됩니다."
+
+#: ui/import-dialog.slint:223
+msgctxt "ImportDialog"
+msgid "Replace the existing layers"
+msgstr "기존 레이어 교체"
+
+#: ui/import-dialog.slint:224
+msgctxt "ImportDialog"
+msgid "The existing layers are deleted (this can be undone)."
+msgstr "기존 레이어는 삭제됩니다(실행 취소 가능)."
+
+#: ui/import-dialog.slint:232
+msgctxt "ImportDialog"
+msgid "Keep both"
+msgstr "모두 유지"
+
+#. Translators: "Tumour" is only an example of a layer name from the imported
+#. file: translate it, and keep the " (2)" that eov adds.
+#: ui/import-dialog.slint:234
+msgctxt "ImportDialog"
+msgid "Imported layers get a new name, such as \"Tumour (2)\"."
+msgstr "가져온 레이어에는 \"종양 (2)\"처럼 새 이름이 붙습니다."
+
+#: ui/import-dialog.slint:243
+msgctxt "ImportDialog"
+msgid "The import is one step: Ctrl+Z (⌘Z) removes everything it added."
+msgstr ""
+"가져오기는 한 단계로 처리됩니다. Ctrl+Z(⌘Z)를 누르면 가져온 항목이 모두 제거"
+"됩니다."
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Cancel"
+msgstr "취소"
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Close"
+msgstr "닫기"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import"
+msgstr "가져오기"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import anyway"
+msgstr "그래도 가져오기"
+
+#: ui/widgets.slint:655
+msgctxt "Swatch"
+msgid "Change colour"
+msgstr "색 변경"
+
+#: ui/widgets.slint:694
+msgctxt "KeyField"
+msgid "Hotkey"
+msgstr "단축키"
+
+#: ui/widgets.slint:696
+msgctxt "KeyField"
+msgid "Click, then press a key. Backspace removes the hotkey."
+msgstr "클릭한 다음 키를 누르세요. Backspace를 누르면 단축키가 제거됩니다."

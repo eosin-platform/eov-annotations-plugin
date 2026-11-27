@@ -1,0 +1,3138 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: annotations\n"
+"Report-Msgid-Bugs-To: https://github.com/eosin-platform/eov-annotations-"
+"plugin/issues\n"
+"Language-Team: Thai\n"
+"Language: th\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Review-Status: machine-translated; not yet reviewed by a native speaker\n"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid "Annotations"
+msgstr "แอนโนเทชัน"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid ""
+"Point, region, line and text annotations with reusable classes, cell "
+"counting, HPF fields and measurements; GeoJSON (QuPath) import and export, "
+"ASAP and Aperio ImageScope XML import."
+msgstr ""
+"แอนโนเทชันแบบจุด บริเวณ เส้น และข้อความ พร้อมคลาสที่ใช้ซ้ำได้ การนับเซลล์ ลาน HPF "
+"และการวัด นำเข้าและส่งออก GeoJSON (QuPath) และนำเข้า XML ของ ASAP และ Aperio "
+"ImageScope"
+
+#: src/actions.rs:23
+msgid "The annotations of this slide are still loading; try again in a moment."
+msgstr "แอนโนเทชันของสไลด์นี้ยังโหลดไม่เสร็จ โปรดลองอีกครั้งในอีกสักครู่"
+
+#: src/actions.rs:27 src/sidebar.rs:1390 src/sidebar.rs:1474
+msgid "That layer no longer exists."
+msgstr "เลเยอร์นั้นไม่มีอยู่แล้ว"
+
+#: src/actions.rs:31
+msgid "That annotation no longer exists."
+msgstr "แอนโนเทชันนั้นไม่มีอยู่แล้ว"
+
+#: src/actions.rs:35 src/sidebar.rs:1605
+msgid "That class no longer exists."
+msgstr "คลาสนั้นไม่มีอยู่แล้ว"
+
+#: src/actions.rs:39 src/transfer.rs:648 src/transfer.rs:658
+msgid "Layer \"{}\" is locked."
+msgstr "เลเยอร์ “{}” ถูกล็อกอยู่"
+
+#: src/actions.rs:43
+msgid "Parts outside the slide were cut off."
+msgstr "ตัดส่วนที่อยู่นอกสไลด์ออกแล้ว"
+
+#: src/actions.rs:62
+msgid "The slide is not open any more."
+msgstr "สไลด์ไม่ได้เปิดอยู่แล้ว"
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:136
+msgid "The outline crossed itself and was split into {n} parts."
+msgid_plural "The outline crossed itself and was split into {n} parts."
+msgstr[0] "เส้นขอบตัดกันเอง จึงถูกแยกเป็น {n} ส่วน"
+
+#: src/actions.rs:140
+msgid "The outline crossed itself and was repaired."
+msgstr "เส้นขอบตัดกันเอง จึงซ่อมแซมให้แล้ว"
+
+#: src/actions.rs:156
+msgid "The HPF size is not valid; check it in the Count tab."
+msgstr "ขนาด HPF ไม่ถูกต้อง โปรดตรวจสอบในแท็บ “นับเซลล์”"
+
+#: src/actions.rs:160
+msgid "This slide has no pixel size, so HPF fields cannot be sized."
+msgstr "สไลด์นี้ไม่มีขนาดพิกเซล จึงกำหนดขนาดลาน HPF ไม่ได้"
+
+#: src/actions.rs:207
+msgid "Count cell"
+msgstr "นับเซลล์"
+
+#: src/actions.rs:218 src/lib.rs:613
+msgid "Add point"
+msgstr "เพิ่มจุด"
+
+#: src/actions.rs:228
+msgid "Add line"
+msgstr "เพิ่มเส้น"
+
+#: src/actions.rs:242
+msgid "Add arrow"
+msgstr "เพิ่มลูกศร"
+
+#: src/actions.rs:258
+msgid "Add text"
+msgstr "เพิ่มข้อความ"
+
+#: src/actions.rs:303
+msgid ""
+"To add the shape to a region (Shift) or cut it from a region (Alt), select "
+"exactly one region first. The shape was added as a new annotation."
+msgstr ""
+"หากต้องการเพิ่มรูปทรงเข้าในบริเวณ (Shift) หรือตัดออกจากบริเวณ (Alt) "
+"โปรดเลือกบริเวณเพียงหนึ่งบริเวณก่อน เพิ่มรูปทรงนี้เป็นแอนโนเทชันใหม่แล้ว"
+
+#: src/actions.rs:314 src/actions.rs:325
+msgid "Add region"
+msgstr "เพิ่มบริเวณ"
+
+#: src/actions.rs:378
+msgid "Place HPF field"
+msgstr "วางลาน HPF"
+
+#: src/actions.rs:399
+msgid "This field extends past the slide edge; its area includes empty canvas."
+msgstr "ลานนี้เลยขอบสไลด์ออกไป พื้นที่จึงรวมบริเวณว่างนอกภาพด้วย"
+
+#: src/actions.rs:429
+msgid "Add to region"
+msgstr "เพิ่มเข้าในบริเวณ"
+
+#: src/actions.rs:431
+msgid "Cut from region"
+msgstr "ตัดออกจากบริเวณ"
+
+#: src/actions.rs:439
+msgid "The selected region no longer exists."
+msgstr "บริเวณที่เลือกไม่มีอยู่แล้ว"
+
+#: src/actions.rs:441
+msgid "The selected region is locked."
+msgstr "บริเวณที่เลือกถูกล็อกอยู่"
+
+#: src/actions.rs:452
+msgid "Only regions can be combined."
+msgstr "รวมได้เฉพาะบริเวณเท่านั้น"
+
+#: src/actions.rs:460
+msgid "The cut removed the whole region."
+msgstr "การตัดทำให้บริเวณถูกลบออกทั้งหมด"
+
+#: src/actions.rs:483
+msgid ""
+"The shapes do not touch; the new shape was added as a separate annotation."
+msgstr "รูปทรงไม่ได้สัมผัสกัน จึงเพิ่มรูปทรงใหม่เป็นแอนโนเทชันแยกต่างหาก"
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:488
+msgid "The cut split the region into {n} parts."
+msgid_plural "The cut split the region into {n} parts."
+msgstr[0] "การตัดแยกบริเวณออกเป็น {n} ส่วน"
+
+#: src/actions.rs:522
+msgid "Edit shape"
+msgstr "แก้ไขรูปทรง"
+
+#: src/actions.rs:544
+msgid "The annotation is locked."
+msgstr "แอนโนเทชันถูกล็อกอยู่"
+
+#: src/actions.rs:560
+msgid "That edit would turn the arrow into another shape, so it was undone."
+msgstr "การแก้ไขนั้นจะทำให้ลูกศรกลายเป็นรูปทรงอื่น จึงเลิกทำแล้ว"
+
+#: src/actions.rs:564
+msgid "That edit was undone."
+msgstr "เลิกทำการแก้ไขนั้นแล้ว"
+
+#: src/actions.rs:591
+msgid "The edit was undone: {}"
+msgstr "เลิกทำการแก้ไขแล้ว: {}"
+
+#: src/actions.rs:596
+msgid "That edit would make the outline cross itself, so it was undone."
+msgstr "การแก้ไขนั้นจะทำให้เส้นขอบตัดกันเอง จึงเลิกทำแล้ว"
+
+#: src/actions.rs:629
+msgid "Delete annotation"
+msgid_plural "Delete {n} annotations"
+msgstr[0] "ลบแอนโนเทชัน {n} รายการ"
+
+#: src/actions.rs:649
+msgid "{n} locked annotation was kept."
+msgid_plural "{n} locked annotations were kept."
+msgstr[0] "คงแอนโนเทชันที่ถูกล็อกไว้ {n} รายการ"
+
+#: src/actions.rs:703
+msgid "The target layer is locked or gone."
+msgstr "เลเยอร์ปลายทางถูกล็อกหรือไม่มีอยู่แล้ว"
+
+#: src/actions.rs:712
+msgid "{n} locked annotation was not changed."
+msgid_plural "{n} locked annotations were not changed."
+msgstr[0] "ไม่ได้เปลี่ยนแอนโนเทชันที่ถูกล็อก {n} รายการ"
+
+#: src/actions.rs:777
+msgid "Could not zoom to the annotation"
+msgstr "ไม่สามารถซูมไปยังแอนโนเทชันได้"
+
+#: src/actions.rs:790
+msgid "New layer"
+msgstr "เลเยอร์ใหม่"
+
+#: src/actions.rs:865
+msgid "Rename layer"
+msgstr "เปลี่ยนชื่อเลเยอร์"
+
+#: src/actions.rs:877
+msgid "Delete layer"
+msgstr "ลบเลเยอร์"
+
+#: src/actions.rs:887
+msgid "Delete layer \"{}\""
+msgstr "ลบเลเยอร์ “{}”"
+
+#: src/actions.rs:897
+msgid "Choose layer"
+msgstr "เลือกเลเยอร์"
+
+#: src/actions.rs:902
+msgid ""
+"New annotations go to a regular layer; count points and HPF fields have "
+"their own."
+msgstr "แอนโนเทชันใหม่จะอยู่ในเลเยอร์ปกติ จุดนับและลาน HPF มีเลเยอร์ของตนเอง"
+
+#. Translators: an undo step, shown by eov as "Undo {}".
+#: src/actions.rs:918
+msgid "Clear counts"
+msgstr "ล้างผลการนับ"
+
+#: src/actions.rs:950
+msgid ""
+"There are no HPF fields on this slide yet. Use the HPF field tool (H) to "
+"place them."
+msgstr "สไลด์นี้ยังไม่มีลาน HPF โปรดใช้เครื่องมือลาน HPF (H) เพื่อวางลาน"
+
+#: src/actions.rs:960
+msgid "Repair outline"
+msgstr "ซ่อมเส้นขอบ"
+
+#: src/actions.rs:975
+msgid "Nothing is left of the outline."
+msgstr "ไม่เหลือเส้นขอบอยู่เลย"
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:997
+msgid "The outline was split into {n} parts."
+msgid_plural "The outline was split into {n} parts."
+msgstr[0] "เส้นขอบถูกแยกเป็น {n} ส่วน"
+
+#: src/actions.rs:1012
+msgid "Could not attach the annotations"
+msgstr "ไม่สามารถแนบแอนโนเทชันได้"
+
+#: src/actions.rs:1018
+msgid "Attach annotations of another slide"
+msgstr "แนบแอนโนเทชันของสไลด์อื่น"
+
+#: src/actions.rs:1024
+msgid "Those annotations already belong to this slide."
+msgstr "แอนโนเทชันเหล่านั้นเป็นของสไลด์นี้อยู่แล้ว"
+
+#: src/actions.rs:1027
+msgid "That slide has no annotations left."
+msgstr "สไลด์นั้นไม่เหลือแอนโนเทชันแล้ว"
+
+#: src/actions.rs:1035
+msgid "Attached {n} layer to this slide."
+msgid_plural "Attached {n} layers to this slide."
+msgstr[0] "แนบเลเยอร์ {n} เลเยอร์กับสไลด์นี้แล้ว"
+
+#: src/actions.rs:1076
+msgid "New class"
+msgstr "คลาสใหม่"
+
+#: src/actions.rs:1138
+msgid "Rename class"
+msgstr "เปลี่ยนชื่อคลาส"
+
+#: src/actions.rs:1147
+msgid "A class named \"{}\" already exists."
+msgstr "มีคลาสชื่อ “{}” อยู่แล้ว"
+
+#: src/actions.rs:1161
+msgid "Set class hotkey"
+msgstr "ตั้งปุ่มลัดของคลาส"
+
+#: src/actions.rs:1186
+msgid "Change class colour"
+msgstr "เปลี่ยนสีของคลาส"
+
+#: src/actions.rs:1190 src/sidebar.rs:1358
+msgid "\"{}\" is not a colour."
+msgstr "“{}” ไม่ใช่สี"
+
+#: src/actions.rs:1197
+msgid "Delete class"
+msgstr "ลบคลาส"
+
+#: src/actions.rs:1201
+msgid "Delete class \"{}\""
+msgstr "ลบคลาส “{}”"
+
+#: src/actions.rs:1243 src/lib.rs:96 src/overlay.rs:164 src/sidebar.rs:151
+#: src/sidebar.rs:384
+msgid "Unclassified"
+msgstr "ไม่มีคลาส"
+
+#: src/actions.rs:1244
+msgid "Class: {}"
+msgstr "คลาส: {}"
+
+#. Translators: on the slide, beside the HPF field that follows the
+#. pointer: its area and how many points (such as counted cells) lie in it.
+#: src/actions.rs:1274
+msgid "1 HPF · {area} mm² · {n} point"
+msgid_plural "1 HPF · {area} mm² · {n} points"
+msgstr[0] "1 HPF · {area} mm² · {n} จุด"
+
+#: src/actions.rs:1466
+msgid "Add comment"
+msgstr "เพิ่มความคิดเห็น"
+
+#: src/actions.rs:1472
+msgid "Write the comment first."
+msgstr "โปรดเขียนความคิดเห็นก่อน"
+
+#: src/actions.rs:1481
+msgid "An annotation can have at most {n} comments."
+msgid_plural "An annotation can have at most {n} comments."
+msgstr[0] "แอนโนเทชันหนึ่งรายการมีความคิดเห็นได้ไม่เกิน {n} รายการ"
+
+#: src/actions.rs:1511
+msgid "Delete comment"
+msgstr "ลบความคิดเห็น"
+
+#: src/actions.rs:1524
+msgid "That comment no longer exists."
+msgstr "ความคิดเห็นนั้นไม่มีอยู่แล้ว"
+
+#: src/actions.rs:1723
+msgid ""
+"Brush {} px, eraser: paint over a selected region to erase from it; [ and ] "
+"change the size"
+msgstr ""
+"แปรง {} px โหมดยางลบ: ระบายทับบริเวณที่เลือกเพื่อลบออกจากบริเวณนั้น [ และ ] "
+"เพื่อเปลี่ยนขนาด"
+
+#: src/actions.rs:1728
+msgid ""
+"Brush {} px: paint a region (over a selected region to extend it); Alt "
+"erases; [ and ] change the size"
+msgstr ""
+"แปรง {} px: ระบายบริเวณ (ระบายทับบริเวณที่เลือกเพื่อขยาย) Alt เพื่อลบ [ และ ] "
+"เพื่อเปลี่ยนขนาด"
+
+#: src/actions.rs:1742
+msgid "Erase"
+msgstr "ลบด้วยยางลบ"
+
+#: src/actions.rs:1744
+msgid "Brush stroke"
+msgstr "ระบายด้วยแปรง"
+
+#: src/actions.rs:1768
+msgid "The stroke is outside the slide."
+msgstr "เส้นที่ระบายอยู่นอกสไลด์"
+
+#: src/actions.rs:1818
+msgid "Select the region to erase from."
+msgstr "โปรดเลือกบริเวณที่จะใช้ยางลบ"
+
+#: src/actions.rs:1843
+msgid "The eraser did not touch the selected region."
+msgstr "ยางลบไม่ได้สัมผัสบริเวณที่เลือก"
+
+#. Translators: a part of the plugin that works in the background.
+#: src/core.rs:228
+msgid "Could not start a worker thread"
+msgstr "ไม่สามารถเริ่มเธรดทำงานได้"
+
+#: src/core.rs:385
+msgid "Internal error while opening the database"
+msgstr "เกิดข้อผิดพลาดภายในขณะเปิดฐานข้อมูล"
+
+#: src/core.rs:393
+msgid "Internal error while loading annotations"
+msgstr "เกิดข้อผิดพลาดภายในขณะโหลดแอนโนเทชัน"
+
+#: src/core.rs:398
+msgid "Internal error while saving annotations"
+msgstr "เกิดข้อผิดพลาดภายในขณะบันทึกแอนโนเทชัน"
+
+#: src/core.rs:403
+msgid "Internal error while undoing"
+msgstr "เกิดข้อผิดพลาดภายในขณะเลิกทำ"
+
+#: src/core.rs:408
+msgid "Internal error while working on the database"
+msgstr "เกิดข้อผิดพลาดภายในขณะทำงานกับฐานข้อมูล"
+
+#: src/core.rs:427
+msgid "Internal error while reading or writing a file"
+msgstr "เกิดข้อผิดพลาดภายในขณะอ่านหรือเขียนไฟล์"
+
+#: src/core.rs:561
+msgid "The annotation database could not be opened"
+msgstr "ไม่สามารถเปิดฐานข้อมูลแอนโนเทชันได้"
+
+#: src/core.rs:590
+msgid "Annotations from eov before 1.0"
+msgstr "แอนโนเทชันจาก eov ก่อนเวอร์ชัน 1.0"
+
+#: src/core.rs:592
+msgid ""
+"The annotations plugin of eov before 1.0 left a database at {}. Bring its "
+"annotations into the current database? The old file is not changed. You can "
+"also do this later in the Data tab of the annotations panel."
+msgstr ""
+"ปลั๊กอินแอนโนเทชันของ eov ก่อนเวอร์ชัน 1.0 ทิ้งฐานข้อมูลไว้ที่ {} "
+"ต้องการนำแอนโนเทชันในฐานข้อมูลนั้นเข้ามาในฐานข้อมูลปัจจุบันหรือไม่ ไฟล์เดิมจะไม่ถูกเปลี่ยนแปลง "
+"คุณยังทำขั้นตอนนี้ภายหลังได้ในแท็บ “ข้อมูล” ของแผงแอนโนเทชัน"
+
+#: src/core.rs:597
+msgid "Bring them in"
+msgstr "นำเข้ามา"
+
+#: src/core.rs:598
+msgid "Not now"
+msgstr "ไว้ภายหลัง"
+
+#. Translators: the plugin could not ask whether to bring in the annotations made
+#. with eov before 1.0 (the title of that question is "Annotations from eov before 1.0").
+#: src/core.rs:612
+msgid "Could not offer the annotations from eov before 1.0"
+msgstr "ไม่สามารถเสนอให้นำเข้าแอนโนเทชันจาก eov ก่อนเวอร์ชัน 1.0 ได้"
+
+#: src/core.rs:657 src/sidebar.rs:457
+msgid "Could not load this slide's annotations: {}"
+msgstr "ไม่สามารถโหลดแอนโนเทชันของสไลด์นี้ได้: {}"
+
+#. Translators: a second read is an independent annotation of the slide by another person
+#. (as in a reader study), not a clinical second opinion. Data, Second reader and Blinded
+#. copy are the tab, section and button of the annotations panel: use their translations.
+#: src/core.rs:670
+msgid ""
+"{opened} has the same content as {annotated}, so it shows and edits the same "
+"annotations. For an independent second read, use Data → Second reader → "
+"Blinded copy."
+msgstr ""
+"{opened} มีเนื้อหาเหมือนกับ {annotated} จึงแสดงและแก้ไขแอนโนเทชันชุดเดียวกัน "
+"หากต้องการอ่านผลครั้งที่สองแบบอิสระ ให้ใช้ “ข้อมูล → ผู้อ่านผลคนที่สอง → สำเนาแบบปกปิด”"
+
+#: src/core.rs:721 src/core.rs:1019 src/core.rs:1156
+msgid "the database is not open"
+msgstr "ฐานข้อมูลไม่ได้เปิดอยู่"
+
+#: src/core.rs:809
+msgid "{n} annotation of {file} could not be read and was skipped."
+msgid_plural "{n} annotations of {file} could not be read and were skipped."
+msgstr[0] "อ่านแอนโนเทชันของ {file} ไม่ได้ {n} รายการ จึงข้ามไป"
+
+#: src/core.rs:900
+msgid "Could not reload annotations"
+msgstr "ไม่สามารถโหลดแอนโนเทชันใหม่ได้"
+
+#: src/core.rs:931
+msgid "Annotations were changed by another eov window and have been reloaded."
+msgstr "แอนโนเทชันถูกเปลี่ยนแปลงโดยหน้าต่าง eov อื่น และโหลดใหม่แล้ว"
+
+#: src/core.rs:957
+msgid "the database stayed locked"
+msgstr "ฐานข้อมูลยังถูกล็อกอยู่"
+
+#: src/core.rs:964
+msgid "a class with that name already exists"
+msgstr "มีคลาสชื่อนี้อยู่แล้ว"
+
+#: src/core.rs:966
+msgid "the annotation database is read-only"
+msgstr "ฐานข้อมูลแอนโนเทชันเป็นแบบอ่านอย่างเดียว"
+
+#: src/core.rs:969
+msgid "the annotation was changed elsewhere in the meantime"
+msgstr "แอนโนเทชันถูกเปลี่ยนแปลงจากที่อื่นในระหว่างนี้"
+
+#: src/core.rs:971
+msgid "the layer was changed elsewhere in the meantime"
+msgstr "เลเยอร์ถูกเปลี่ยนแปลงจากที่อื่นในระหว่างนี้"
+
+#: src/core.rs:972
+msgid "the class was changed elsewhere in the meantime"
+msgstr "คลาสถูกเปลี่ยนแปลงจากที่อื่นในระหว่างนี้"
+
+#: src/core.rs:973
+msgid "a layer being moved was changed elsewhere in the meantime"
+msgstr "เลเยอร์ที่กำลังย้ายถูกเปลี่ยนแปลงจากที่อื่นในระหว่างนี้"
+
+#: src/core.rs:1053
+msgid "Could not save \"{}\""
+msgstr "ไม่สามารถบันทึก “{}” ได้"
+
+#: src/core.rs:1123
+msgid "This annotation change can no longer be undone."
+msgstr "เลิกทำการเปลี่ยนแปลงแอนโนเทชันนี้ไม่ได้อีกแล้ว"
+
+#: src/core.rs:1137
+msgid "The slide of this change is not open any more."
+msgstr "สไลด์ของการเปลี่ยนแปลงนี้ไม่ได้เปิดอยู่แล้ว"
+
+#: src/core.rs:1176
+msgid "Could not redo \"{}\""
+msgstr "ไม่สามารถทำซ้ำ “{}” ได้"
+
+#: src/core.rs:1178
+msgid "Could not undo \"{}\""
+msgstr "ไม่สามารถเลิกทำ “{}” ได้"
+
+#. Translators: cells per square millimetre, with the 95% confidence interval.
+#: src/counting.rs:185
+msgid "{density} /mm² (95% {low}–{high})"
+msgstr "{density} /mm² (95% {low}–{high})"
+
+#. Translators: cells per 10 high-power fields.
+#: src/counting.rs:194
+msgid "{} /10 HPF"
+msgstr "{} /10 HPF"
+
+#: src/counting.rs:222
+msgid "100 (capped; the ratio is higher)"
+msgstr "100 (จำกัดไว้ที่ค่าสูงสุด อัตราส่วนจริงสูงกว่านี้)"
+
+#. Translators: CPS is the PD-L1 combined positive score; {positive},
+#. {negative} and {immune} are names of classes of cells.
+#: src/counting.rs:234
+msgid ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cell "
+"({positive} + {negative}) × 100."
+msgid_plural ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cells "
+"({positive} + {negative}) × 100."
+msgstr[0] ""
+"CPS {score} — ({a} {positive} + {c} {immune}) ต่อเซลล์เนื้องอก {n} เซลล์ "
+"({positive} + {negative}) × 100"
+
+#: src/counting.rs:248
+msgid "Fewer than {n} tumour cells: below the minimum for a valid score."
+msgid_plural ""
+"Fewer than {n} tumour cells: below the minimum for a valid score."
+msgstr[0] "เซลล์เนื้องอกน้อยกว่า {n} เซลล์: ต่ำกว่าจำนวนขั้นต่ำสำหรับคะแนนที่ใช้ได้"
+
+#. Translators: e.g. "Ki-67+ index: 25.0 % (95% 20.1–30.4 %) — 25 of 100 (Ki-67+ + Ki-67-)";
+#. {class} and {other} are names of classes of cells.
+#: src/counting.rs:263
+msgid ""
+"{class} index: {value} % (95% {low}–{high} %) — {k} of {total} ({class} + "
+"{other})"
+msgstr ""
+"ดัชนี {class}: {value}% (95% {low}–{high}%) — {k} จาก {total} ({class} + "
+"{other})"
+
+#: src/db/mod.rs:116
+msgid "The annotation database is read-only; editing is disabled."
+msgstr "ฐานข้อมูลแอนโนเทชันเป็นแบบอ่านอย่างเดียว จึงปิดใช้งานการแก้ไข"
+
+#: src/db/mod.rs:119
+msgid "{n} layer colour was unreadable and was replaced."
+msgid_plural "{n} layer colours were unreadable and were replaced."
+msgstr[0] "อ่านสีของเลเยอร์ไม่ได้ {n} เลเยอร์ จึงแทนที่ด้วยสีอื่น"
+
+#. Translators: {slides} in "Upgraded the annotation database from the pre-1.0 format: {slides}, …".
+#: src/db/mod.rs:131
+msgid "{n} slide"
+msgid_plural "{n} slides"
+msgstr[0] "สไลด์ {n} แผ่น"
+
+#. Translators: {slides} is "1 slide" or "3 slides" (translated on its own).
+#: src/db/mod.rs:136
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotation."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotations."
+msgstr[0] ""
+"อัปเกรดฐานข้อมูลแอนโนเทชันจากรูปแบบก่อนเวอร์ชัน 1.0 แล้ว: {slides}, แอนโนเทชัน {n} "
+"รายการ"
+
+#. Translators: {slides} is "1 slide" or "3 slides", {annotations} is
+#. "1 annotation" or "5 annotations" (each translated on its own).
+#: src/db/mod.rs:145
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotation skipped."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotations skipped."
+msgstr[0] ""
+"อัปเกรดฐานข้อมูลแอนโนเทชันจากรูปแบบก่อนเวอร์ชัน 1.0 แล้ว: {slides}, {annotations}, "
+"ข้ามแอนโนเทชันที่อ่านไม่ได้ {n} รายการ"
+
+#. Translators: a number of annotations on its own, in two texts: {annotations} in
+#. "Upgraded the annotation database from the pre-1.0 format: {slides}, {annotations}, …"
+#. and {ours} in "This slide's visible layers ({ours}) against the {n} annotations in {name}, …".
+#: src/db/mod.rs:153 src/state.rs:516
+msgid "{n} annotation"
+msgid_plural "{n} annotations"
+msgstr[0] "แอนโนเทชัน {n} รายการ"
+
+#: src/db/mod.rs:159
+msgid ""
+"New database. If you annotated with eov before 1.0, those annotations are in "
+"annotations.db in eov's old settings folder (~/.config/eov on Linux, ~/"
+"Library/Application Support/eov on macOS, %APPDATA%\\eov on Windows): bring "
+"them in with Merge… above."
+msgstr ""
+"ฐานข้อมูลใหม่ หากคุณเคยสร้างแอนโนเทชันด้วย eov ก่อนเวอร์ชัน 1.0 แอนโนเทชันเหล่านั้นอยู่ใน "
+"annotations.db ในโฟลเดอร์การตั้งค่าเดิมของ eov (~/.config/eov บน Linux, ~/Library/"
+"Application Support/eov บน macOS, %APPDATA%\\eov บน Windows): นำเข้ามาได้ด้วย "
+"“ผสาน…” ด้านบน"
+
+#: src/fileio.rs:105 src/fileio.rs:115
+msgid "cannot read {file}: {error}"
+msgstr "อ่าน {file} ไม่ได้: {error}"
+
+#: src/fileio.rs:109
+msgid "{file} is {size} MB; imports are limited to {limit} MB"
+msgstr "{file} มีขนาด {size} MB แต่การนำเข้าจำกัดไว้ที่ {limit} MB"
+
+#: src/formats/dicom/mod.rs:605
+msgid "There are too many coordinates for one DICOM annotation group."
+msgstr "พิกัดมีมากเกินไปสำหรับกลุ่มแอนโนเทชัน DICOM หนึ่งกลุ่ม"
+
+#: src/formats/dicom/mod.rs:674
+msgid "There are too many annotation groups."
+msgstr "กลุ่มแอนโนเทชันมีมากเกินไป"
+
+#: src/formats/dicom/mod.rs:695
+msgid "There are too many annotations in one group."
+msgstr "แอนโนเทชันในกลุ่มเดียวมีมากเกินไป"
+
+#: src/formats/dicom/mod.rs:736
+msgid "The slide has no annotations to export."
+msgstr "สไลด์ไม่มีแอนโนเทชันให้ส่งออก"
+
+#: src/formats/dicom/mod.rs:872
+msgid ""
+"It refers to this slide's DICOM image (series {}) and joins its study; the "
+"patient and study attributes are the slide's."
+msgstr ""
+"ไฟล์นี้อ้างอิงภาพ DICOM ของสไลด์นี้ (ชุด {}) และอยู่ในการตรวจ (study) เดียวกัน "
+"แอตทริบิวต์ของผู้ป่วยและของการตรวจเป็นของสไลด์"
+
+#: src/formats/dicom/mod.rs:876
+msgid ""
+"This slide is not a DICOM image, so the file refers to no image: it is a "
+"study of its own with empty patient attributes, and DICOM viewers cannot "
+"attach it to a slide by themselves."
+msgstr ""
+"สไลด์นี้ไม่ใช่ภาพ DICOM ไฟล์จึงไม่ได้อ้างอิงภาพใด: ไฟล์เป็นการตรวจ (study) "
+"แยกต่างหากที่มีแอตทริบิวต์ผู้ป่วยว่างเปล่า และโปรแกรมดู DICOM จะแนบไฟล์นี้เข้ากับสไลด์เองไม่ได้"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot
+#. hold {}: …"; {regions} is "in 1 region" or "in 2 regions"; "drawn
+#. without it/them": other viewers draw these regions without their holes.
+#: src/formats/dicom/mod.rs:886
+msgid "{n} hole {regions} (drawn without it)"
+msgid_plural "{n} holes {regions} (drawn without them)"
+msgstr[0] "รู {n} รู {regions} (วาดโดยไม่มีรู)"
+
+#. Translators: in "{n} holes {regions} (drawn without them)".
+#: src/formats/dicom/mod.rs:890
+msgid "in {n} region"
+msgid_plural "in {n} regions"
+msgstr[0] "ใน {n} บริเวณ"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:897
+msgid "the text of {n} text label (written as points)"
+msgid_plural "the text of {n} text labels (written as points)"
+msgstr[0] "ข้อความของป้ายข้อความ {n} รายการ (เขียนเป็นจุด)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:904
+msgid "the heads of {n} arrow (written as lines)"
+msgid_plural "the heads of {n} arrows (written as lines)"
+msgstr[0] "หัวของลูกศร {n} อัน (เขียนเป็นเส้น)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:911
+msgid "the names, descriptions and statuses of {n} annotation"
+msgid_plural "the names, descriptions and statuses of {n} annotations"
+msgstr[0] "ชื่อ คำอธิบาย และสถานะของแอนโนเทชัน {n} รายการ"
+
+#. Translators: {} lists what is lost, such as "the heads of 2 arrows (written
+#. as lines) and the text of 1 text label (written as points)".
+#: src/formats/dicom/mod.rs:919
+msgid ""
+"DICOM bulk annotations cannot hold {}: other viewers do not see them, but "
+"eov reads them back from its private attributes."
+msgstr ""
+"แอนโนเทชัน DICOM แบบ bulk เก็บ {} ไม่ได้: โปรแกรมดูอื่นจะไม่เห็นข้อมูลเหล่านี้ แต่ eov "
+"อ่านกลับมาได้จากแอตทริบิวต์ส่วนตัวของตน"
+
+#: src/formats/dicom/mod.rs:924
+msgid ""
+"Each layer, class and kind of shape is a group labelled with its class (or "
+"its layer). Authors, comments, properties and times are not exported (eov "
+"JSON keeps everything)."
+msgstr ""
+"แต่ละเลเยอร์ คลาส และชนิดของรูปทรงเป็นหนึ่งกลุ่มที่ติดป้ายด้วยคลาส (หรือเลเยอร์) ของกลุ่มนั้น "
+"จะไม่ส่งออกผู้สร้าง ความคิดเห็น คุณสมบัติ และเวลา (eov JSON เก็บไว้ครบทุกอย่าง)"
+
+#: src/formats/dicom/mod.rs:928
+msgid ""
+"{n} annotation with too few points or unusable coordinates was left out."
+msgid_plural ""
+"{n} annotations with too few points or unusable coordinates were left out."
+msgstr[0] "ละเว้นแอนโนเทชัน {n} รายการที่มีจุดน้อยเกินไปหรือมีพิกัดที่ใช้ไม่ได้"
+
+#. Translators: the end of a list, "a, b and c": {first} is "a, b".
+#: src/formats/dicom/mod.rs:943
+msgid "{first} and {last}"
+msgstr "{first} และ {last}"
+
+#. Translators: between the items of a list ("a, b and c").
+#: src/formats/dicom/mod.rs:946
+msgid ", "
+msgstr ", "
+
+#: src/formats/dicom/mod.rs:978
+msgid ""
+"Made for a DICOM slide; this one is not a DICOM image, so whether the "
+"annotations belong to it cannot be checked. Coordinates are taken as level-0 "
+"pixels of this slide."
+msgstr ""
+"สร้างขึ้นสำหรับสไลด์ DICOM แต่สไลด์นี้ไม่ใช่ภาพ DICOM "
+"จึงตรวจสอบไม่ได้ว่าแอนโนเทชันเป็นของสไลด์นี้หรือไม่ พิกัดจะถือเป็นพิกเซลระดับ 0 ของสไลด์นี้"
+
+#: src/formats/dicom/mod.rs:987
+msgid "Made for this slide (its DICOM image)."
+msgstr "สร้างขึ้นสำหรับสไลด์นี้ (ภาพ DICOM ของสไลด์)"
+
+#: src/formats/dicom/mod.rs:994
+msgid "Made for this slide (its DICOM series)."
+msgstr "สร้างขึ้นสำหรับสไลด์นี้ (ชุด DICOM ของสไลด์)"
+
+#: src/formats/dicom/mod.rs:998
+msgid ""
+"Made for another image of this slide's DICOM series (another resolution "
+"level?), whose pixels may not be level-0 pixels."
+msgstr ""
+"สร้างขึ้นสำหรับภาพอื่นในชุด DICOM ของสไลด์นี้ (อาจเป็นระดับความละเอียดอื่น) "
+"ซึ่งพิกเซลอาจไม่ใช่พิกเซลระดับ 0"
+
+#: src/formats/dicom/mod.rs:1005
+msgid "Made for a different DICOM slide (it refers to other images)."
+msgstr "สร้างขึ้นสำหรับสไลด์ DICOM อื่น (อ้างอิงภาพอื่น)"
+
+#: src/formats/dicom/mod.rs:1014
+msgid ""
+"This DICOM file is a slide image (VL Whole Slide Microscopy), not "
+"annotations: open it as a slide. Annotations are read from Microscopy Bulk "
+"Simple Annotations objects (modality ANN)."
+msgstr ""
+"ไฟล์ DICOM นี้เป็นภาพสไลด์ (VL Whole Slide Microscopy) ไม่ใช่แอนโนเทชัน "
+"โปรดเปิดเป็นสไลด์ แอนโนเทชันจะอ่านจากออบเจ็กต์ Microscopy Bulk Simple Annotations "
+"(modality ANN)"
+
+#: src/formats/dicom/mod.rs:1018
+msgid ""
+"This DICOM file is a structured report (SR). eov reads DICOM annotations "
+"from Microscopy Bulk Simple Annotations objects (modality ANN), not from "
+"structured reports."
+msgstr ""
+"ไฟล์ DICOM นี้เป็นรายงานแบบมีโครงสร้าง (SR) eov อ่านแอนโนเทชัน DICOM จากออบเจ็กต์ "
+"Microscopy Bulk Simple Annotations (modality ANN) ไม่ใช่จากรายงานแบบมีโครงสร้าง"
+
+#: src/formats/dicom/mod.rs:1021
+msgid "This DICOM file does not say what it holds (it has no SOP Class UID)."
+msgstr "ไฟล์ DICOM นี้ไม่ได้ระบุว่าเก็บข้อมูลอะไร (ไม่มี SOP Class UID)"
+
+#: src/formats/dicom/mod.rs:1024
+msgid ""
+"This DICOM file is not an annotation object (SOP class {}); eov reads "
+"Microscopy Bulk Simple Annotations (modality ANN)."
+msgstr ""
+"ไฟล์ DICOM นี้ไม่ใช่ออบเจ็กต์แอนโนเทชัน (SOP class {}) eov อ่าน Microscopy Bulk "
+"Simple Annotations (modality ANN)"
+
+#: src/formats/dicom/mod.rs:1047
+msgid "eov's private description of the slide is unreadable and was ignored."
+msgstr "อ่านคำอธิบายสไลด์ส่วนตัวของ eov ไม่ได้ จึงละเว้นไป"
+
+#. Translators: {} says what is wrong with the file, in English.
+#: src/formats/dicom/mod.rs:1080
+msgid "The DICOM file cannot be read: {}."
+msgstr "อ่านไฟล์ DICOM ไม่ได้: {}"
+
+#: src/formats/dicom/mod.rs:1099
+msgid ""
+"This file holds 3D annotations: their coordinates are millimetres in the "
+"slide's frame of reference (DICOM SCOORD3D), and eov places annotations by "
+"level-0 pixels. Only 2D (pixel) annotations can be imported."
+msgstr ""
+"ไฟล์นี้เก็บแอนโนเทชันแบบ 3 มิติ: พิกัดเป็นมิลลิเมตรในกรอบอ้างอิงของสไลด์ (DICOM SCOORD3D) "
+"แต่ eov วางแอนโนเทชันตามพิกเซลระดับ 0 นำเข้าได้เฉพาะแอนโนเทชันแบบ 2 มิติ (พิกเซล)"
+
+#: src/formats/dicom/mod.rs:1104
+msgid ""
+"The file does not say whether its coordinates are 2D or 3D (Annotation "
+"Coordinate Type is missing)."
+msgstr "ไฟล์ไม่ได้ระบุว่าพิกัดเป็นแบบ 2 มิติหรือ 3 มิติ (ไม่มี Annotation Coordinate Type)"
+
+#: src/formats/dicom/mod.rs:1109
+msgid ""
+"The file's coordinates are of an unknown type (\"{}\"); 2D annotations can "
+"be imported."
+msgstr "พิกัดของไฟล์เป็นชนิดที่ไม่รู้จัก (“{}”) นำเข้าได้เฉพาะแอนโนเทชันแบบ 2 มิติ"
+
+#: src/formats/dicom/mod.rs:1126
+msgid ""
+"The annotations' pixel coordinates are relative to single frames (tiles) of "
+"the image (Pixel Origin Interpretation FRAME), which eov cannot place; "
+"coordinates relative to the whole image (VOLUME) can be imported."
+msgstr ""
+"พิกัดพิกเซลของแอนโนเทชันอ้างอิงกับเฟรมเดี่ยว (ไทล์) ของภาพ (Pixel Origin "
+"Interpretation FRAME) ซึ่ง eov วางไม่ได้ นำเข้าได้เฉพาะพิกัดที่อ้างอิงกับภาพทั้งภาพ (VOLUME)"
+
+#: src/formats/dicom/mod.rs:1130
+msgid ""
+"Unknown pixel origin interpretation \"{}\"; coordinates are taken relative "
+"to the whole image."
+msgstr "ไม่รู้จัก Pixel Origin Interpretation “{}” จะถือว่าพิกัดอ้างอิงกับภาพทั้งภาพ"
+
+#: src/formats/dicom/mod.rs:1136
+msgid "The DICOM file has no annotation groups."
+msgstr "ไฟล์ DICOM ไม่มีกลุ่มแอนโนเทชัน"
+
+#: src/formats/dicom/mod.rs:1146
+msgid ""
+"{n} rectangle or ellipse not aligned with the image axes became a polygon."
+msgid_plural ""
+"{n} rectangles and ellipses not aligned with the image axes became polygons."
+msgstr[0] "สี่เหลี่ยมผืนผ้าหรือวงรี {n} รายการที่ไม่ขนานกับแกนของภาพถูกแปลงเป็นรูปหลายเหลี่ยม"
+
+#: src/formats/dicom/mod.rs:1178
+msgid "annotation group with lines or polygons without a point index list"
+msgstr "กลุ่มแอนโนเทชันที่มีเส้นหรือรูปหลายเหลี่ยมแต่ไม่มีรายการดัชนีจุด"
+
+#: src/formats/dicom/mod.rs:1182
+msgid "annotation group with an unreadable point index list"
+msgstr "กลุ่มแอนโนเทชันที่มีรายการดัชนีจุดที่อ่านไม่ได้"
+
+#: src/formats/dicom/mod.rs:1197
+msgid "annotation group with lines or polygons with an empty point index list"
+msgstr "กลุ่มแอนโนเทชันที่มีเส้นหรือรูปหลายเหลี่ยมแต่รายการดัชนีจุดว่างเปล่า"
+
+#: src/formats/dicom/mod.rs:1211
+msgid ""
+"The point index list of \"{}\" counts points rather than coordinate values; "
+"it was read that way."
+msgstr "รายการดัชนีจุดของ “{}” นับเป็นจุดแทนที่จะเป็นค่าพิกัด จึงอ่านตามแบบนั้น"
+
+#: src/formats/dicom/mod.rs:1217
+msgid ""
+"annotation group with a point index list that does not fit its coordinates"
+msgstr "กลุ่มแอนโนเทชันที่รายการดัชนีจุดไม่สอดคล้องกับพิกัด"
+
+#. Translators: a reason why a measurement of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1333
+msgid "measurement without values"
+msgstr "ผลการวัดที่ไม่มีค่า"
+
+#: src/formats/dicom/mod.rs:1340
+msgid "measurement with unreadable values"
+msgstr "ผลการวัดที่มีค่าที่อ่านไม่ได้"
+
+#: src/formats/dicom/mod.rs:1352
+msgid "measurement that does not match its annotations"
+msgstr "ผลการวัดที่ไม่ตรงกับแอนโนเทชัน"
+
+#. Translators: a reason why a group of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1398
+msgid "annotation group without coordinates"
+msgstr "กลุ่มแอนโนเทชันที่ไม่มีพิกัด"
+
+#: src/formats/dicom/mod.rs:1402
+msgid "annotation group with unreadable coordinates"
+msgstr "กลุ่มแอนโนเทชันที่มีพิกัดที่อ่านไม่ได้"
+
+#: src/formats/dicom/mod.rs:1408
+msgid "annotation group whose coordinates are not (column, row) pairs"
+msgstr "กลุ่มแอนโนเทชันที่พิกัดไม่ได้เป็นคู่ (คอลัมน์, แถว)"
+
+#: src/formats/dicom/mod.rs:1426
+msgid "rectangles or ellipses without four points each"
+msgstr "สี่เหลี่ยมผืนผ้าหรือวงรีที่ไม่ได้มีรูปละสี่จุด"
+
+#: src/formats/dicom/mod.rs:1439
+msgid "annotation group without a graphic type"
+msgstr "กลุ่มแอนโนเทชันที่ไม่มีชนิดกราฟิก"
+
+#: src/formats/dicom/mod.rs:1443
+msgid "annotation group of graphic type {}"
+msgstr "กลุ่มแอนโนเทชันชนิดกราฟิก {}"
+
+#: src/formats/dicom/mod.rs:1451
+msgid ""
+"\"{name}\" says it has {n} annotation, but its coordinates hold {held}; the "
+"coordinates were read."
+msgid_plural ""
+"\"{name}\" says it has {n} annotations, but its coordinates hold {held}; the "
+"coordinates were read."
+msgstr[0] ""
+"“{name}” ระบุว่ามีแอนโนเทชัน {n} รายการ แต่พิกัดมีอยู่ {held} รายการ จึงอ่านตามพิกัด"
+
+#: src/formats/dicom/mod.rs:1463
+msgid ""
+"eov's private attributes of \"{}\" are unreadable; the group was read from "
+"its DICOM attributes alone."
+msgstr ""
+"อ่านแอตทริบิวต์ส่วนตัวของ eov ใน “{}” ไม่ได้ จึงอ่านกลุ่มจากแอตทริบิวต์ DICOM เพียงอย่างเดียว"
+
+#: src/formats/dicom/mod.rs:1529
+msgid "annotations beyond the limit of {} per file"
+msgstr "แอนโนเทชันที่เกินขีดจำกัด {} รายการต่อไฟล์"
+
+#: src/formats/dicom/mod.rs:1537
+msgid "annotation with non-finite coordinates"
+msgstr "แอนโนเทชันที่มีพิกัดไม่ใช่จำนวนจำกัด"
+
+#: src/formats/eov.rs:209
+msgid ""
+"This file uses eov annotation format {version}; this plugin reads up to "
+"{supported}. Update the plugin."
+msgstr ""
+"ไฟล์นี้ใช้รูปแบบแอนโนเทชันของ eov เวอร์ชัน {version} แต่ปลั๊กอินนี้อ่านได้ถึงเวอร์ชัน "
+"{supported} โปรดอัปเดตปลั๊กอิน"
+
+#: src/formats/eov.rs:261
+msgid "The file has no \"layers\"."
+msgstr "ไฟล์ไม่มี \"layers\""
+
+#: src/formats/eov.rs:277
+msgid "Layer \"{}\" has an unreadable colour; a palette colour is used."
+msgstr "อ่านสีของเลเยอร์ “{}” ไม่ได้ จึงใช้สีจากชุดสีแทน"
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/eov.rs:292
+msgid "unreadable geometry"
+msgstr "ข้อมูลเรขาคณิตที่อ่านไม่ได้"
+
+#: src/formats/eov.rs:332
+msgid "The file has no \"annotation_layers\"."
+msgstr "ไฟล์ไม่มี \"annotation_layers\""
+
+#: src/formats/eov.rs:359
+msgid "point without coordinates"
+msgstr "จุดที่ไม่มีพิกัด"
+
+#: src/formats/eov.rs:384
+msgid "polygon with unreadable vertices"
+msgstr "รูปหลายเหลี่ยมที่มีจุดยอดที่อ่านไม่ได้"
+
+#: src/formats/eov.rs:390
+msgid "unknown annotation type"
+msgstr "ชนิดแอนโนเทชันที่ไม่รู้จัก"
+
+#: src/formats/eov.rs:426
+msgid "The archive has no \"slides\"."
+msgstr "ไฟล์เก็บถาวรไม่มี \"slides\""
+
+#: src/formats/eov.rs:432
+msgid "An archive entry was skipped: {}"
+msgstr "ข้ามรายการในไฟล์เก็บถาวร: {}"
+
+#. Translators: reasons why a shape of an imported file was skipped,
+#. listed as "2 × unreadable point".
+#: src/formats/geojson.rs:68
+msgid "unreadable point"
+msgstr "จุดที่อ่านไม่ได้"
+
+#: src/formats/geojson.rs:69
+msgid "unreadable line"
+msgstr "เส้นที่อ่านไม่ได้"
+
+#: src/formats/geojson.rs:70
+msgid "unreadable polygon"
+msgstr "รูปหลายเหลี่ยมที่อ่านไม่ได้"
+
+#: src/formats/geojson.rs:74
+msgid "geometry without a type"
+msgstr "ข้อมูลเรขาคณิตที่ไม่มีชนิด"
+
+#: src/formats/geojson.rs:84
+msgid "unreadable points"
+msgstr "กลุ่มจุดที่อ่านไม่ได้"
+
+#: src/formats/geojson.rs:103
+msgid "unreadable lines"
+msgstr "กลุ่มเส้นที่อ่านไม่ได้"
+
+#: src/formats/geojson.rs:119
+msgid "unreadable polygons"
+msgstr "กลุ่มรูปหลายเหลี่ยมที่อ่านไม่ได้"
+
+#: src/formats/geojson.rs:128
+msgid "unreadable geometry collection"
+msgstr "ชุดข้อมูลเรขาคณิตที่อ่านไม่ได้"
+
+#: src/formats/geojson.rs:133
+msgid "unsupported geometry type"
+msgstr "ชนิดข้อมูลเรขาคณิตที่ไม่รองรับ"
+
+#: src/formats/geojson.rs:221
+msgid "The FeatureCollection has no features."
+msgstr "FeatureCollection ไม่มีฟีเจอร์"
+
+#: src/formats/geojson.rs:224 src/formats/geojson.rs:226
+msgid "Not GeoJSON."
+msgstr "ไม่ใช่ GeoJSON"
+
+#. Translators: a reason why an element of an imported file was skipped.
+#: src/formats/geojson.rs:242
+msgid "not a GeoJSON feature"
+msgstr "ไม่ใช่ฟีเจอร์ GeoJSON"
+
+#: src/formats/geojson.rs:259
+msgid "feature without geometry"
+msgstr "ฟีเจอร์ที่ไม่มีข้อมูลเรขาคณิต"
+
+#: src/formats/geojson.rs:318
+msgid "properties beyond the limit of {} per annotation"
+msgstr "คุณสมบัติที่เกินขีดจำกัด {} รายการต่อแอนโนเทชัน"
+
+#: src/formats/geojson.rs:351
+msgid "The GeoJSON file contains no features."
+msgstr "ไฟล์ GeoJSON ไม่มีฟีเจอร์"
+
+#: src/formats/mod.rs:240
+msgid "This .dcm file is not a DICOM file (\"DICM\" is missing at byte 128)."
+msgstr "ไฟล์ .dcm นี้ไม่ใช่ไฟล์ DICOM (ไม่มี \"DICM\" ที่ไบต์ 128)"
+
+#: src/formats/mod.rs:242
+msgid ""
+"The file is not UTF-8 text or DICOM, so it is not a supported annotation "
+"file."
+msgstr "ไฟล์ไม่ใช่ข้อความ UTF-8 หรือ DICOM จึงไม่ใช่ไฟล์แอนโนเทชันที่รองรับ"
+
+#: src/formats/mod.rs:250
+msgid "The file is not valid JSON: {}"
+msgstr "ไฟล์ไม่ใช่ JSON ที่ถูกต้อง: {}"
+
+#: src/formats/mod.rs:257
+msgid "This JSON file is neither GeoJSON nor an eov annotation export."
+msgstr "ไฟล์ JSON นี้ไม่ใช่ทั้ง GeoJSON และแอนโนเทชันที่ส่งออกจาก eov"
+
+#: src/formats/mod.rs:263
+msgid ""
+"Unsupported file: expected GeoJSON, eov JSON, ASAP XML, ImageScope XML, NDPA "
+"or DICOM bulk annotations."
+msgstr ""
+"ไม่รองรับไฟล์นี้: ต้องเป็น GeoJSON, eov JSON, ASAP XML, ImageScope XML, NDPA "
+"หรือแอนโนเทชัน DICOM แบบ bulk"
+
+#: src/formats/ndpa.rs:62
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide is not one, so they cannot be placed on it."
+msgstr ""
+"พิกัด NDPA วัดจากจุดกึ่งกลางของสไลด์ Hamamatsu (NDPI) แต่สไลด์นี้ไม่ใช่สไลด์ดังกล่าว "
+"จึงวางพิกัดเหล่านี้บนสไลด์นี้ไม่ได้"
+
+#. Translators: {} is the vendor of the slide's format ("aperio").
+#: src/formats/ndpa.rs:68
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide ({}) is not one, so they cannot be placed on it."
+msgstr ""
+"พิกัด NDPA วัดจากจุดกึ่งกลางของสไลด์ Hamamatsu (NDPI) แต่สไลด์นี้ ({}) ไม่ใช่สไลด์ดังกล่าว "
+"จึงวางพิกัดเหล่านี้บนสไลด์นี้ไม่ได้"
+
+#: src/formats/ndpa.rs:79
+msgid ""
+"This NDPI does not give its offsets from the slide centre (hamamatsu."
+"XOffsetFromSlideCentre and YOffsetFromSlideCentre), so the NDPA coordinates "
+"cannot be placed on it."
+msgstr ""
+"NDPI นี้ไม่ได้ระบุค่าเยื้องจากจุดกึ่งกลางสไลด์ (hamamatsu.XOffsetFromSlideCentre และ "
+"YOffsetFromSlideCentre) จึงวางพิกัด NDPA บนสไลด์นี้ไม่ได้"
+
+#: src/formats/ndpa.rs:88
+msgid ""
+"This slide has no pixel size, so the NDPA's nanometre coordinates cannot be "
+"converted to pixels."
+msgstr "สไลด์นี้ไม่มีขนาดพิกเซล จึงแปลงพิกัดหน่วยนาโนเมตรของ NDPA เป็นพิกเซลไม่ได้"
+
+#: src/formats/ndpa.rs:92
+msgid "The slide's size is unknown."
+msgstr "ไม่ทราบขนาดของสไลด์"
+
+#. Translators: a reason why an annotation of an imported file was skipped; {} is
+#. its type in the file ("freehand", "circle", "pin", …).
+#: src/formats/ndpa.rs:211
+msgid "{} annotation with unreadable coordinates"
+msgstr "แอนโนเทชัน {} ที่มีพิกัดที่อ่านไม่ได้"
+
+#: src/formats/ndpa.rs:267
+msgid "unsupported NDPA annotation type '{}'"
+msgstr "ชนิดแอนโนเทชัน NDPA ที่ไม่รองรับ '{}'"
+
+#: src/formats/ndpa.rs:296
+msgid "annotation in unsupported coordinates ({})"
+msgstr "แอนโนเทชันในระบบพิกัดที่ไม่รองรับ ({})"
+
+#: src/formats/ndpa.rs:300
+msgid "view state without an annotation"
+msgstr "สถานะมุมมองที่ไม่มีแอนโนเทชัน"
+
+#: src/formats/xml.rs:28
+msgid "The XML is not well-formed: {}"
+msgstr "XML มีโครงสร้างไม่ถูกต้อง: {}"
+
+#: src/formats/xml.rs:37
+msgid ""
+"Unsupported XML annotations (root element <{}>); ASAP, Aperio ImageScope and "
+"Hamamatsu NDPA files are supported."
+msgstr ""
+"แอนโนเทชัน XML ที่ไม่รองรับ (องค์ประกอบราก <{}>) รองรับไฟล์ ASAP, Aperio ImageScope "
+"และ Hamamatsu NDPA"
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/xml.rs:96
+msgid "annotation with unreadable coordinates"
+msgstr "แอนโนเทชันที่มีพิกัดที่อ่านไม่ได้"
+
+#: src/formats/xml.rs:158
+msgid "unsupported ASAP annotation type"
+msgstr "ชนิดแอนโนเทชัน ASAP ที่ไม่รองรับ"
+
+#: src/formats/xml.rs:198
+msgid "hole of a shape that is not a polygon"
+msgstr "รูของรูปทรงที่ไม่ใช่รูปหลายเหลี่ยม"
+
+#: src/formats/xml.rs:200
+msgid "hole of a missing polygon"
+msgstr "รูของรูปหลายเหลี่ยมที่ไม่มีอยู่"
+
+#: src/formats/xml.rs:275
+msgid "region with unreadable vertices"
+msgstr "บริเวณที่มีจุดยอดที่อ่านไม่ได้"
+
+#: src/formats/xml.rs:357
+msgid "negative region outside every region"
+msgstr "บริเวณลบออก (negative) ที่อยู่นอกทุกบริเวณ"
+
+#: src/geometry.rs:252
+msgid "The shape has invalid (non-finite) coordinates."
+msgstr "รูปทรงมีพิกัดที่ไม่ถูกต้อง (ไม่ใช่จำนวนจำกัด)"
+
+#: src/geometry.rs:256
+msgid "The shape has {n} vertices; the limit is {limit}."
+msgid_plural "The shape has {n} vertices; the limit is {limit}."
+msgstr[0] "รูปทรงมีจุดยอด {n} จุด แต่ขีดจำกัดคือ {limit} จุด"
+
+#: src/geometry.rs:266
+msgid "The point is outside the slide."
+msgstr "จุดอยู่นอกสไลด์"
+
+#: src/geometry.rs:288
+msgid "An arrow needs two distinct points."
+msgstr "ลูกศรต้องมีจุดสองจุดที่ไม่ซ้ำกัน"
+
+#: src/geometry.rs:290
+msgid "A line needs at least two distinct points."
+msgstr "เส้นต้องมีจุดที่ไม่ซ้ำกันอย่างน้อยสองจุด"
+
+#: src/geometry.rs:317
+msgid "The rectangle is outside the slide."
+msgstr "สี่เหลี่ยมผืนผ้าอยู่นอกสไลด์"
+
+#: src/geometry.rs:325
+msgid "The rectangle has no area."
+msgstr "สี่เหลี่ยมผืนผ้าไม่มีพื้นที่"
+
+#: src/geometry.rs:337
+msgid "The ellipse has no area."
+msgstr "วงรีไม่มีพื้นที่"
+
+#: src/geometry.rs:340
+msgid "The ellipse is centred outside the slide."
+msgstr "จุดศูนย์กลางของวงรีอยู่นอกสไลด์"
+
+#: src/geometry.rs:352
+msgid "A polygon needs at least three distinct corners."
+msgstr "รูปหลายเหลี่ยมต้องมีมุมที่ไม่ซ้ำกันอย่างน้อยสามมุม"
+
+#: src/geometry.rs:355 src/geometry.rs:393
+msgid "The polygon encloses no area."
+msgstr "รูปหลายเหลี่ยมไม่ได้ล้อมพื้นที่ใดไว้"
+
+#: src/geometry.rs:391
+msgid "The polygon is outside the slide."
+msgstr "รูปหลายเหลี่ยมอยู่นอกสไลด์"
+
+#: src/lib.rs:80 src/lib.rs:202
+msgid "Annotations"
+msgstr "แอนโนเทชัน"
+
+#: src/lib.rs:85
+msgid "Show or hide annotations on this slide"
+msgstr "แสดงหรือซ่อนแอนโนเทชันบนสไลด์นี้"
+
+#: src/lib.rs:102
+msgid "Counting {}"
+msgstr "กำลังนับ {}"
+
+#: src/lib.rs:104
+msgid "Counting {class}, Shift+click: {alternate}"
+msgstr "กำลังนับ {class}, Shift+คลิก: {alternate}"
+
+#: src/lib.rs:109
+msgid "Counting {class}, Alt+click: {immune}"
+msgstr "กำลังนับ {class}, Alt+คลิก: {immune}"
+
+#: src/lib.rs:114
+msgid "Counting {class}, Shift+click: {alternate}, Alt+click: {immune}"
+msgstr "กำลังนับ {class}, Shift+คลิก: {alternate}, Alt+คลิก: {immune}"
+
+#. Translators: HPF is a high-power field.
+#: src/lib.rs:123
+msgid ""
+"The dashed circle is one HPF: click to place a field, drag to pan, Esc to "
+"leave"
+msgstr "วงกลมเส้นประคือ 1 HPF: คลิกเพื่อวางลาน ลากเพื่อเลื่อนภาพ Esc เพื่อออก"
+
+#: src/lib.rs:125
+msgid "Click to select, drag to select several; drag handles to edit"
+msgstr "คลิกเพื่อเลือก ลากเพื่อเลือกหลายรายการ ลากจุดจับเพื่อแก้ไข"
+
+#: src/lib.rs:127
+msgid "Drawing {}"
+msgstr "กำลังวาด {}"
+
+#. Translators: {} is the name of a file format ("GeoJSON").
+#: src/lib.rs:441
+msgid "{} · cannot be placed on this slide"
+msgstr "{} · วางบนสไลด์นี้ไม่ได้"
+
+#. Translators: {format} is the name of a file format ("GeoJSON");
+#. {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/lib.rs:448
+msgid "{format} · {n} annotation {layers}"
+msgid_plural "{format} · {n} annotations {layers}"
+msgstr[0] "{format} · แอนโนเทชัน {n} รายการ {layers}"
+
+#: src/lib.rs:455
+msgid "{n} class"
+msgid_plural "{n} classes"
+msgstr[0] "{n} คลาส"
+
+#: src/lib.rs:465
+msgid "Layers with the same name already exist: {}"
+msgstr "มีเลเยอร์ชื่อเดียวกันอยู่แล้ว: {}"
+
+#: src/lib.rs:497 src/transfer.rs:373
+msgid "Import annotations"
+msgstr "นำเข้าแอนโนเทชัน"
+
+#: src/lib.rs:507
+msgid "Cannot show the import dialog"
+msgstr "แสดงกล่องโต้ตอบนำเข้าไม่ได้"
+
+#: src/lib.rs:641 src/sidebar.rs:1490
+msgid "Lock"
+msgstr "ล็อก"
+
+#: src/lib.rs:643 src/sidebar.rs:1492
+msgid "Unlock"
+msgstr "ปลดล็อก"
+
+#: src/lib.rs:789
+msgid "Could not save the annotation settings"
+msgstr "ไม่สามารถบันทึกการตั้งค่าแอนโนเทชันได้"
+
+#: src/lib.rs:1063
+msgid "Show in annotations panel"
+msgstr "แสดงในแผงแอนโนเทชัน"
+
+#: src/lib.rs:1064
+msgid "Copy measurements"
+msgstr "คัดลอกผลการวัด"
+
+#: src/lib.rs:1066
+msgid "Unlock annotation"
+msgstr "ปลดล็อกแอนโนเทชัน"
+
+#: src/lib.rs:1068
+msgid "Lock annotation"
+msgstr "ล็อกแอนโนเทชัน"
+
+#: src/lib.rs:1077
+msgctxt "Context menu"
+msgid "Delete annotation"
+msgstr "ลบแอนโนเทชัน"
+
+#: src/lib.rs:1083
+msgid "Add point here"
+msgstr "เพิ่มจุดที่นี่"
+
+#: src/lib.rs:1084
+msgid "Place HPF field here"
+msgstr "วางลาน HPF ที่นี่"
+
+#: src/lib.rs:1085
+msgid "Annotations panel"
+msgstr "แผงแอนโนเทชัน"
+
+#: src/measure.rs:276
+msgid "Area"
+msgstr "พื้นที่"
+
+#: src/measure.rs:281
+msgid "Length"
+msgstr "ความยาว"
+
+#: src/measure.rs:283
+msgid "Perimeter"
+msgstr "เส้นรอบรูป"
+
+#: src/measure.rs:289
+msgid "Max diameter (Feret)"
+msgstr "เส้นผ่านศูนย์กลางสูงสุด (Feret)"
+
+#: src/measure.rs:292
+msgid "Min diameter (Feret)"
+msgstr "เส้นผ่านศูนย์กลางต่ำสุด (Feret)"
+
+#: src/measure.rs:297
+msgid "Centre (px)"
+msgstr "จุดศูนย์กลาง (px)"
+
+#: src/measure.rs:302 src/measure.rs:307
+msgid "Calibration"
+msgstr "การปรับเทียบ"
+
+#: src/measure.rs:303
+msgid "No pixel size: values in level-0 pixels"
+msgstr "ไม่มีขนาดพิกเซล: ค่าเป็นพิกเซลระดับ 0"
+
+#: src/measure.rs:308
+msgid "One pixel axis missing; assumed square pixels"
+msgstr "ไม่มีขนาดพิกเซลของแกนหนึ่ง จึงถือว่าพิกเซลเป็นสี่เหลี่ยมจัตุรัส"
+
+#: src/model.rs:49 ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Draft"
+msgstr "ฉบับร่าง"
+
+#: src/model.rs:50 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Verified"
+msgstr "ตรวจสอบแล้ว"
+
+#: src/model.rs:51 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Rejected"
+msgstr "ปฏิเสธแล้ว"
+
+#: src/model.rs:118
+msgctxt "Annotation kind"
+msgid "Point"
+msgstr "จุด"
+
+#: src/model.rs:119
+msgctxt "Annotation kind"
+msgid "Line"
+msgstr "เส้น"
+
+#: src/model.rs:120
+msgctxt "Annotation kind"
+msgid "Arrow"
+msgstr "ลูกศร"
+
+#: src/model.rs:121
+msgctxt "Annotation kind"
+msgid "Polygon"
+msgstr "รูปหลายเหลี่ยม"
+
+#: src/model.rs:122
+msgctxt "Annotation kind"
+msgid "Rectangle"
+msgstr "สี่เหลี่ยมผืนผ้า"
+
+#: src/model.rs:123
+msgctxt "Annotation kind"
+msgid "Ellipse"
+msgstr "วงรี"
+
+#: src/model.rs:124
+msgctxt "Annotation kind"
+msgid "Text"
+msgstr "ข้อความ"
+
+#: src/model.rs:750
+msgid "The layer name cannot be empty."
+msgstr "ชื่อเลเยอร์ต้องไม่ว่างเปล่า"
+
+#: src/model.rs:751
+msgid "The class name cannot be empty."
+msgstr "ชื่อคลาสต้องไม่ว่างเปล่า"
+
+#: src/model.rs:752
+msgid "The name cannot be empty."
+msgstr "ชื่อต้องไม่ว่างเปล่า"
+
+#: src/model.rs:759
+msgid "The name is {n} characters long; the limit is {limit}."
+msgid_plural "The name is {n} characters long; the limit is {limit}."
+msgstr[0] "ชื่อยาว {n} อักขระ แต่ขีดจำกัดคือ {limit} อักขระ"
+
+#: src/model.rs:764
+msgid "The layer name is {n} characters long; the limit is {limit}."
+msgid_plural "The layer name is {n} characters long; the limit is {limit}."
+msgstr[0] "ชื่อเลเยอร์ยาว {n} อักขระ แต่ขีดจำกัดคือ {limit} อักขระ"
+
+#: src/model.rs:769
+msgid "The class name is {n} characters long; the limit is {limit}."
+msgid_plural "The class name is {n} characters long; the limit is {limit}."
+msgstr[0] "ชื่อคลาสยาว {n} อักขระ แต่ขีดจำกัดคือ {limit} อักขระ"
+
+#: src/model.rs:774
+msgid "The author is {n} characters long; the limit is {limit}."
+msgid_plural "The author is {n} characters long; the limit is {limit}."
+msgstr[0] "ชื่อผู้สร้างยาว {n} อักขระ แต่ขีดจำกัดคือ {limit} อักขระ"
+
+#: src/model.rs:779
+msgid "The setting is {n} characters long; the limit is {limit}."
+msgid_plural "The setting is {n} characters long; the limit is {limit}."
+msgstr[0] "ค่าการตั้งค่ายาว {n} อักขระ แต่ขีดจำกัดคือ {limit} อักขระ"
+
+#: src/model.rs:784
+msgid "The notes are {n} characters long; the limit is {limit}."
+msgid_plural "The notes are {n} characters long; the limit is {limit}."
+msgstr[0] "หมายเหตุยาว {n} อักขระ แต่ขีดจำกัดคือ {limit} อักขระ"
+
+#: src/model.rs:789
+msgid "The description is {n} characters long; the limit is {limit}."
+msgid_plural "The description is {n} characters long; the limit is {limit}."
+msgstr[0] "คำอธิบายยาว {n} อักขระ แต่ขีดจำกัดคือ {limit} อักขระ"
+
+#: src/model.rs:794
+msgid "The comment is {n} characters long; the limit is {limit}."
+msgid_plural "The comment is {n} characters long; the limit is {limit}."
+msgstr[0] "ความคิดเห็นยาว {n} อักขระ แต่ขีดจำกัดคือ {limit} อักขระ"
+
+#: src/model.rs:837
+msgid "An annotation can have at most {n} properties."
+msgid_plural "An annotation can have at most {n} properties."
+msgstr[0] "แอนโนเทชันหนึ่งรายการมีคุณสมบัติได้ไม่เกิน {n} รายการ"
+
+#: src/model.rs:851
+msgid "Property names are limited to {n} characters."
+msgid_plural "Property names are limited to {n} characters."
+msgstr[0] "ชื่อคุณสมบัติยาวได้ไม่เกิน {n} อักขระ"
+
+#: src/model.rs:856
+msgid "Property values are limited to {n} characters."
+msgid_plural "Property values are limited to {n} characters."
+msgstr[0] "ค่าคุณสมบัติยาวได้ไม่เกิน {n} อักขระ"
+
+#: src/model.rs:884
+msgid "A hotkey is a single character (a letter or a symbol), not {}."
+msgstr "ปุ่มลัดต้องเป็นอักขระเดียว (ตัวอักษรหรือสัญลักษณ์) ไม่ใช่ {}"
+
+#: src/model.rs:889
+msgid "A hotkey must be a visible character."
+msgstr "ปุ่มลัดต้องเป็นอักขระที่มองเห็นได้"
+
+#: src/model.rs:892
+msgid "eov already uses the '{}' key."
+msgstr "eov ใช้แป้น '{}' อยู่แล้ว"
+
+#: src/model.rs:896
+msgid "'{}' is already used by an annotation tool or class."
+msgstr "เครื่องมือแอนโนเทชันหรือคลาสอื่นใช้ '{}' อยู่แล้ว"
+
+#. Translators: in the tooltip of a locked annotation, after its class and name.
+#: src/overlay.rs:171
+msgid "locked"
+msgstr "ล็อกอยู่"
+
+#. Translators: this slide's points against the other reader's; F1 is the F1 score.
+#: src/sidebar.rs:360
+msgid "Points {ours} vs {theirs} · {matched} matched · F1 {f1}"
+msgstr "จุด {ours} เทียบกับ {theirs} · ตรงกัน {matched} · F1 {f1}"
+
+#. Translators: this slide's regions and their area against the other reader's;
+#. Dice is the Dice coefficient of the areas.
+#: src/sidebar.rs:373
+msgid "Regions {ours} vs {theirs} · {our_area} vs {their_area} · Dice {dice}"
+msgstr ""
+"บริเวณ {ours} เทียบกับ {theirs} · {our_area} เทียบกับ {their_area} · Dice {dice}"
+
+#: src/sidebar.rs:385
+msgid "All regions"
+msgstr "ทุกบริเวณ"
+
+#. Translators: {layers} in texts such as "{n} annotations {layers}" ("12 annotations in 3 layers").
+#: src/sidebar.rs:431
+msgid "in {n} layer"
+msgid_plural "in {n} layers"
+msgstr[0] "ใน {n} เลเยอร์"
+
+#: src/sidebar.rs:447
+msgid "No slide open"
+msgstr "ไม่มีสไลด์ที่เปิดอยู่"
+
+#: src/sidebar.rs:453
+msgid "Annotation database unavailable: {}"
+msgstr "ใช้งานฐานข้อมูลแอนโนเทชันไม่ได้: {}"
+
+#: src/sidebar.rs:455
+msgid "Opening the annotation database…"
+msgstr "กำลังเปิดฐานข้อมูลแอนโนเทชัน…"
+
+#: src/sidebar.rs:461
+msgid "Loading annotations…"
+msgstr "กำลังโหลดแอนโนเทชัน…"
+
+#: src/sidebar.rs:469
+msgid ""
+"The annotation database is read-only: annotations can be viewed and "
+"exported, not edited."
+msgstr "ฐานข้อมูลแอนโนเทชันเป็นแบบอ่านอย่างเดียว: ดูและส่งออกแอนโนเทชันได้ แต่แก้ไขไม่ได้"
+
+#: src/sidebar.rs:477
+msgid ""
+"This slide has no stable identity; its annotations are keyed by file name "
+"and size."
+msgstr "สไลด์นี้ไม่มีตัวระบุที่คงที่ แอนโนเทชันจึงผูกกับชื่อไฟล์และขนาดไฟล์"
+
+#. Translators: beside a layer of count points: the number of points.
+#: src/sidebar.rs:526
+msgid "{} · counts"
+msgstr "{} · จุดนับ"
+
+#. Translators: beside the layer of HPF fields: the number of fields.
+#: src/sidebar.rs:528
+msgid "{} · HPF fields"
+msgstr "{} · ลาน HPF"
+
+#: src/sidebar.rs:615
+msgid "{n} comment"
+msgid_plural "{n} comments"
+msgstr[0] "ความคิดเห็น {n} รายการ"
+
+#: src/sidebar.rs:649
+msgid "Show more ({n} not shown)"
+msgid_plural "Show more ({n} not shown)"
+msgstr[0] "แสดงเพิ่มเติม (ยังไม่แสดง {n} รายการ)"
+
+#: src/sidebar.rs:667
+msgid "{n} match"
+msgid_plural "{n} matches"
+msgstr[0] "ตรงกัน {n} รายการ"
+
+#: src/sidebar.rs:670
+msgid ""
+"No annotations yet. Pick a tool in the toolbar (P polygon, . point, C count) "
+"and draw on the slide."
+msgstr ""
+"ยังไม่มีแอนโนเทชัน โปรดเลือกเครื่องมือในแถบเครื่องมือ (P รูปหลายเหลี่ยม, . จุด, C นับเซลล์) "
+"แล้ววาดบนสไลด์"
+
+#: src/sidebar.rs:674
+msgid "Open a slide to see and draw its annotations."
+msgstr "เปิดสไลด์เพื่อดูและวาดแอนโนเทชัน"
+
+#: src/sidebar.rs:724
+msgid "created {created} · edited {edited}"
+msgstr "สร้าง {created} · แก้ไข {edited}"
+
+#: src/sidebar.rs:730
+msgid "By {author} · created {created} · edited {edited}"
+msgstr "โดย {author} · สร้าง {created} · แก้ไข {edited}"
+
+#: src/sidebar.rs:750
+msgid "Unknown author"
+msgstr "ไม่ทราบผู้สร้าง"
+
+#: src/sidebar.rs:769
+msgid ""
+"This outline crosses itself (it was drawn with an older version). Its area "
+"uses the even-odd rule, like the display; Repair turns it into simple parts."
+msgstr ""
+"เส้นขอบนี้ตัดกันเอง (วาดด้วยเวอร์ชันเก่า) พื้นที่จึงคำนวณด้วยกฎคู่-คี่ (even-odd) "
+"เหมือนกับที่แสดงผล “ซ่อมแซม” จะแยกเส้นขอบเป็นส่วนย่อยที่ไม่ตัดกันเอง"
+
+#: src/sidebar.rs:775
+msgid "{n} annotation selected"
+msgid_plural "{n} annotations selected"
+msgstr[0] "เลือกแอนโนเทชันอยู่ {n} รายการ"
+
+#: src/sidebar.rs:778
+msgid "Mixed classes; changes apply to all selected."
+msgstr "มีหลายคลาสปนกัน การเปลี่ยนแปลงจะมีผลกับทุกรายการที่เลือก"
+
+#: src/sidebar.rs:780
+msgid "Changes apply to all selected."
+msgstr "การเปลี่ยนแปลงจะมีผลกับทุกรายการที่เลือก"
+
+#. Translators: under a class whose key does nothing; {} is
+#. eov's reason, a whole sentence such as "Hotkey 'q' of …
+#. was ignored: it is a key eov already uses."
+#: src/sidebar.rs:828
+msgid "eov refused the hotkey: {}"
+msgstr "eov ไม่รับปุ่มลัด: {}"
+
+#: src/sidebar.rs:861
+msgid ""
+"Whole slide. Select regions or HPF fields to count inside them and get "
+"densities."
+msgstr "ทั้งสไลด์ เลือกบริเวณหรือลาน HPF เพื่อนับภายในและหาความหนาแน่น"
+
+#. Translators: {fields} is "1 HPF field" or "3 HPF fields"
+#. (translated on its own; HPF is a high-power field).
+#: src/sidebar.rs:873
+msgid "Inside {n} selected region ({fields}): {area}"
+msgid_plural "Inside {n} selected regions ({fields}): {area}"
+msgstr[0] "ภายในบริเวณที่เลือก {n} บริเวณ ({fields}): {area}"
+
+#. Translators: {fields} in "Inside {n} selected regions ({fields}): {area}".
+#: src/sidebar.rs:877
+msgid "{n} HPF field"
+msgid_plural "{n} HPF fields"
+msgstr[0] "ลาน HPF {n} ลาน"
+
+#: src/sidebar.rs:883
+msgid "Inside {n} selected region: {area}"
+msgid_plural "Inside {n} selected regions: {area}"
+msgstr[0] "ภายในบริเวณที่เลือก {n} บริเวณ: {area}"
+
+#: src/sidebar.rs:890
+msgid "Inside {n} selected region: {area} (no pixel size, so no density)"
+msgid_plural ""
+"Inside {n} selected regions: {area} (no pixel size, so no density)"
+msgstr[0] "ภายในบริเวณที่เลือก {n} บริเวณ: {area} (ไม่มีขนาดพิกเซล จึงไม่มีความหนาแน่น)"
+
+#. Translators: cells per high-power field.
+#: src/sidebar.rs:905
+msgid "{} /HPF field"
+msgstr "{} /ลาน HPF"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1000
+msgid "Read-only"
+msgstr "อ่านอย่างเดียว"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1003
+msgid "Ready"
+msgstr "พร้อม"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1007
+msgid "Opening…"
+msgstr "กำลังเปิด…"
+
+#: src/sidebar.rs:1008
+msgid "Unavailable: {}"
+msgstr "ใช้งานไม่ได้: {}"
+
+#. Translators: a slide whose file name an older eov did not record; {} is its number in the annotation database.
+#: src/sidebar.rs:1068
+msgid "Slide #{} (from an older version)"
+msgstr "สไลด์ #{} (จากเวอร์ชันเก่า)"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/sidebar.rs:1075
+msgid "{n} annotation {layers} · last opened {date}"
+msgid_plural "{n} annotations {layers} · last opened {date}"
+msgstr[0] "แอนโนเทชัน {n} รายการ {layers} · เปิดล่าสุด {date}"
+
+#. Translators: "List" is the label of the button beside this text.
+#: src/sidebar.rs:1093
+msgid "Press \"List\" to see the other slides in the database."
+msgstr "กด “แสดงรายการ” เพื่อดูสไลด์อื่นในฐานข้อมูล"
+
+#: src/sidebar.rs:1094
+msgid "No other slides have annotations."
+msgstr "ไม่มีสไลด์อื่นที่มีแอนโนเทชัน"
+
+#: src/sidebar.rs:1096
+msgid ""
+"If a slide was re-saved or de-identified, its annotations stay with the old "
+"file. Attach them to the open slide here."
+msgstr ""
+"หากสไลด์ถูกบันทึกใหม่หรือลบข้อมูลระบุตัวตน แอนโนเทชันจะยังผูกอยู่กับไฟล์เดิม "
+"แนบแอนโนเทชันเหล่านั้นกับสไลด์ที่เปิดอยู่ได้ที่นี่"
+
+#: src/sidebar.rs:1161
+msgid "Cannot ask for confirmation"
+msgstr "ไม่สามารถขอการยืนยันได้"
+
+#: src/sidebar.rs:1173
+msgid "Open a slide first."
+msgstr "โปรดเปิดสไลด์ก่อน"
+
+#: src/sidebar.rs:1213
+msgid "Compare with another reader's file first."
+msgstr "โปรดเปรียบเทียบกับไฟล์ของผู้อ่านผลคนอื่นก่อน"
+
+#: src/sidebar.rs:1219
+msgid "Export all annotations"
+msgstr "ส่งออกแอนโนเทชันทั้งหมด"
+
+#: src/sidebar.rs:1222
+msgid "eov annotation archive"
+msgstr "ไฟล์เก็บถาวรแอนโนเทชันของ eov"
+
+#: src/sidebar.rs:1229
+msgid "Back up the annotation database"
+msgstr "สำรองฐานข้อมูลแอนโนเทชัน"
+
+#: src/sidebar.rs:1232 src/sidebar.rs:1242
+msgid "SQLite database"
+msgstr "ฐานข้อมูล SQLite"
+
+#: src/sidebar.rs:1239
+msgid ""
+"Merge an annotation database (a backup, or annotations.db of eov before 1.0)"
+msgstr ""
+"ผสานฐานข้อมูลแอนโนเทชัน (ไฟล์สำรอง หรือ annotations.db ของ eov ก่อนเวอร์ชัน 1.0)"
+
+#: src/sidebar.rs:1308
+msgid "Show or hide layer"
+msgstr "แสดงหรือซ่อนเลเยอร์"
+
+#: src/sidebar.rs:1322
+msgid "Layer opacity"
+msgstr "ความทึบของเลเยอร์"
+
+#: src/sidebar.rs:1337
+msgid "Lock layer"
+msgstr "ล็อกเลเยอร์"
+
+#: src/sidebar.rs:1339
+msgid "Unlock layer"
+msgstr "ปลดล็อกเลเยอร์"
+
+#: src/sidebar.rs:1354
+msgid "Change layer colour"
+msgstr "เปลี่ยนสีของเลเยอร์"
+
+#: src/sidebar.rs:1370
+msgid "Edit layer notes"
+msgstr "แก้ไขหมายเหตุของเลเยอร์"
+
+#: src/sidebar.rs:1387
+msgid "The slide is still loading."
+msgstr "สไลด์ยังโหลดไม่เสร็จ"
+
+#: src/sidebar.rs:1396
+msgctxt "Dialog title"
+msgid "Delete layer"
+msgstr "ลบเลเยอร์"
+
+#: src/sidebar.rs:1398
+msgid ""
+"Delete layer \"{name}\" and its {n} annotation? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgid_plural ""
+"Delete layer \"{name}\" and its {n} annotations? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgstr[0] ""
+"ลบเลเยอร์ “{name}” และแอนโนเทชันในเลเยอร์ {n} รายการหรือไม่ เลิกทำได้ด้วย Ctrl+Z (⌘Z)"
+
+#: src/sidebar.rs:1403 src/sidebar.rs:1620
+msgid "Delete"
+msgstr "ลบ"
+
+#: src/sidebar.rs:1404 src/sidebar.rs:1621 src/sidebar.rs:1679
+#: src/sidebar.rs:1772
+msgid "Cancel"
+msgstr "ยกเลิก"
+
+#: src/sidebar.rs:1420
+msgid "Rename annotation"
+msgstr "เปลี่ยนชื่อแอนโนเทชัน"
+
+#: src/sidebar.rs:1432
+msgid "Edit description"
+msgstr "แก้ไขคำอธิบาย"
+
+#: src/sidebar.rs:1444
+msgid "Set class"
+msgstr "กำหนดคลาส"
+
+#: src/sidebar.rs:1458
+msgid "Mark draft"
+msgstr "ทำเครื่องหมายเป็นฉบับร่าง"
+
+#: src/sidebar.rs:1459
+msgid "Mark verified"
+msgstr "ทำเครื่องหมายว่าตรวจสอบแล้ว"
+
+#: src/sidebar.rs:1460
+msgid "Mark rejected"
+msgstr "ทำเครื่องหมายว่าปฏิเสธแล้ว"
+
+#: src/sidebar.rs:1476
+msgid "Move to layer"
+msgstr "ย้ายไปยังเลเยอร์"
+
+#: src/sidebar.rs:1529
+msgid "Edit properties"
+msgstr "แก้ไขคุณสมบัติ"
+
+#: src/sidebar.rs:1553
+msgid "Select one annotation to comment on."
+msgstr "โปรดเลือกแอนโนเทชันหนึ่งรายการเพื่อแสดงความคิดเห็น"
+
+#: src/sidebar.rs:1566
+msgid "Measurements copied."
+msgstr "คัดลอกผลการวัดแล้ว"
+
+#: src/sidebar.rs:1578
+msgid "Show or hide class"
+msgstr "แสดงหรือซ่อนคลาส"
+
+#: src/sidebar.rs:1591
+msgid "Class opacity"
+msgstr "ความทึบของคลาส"
+
+#: src/sidebar.rs:1611
+msgctxt "Dialog title"
+msgid "Delete class"
+msgstr "ลบคลาส"
+
+#: src/sidebar.rs:1613
+msgid ""
+"Delete class \"{name}\"? {n} annotation on open slides uses it; it will show "
+"as unclassified. You can undo this."
+msgid_plural ""
+"Delete class \"{name}\"? {n} annotations on open slides use it; they will "
+"show as unclassified. You can undo this."
+msgstr[0] ""
+"ลบคลาส “{name}” หรือไม่ แอนโนเทชัน {n} รายการบนสไลด์ที่เปิดอยู่ใช้คลาสนี้ และจะแสดงเป็น "
+"“ไม่มีคลาส” การดำเนินการนี้เลิกทำได้"
+
+#: src/sidebar.rs:1668
+msgctxt "Dialog title"
+msgid "Clear counts"
+msgstr "ล้างผลการนับ"
+
+#. Translators: the question of the "Clear counts" dialog, whose
+#. button is "Clear": use the same verb.
+#: src/sidebar.rs:1672
+msgid "Clear the {n} count point of this slide? You can undo this."
+msgid_plural "Clear all {n} count points of this slide? You can undo this."
+msgstr[0] "ล้างจุดนับทั้งหมด {n} จุดของสไลด์นี้หรือไม่ การดำเนินการนี้เลิกทำได้"
+
+#. Translators: the button that removes the count points, in the
+#. "Clear counts" dialog.
+#: src/sidebar.rs:1678
+msgid "Clear"
+msgstr "ล้าง"
+
+#: src/sidebar.rs:1694
+msgid "Enter the field area in mm², e.g. {}."
+msgstr "ป้อนพื้นที่ลานเป็น mm² เช่น {}"
+
+#: src/sidebar.rs:1702
+msgid "Enter the field number in mm, e.g. 22."
+msgstr "ป้อนเลขลานสายตาเป็น mm เช่น 22"
+
+#: src/sidebar.rs:1704
+msgid "Enter the objective magnification, e.g. 40."
+msgstr "ป้อนกำลังขยายของเลนส์ใกล้วัตถุ เช่น 40"
+
+#: src/sidebar.rs:1708
+msgid "That field size is not usable."
+msgstr "ใช้ขนาดลานนั้นไม่ได้"
+
+#: src/sidebar.rs:1720
+msgid "There is no database from before eov 1.0 to merge."
+msgstr "ไม่มีฐานข้อมูลจาก eov ก่อนเวอร์ชัน 1.0 ให้ผสาน"
+
+#: src/sidebar.rs:1737
+msgid "That slide is not listed any more."
+msgstr "สไลด์นั้นไม่อยู่ในรายการแล้ว"
+
+#: src/sidebar.rs:1748
+msgid ""
+"Attach the annotations of an older slide to the open slide? Use this when "
+"the slide file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"แนบแอนโนเทชันของสไลด์เก่ากับสไลด์ที่เปิดอยู่หรือไม่ ใช้เมื่อไฟล์สไลด์ถูกบันทึกใหม่ แปลง "
+"หรือลบข้อมูลระบุตัวตน การดำเนินการนี้เลิกทำได้"
+
+#: src/sidebar.rs:1753
+msgid ""
+"Attach the annotations of \"{}\" to the open slide? Use this when the slide "
+"file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"แนบแอนโนเทชันของ “{}” กับสไลด์ที่เปิดอยู่หรือไม่ ใช้เมื่อไฟล์สไลด์ถูกบันทึกใหม่ แปลง "
+"หรือลบข้อมูลระบุตัวตน การดำเนินการนี้เลิกทำได้"
+
+#: src/sidebar.rs:1762
+msgid ""
+"Warning: the two slides have different sizes, so the annotations may not "
+"line up."
+msgstr "คำเตือน: สไลด์ทั้งสองมีขนาดต่างกัน แอนโนเทชันจึงอาจวางไม่ตรงตำแหน่ง"
+
+#: src/sidebar.rs:1769
+msgid "Attach annotations"
+msgstr "แนบแอนโนเทชัน"
+
+#: src/sidebar.rs:1771
+msgid "Attach"
+msgstr "แนบ"
+
+#: src/state.rs:501
+msgid "Compared with {}"
+msgstr "เปรียบเทียบกับ {}"
+
+#. Translators: {ours} is "1 annotation" or "5 annotations" (translated on its own).
+#: src/state.rs:509
+msgid ""
+"This slide's visible layers ({ours}) against the {n} annotation in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgid_plural ""
+"This slide's visible layers ({ours}) against the {n} annotations in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgstr[0] ""
+"เลเยอร์ที่มองเห็นของสไลด์นี้ ({ours}) เทียบกับแอนโนเทชัน {n} รายการใน {name} "
+"โดยไม่รวมลาน HPF จำนวนที่แสดงเป็นของสไลด์นี้ก่อน แล้วจึงเป็นของผู้อ่านผลอีกคน "
+"จุดของคลาสเดียวกันจับคู่แบบหนึ่งต่อหนึ่งภายในระยะ {radius} (F1 = 2 · จำนวนที่ตรงกัน / "
+"ผลรวมจำนวนของทั้งสองฝ่าย) ส่วนบริเวณเทียบจากส่วนที่ซ้อนทับกัน (Dice = 2 · พื้นที่ร่วม / "
+"ผลรวมพื้นที่ของทั้งสองฝ่าย)"
+
+#: src/state.rs:522
+msgid "Check the file: {}"
+msgstr "โปรดตรวจสอบไฟล์: {}"
+
+#: src/state.rs:664
+msgid "The annotation database is read-only."
+msgstr "ฐานข้อมูลแอนโนเทชันเป็นแบบอ่านอย่างเดียว"
+
+#: src/state.rs:665
+msgid "The annotation database is still opening."
+msgstr "ฐานข้อมูลแอนโนเทชันยังเปิดไม่เสร็จ"
+
+#: src/state.rs:667
+msgid "The annotation database is unavailable: {}"
+msgstr "ใช้งานฐานข้อมูลแอนโนเทชันไม่ได้: {}"
+
+#: src/stats.rs:97
+msgid "Invalid field size"
+msgstr "ขนาดลานไม่ถูกต้อง"
+
+#. Translators: HPF is a high-power field; ⌀ its diameter.
+#: src/stats.rs:110
+msgid "1 HPF = {area} mm² (field number {number} at {objective}×, ⌀ {d} mm)"
+msgstr "1 HPF = {area} mm² (เลขลานสายตา {number} ที่ {objective}×, ⌀ {d} mm)"
+
+#: src/stats.rs:116
+msgid "1 HPF = {area} mm² (⌀ {d} mm)"
+msgstr "1 HPF = {area} mm² (⌀ {d} mm)"
+
+#: src/tools.rs:63
+msgid "Select and edit annotations"
+msgstr "เลือกและแก้ไขแอนโนเทชัน"
+
+#: src/tools.rs:64
+msgid "Point annotation"
+msgstr "แอนโนเทชันแบบจุด"
+
+#: src/tools.rs:65
+msgid "Count cells (Shift+click: second class)"
+msgstr "นับเซลล์ (Shift+คลิก: คลาสที่สอง)"
+
+#: src/tools.rs:66
+msgid "Polygon (Shift: add to selection, Alt: cut from it)"
+msgstr "รูปหลายเหลี่ยม (Shift: เพิ่มเข้าในบริเวณที่เลือก, Alt: ตัดออกจากบริเวณที่เลือก)"
+
+#: src/tools.rs:67
+msgid "Freehand outline (Shift: add, Alt: cut)"
+msgstr "เส้นขอบแบบอิสระ (Shift: เพิ่ม, Alt: ตัด)"
+
+#: src/tools.rs:68
+msgid "Rectangle"
+msgstr "สี่เหลี่ยมผืนผ้า"
+
+#: src/tools.rs:69
+msgid "Ellipse"
+msgstr "วงรี"
+
+#: src/tools.rs:70
+msgid "Line / path"
+msgstr "เส้น / เส้นหลายช่วง"
+
+#: src/tools.rs:72
+msgid ""
+"Brush (paint a region, over a selected region to extend it; Alt or the "
+"eraser erases; [ and ] change the size)"
+msgstr ""
+"แปรง (ระบายบริเวณ ระบายทับบริเวณที่เลือกเพื่อขยาย กด Alt หรือใช้ยางลบเพื่อลบ [ และ ] "
+"เพื่อเปลี่ยนขนาด)"
+
+#: src/tools.rs:74
+msgid "Arrow (click the tail, double-click the tip; more clicks bend it)"
+msgstr "ลูกศร (คลิกที่หาง ดับเบิลคลิกที่ปลาย คลิกเพิ่มเพื่อหักงอ)"
+
+#: src/tools.rs:75
+msgid "Text label"
+msgstr "ป้ายข้อความ"
+
+#: src/tools.rs:77
+msgid ""
+"HPF field (a field of the configured size follows the pointer; click to "
+"place it, drag to pan)"
+msgstr "ลาน HPF (ลานตามขนาดที่ตั้งไว้จะเคลื่อนตามตัวชี้ คลิกเพื่อวาง ลากเพื่อเลื่อนภาพ)"
+
+#: src/tools.rs:225
+msgid "Annotation class: {}"
+msgstr "คลาสแอนโนเทชัน: {}"
+
+#. Translators: {} lists what was skipped, as "2 × reason; 1 × other reason".
+#: src/transfer.rs:249
+msgid "Skipped: {}."
+msgstr "ข้าม: {}"
+
+#: src/transfer.rs:253
+msgid "{n} outline crossed itself and was repaired with the even-odd rule."
+msgid_plural ""
+"{n} outlines crossed themselves and were repaired with the even-odd rule."
+msgstr[0] "เส้นขอบ {n} เส้นตัดกันเอง จึงซ่อมแซมด้วยกฎคู่-คี่ (even-odd)"
+
+#: src/transfer.rs:260
+msgid "{n} shape extended past the slide and was cut at its edge."
+msgid_plural "{n} shapes extended past the slide and were cut at its edge."
+msgstr[0] "รูปทรง {n} รายการเลยขอบสไลด์ จึงถูกตัดที่ขอบ"
+
+#: src/transfer.rs:265
+msgid "{n} over-long name or text was shortened."
+msgid_plural "{n} over-long names or texts were shortened."
+msgstr[0] "ย่อชื่อหรือข้อความที่ยาวเกินไป {n} รายการแล้ว"
+
+#: src/transfer.rs:270
+msgid "The file contains no annotations."
+msgstr "ไฟล์ไม่มีแอนโนเทชัน"
+
+#: src/transfer.rs:272
+msgid "Nothing could be imported. {}"
+msgstr "นำเข้าไม่ได้เลย {}"
+
+#: src/transfer.rs:339
+msgid "Made for this slide."
+msgstr "สร้างขึ้นสำหรับสไลด์นี้"
+
+#: src/transfer.rs:342
+msgid "Made for a different slide (its identity does not match)."
+msgstr "สร้างขึ้นสำหรับสไลด์อื่น (ตัวระบุไม่ตรงกัน)"
+
+#: src/transfer.rs:352
+msgid "Made for a slide of {theirs}; this one is {ours}."
+msgstr "สร้างขึ้นสำหรับสไลด์ขนาด {theirs} แต่สไลด์นี้มีขนาด {ours}"
+
+#: src/transfer.rs:360
+msgid "Made for a slide of the same size."
+msgstr "สร้างขึ้นสำหรับสไลด์ที่มีขนาดเท่ากัน"
+
+#: src/transfer.rs:364
+msgid ""
+"The file does not say which slide it belongs to; coordinates are taken as "
+"level-0 pixels of this slide."
+msgstr "ไฟล์ไม่ได้ระบุว่าเป็นของสไลด์ใด พิกัดจะถือเป็นพิกเซลระดับ 0 ของสไลด์นี้"
+
+#: src/transfer.rs:376
+msgid "Annotations (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "แอนโนเทชัน (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:386
+msgid "All files"
+msgstr "ไฟล์ทั้งหมด"
+
+#: src/transfer.rs:398 src/transfer.rs:853 src/transfer.rs:1007
+msgid "Cannot show the file dialog"
+msgstr "แสดงกล่องโต้ตอบไฟล์ไม่ได้"
+
+#: src/transfer.rs:413
+msgid "The annotations of this slide are still loading."
+msgstr "แอนโนเทชันของสไลด์นี้ยังโหลดไม่เสร็จ"
+
+#: src/transfer.rs:434
+msgid "Importing {}"
+msgstr "กำลังนำเข้า {}"
+
+#. Translators: the step of an import that reads the file.
+#: src/transfer.rs:447
+msgid "Reading"
+msgstr "กำลังอ่าน"
+
+#: src/transfer.rs:474
+msgid ""
+"NDP.view annotations, placed with this slide's offsets from the slide centre "
+"and its pixel size."
+msgstr "แอนโนเทชันของ NDP.view วางตามค่าเยื้องจากจุดกึ่งกลางสไลด์และขนาดพิกเซลของสไลด์นี้"
+
+#: src/transfer.rs:486
+msgid "Checking the slide"
+msgstr "กำลังตรวจสอบสไลด์"
+
+#: src/transfer.rs:489
+msgid "cannot read the slide to check the import: {}"
+msgstr "อ่านสไลด์เพื่อตรวจสอบการนำเข้าไม่ได้: {}"
+
+#: src/transfer.rs:494
+msgid "Made for this slide (checked by content)."
+msgstr "สร้างขึ้นสำหรับสไลด์นี้ (ตรวจสอบจากเนื้อหาแล้ว)"
+
+#: src/transfer.rs:497
+msgid "Made for a different slide (its checksum does not match)."
+msgstr "สร้างขึ้นสำหรับสไลด์อื่น (checksum ไม่ตรงกัน)"
+
+#: src/transfer.rs:521
+msgid "Import cancelled."
+msgstr "ยกเลิกการนำเข้าแล้ว"
+
+#: src/transfer.rs:522
+msgid "Could not import {}"
+msgstr "ไม่สามารถนำเข้า {} ได้"
+
+#. Translators: "Merge a database…" is the item of the Import and export
+#. menu: quote it as it is translated there.
+#: src/transfer.rs:560
+msgid ""
+"This archive has no annotations for the current slide. Restore whole backups "
+"with \"Merge a database…\"."
+msgstr ""
+"ไฟล์เก็บถาวรนี้ไม่มีแอนโนเทชันสำหรับสไลด์ปัจจุบัน หากต้องการกู้คืนข้อมูลสำรองทั้งชุด ให้ใช้ "
+"“ผสานฐานข้อมูล…”"
+
+#: src/transfer.rs:574
+msgid "Import {n} annotation"
+msgid_plural "Import {n} annotations"
+msgstr[0] "นำเข้าแอนโนเทชัน {n} รายการ"
+
+#: src/transfer.rs:581
+msgid "The slide this import was started on is not open any more."
+msgstr "สไลด์ที่เริ่มการนำเข้านี้ไม่ได้เปิดอยู่แล้ว"
+
+#: src/transfer.rs:737
+msgid "Imported {n} annotation from {file}."
+msgid_plural "Imported {n} annotations from {file}."
+msgstr[0] "นำเข้าแอนโนเทชัน {n} รายการจาก {file} แล้ว"
+
+#: src/transfer.rs:783 src/transfer.rs:818
+msgid "eov annotations"
+msgstr "แอนโนเทชันของ eov"
+
+#: src/transfer.rs:811
+msgid "DICOM bulk annotations"
+msgstr "แอนโนเทชัน DICOM แบบ bulk"
+
+#: src/transfer.rs:824
+msgid "Export a blinded copy for another reader"
+msgstr "ส่งออกสำเนาแบบปกปิดสำหรับผู้อ่านผลคนอื่น"
+
+#: src/transfer.rs:825
+msgid "Export annotations"
+msgstr "ส่งออกแอนโนเทชัน"
+
+#: src/transfer.rs:942
+msgid "Exported {n} annotation to {file}."
+msgid_plural "Exported {n} annotations to {file}."
+msgstr[0] "ส่งออกแอนโนเทชัน {n} รายการไปยัง {file} แล้ว"
+
+#: src/transfer.rs:948
+msgid "Could not export to {}"
+msgstr "ไม่สามารถส่งออกไปยัง {} ได้"
+
+#: src/transfer.rs:988
+msgid "Compare with another reader's annotations"
+msgstr "เปรียบเทียบกับแอนโนเทชันของผู้อ่านผลคนอื่น"
+
+#: src/transfer.rs:990
+msgid "Annotations (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "แอนโนเทชัน (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:1114
+msgid "Could not compare with {}"
+msgstr "ไม่สามารถเปรียบเทียบกับ {} ได้"
+
+#: src/transfer.rs:1123
+msgid "Exporting all annotations"
+msgstr "กำลังส่งออกแอนโนเทชันทั้งหมด"
+
+#: src/transfer.rs:1176
+msgid "Exported the annotations of {n} slide."
+msgid_plural "Exported the annotations of {n} slides."
+msgstr[0] "ส่งออกแอนโนเทชันของสไลด์ {n} แผ่นแล้ว"
+
+#: src/transfer.rs:1184
+msgid "Could not export all annotations"
+msgstr "ไม่สามารถส่งออกแอนโนเทชันทั้งหมดได้"
+
+#: src/transfer.rs:1201
+msgid "Annotation database backed up."
+msgstr "สำรองฐานข้อมูลแอนโนเทชันแล้ว"
+
+#: src/transfer.rs:1203
+msgid "Could not back up the annotation database"
+msgstr "ไม่สามารถสำรองฐานข้อมูลแอนโนเทชันได้"
+
+#: src/transfer.rs:1217
+msgid "Merging annotation database"
+msgstr "กำลังผสานฐานข้อมูลแอนโนเทชัน"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers", {slides}
+#. is "1 new slide" or "3 new slides" (each translated on its own).
+#: src/transfer.rs:1232
+msgid "Merged {n} annotation {layers} ({slides})."
+msgid_plural "Merged {n} annotations {layers} ({slides})."
+msgstr[0] "ผสานแอนโนเทชันแล้ว {n} รายการ {layers} ({slides})"
+
+#. Translators: {slides} in "Merged {n} annotations {layers} ({slides})."
+#: src/transfer.rs:1237
+msgid "{n} new slide"
+msgid_plural "{n} new slides"
+msgstr[0] "สไลด์ใหม่ {n} แผ่น"
+
+#: src/transfer.rs:1249
+msgid "Could not merge the database"
+msgstr "ไม่สามารถผสานฐานข้อมูลได้"
+
+#. Translators: read out for the layer new annotations go into; {} is its
+#. number of annotations.
+#: ui/annotations-sidebar.slint:115
+msgctxt "TreeItem"
+msgid "{} · new annotations go here"
+msgstr "{} · แอนโนเทชันใหม่จะอยู่ที่นี่"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Collapse layer"
+msgstr "ยุบเลเยอร์"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Expand layer"
+msgstr "ขยายเลเยอร์"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Hide layer"
+msgstr "ซ่อนเลเยอร์"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Show layer"
+msgstr "แสดงเลเยอร์"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Lock layer"
+msgstr "ล็อกเลเยอร์"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Unlock layer"
+msgstr "ปลดล็อกเลเยอร์"
+
+#: ui/annotations-sidebar.slint:222
+msgctxt "TreeItem"
+msgid "Layer settings"
+msgstr "การตั้งค่าเลเยอร์"
+
+#: ui/annotations-sidebar.slint:292
+msgctxt "TreeItem"
+msgid "Locked"
+msgstr "ล็อกอยู่"
+
+#: ui/annotations-sidebar.slint:314
+msgctxt "AnnotationsSidebar"
+msgid "No slide open"
+msgstr "ไม่มีสไลด์ที่เปิดอยู่"
+
+#: ui/annotations-sidebar.slint:321
+msgctxt "AnnotationsSidebar"
+msgid "Unclassified"
+msgstr "ไม่มีคลาส"
+
+#: ui/annotations-sidebar.slint:488
+msgctxt "AnnotationsSidebar"
+msgid "Import annotations…"
+msgstr "นำเข้าแอนโนเทชัน…"
+
+#: ui/annotations-sidebar.slint:489
+msgctxt "AnnotationsSidebar"
+msgid "Export as GeoJSON (QuPath)…"
+msgstr "ส่งออกเป็น GeoJSON (QuPath)…"
+
+#: ui/annotations-sidebar.slint:490
+msgctxt "AnnotationsSidebar"
+msgid "Export as eov JSON…"
+msgstr "ส่งออกเป็น eov JSON…"
+
+#: ui/annotations-sidebar.slint:491
+msgctxt "AnnotationsSidebar"
+msgid "Export as ASAP XML…"
+msgstr "ส่งออกเป็น ASAP XML…"
+
+#: ui/annotations-sidebar.slint:492
+msgctxt "AnnotationsSidebar"
+msgid "Export as ImageScope XML…"
+msgstr "ส่งออกเป็น ImageScope XML…"
+
+#: ui/annotations-sidebar.slint:493
+msgctxt "AnnotationsSidebar"
+msgid "Export as DICOM annotations…"
+msgstr "ส่งออกเป็นแอนโนเทชัน DICOM…"
+
+#: ui/annotations-sidebar.slint:494
+msgctxt "AnnotationsSidebar"
+msgid "Export measurements (CSV)…"
+msgstr "ส่งออกผลการวัด (CSV)…"
+
+#: ui/annotations-sidebar.slint:495
+msgctxt "AnnotationsSidebar"
+msgid "Export a blinded copy…"
+msgstr "ส่งออกสำเนาแบบปกปิด…"
+
+#: ui/annotations-sidebar.slint:496
+msgctxt "AnnotationsSidebar"
+msgid "Compare with another reader…"
+msgstr "เปรียบเทียบกับผู้อ่านผลคนอื่น…"
+
+#. Translators: exports the annotations of every slide in the database to one
+#. annotation archive (a JSON file), not the slide images.
+#: ui/annotations-sidebar.slint:497 ui/annotations-sidebar.slint:1986
+msgctxt "AnnotationsSidebar"
+msgid "Export all slides…"
+msgstr "ส่งออกทุกสไลด์…"
+
+#: ui/annotations-sidebar.slint:498
+msgctxt "AnnotationsSidebar"
+msgid "Back up the database…"
+msgstr "สำรองฐานข้อมูล…"
+
+#: ui/annotations-sidebar.slint:499
+msgctxt "AnnotationsSidebar"
+msgid "Merge a database…"
+msgstr "ผสานฐานข้อมูล…"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field area"
+msgstr "พื้นที่ลาน"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field number and objective"
+msgstr "เลขลานสายตาและเลนส์ใกล้วัตถุ"
+
+#: ui/annotations-sidebar.slint:600
+msgctxt "AnnotationsSidebar"
+msgid "Annotations"
+msgstr "แอนโนเทชัน"
+
+#: ui/annotations-sidebar.slint:635
+msgctxt "AnnotationsSidebar"
+msgid "Import and export"
+msgstr "นำเข้าและส่งออก"
+
+#: ui/annotations-sidebar.slint:668
+msgctxt "AnnotationsSidebar"
+msgid "Retry"
+msgstr "ลองอีกครั้ง"
+
+#: ui/annotations-sidebar.slint:683
+msgctxt "AnnotationsSidebar"
+msgid "Layers"
+msgstr "เลเยอร์"
+
+#: ui/annotations-sidebar.slint:691
+msgctxt "AnnotationsSidebar"
+msgid "Classes"
+msgstr "คลาส"
+
+#. Translators: the tab for counting cells.
+#: ui/annotations-sidebar.slint:700
+msgctxt "AnnotationsSidebar"
+msgid "Count"
+msgstr "นับเซลล์"
+
+#: ui/annotations-sidebar.slint:708
+msgctxt "AnnotationsSidebar"
+msgid "Data"
+msgstr "ข้อมูล"
+
+#: ui/annotations-sidebar.slint:747
+msgctxt "AnnotationsSidebar"
+msgid "Filter by name, class, kind or status"
+msgstr "กรองตามชื่อ คลาส ชนิด หรือสถานะ"
+
+#: ui/annotations-sidebar.slint:769
+msgctxt "AnnotationsSidebar"
+msgid "Filter annotations"
+msgstr "กรองแอนโนเทชัน"
+
+#: ui/annotations-sidebar.slint:786
+msgctxt "AnnotationsSidebar"
+msgid "New layer"
+msgstr "เลเยอร์ใหม่"
+
+#: ui/annotations-sidebar.slint:870 ui/annotations-sidebar.slint:1079
+#: ui/annotations-sidebar.slint:1500
+msgctxt "AnnotationsSidebar"
+msgid "Name"
+msgstr "ชื่อ"
+
+#: ui/annotations-sidebar.slint:876 ui/annotations-sidebar.slint:878
+msgctxt "AnnotationsSidebar"
+msgid "Layer name"
+msgstr "ชื่อเลเยอร์"
+
+#: ui/annotations-sidebar.slint:889
+msgctxt "AnnotationsSidebar"
+msgid "Colour"
+msgstr "สี"
+
+#: ui/annotations-sidebar.slint:898
+msgctxt "AnnotationsSidebar"
+msgid "Layer colour"
+msgstr "สีของเลเยอร์"
+
+#: ui/annotations-sidebar.slint:906 ui/annotations-sidebar.slint:1518
+msgctxt "AnnotationsSidebar"
+msgid "Opacity"
+msgstr "ความทึบ"
+
+#: ui/annotations-sidebar.slint:912
+msgctxt "AnnotationsSidebar"
+msgid "Layer opacity"
+msgstr "ความทึบของเลเยอร์"
+
+#: ui/annotations-sidebar.slint:923 ui/annotations-sidebar.slint:1162
+msgctxt "AnnotationsSidebar"
+msgid "Notes"
+msgstr "หมายเหตุ"
+
+#: ui/annotations-sidebar.slint:931
+msgctxt "AnnotationsSidebar"
+msgid "Notes about this layer"
+msgstr "หมายเหตุเกี่ยวกับเลเยอร์นี้"
+
+#: ui/annotations-sidebar.slint:933
+msgctxt "AnnotationsSidebar"
+msgid "Layer notes"
+msgstr "หมายเหตุของเลเยอร์"
+
+#: ui/annotations-sidebar.slint:941
+msgctxt "AnnotationsSidebar"
+msgid "Draw into this layer"
+msgstr "วาดลงในเลเยอร์นี้"
+
+#: ui/annotations-sidebar.slint:942
+msgctxt "AnnotationsSidebar"
+msgid "Delete layer…"
+msgstr "ลบเลเยอร์…"
+
+#: ui/annotations-sidebar.slint:1020
+msgctxt "AnnotationsSidebar"
+msgid "Zoom to the annotation"
+msgstr "ซูมไปที่แอนโนเทชัน"
+
+#: ui/annotations-sidebar.slint:1028
+msgctxt "AnnotationsSidebar"
+msgid "Copy measurements"
+msgstr "คัดลอกผลการวัด"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the annotation"
+msgstr "ลบแอนโนเทชัน"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the selected annotations"
+msgstr "ลบแอนโนเทชันที่เลือก"
+
+#: ui/annotations-sidebar.slint:1065
+msgctxt "AnnotationsSidebar"
+msgid "Repair"
+msgstr "ซ่อมแซม"
+
+#: ui/annotations-sidebar.slint:1085
+msgctxt "AnnotationsSidebar"
+msgid "Unnamed"
+msgstr "ไม่มีชื่อ"
+
+#: ui/annotations-sidebar.slint:1087
+msgctxt "AnnotationsSidebar"
+msgid "Annotation name"
+msgstr "ชื่อแอนโนเทชัน"
+
+#: ui/annotations-sidebar.slint:1098
+msgctxt "AnnotationsSidebar"
+msgid "Class"
+msgstr "คลาส"
+
+#: ui/annotations-sidebar.slint:1104
+msgctxt "AnnotationsSidebar"
+msgid "Annotation class"
+msgstr "คลาสแอนโนเทชัน"
+
+#: ui/annotations-sidebar.slint:1115
+msgctxt "AnnotationsSidebar"
+msgid "Status"
+msgstr "สถานะ"
+
+#: ui/annotations-sidebar.slint:1121
+msgctxt "AnnotationsSidebar"
+msgid "Review status"
+msgstr "สถานะการตรวจทาน"
+
+#: ui/annotations-sidebar.slint:1132
+msgctxt "AnnotationsSidebar"
+msgid "Layer"
+msgstr "เลเยอร์"
+
+#: ui/annotations-sidebar.slint:1138
+msgctxt "AnnotationsSidebar"
+msgid "Annotation layer"
+msgstr "เลเยอร์ของแอนโนเทชัน"
+
+#: ui/annotations-sidebar.slint:1149
+msgctxt "AnnotationsSidebar"
+msgid "Locked"
+msgstr "ล็อกอยู่"
+
+#: ui/annotations-sidebar.slint:1170 ui/annotations-sidebar.slint:1172
+msgctxt "AnnotationsSidebar"
+msgid "Description"
+msgstr "คำอธิบาย"
+
+#: ui/annotations-sidebar.slint:1183
+msgctxt "AnnotationsSidebar"
+msgid "MEASUREMENTS"
+msgstr "ผลการวัด"
+
+#: ui/annotations-sidebar.slint:1213
+msgctxt "AnnotationsSidebar"
+msgid "PROPERTIES"
+msgstr "คุณสมบัติ"
+
+#: ui/annotations-sidebar.slint:1224
+msgctxt "AnnotationsSidebar"
+msgid "Property name"
+msgstr "ชื่อคุณสมบัติ"
+
+#: ui/annotations-sidebar.slint:1233
+msgctxt "AnnotationsSidebar"
+msgid "Value"
+msgstr "ค่า"
+
+#: ui/annotations-sidebar.slint:1235
+msgctxt "AnnotationsSidebar"
+msgid "Property value"
+msgstr "ค่าคุณสมบัติ"
+
+#: ui/annotations-sidebar.slint:1243
+msgctxt "AnnotationsSidebar"
+msgid "Remove property"
+msgstr "เอาคุณสมบัติออก"
+
+#: ui/annotations-sidebar.slint:1255
+msgctxt "AnnotationsSidebar"
+msgid "Add property"
+msgstr "เพิ่มคุณสมบัติ"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS"
+msgstr "ความคิดเห็น"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS ({})"
+msgstr "ความคิดเห็น ({})"
+
+#: ui/annotations-sidebar.slint:1294
+msgctxt "AnnotationsSidebar"
+msgid "Delete comment"
+msgstr "ลบความคิดเห็น"
+
+#: ui/annotations-sidebar.slint:1314
+msgctxt "AnnotationsSidebar"
+msgid "Add a comment"
+msgstr "เพิ่มความคิดเห็น"
+
+#: ui/annotations-sidebar.slint:1316
+msgctxt "AnnotationsSidebar"
+msgid "New comment"
+msgstr "ความคิดเห็นใหม่"
+
+#. Translators: a button that adds the comment typed above.
+#: ui/annotations-sidebar.slint:1324
+msgctxt "AnnotationsSidebar"
+msgid "Comment"
+msgstr "แสดงความคิดเห็น"
+
+#: ui/annotations-sidebar.slint:1358
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Select an annotation on the slide or in the list to see its details. Double-"
+"click a row to zoom to it; Ctrl+click selects several."
+msgstr ""
+"เลือกแอนโนเทชันบนสไลด์หรือในรายการเพื่อดูรายละเอียด ดับเบิลคลิกแถวเพื่อซูมไปที่แอนโนเทชันนั้น "
+"Ctrl+คลิกเพื่อเลือกหลายรายการ"
+
+#: ui/annotations-sidebar.slint:1379
+msgctxt "AnnotationsSidebar"
+msgid ""
+"New annotations get the active class (●), and the Count tool counts it; "
+"Shift+click counts the second class (◐). Pressing a class's hotkey makes it "
+"active."
+msgstr ""
+"แอนโนเทชันใหม่จะได้คลาสที่ใช้งานอยู่ (●) และเครื่องมือนับจะนับคลาสนี้ Shift+คลิกจะนับคลาสที่สอง "
+"(◐) กดปุ่มลัดของคลาสเพื่อให้คลาสนั้นเป็นคลาสที่ใช้งานอยู่"
+
+#: ui/annotations-sidebar.slint:1418
+msgctxt "AnnotationsSidebar"
+msgid "Colour of {}"
+msgstr "สีของ {}"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Hide {}"
+msgstr "ซ่อน {}"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Show {}"
+msgstr "แสดง {}"
+
+#: ui/annotations-sidebar.slint:1466
+msgctxt "AnnotationsSidebar"
+msgid "Class settings"
+msgstr "การตั้งค่าคลาส"
+
+#: ui/annotations-sidebar.slint:1506 ui/annotations-sidebar.slint:1507
+msgctxt "AnnotationsSidebar"
+msgid "Class name"
+msgstr "ชื่อคลาส"
+
+#: ui/annotations-sidebar.slint:1523
+msgctxt "AnnotationsSidebar"
+msgid "Class opacity"
+msgstr "ความทึบของคลาส"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Count with Shift+click"
+msgstr "นับด้วย Shift+คลิก"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Stop counting with Shift+click"
+msgstr "เลิกนับด้วย Shift+คลิก"
+
+#: ui/annotations-sidebar.slint:1539
+msgctxt "AnnotationsSidebar"
+msgid "Delete…"
+msgstr "ลบ…"
+
+#: ui/annotations-sidebar.slint:1558
+msgctxt "AnnotationsSidebar"
+msgid "New class"
+msgstr "คลาสใหม่"
+
+#: ui/annotations-sidebar.slint:1596
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Pick the Count tool (C) and click cells; Shift+click and Alt+click count the "
+"second and third class. Select regions or HPF fields to count inside them."
+msgstr ""
+"เลือกเครื่องมือนับ (C) แล้วคลิกที่เซลล์ Shift+คลิกและ Alt+คลิกจะนับคลาสที่สองและที่สาม "
+"เลือกบริเวณหรือลาน HPF เพื่อนับภายในบริเวณเหล่านั้น"
+
+#: ui/annotations-sidebar.slint:1601
+msgctxt "AnnotationsSidebar"
+msgid "Count tool (C)"
+msgstr "เครื่องมือนับ (C)"
+
+#: ui/annotations-sidebar.slint:1602
+msgctxt "AnnotationsSidebar"
+msgid "HPF field (H)"
+msgstr "ลาน HPF (H)"
+
+#. Translators: the class a click with the Count tool counts.
+#: ui/annotations-sidebar.slint:1614
+msgctxt "AnnotationsSidebar"
+msgid "Click"
+msgstr "คลิก"
+
+#: ui/annotations-sidebar.slint:1620
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by a click"
+msgstr "คลาสที่นับเมื่อคลิก"
+
+#: ui/annotations-sidebar.slint:1631
+msgctxt "AnnotationsSidebar"
+msgid "Shift+click"
+msgstr "Shift+คลิก"
+
+#: ui/annotations-sidebar.slint:1636
+msgctxt "AnnotationsSidebar"
+msgid "(same as click)"
+msgstr "(เหมือนกับคลิก)"
+
+#: ui/annotations-sidebar.slint:1637
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by Shift+click"
+msgstr "คลาสที่นับเมื่อ Shift+คลิก"
+
+#: ui/annotations-sidebar.slint:1648
+msgctxt "AnnotationsSidebar"
+msgid "Alt+click"
+msgstr "Alt+คลิก"
+
+#: ui/annotations-sidebar.slint:1653
+msgctxt "AnnotationsSidebar"
+msgid "(none)"
+msgstr "(ไม่มี)"
+
+#: ui/annotations-sidebar.slint:1654
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Class counted by Alt+click: PD-L1-positive immune cells for the combined "
+"positive score"
+msgstr ""
+"คลาสที่นับเมื่อ Alt+คลิก: เซลล์ภูมิคุ้มกันที่ให้ผลบวกต่อ PD-L1 สำหรับคะแนนผลบวกรวม (CPS)"
+
+#: ui/annotations-sidebar.slint:1662
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Combined positive score: the click and Alt+click classes (PD-L1-positive "
+"tumour cells and PD-L1-positive immune cells) per 100 tumour cells (the "
+"click and Shift+click classes)."
+msgstr ""
+"คะแนนผลบวกรวม: คลาสของคลิกและ Alt+คลิก (เซลล์เนื้องอกที่ให้ผลบวกต่อ PD-L1 "
+"และเซลล์ภูมิคุ้มกันที่ให้ผลบวกต่อ PD-L1) ต่อเซลล์เนื้องอก 100 เซลล์ (คลาสของคลิกและ "
+"Shift+คลิก)"
+
+#: ui/annotations-sidebar.slint:1677
+msgctxt "AnnotationsSidebar"
+msgid "Nothing counted here yet."
+msgstr "ยังไม่มีการนับที่นี่"
+
+#: ui/annotations-sidebar.slint:1748
+msgctxt "AnnotationsSidebar"
+msgid "Count points in hidden layers"
+msgstr "นับจุดในเลเยอร์ที่ซ่อนอยู่ด้วย"
+
+#: ui/annotations-sidebar.slint:1759
+msgctxt "AnnotationsSidebar"
+msgid "Clear counts…"
+msgstr "ล้างผลการนับ…"
+
+#: ui/annotations-sidebar.slint:1771
+msgctxt "AnnotationsSidebar"
+msgid "HIGH-POWER FIELDS"
+msgstr "ลานสายตากำลังขยายสูง"
+
+#: ui/annotations-sidebar.slint:1785
+msgctxt "AnnotationsSidebar"
+msgid "How the field size is given"
+msgstr "วิธีระบุขนาดลาน"
+
+#. Translators: FN is the eyepiece's field number, the diameter of the field
+#. of view.
+#: ui/annotations-sidebar.slint:1796
+msgctxt "AnnotationsSidebar"
+msgid "FN (mm)"
+msgstr "FN (mm)"
+
+#: ui/annotations-sidebar.slint:1803
+msgctxt "AnnotationsSidebar"
+msgid "Field number in mm"
+msgstr "เลขลานสายตาเป็น mm"
+
+#. Translators: the magnification of the objective, as in 40×.
+#: ui/annotations-sidebar.slint:1811
+msgctxt "AnnotationsSidebar"
+msgid "Objective ×"
+msgstr "เลนส์ใกล้วัตถุ ×"
+
+#: ui/annotations-sidebar.slint:1821
+msgctxt "AnnotationsSidebar"
+msgid "Objective magnification"
+msgstr "กำลังขยายของเลนส์ใกล้วัตถุ"
+
+#: ui/annotations-sidebar.slint:1828 ui/annotations-sidebar.slint:1853
+msgctxt "AnnotationsSidebar"
+msgid "Apply"
+msgstr "นำไปใช้"
+
+#: ui/annotations-sidebar.slint:1839
+msgctxt "AnnotationsSidebar"
+msgid "Area (mm²)"
+msgstr "พื้นที่ (mm²)"
+
+#: ui/annotations-sidebar.slint:1846
+msgctxt "AnnotationsSidebar"
+msgid "Field area in square millimetres"
+msgstr "พื้นที่ลานเป็นตารางมิลลิเมตร"
+
+#: ui/annotations-sidebar.slint:1873
+msgctxt "AnnotationsSidebar"
+msgid "{n} field placed on this slide."
+msgid_plural "{n} fields placed on this slide."
+msgstr[0] "วางลานบนสไลด์นี้แล้ว {n} ลาน"
+
+#: ui/annotations-sidebar.slint:1885
+msgctxt "AnnotationsSidebar"
+msgid "Select all fields"
+msgstr "เลือกลานทั้งหมด"
+
+#: ui/annotations-sidebar.slint:1924
+msgctxt "AnnotationsSidebar"
+msgid "IMPORT AND EXPORT"
+msgstr "นำเข้าและส่งออก"
+
+#: ui/annotations-sidebar.slint:1928
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Imports: GeoJSON (QuPath and others), eov JSON, ASAP XML, Aperio ImageScope "
+"XML, Hamamatsu NDPA and DICOM bulk annotations. Coordinates are level-0 "
+"pixels with y pointing down."
+msgstr ""
+"นำเข้าได้: GeoJSON (QuPath และอื่น ๆ), eov JSON, ASAP XML, Aperio ImageScope "
+"XML, Hamamatsu NDPA และแอนโนเทชัน DICOM แบบ bulk พิกัดเป็นพิกเซลระดับ 0 โดยแกน y "
+"ชี้ลง"
+
+#: ui/annotations-sidebar.slint:1935
+msgctxt "AnnotationsSidebar"
+msgid "Import…"
+msgstr "นำเข้า…"
+
+#: ui/annotations-sidebar.slint:1991
+msgctxt "AnnotationsSidebar"
+msgid "Back up…"
+msgstr "สำรอง…"
+
+#: ui/annotations-sidebar.slint:1992
+msgctxt "AnnotationsSidebar"
+msgid "Merge…"
+msgstr "ผสาน…"
+
+#. Translators: a reader is a person who annotates slides; a second reader
+#. annotates a blinded copy independently so two readers can be compared (as
+#. in a reader study); use the word for an observer or annotator, not the
+#. clinical term for a second diagnostic opinion.
+#: ui/annotations-sidebar.slint:2009
+msgctxt "AnnotationsSidebar"
+msgid "SECOND READER"
+msgstr "ผู้อ่านผลคนที่สอง"
+
+#: ui/annotations-sidebar.slint:2013
+msgctxt "AnnotationsSidebar"
+msgid ""
+"A blinded copy holds the visible layers' shapes, classes and names, without "
+"authors, comments, statuses, descriptions or properties. Compare reads "
+"another reader's export and compares it with the visible layers: counts per "
+"class, matched points and overlapping regions."
+msgstr ""
+"สำเนาแบบปกปิดเก็บรูปทรง คลาส และชื่อของเลเยอร์ที่มองเห็น โดยไม่มีผู้สร้าง ความคิดเห็น สถานะ "
+"คำอธิบาย หรือคุณสมบัติ “เปรียบเทียบ” "
+"จะอ่านไฟล์ที่ผู้อ่านผลคนอื่นส่งออกและเปรียบเทียบกับเลเยอร์ที่มองเห็น: จำนวนต่อคลาส จุดที่ตรงกัน "
+"และบริเวณที่ซ้อนทับกัน"
+
+#: ui/annotations-sidebar.slint:2018
+msgctxt "AnnotationsSidebar"
+msgid "Blinded copy…"
+msgstr "สำเนาแบบปกปิด…"
+
+#: ui/annotations-sidebar.slint:2019
+msgctxt "AnnotationsSidebar"
+msgid "Compare…"
+msgstr "เปรียบเทียบ…"
+
+#. Translators: a button: compare with the same file again.
+#: ui/annotations-sidebar.slint:2022
+msgctxt "AnnotationsSidebar"
+msgid "Again"
+msgstr "อีกครั้ง"
+
+#. Translators: a button: remove the comparison.
+#: ui/annotations-sidebar.slint:2029
+msgctxt "AnnotationsSidebar"
+msgid "Clear"
+msgstr "ล้าง"
+
+#: ui/annotations-sidebar.slint:2066
+msgctxt "AnnotationsSidebar"
+msgid "Neither reader has points or regions in the compared layers."
+msgstr "ผู้อ่านผลทั้งสองคนไม่มีจุดหรือบริเวณในเลเยอร์ที่เปรียบเทียบ"
+
+#: ui/annotations-sidebar.slint:2126
+msgctxt "AnnotationsSidebar"
+msgid "DATABASE"
+msgstr "ฐานข้อมูล"
+
+#: ui/annotations-sidebar.slint:2150
+msgctxt "AnnotationsSidebar"
+msgid "Database file"
+msgstr "ไฟล์ฐานข้อมูล"
+
+#. Translators: {} is the path of the old database file.
+#: ui/annotations-sidebar.slint:2167
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Annotations made with eov before 1.0 are in {}. Bring them into this "
+"database (the old file is not changed):"
+msgstr ""
+"แอนโนเทชันที่สร้างด้วย eov ก่อนเวอร์ชัน 1.0 อยู่ใน {} นำเข้ามาในฐานข้อมูลนี้ "
+"(ไฟล์เดิมจะไม่ถูกเปลี่ยนแปลง):"
+
+#: ui/annotations-sidebar.slint:2179
+msgctxt "AnnotationsSidebar"
+msgid "Bring them in"
+msgstr "นำเข้ามา"
+
+#: ui/annotations-sidebar.slint:2195
+msgctxt "AnnotationsSidebar"
+msgid "OTHER SLIDES"
+msgstr "สไลด์อื่น"
+
+#. Translators: a button that lists the other slides in the database.
+#: ui/annotations-sidebar.slint:2202
+msgctxt "AnnotationsSidebar"
+msgid "List"
+msgstr "แสดงรายการ"
+
+#. Translators: a button: attach the annotations of this slide to the open
+#. slide.
+#: ui/annotations-sidebar.slint:2236
+msgctxt "AnnotationsSidebar"
+msgid "Attach"
+msgstr "แนบ"
+
+#: ui/annotations-sidebar.slint:2258
+msgctxt "AnnotationsSidebar"
+msgid "AUTHOR AND EXPORTS"
+msgstr "ผู้สร้างและการส่งออก"
+
+#: ui/annotations-sidebar.slint:2265 ui/annotations-sidebar.slint:2273
+msgctxt "AnnotationsSidebar"
+msgid "Author"
+msgstr "ผู้สร้าง"
+
+#: ui/annotations-sidebar.slint:2272
+msgctxt "AnnotationsSidebar"
+msgid "Your name or initials"
+msgstr "ชื่อหรืออักษรย่อของคุณ"
+
+#: ui/annotations-sidebar.slint:2284 ui/annotations-sidebar.slint:2291
+msgctxt "AnnotationsSidebar"
+msgid "Organization"
+msgstr "องค์กร"
+
+#: ui/annotations-sidebar.slint:2302 ui/annotations-sidebar.slint:2309
+msgctxt "AnnotationsSidebar"
+msgid "Project"
+msgstr "โครงการ"
+
+#: ui/annotations-sidebar.slint:2320 ui/annotations-sidebar.slint:2328
+msgctxt "AnnotationsSidebar"
+msgid "License"
+msgstr "สัญญาอนุญาต"
+
+#: ui/annotations-sidebar.slint:2327
+msgctxt "AnnotationsSidebar"
+msgid "e.g. CC-BY-4.0"
+msgstr "เช่น CC-BY-4.0"
+
+#: ui/annotations-sidebar.slint:2336
+msgctxt "AnnotationsSidebar"
+msgid "Include the slide's file name in exports"
+msgstr "ใส่ชื่อไฟล์ของสไลด์ในไฟล์ที่ส่งออก"
+
+#: ui/annotations-sidebar.slint:2346
+msgctxt "AnnotationsSidebar"
+msgid "DISPLAY"
+msgstr "การแสดงผล"
+
+#: ui/annotations-sidebar.slint:2350
+msgctxt "AnnotationsSidebar"
+msgid "Show names on the slide"
+msgstr "แสดงชื่อบนสไลด์"
+
+#: ui/annotations-sidebar.slint:2361 ui/annotations-sidebar.slint:2369
+msgctxt "AnnotationsSidebar"
+msgid "Point size"
+msgstr "ขนาดจุด"
+
+#: ui/annotations-sidebar.slint:2380 ui/annotations-sidebar.slint:2386
+msgctxt "AnnotationsSidebar"
+msgid "Fill opacity"
+msgstr "ความทึบของสีพื้น"
+
+#. Translators: S is the brush tool's key.
+#: ui/annotations-sidebar.slint:2397
+msgctxt "AnnotationsSidebar"
+msgid "BRUSH (S)"
+msgstr "แปรง (S)"
+
+#. Translators: the size of the brush.
+#: ui/annotations-sidebar.slint:2405
+msgctxt "AnnotationsSidebar"
+msgid "Size"
+msgstr "ขนาด"
+
+#: ui/annotations-sidebar.slint:2413
+msgctxt "AnnotationsSidebar"
+msgid "Brush size"
+msgstr "ขนาดแปรง"
+
+#: ui/annotations-sidebar.slint:2429
+msgctxt "AnnotationsSidebar"
+msgid "Erase from the selected region"
+msgstr "ลบออกจากบริเวณที่เลือก"
+
+#: ui/annotations-sidebar.slint:2437
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Paint over a selected region to extend it, elsewhere to make a new one. Hold "
+"Alt to erase; [ and ] change the size."
+msgstr ""
+"ระบายทับบริเวณที่เลือกเพื่อขยาย หรือระบายที่อื่นเพื่อสร้างบริเวณใหม่ กด Alt ค้างไว้เพื่อลบ "
+"[ และ ] เพื่อเปลี่ยนขนาด"
+
+#: ui/annotations-sidebar.slint:2557
+msgctxt "AnnotationsSidebar"
+msgid "Colours"
+msgstr "สี"
+
+#: ui/import-dialog.slint:117 ui/import-dialog.slint:124
+msgctxt "ImportDialog"
+msgid "Import annotations"
+msgstr "นำเข้าแอนโนเทชัน"
+
+#: ui/import-dialog.slint:186
+msgctxt "ImportDialog"
+msgid "NOTES"
+msgstr "หมายเหตุ"
+
+#: ui/import-dialog.slint:214
+msgctxt "ImportDialog"
+msgid "Add to the existing layers"
+msgstr "เพิ่มลงในเลเยอร์ที่มีอยู่"
+
+#: ui/import-dialog.slint:215
+msgctxt "ImportDialog"
+msgid "Imported annotations join the layer with the same name."
+msgstr "แอนโนเทชันที่นำเข้าจะรวมเข้ากับเลเยอร์ที่มีชื่อเดียวกัน"
+
+#: ui/import-dialog.slint:223
+msgctxt "ImportDialog"
+msgid "Replace the existing layers"
+msgstr "แทนที่เลเยอร์ที่มีอยู่"
+
+#: ui/import-dialog.slint:224
+msgctxt "ImportDialog"
+msgid "The existing layers are deleted (this can be undone)."
+msgstr "เลเยอร์ที่มีอยู่จะถูกลบ (เลิกทำได้)"
+
+#: ui/import-dialog.slint:232
+msgctxt "ImportDialog"
+msgid "Keep both"
+msgstr "เก็บไว้ทั้งสองชุด"
+
+#. Translators: "Tumour" is only an example of a layer name from the imported
+#. file: translate it, and keep the " (2)" that eov adds.
+#: ui/import-dialog.slint:234
+msgctxt "ImportDialog"
+msgid "Imported layers get a new name, such as \"Tumour (2)\"."
+msgstr "เลเยอร์ที่นำเข้าจะได้ชื่อใหม่ เช่น “Tumour (2)”"
+
+#: ui/import-dialog.slint:243
+msgctxt "ImportDialog"
+msgid "The import is one step: Ctrl+Z (⌘Z) removes everything it added."
+msgstr "การนำเข้าเป็นขั้นตอนเดียว: Ctrl+Z (⌘Z) จะเอาทุกอย่างที่นำเข้ามาออก"
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Cancel"
+msgstr "ยกเลิก"
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Close"
+msgstr "ปิด"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import"
+msgstr "นำเข้า"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import anyway"
+msgstr "นำเข้าต่อไป"
+
+#: ui/widgets.slint:655
+msgctxt "Swatch"
+msgid "Change colour"
+msgstr "เปลี่ยนสี"
+
+#: ui/widgets.slint:694
+msgctxt "KeyField"
+msgid "Hotkey"
+msgstr "ปุ่มลัด"
+
+#: ui/widgets.slint:696
+msgctxt "KeyField"
+msgid "Click, then press a key. Backspace removes the hotkey."
+msgstr "คลิกแล้วกดแป้นที่ต้องการ กด Backspace เพื่อเอาปุ่มลัดออก"

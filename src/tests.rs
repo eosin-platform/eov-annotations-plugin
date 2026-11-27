@@ -634,10 +634,7 @@ fn geojson_imports_are_validated_confirmed_atomic_and_undoable() {
     answer_dialog(&h, &path);
     let (modal_id, props) = modal(&h).expect("the import dialog");
     assert!(
-        props["summary"]
-            .as_str()
-            .unwrap()
-            .contains("3 annotation(s)"),
+        props["summary"].as_str().unwrap().contains("3 annotations"),
         "{props:?}"
     );
     assert!(
@@ -756,7 +753,7 @@ fn exports_are_written_atomically_without_paths() {
     assert_eq!(csv.lines().count(), 3);
     // 100 px at 0.25 µm/px: 625 µm².
     assert!(csv.contains("625.0000"), "{csv}");
-    assert!(notified(&h, "Exported 2 annotation(s)"));
+    assert!(notified(&h, "Exported 2 annotations"));
     // Re-importing our own export recognises the slide.
     callback(&h, &sidebar, "menu", vec![json!("import")]);
     answer_dialog(&h, &dir.join("out.json"));
@@ -771,10 +768,7 @@ fn exports_are_written_atomically_without_paths() {
         answer_dialog(&h, &dir.join(name));
         let (modal_id, props) = modal(&h).unwrap();
         assert!(
-            props["summary"]
-                .as_str()
-                .unwrap()
-                .contains("2 annotation(s)"),
+            props["summary"].as_str().unwrap().contains("2 annotations"),
             "{name}: {props:?}"
         );
         h.ui_callback(&modal_id, "import-cancel", vec![]).unwrap();
@@ -1000,27 +994,34 @@ fn classes_hotkeys_and_counting() {
     // A key eov uses is refused here already...
     callback(&h, &sidebar, "class-hotkey", vec![json!(id), json!("f")]);
     assert!(notified(&h, "eov already uses"));
-    // ...and one eov refuses is shown with the class.
-    h.send(HostEvent::RegistrationRefused {
-        what: "hotkey".into(),
-        id: hotkey.clone(),
-        reason: "another plugin uses Q".into(),
-    })
-    .unwrap();
-    settle(&h);
-    let row = prop(&h, &sidebar, "classes")
-        .as_array()
-        .unwrap()
-        .iter()
-        .find(|c| c["id"] == json!(id))
-        .unwrap()
-        .clone();
-    assert!(
-        row["hotkey-note"]
-            .as_str()
+    // ...and one eov refuses is shown with the class, in eov's words as it
+    // shows them (its English ones from eov before 1.1).
+    let note = |h: &H| {
+        prop(h, &sidebar, "classes")
+            .as_array()
             .unwrap()
-            .contains("another plugin uses Q")
-    );
+            .iter()
+            .find(|c| c["id"] == json!(id))
+            .and_then(|c| c["hotkey-note"].as_str().map(str::to_string))
+            .unwrap()
+    };
+    for (shown_reason, note_says) in [
+        (
+            Some("eov's own words for another plugin's Q"),
+            "eov's own words for another plugin's Q",
+        ),
+        (None, "another plugin uses Q"),
+    ] {
+        h.send(HostEvent::RegistrationRefused {
+            what: "hotkey".into(),
+            id: hotkey.clone(),
+            reason: "another plugin uses Q".into(),
+            shown_reason: shown_reason.map(str::to_string),
+        })
+        .unwrap();
+        settle(&h);
+        assert_eq!(note(&h), format!("eov refused the hotkey: {note_says}"));
+    }
     // Choosing another key clears it and registers that one.
     callback(&h, &sidebar, "class-hotkey", vec![json!(id), json!("k")]);
     assert_eq!(h.state().hotkeys[&hotkey].hotkey.key, "k");
@@ -1101,6 +1102,12 @@ fn hpf_fields_have_the_configured_size_and_the_reticle_follows_the_pointer() {
     pointer(&h, PointerKind::Move, [5000.0, 4000.0], [100.0, 100.0]);
     let reticle = h.state().objects("hpf.1");
     assert_eq!(reticle.len(), 1);
+    // Labelled with what it would count, also in images (in English there).
+    assert_eq!(
+        reticle[0].label.as_deref(),
+        Some("1 HPF · 0.2376 mm² · 0 points")
+    );
+    assert_eq!(reticle[0].export_label, reticle[0].label);
     // 0.2376 mm² → radius 275 µm → 1100 px at 0.25 µm/px.
     let Shape::Ellipse { cx, rx, .. } = reticle[0].shape else {
         panic!()
@@ -1164,6 +1171,22 @@ fn hpf_fields_have_the_configured_size_and_the_reticle_follows_the_pointer() {
     };
     assert_eq!(cx, 3500.0);
     assert!((rx - 1100.0).abs() < 1.0);
+    // Counting inside the selected fields (each number worded on its own).
+    let selected: Vec<ObjectRef> = objects(&h, 1)
+        .iter()
+        .map(|(layer, object)| reference(layer, object))
+        .collect();
+    h.send(HostEvent::SelectionChanged { objects: selected })
+        .unwrap();
+    let sidebar = open_sidebar(&h);
+    let scope = prop(&h, &sidebar, "count-scope");
+    assert!(
+        scope
+            .as_str()
+            .unwrap()
+            .starts_with("Inside 2 selected regions (2 HPF fields): "),
+        "{scope}"
+    );
     // The tool claims no keys: eov's shortcuts, the other tools' keys,
     // class hotkeys and Escape keep working while it is active, and a stray
     // key event does nothing.
@@ -1631,7 +1654,12 @@ fn the_database_from_before_1_0_is_offered_once_from_the_legacy_folder() {
             .is_empty()
     );
     confirm(&h);
-    assert!(notified(&h, "Merged 1 annotation(s)"));
+    // Each number is worded on its own.
+    assert!(
+        notified(&h, "Merged 1 annotation in 1 layer (1 new slide)."),
+        "{:?}",
+        notifications(&h)
+    );
     open(&h, file.clone());
     assert_eq!(objects(&h, 1).len(), 1);
     let sidebar = open_sidebar(&h);
@@ -1972,10 +2000,7 @@ fn ndpa_imports_are_placed_with_the_ndpi_offsets_or_explain_why_not() {
     let (modal_id, props) = modal(&h).expect("the import dialog");
     assert_eq!(props["blocked"], "");
     assert!(
-        props["summary"]
-            .as_str()
-            .unwrap()
-            .contains("2 annotation(s)"),
+        props["summary"].as_str().unwrap().contains("2 annotations"),
         "{props:?}"
     );
     assert!(props["match-text"].as_str().unwrap().contains("offsets"));
@@ -2254,7 +2279,7 @@ fn blinded_copies_and_reader_comparison() {
     assert_eq!(doc["metadata"]["blinded"], json!(true));
     assert_eq!(doc["slide"]["identity"], "eov-slide-1:a");
     assert!(text.contains("Tumour") && text.contains("Mitosis"));
-    assert!(notified(&h, "Exported 5 annotation(s)"));
+    assert!(notified(&h, "Exported 5 annotations"));
     assert!(text.contains("\"role\": \"fields\""));
 
     // Compared with the copy itself, the readers agree completely.
@@ -2383,7 +2408,7 @@ fn dicom_exports_refer_to_dicom_slides_and_come_back_in_one_undo_step() {
     assert!(!text.contains(&full_path), "the slide path leaks");
     assert!(!text.contains("wsi.svs"), "the file name leaks by default");
     assert!(
-        notified(&h, "Exported 3 annotation(s) to wsi.annotations.dcm."),
+        notified(&h, "Exported 3 annotations to wsi.annotations.dcm."),
         "{:?}",
         notifications(&h)
     );
@@ -2426,7 +2451,7 @@ fn dicom_exports_refer_to_dicom_slides_and_come_back_in_one_undo_step() {
     let summary = props["summary"].as_str().unwrap();
     assert_eq!(
         summary,
-        "DICOM bulk annotations · 3 annotation(s) in 1 layer(s) · 1 class(es)"
+        "DICOM bulk annotations · 3 annotations in 1 layer · 1 class"
     );
     assert_eq!(props["mismatch"], json!(true), "made for the other slide");
     assert!(objects(&h, 2).is_empty(), "nothing before confirmation");
@@ -2523,4 +2548,167 @@ fn dicom_annotations_of_other_programs_are_matched_by_the_image_they_refer_to() 
     assert!(notified(&h, "Could not import mitoses.dcm"));
     assert!(notified(&h, "3D annotations"), "{:?}", notifications(&h));
     assert_eq!(objects(&h, 1).len(), 2);
+}
+
+/// The `log` calls the plugin made: (level, message).
+fn logs(h: &H) -> Vec<(String, String)> {
+    h.calls_to(methods::LOG)
+        .iter()
+        .map(|log| {
+            (
+                log["level"].as_str().unwrap_or_default().to_string(),
+                log["message"].as_str().unwrap_or_default().to_string(),
+            )
+        })
+        .collect()
+}
+
+#[test]
+fn problems_are_told_once_in_the_users_words_and_logged_in_english() {
+    let (h, dir) = fresh();
+    open(&h, info(1, "a", &dir));
+    let sidebar = open_sidebar(&h);
+    let told = |h: &H, text: &str| notifications(h).iter().filter(|n| n.contains(text)).count();
+    // Settings that cannot be saved: the user is told once (they are saved
+    // at most changes), and again after they could be saved in between.
+    h.state().unsupported.push(methods::SETTINGS_SET.into());
+    callback(&h, &sidebar, "tab-changed", vec![json!(1)]);
+    callback(&h, &sidebar, "tab-changed", vec![json!(2)]);
+    let warning = "Warning: Could not save the annotation settings unknown method 'settings.set'";
+    assert_eq!(told(&h, warning), 1, "{:?}", notifications(&h));
+    h.state().unsupported.clear();
+    callback(&h, &sidebar, "tab-changed", vec![json!(1)]);
+    h.state().unsupported.push(methods::SETTINGS_SET.into());
+    callback(&h, &sidebar, "tab-changed", vec![json!(0)]);
+    assert_eq!(told(&h, warning), 2);
+    // A view that cannot be moved to an annotation.
+    h.state().unsupported.push(methods::VIEW_FRAME.into());
+    draw(&h, POINT, 1, Shape::Point { x: 10.0, y: 10.0 });
+    let id = objects(&h, 1)[0].1.object_id.clone();
+    callback(
+        &h,
+        &sidebar,
+        "row-double-clicked",
+        vec![json!(id), json!("")],
+    );
+    assert_eq!(
+        told(
+            &h,
+            "Warning: Could not zoom to the annotation unknown method"
+        ),
+        1
+    );
+    // The log has each failure in English, and nothing goes through
+    // eov's warnings and errors, whose text the user would see as it is.
+    let logs = logs(&h);
+    assert!(
+        logs.iter()
+            .all(|(level, _)| level != "warn" && level != "error"),
+        "{logs:?}"
+    );
+    let logged = |text: &str| logs.iter().filter(|(_, m)| m.starts_with(text)).count();
+    assert_eq!(
+        logged("cannot save the annotation settings: unknown method"),
+        3
+    );
+    assert_eq!(logged("cannot frame the annotation: unknown method"), 1);
+}
+
+#[test]
+fn a_failed_load_is_told_once_not_at_each_retry_and_logged_in_english() {
+    let init = test_init("annotations");
+    let db = PathBuf::from(&init.data_dir).join("annotations.db");
+    let dir = PathBuf::from(&init.cache_dir);
+    let h = start(init);
+    settle(&h);
+    // The database is open, but the slides cannot be read.
+    let rename = |from: &str, to: &str| {
+        rusqlite::Connection::open(&db)
+            .unwrap()
+            .execute_batch(&format!("ALTER TABLE {from} RENAME TO {to}"))
+            .unwrap();
+    };
+    rename("slides", "gone");
+    open(&h, info(1, "a", &dir));
+    let told = |h: &H| {
+        notifications(h)
+            .iter()
+            .filter(|n| n.starts_with("Warning: Could not load this slide's annotations: "))
+            .count()
+    };
+    let failures = |h: &H| {
+        logs(h)
+            .iter()
+            .filter(|(level, m)| {
+                level == "info" && m.starts_with("cannot load the annotations of this slide: ")
+            })
+            .count()
+    };
+    assert_eq!((told(&h), failures(&h)), (1, 1), "{:?}", notifications(&h));
+    let sidebar = open_sidebar(&h);
+    assert!(
+        prop(&h, &sidebar, "banner")
+            .as_str()
+            .unwrap()
+            .starts_with("Could not load this slide's annotations: ")
+    );
+    // Tried again when the slide is shown after a while: it fails the same
+    // way, which the user is not told again.
+    std::thread::sleep(std::time::Duration::from_millis(2100));
+    activate(&h, 1);
+    assert_eq!((told(&h), failures(&h)), (1, 2));
+    // Retry, pressed by the user, is answered.
+    callback(&h, &sidebar, "retry", vec![]);
+    assert_eq!((told(&h), failures(&h)), (2, 3));
+    // Once the slides can be read, the next retry loads them.
+    rename("gone", "slides");
+    callback(&h, &sidebar, "retry", vec![]);
+    assert_eq!(prop(&h, &sidebar, "banner"), "");
+    assert_eq!((told(&h), failures(&h)), (2, 3));
+    assert!(
+        logs(&h)
+            .iter()
+            .all(|(level, _)| level != "warn" && level != "error")
+    );
+}
+
+#[test]
+fn each_number_in_a_text_is_worded_on_its_own() {
+    // So that each noun can take its number's plural form when translated
+    // (and in English: one annotation is not "1 annotations").
+    let note = |ours, theirs| {
+        crate::state::Comparison {
+            file_id: 1,
+            path: PathBuf::from("b.geojson"),
+            name: "b.geojson".into(),
+            counts: (ours, theirs),
+            radius: "10 µm".into(),
+            mismatch: None,
+            rows: Vec::new(),
+        }
+        .note()
+    };
+    assert!(note(1, 3).starts_with(
+        "This slide's visible layers (1 annotation) against the 3 annotations in b.geojson, "
+    ));
+    assert!(note(5, 1).starts_with(
+        "This slide's visible layers (5 annotations) against the 1 annotation in b.geojson, "
+    ));
+    let upgraded = |slides, annotations, skipped| {
+        crate::db::DbNote::Upgraded {
+            slides,
+            annotations,
+            skipped,
+        }
+        .text()
+    };
+    assert_eq!(
+        upgraded(1, 5, 0),
+        "Upgraded the annotation database from the pre-1.0 format: 1 slide, 5 annotations."
+    );
+    assert_eq!(
+        upgraded(2, 1, 3),
+        "Upgraded the annotation database from the pre-1.0 format: 2 slides, 1 annotation, 3 unreadable annotations skipped."
+    );
+    assert_eq!(sidebar::in_layers(1), "in 1 layer");
 }

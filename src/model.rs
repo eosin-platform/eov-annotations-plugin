@@ -4,6 +4,7 @@
 //! down, origin at the top-left corner of the level-0 canvas (the convention
 //! of OpenSlide and of the eov plugin API).
 
+use eov_plugin_api::i18n::tr;
 use eov_plugin_api::protocol::{Rgba, Shape};
 use serde::{Deserialize, Serialize};
 
@@ -42,11 +43,12 @@ impl Status {
         }
     }
 
-    pub fn label(self) -> &'static str {
+    /// The status as the interface names it.
+    pub fn label(self) -> String {
         match self {
-            Status::Draft => "Draft",
-            Status::Verified => "Verified",
-            Status::Rejected => "Rejected",
+            Status::Draft => tr!("Review status" => "Draft"),
+            Status::Verified => tr!("Review status" => "Verified"),
+            Status::Rejected => tr!("Review status" => "Rejected"),
         }
     }
 
@@ -97,6 +99,7 @@ impl GeometryKind {
         }
     }
 
+    /// The kind's name in English, as exports have it.
     pub fn label(self) -> &'static str {
         match self {
             GeometryKind::Point => "Point",
@@ -106,6 +109,19 @@ impl GeometryKind {
             GeometryKind::Rectangle => "Rectangle",
             GeometryKind::Ellipse => "Ellipse",
             GeometryKind::Text => "Text",
+        }
+    }
+
+    /// The kind's name as the interface shows it.
+    pub fn shown_label(self) -> String {
+        match self {
+            GeometryKind::Point => tr!("Annotation kind" => "Point"),
+            GeometryKind::Polyline => tr!("Annotation kind" => "Line"),
+            GeometryKind::Arrow => tr!("Annotation kind" => "Arrow"),
+            GeometryKind::Polygon => tr!("Annotation kind" => "Polygon"),
+            GeometryKind::Rectangle => tr!("Annotation kind" => "Rectangle"),
+            GeometryKind::Ellipse => tr!("Annotation kind" => "Ellipse"),
+            GeometryKind::Text => tr!("Annotation kind" => "Text"),
         }
     }
 
@@ -330,7 +346,7 @@ impl Geometry {
                 x: *x,
                 y: *y,
                 text: if text.trim().is_empty() {
-                    "Text".to_string()
+                    GeometryKind::Text.shown_label()
                 } else {
                     text.to_string()
                 },
@@ -500,6 +516,8 @@ impl LayerRole {
         }
     }
 
+    /// The name of a new layer: data, in English whatever the language of
+    /// the interface (imports match layers by name).
     pub fn default_name(self) -> &'static str {
         match self {
             LayerRole::Normal => "Annotations",
@@ -646,9 +664,19 @@ pub struct Comment {
 }
 
 impl Annotation {
-    /// The label shown in lists: its name, else its kind.
+    /// Its name, else its kind, in English (as exports have it).
     pub fn display_name(&self) -> String {
         self.name_or_kind().to_string()
+    }
+
+    /// The label shown in lists: its name, else its kind as the interface
+    /// names it.
+    pub fn shown_name(&self) -> String {
+        if self.name.trim().is_empty() {
+            self.geometry.kind().shown_label()
+        } else {
+            self.name.clone()
+        }
     }
 
     /// [`Self::display_name`] without copying it.
@@ -698,9 +726,82 @@ pub fn new_id() -> String {
 // Validation
 // ---------------------------------------------------------------------------
 
+/// What a name or text is, for the messages of [`clean_name`] and
+/// [`clean_text`].
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Field {
+    /// An annotation's name.
+    Name,
+    LayerName,
+    ClassName,
+    Author,
+    /// A text of the export settings (author, organization, …).
+    Setting,
+    /// A layer's notes.
+    Notes,
+    Description,
+    Comment,
+}
+
+impl Field {
+    /// Why an empty text is refused (only names are checked for that).
+    fn empty(self) -> String {
+        match self {
+            Field::LayerName => tr!("The layer name cannot be empty."),
+            Field::ClassName => tr!("The class name cannot be empty."),
+            _ => tr!("The name cannot be empty."),
+        }
+    }
+
+    fn too_long(self, count: usize, limit: usize) -> String {
+        match self {
+            Field::Name => tr!(
+                "The name is {n} characters long; the limit is {limit}."
+                    | "The name is {n} characters long; the limit is {limit}." % count,
+                limit = limit
+            ),
+            Field::LayerName => tr!(
+                "The layer name is {n} characters long; the limit is {limit}."
+                    | "The layer name is {n} characters long; the limit is {limit}." % count,
+                limit = limit
+            ),
+            Field::ClassName => tr!(
+                "The class name is {n} characters long; the limit is {limit}."
+                    | "The class name is {n} characters long; the limit is {limit}." % count,
+                limit = limit
+            ),
+            Field::Author => tr!(
+                "The author is {n} characters long; the limit is {limit}."
+                    | "The author is {n} characters long; the limit is {limit}." % count,
+                limit = limit
+            ),
+            Field::Setting => tr!(
+                "The setting is {n} characters long; the limit is {limit}."
+                    | "The setting is {n} characters long; the limit is {limit}." % count,
+                limit = limit
+            ),
+            Field::Notes => tr!(
+                "The notes are {n} characters long; the limit is {limit}."
+                    | "The notes are {n} characters long; the limit is {limit}." % count,
+                limit = limit
+            ),
+            Field::Description => tr!(
+                "The description is {n} characters long; the limit is {limit}."
+                    | "The description is {n} characters long; the limit is {limit}." % count,
+                limit = limit
+            ),
+            Field::Comment => tr!(
+                "The comment is {n} characters long; the limit is {limit}."
+                    | "The comment is {n} characters long; the limit is {limit}." % count,
+                limit = limit
+            ),
+        }
+    }
+}
+
 /// Trims a name and checks its length. Control characters (including line
 /// breaks) are replaced by spaces.
-pub fn clean_name(text: &str, what: &str, allow_empty: bool) -> Result<String, String> {
+pub fn clean_name(text: &str, what: Field, allow_empty: bool) -> Result<String, String> {
     let cleaned: String = text
         .chars()
         .map(|c| if c.is_control() { ' ' } else { c })
@@ -708,28 +809,24 @@ pub fn clean_name(text: &str, what: &str, allow_empty: bool) -> Result<String, S
         .trim()
         .to_string();
     if cleaned.is_empty() && !allow_empty {
-        return Err(format!("The {what} cannot be empty."));
+        return Err(what.empty());
     }
     let count = cleaned.chars().count();
     if count > MAX_NAME_CHARS {
-        return Err(format!(
-            "The {what} is {count} characters long; the limit is {MAX_NAME_CHARS}."
-        ));
+        return Err(what.too_long(count, MAX_NAME_CHARS));
     }
     Ok(cleaned)
 }
 
 /// Checks a multi-line text (description, notes).
-pub fn clean_text(text: &str, what: &str) -> Result<String, String> {
+pub fn clean_text(text: &str, what: Field) -> Result<String, String> {
     let cleaned: String = text
         .chars()
         .filter(|c| !c.is_control() || *c == '\n' || *c == '\t')
         .collect();
     let count = cleaned.chars().count();
     if count > MAX_TEXT_CHARS {
-        return Err(format!(
-            "The {what} is {count} characters long; the limit is {MAX_TEXT_CHARS}."
-        ));
+        return Err(what.too_long(count, MAX_TEXT_CHARS));
     }
     Ok(cleaned)
 }
@@ -737,9 +834,9 @@ pub fn clean_text(text: &str, what: &str) -> Result<String, String> {
 /// Checks annotation properties.
 pub fn clean_properties(properties: &[(String, String)]) -> Result<Vec<(String, String)>, String> {
     if properties.len() > MAX_PROPERTIES {
-        return Err(format!(
-            "An annotation can have at most {MAX_PROPERTIES} properties."
-        ));
+        return Err(tr!("An annotation can have at most {n} properties."
+            | "An annotation can have at most {n} properties."
+                % MAX_PROPERTIES));
     }
     properties
         .iter()
@@ -751,14 +848,14 @@ pub fn clean_properties(properties: &[(String, String)]) -> Result<Vec<(String, 
                 .filter(|c| !c.is_control() || *c == '\n')
                 .collect();
             if key.chars().count() > MAX_PROPERTY_KEY_CHARS {
-                return Err(format!(
-                    "Property names are limited to {MAX_PROPERTY_KEY_CHARS} characters."
-                ));
+                return Err(tr!("Property names are limited to {n} characters."
+                    | "Property names are limited to {n} characters."
+                        % MAX_PROPERTY_KEY_CHARS));
             }
             if value.chars().count() > MAX_PROPERTY_VALUE_CHARS {
-                return Err(format!(
-                    "Property values are limited to {MAX_PROPERTY_VALUE_CHARS} characters."
-                ));
+                return Err(tr!("Property values are limited to {n} characters."
+                    | "Property values are limited to {n} characters."
+                        % MAX_PROPERTY_VALUE_CHARS));
             }
             Ok((key, value))
         })
@@ -783,19 +880,21 @@ pub fn clean_hotkey(text: &str, taken: &[&str]) -> Result<Option<String>, String
     let key = eov_plugin_api::protocol::key_name(text);
     let mut chars = key.chars();
     let (Some(c), None) = (chars.next(), chars.next()) else {
-        return Err(format!(
-            "A hotkey is a single character (a letter or a symbol), not {key}."
+        return Err(tr!(
+            "A hotkey is a single character (a letter or a symbol), not {}.",
+            key
         ));
     };
     if c.is_control() || c.is_whitespace() || ('\u{E000}'..='\u{F8FF}').contains(&c) {
-        return Err("A hotkey must be a visible character.".to_string());
+        return Err(tr!("A hotkey must be a visible character."));
     }
     if HOST_PLAIN_KEYS.contains(&key.as_str()) {
-        return Err(format!("eov already uses the '{key}' key."));
+        return Err(tr!("eov already uses the '{}' key.", key));
     }
     if taken.contains(&key.as_str()) {
-        return Err(format!(
-            "'{key}' is already used by an annotation tool or class."
+        return Err(tr!(
+            "'{}' is already used by an annotation tool or class.",
+            key
         ));
     }
     Ok(Some(key))
@@ -838,12 +937,15 @@ mod tests {
 
     #[test]
     fn names_are_trimmed_and_limited() {
-        assert_eq!(clean_name("  Tumour\n", "name", false).unwrap(), "Tumour");
-        assert!(clean_name("   ", "name", false).is_err());
-        assert_eq!(clean_name("", "name", true).unwrap(), "");
-        assert!(clean_name(&"x".repeat(MAX_NAME_CHARS + 1), "name", false).is_err());
+        assert_eq!(
+            clean_name("  Tumour\n", Field::Name, false).unwrap(),
+            "Tumour"
+        );
+        assert!(clean_name("   ", Field::Name, false).is_err());
+        assert_eq!(clean_name("", Field::Name, true).unwrap(), "");
+        assert!(clean_name(&"x".repeat(MAX_NAME_CHARS + 1), Field::Name, false).is_err());
         // Counted in characters, not bytes.
-        assert!(clean_name(&"é".repeat(MAX_NAME_CHARS), "name", false).is_ok());
+        assert!(clean_name(&"é".repeat(MAX_NAME_CHARS), Field::Name, false).is_ok());
     }
 
     #[test]

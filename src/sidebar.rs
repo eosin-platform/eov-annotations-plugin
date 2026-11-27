@@ -10,19 +10,22 @@
 //!   pushed back with layer selection; no magic property names.
 
 use crate::actions;
-use crate::core::Core;
+use crate::compare::Subject;
+use crate::core::{Core, label};
 use crate::counting;
 use crate::measure::{self, Calibration};
 use crate::model::{
-    Annotation, Class, Color, LayerRole, Status, clean_name, clean_properties, clean_text,
+    Annotation, Class, Color, Field, GeometryKind, LayerRole, Status, clean_name, clean_properties,
+    clean_text,
 };
 use crate::state::{DbStatus, ExportFormat, Load, Pending, State};
 use crate::stats::FieldSize;
 use crate::transfer;
+use eov_plugin_api::i18n;
 use eov_plugin_api::prelude::*;
 use serde::Serialize;
 use std::cmp::Ordering;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 
 pub const SIDEBAR_UI: &str = "ui/annotations-sidebar.slint";
@@ -122,10 +125,53 @@ impl Default for SidebarView {
     }
 }
 
+/// Names the list shows for many rows, in the interface's language, worked
+/// out once per refresh rather than once per row.
+struct Names {
+    kinds: HashMap<GeometryKind, String>,
+    unclassified: String,
+}
+
+impl Names {
+    fn new() -> Self {
+        let kinds = [
+            GeometryKind::Point,
+            GeometryKind::Polyline,
+            GeometryKind::Arrow,
+            GeometryKind::Polygon,
+            GeometryKind::Rectangle,
+            GeometryKind::Ellipse,
+            GeometryKind::Text,
+        ]
+        .into_iter()
+        .map(|kind| (kind, kind.shown_label()))
+        .collect();
+        Self {
+            kinds,
+            unclassified: tr!("Unclassified"),
+        }
+    }
+
+    fn kind(&self, kind: GeometryKind) -> &str {
+        self.kinds.get(&kind).map_or(kind.label(), String::as_str)
+    }
+
+    /// An annotation's name, else its kind (see [`Annotation::shown_name`]).
+    fn shown<'a>(&'a self, a: &'a Annotation) -> &'a str {
+        if a.name.trim().is_empty() {
+            self.kind(a.geometry.kind())
+        } else {
+            &a.name
+        }
+    }
+}
+
 /// An annotation as the list orders it.
 struct Listed<'a> {
     annotation: &'a Arc<Annotation>,
     class: Option<&'a Class>,
+    /// What the list calls it (worked out once, not per comparison).
+    name: &'a str,
     /// Where it is on the slide (worked out once, not per comparison).
     anchor: [f64; 2],
 }
@@ -135,7 +181,7 @@ struct Listed<'a> {
 /// left to right), then by age and id. The order never depends on chance,
 /// such as the random ids that break ties in creation time.
 fn list_order(a: &Listed, b: &Listed) -> Ordering {
-    let (a_name, b_name) = (a.annotation.name_or_kind(), b.annotation.name_or_kind());
+    let (a_name, b_name) = (a.name, b.name);
     let a_class = a.class.map_or("", |c| c.name.as_str());
     let b_class = b.class.map_or("", |c| c.name.as_str());
     natural_cmp(a_name, b_name)
@@ -218,8 +264,9 @@ fn toggle_collapsed(core: &Arc<Core>, layer_id: &str) {
                 && let Err(e) = db.set_collapsed_layers(slide_id, &collapsed)
                 && e != crate::db::DbError::ReadOnly
             {
+                // A convenience lost; for the log.
                 core.host
-                    .warn(format!("cannot remember the collapsed layers: {e}"));
+                    .info(format!("cannot remember the collapsed layers: {e}"));
             }
         });
     }
@@ -304,32 +351,39 @@ pub struct CompareRow {
 }
 
 fn compare_row(row: &crate::compare::Row, area: &dyn Fn(f64) -> String) -> CompareRow {
-    let ratio = |v: Option<f64>| v.map_or_else(|| "–".to_string(), |v| format!("{v:.2}"));
+    let ratio = |v: Option<f64>| v.map_or_else(|| "–".to_string(), |v| i18n::format_decimal(v, 2));
     let points = if row.points == (0, 0) {
         String::new()
     } else {
-        format!(
-            "Points {} vs {} · {} matched · F1 {}",
-            row.points.0,
-            row.points.1,
-            row.matched,
-            ratio(row.point_agreement())
+        tr!(
+            // Translators: this slide's points against the other reader's; F1 is the F1 score.
+            "Points {ours} vs {theirs} · {matched} matched · F1 {f1}",
+            ours = row.points.0,
+            theirs = row.points.1,
+            matched = row.matched,
+            f1 = ratio(row.point_agreement())
         )
     };
     let regions = if row.regions == (0, 0) {
         String::new()
     } else {
-        format!(
-            "Regions {} vs {} · {} vs {} · Dice {}",
-            row.regions.0,
-            row.regions.1,
-            area(row.areas.0),
-            area(row.areas.1),
-            ratio(row.dice())
+        tr!(
+            // Translators: this slide's regions and their area against the other reader's;
+            // Dice is the Dice coefficient of the areas.
+            "Regions {ours} vs {theirs} · {our_area} vs {their_area} · Dice {dice}",
+            ours = row.regions.0,
+            theirs = row.regions.1,
+            our_area = i18n::isolate(area(row.areas.0)),
+            their_area = i18n::isolate(area(row.areas.1)),
+            dice = ratio(row.dice())
         )
     };
     CompareRow {
-        name: row.name.clone(),
+        name: match row.subject {
+            Subject::Class => row.name.clone(),
+            Subject::Unclassified => tr!("Unclassified"),
+            Subject::AllRegions => tr!("All regions"),
+        },
         color: row
             .color
             .map_or_else(|| "#00000000".to_string(), |c| c.to_hex()),
@@ -359,10 +413,23 @@ fn put(map: &mut Map<String, Value>, key: &str, value: impl Serialize) {
     );
 }
 
+/// A time as the sidebar shows it ("2026-10-15 09:30 UTC"), isolated for
+/// insertion into a text: in right-to-left languages its parts keep their
+/// order (see [`i18n::isolate`]).
 fn date(ms: i64) -> String {
     let text = crate::formats::iso8601(ms);
     // 2026-10-15T09:30:00Z → 2026-10-15 09:30 UTC
-    format!("{} {} UTC", &text[..10], &text[11..16])
+    i18n::isolate(format!("{} {} UTC", &text[..10], &text[11..16]))
+}
+
+/// "in 3 layers", for the texts that count annotations and their layers
+/// ("12 annotations in 3 layers"): a text of its own, so that the
+/// layers take the plural form of their own number in every language.
+pub fn in_layers(layers: usize) -> String {
+    tr!(
+        // Translators: {layers} in texts such as "{n} annotations {layers}" ("12 annotations in 3 layers").
+        "in {n} layer" | "in {n} layers" % layers
+    )
 }
 
 /// Every sidebar property.
@@ -372,29 +439,43 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
         .active_file
         .and_then(|id| state.files.get(&id).map(|f| (id, f)));
     let slide = state.active_slide();
+    let names = Names::new();
     put(&mut p, "tab", state.settings.tab);
     put(
         &mut p,
         "slide-title",
-        file.map_or("No slide open".to_string(), |(_, f)| {
-            f.info.filename.clone()
-        }),
+        file.map_or_else(|| tr!("No slide open"), |(_, f)| f.info.filename.clone()),
     );
 
     // Banner: the most important problem.
     let (banner, level, retry) = match (&state.db, file.map(|(_, f)| &f.load)) {
-        (DbStatus::Failed { error }, _) => (format!("Annotation database unavailable: {error}"), 2, true),
-        (DbStatus::Opening, _) => ("Opening the annotation database…".to_string(), 0, false),
-        (_, Some(Load::Failed { error, .. })) => (format!("Could not load this slide's annotations: {error}"), 2, true),
-        (_, Some(Load::Pending)) => ("Loading annotations…".to_string(), 0, false),
-        (DbStatus::Ready { read_only: true, .. }, _) => (
-            "The annotation database is read-only: annotations can be viewed and exported, not edited.".to_string(),
+        (DbStatus::Failed { error }, _) => {
+            (tr!("Annotation database unavailable: {}", error), 2, true)
+        }
+        (DbStatus::Opening, _) => (tr!("Opening the annotation database…"), 0, false),
+        (_, Some(Load::Failed { error, .. })) => (
+            tr!("Could not load this slide's annotations: {}", error),
+            2,
+            true,
+        ),
+        (_, Some(Load::Pending)) => (tr!("Loading annotations…"), 0, false),
+        (
+            DbStatus::Ready {
+                read_only: true, ..
+            },
+            _,
+        ) => (
+            tr!(
+                "The annotation database is read-only: annotations can be viewed and exported, not edited."
+            ),
             1,
             false,
         ),
         _ => match slide {
             Some(s) if s.record.identity.is_none() && s.record.legacy_fingerprint.is_none() => (
-                "This slide has no stable identity; its annotations are keyed by file name and size.".to_string(),
+                tr!(
+                    "This slide has no stable identity; its annotations are keyed by file name and size."
+                ),
                 1,
                 false,
             ),
@@ -409,7 +490,7 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
     put(&mut p, "has-slide", slide.is_some());
 
     // Classes for combo boxes: "Unclassified" first.
-    let mut class_names = vec!["Unclassified".to_string()];
+    let mut class_names = vec![names.unclassified.clone()];
     class_names.extend(state.classes.iter().map(|c| c.name.clone()));
     let class_index = |id: Option<&str>| -> i32 {
         id.and_then(|id| state.classes.iter().position(|c| c.id == id))
@@ -439,17 +520,19 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
             layer_names.push(layer.name.clone());
             let count = slide.count_in(&layer.id);
             let collapsed = layer_collapsed(slide, &layer.id);
-            let role = match layer.role {
-                LayerRole::Normal => "",
-                LayerRole::Counts => " · counts",
-                LayerRole::Fields => " · HPF fields",
+            let detail = match layer.role {
+                LayerRole::Normal => count.to_string(),
+                // Translators: beside a layer of count points: the number of points.
+                LayerRole::Counts => tr!("{} · counts", count),
+                // Translators: beside the layer of HPF fields: the number of fields.
+                LayerRole::Fields => tr!("{} · HPF fields", count),
             };
             rows.push(TreeRow {
                 id: layer.id.clone(),
                 layer_id: layer.id.clone(),
                 kind: 0,
                 label: layer.name.clone(),
-                detail: format!("{count}{role}"),
+                detail,
                 color: layer.color.to_hex(),
                 icon: String::new(),
                 indent: 0,
@@ -472,11 +555,18 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                 .map(|a| (a, a.class_id.as_deref().and_then(|id| state.class(id))))
                 .filter(|(a, class)| {
                     filter.is_empty() || {
+                        // What the list shows, and the English words.
+                        let kind = a.geometry.kind();
                         let hay = format!(
-                            "{} {} {} {}",
-                            a.name_or_kind().to_lowercase(),
-                            class.map_or("unclassified".to_string(), |c| c.name.to_lowercase()),
-                            a.geometry.kind().label().to_lowercase(),
+                            "{} {} {} {} {} {}",
+                            names.shown(a).to_lowercase(),
+                            class.map_or_else(
+                                || format!("{} unclassified", names.unclassified.to_lowercase()),
+                                |c| c.name.to_lowercase()
+                            ),
+                            names.kind(kind).to_lowercase(),
+                            kind.label().to_lowercase(),
+                            a.status.label().to_lowercase(),
                             a.status.as_str()
                         );
                         hay.contains(&filter)
@@ -485,6 +575,7 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                 .map(|(annotation, class)| Listed {
                     annotation,
                     class,
+                    name: names.shown(annotation),
                     anchor: annotation.geometry.anchor(),
                 })
                 .collect();
@@ -521,8 +612,7 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                     };
                 }
                 if !a.comments.is_empty() {
-                    let n = a.comments.len();
-                    let comments = format!("{n} comment{}", if n == 1 { "" } else { "s" });
+                    let comments = tr!("{n} comment" | "{n} comments" % a.comments.len());
                     detail = if detail.is_empty() {
                         comments
                     } else {
@@ -533,7 +623,7 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                     id: a.id.clone(),
                     layer_id: layer.id.clone(),
                     kind: 1,
-                    label: a.display_name(),
+                    label: names.shown(a).to_string(),
                     detail,
                     color: color_of(state, a.class_id.as_deref(), layer.color).to_hex(),
                     icon: actions::kind_glyph(a.geometry.kind()).to_string(),
@@ -555,7 +645,9 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                 id: "more".to_string(),
                 layer_id: String::new(),
                 kind: 2,
-                label: format!("Show more ({hidden_by_limit} not shown)"),
+                label: tr!(
+                    "Show more ({n} not shown)" | "Show more ({n} not shown)" % hidden_by_limit
+                ),
                 detail: String::new(),
                 color: "#000000".to_string(),
                 icon: String::new(),
@@ -572,13 +664,14 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
             });
         }
         if !filter.is_empty() {
-            note = format!("{matched} match(es)");
+            note = tr!("{n} match" | "{n} matches" % matched);
         } else if slide.layers.is_empty() {
-            note = "No annotations yet. Pick a tool in the toolbar (P polygon, . point, C count) and draw on the slide."
-                .to_string();
+            note = tr!(
+                "No annotations yet. Pick a tool in the toolbar (P polygon, . point, C count) and draw on the slide."
+            );
         }
     } else if file.is_none() {
-        note = "Open a slide to see and draw its annotations.".to_string();
+        note = tr!("Open a slide to see and draw its annotations.");
     }
     put(&mut p, "rows", &rows);
     put(&mut p, "rows-note", note);
@@ -621,21 +714,25 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                 detail_id = first.id.clone();
                 title = format!(
                     "{} · {}",
-                    first.geometry.kind().label(),
-                    class.map_or("Unclassified", |c| c.name.as_str())
+                    names.kind(first.geometry.kind()),
+                    class.map_or(names.unclassified.as_str(), |c| c.name.as_str())
                 );
                 name = first.name.clone();
                 description = first.description.clone();
-                let by = if first.author.is_empty() {
-                    String::new()
+                meta = if first.author.is_empty() {
+                    tr!(
+                        "created {created} · edited {edited}",
+                        created = date(first.created_at),
+                        edited = date(first.updated_at)
+                    )
                 } else {
-                    format!("By {} · ", first.author)
+                    tr!(
+                        "By {author} · created {created} · edited {edited}",
+                        author = i18n::isolate(&first.author),
+                        created = date(first.created_at),
+                        edited = date(first.updated_at)
+                    )
                 };
-                meta = format!(
-                    "{by}created {} · edited {}",
-                    date(first.created_at),
-                    date(first.updated_at)
-                );
                 let calibration = Calibration::new(slide.record.mpp_x, slide.record.mpp_y);
                 let m = measure::measure(&first.geometry, &calibration);
                 measurements = measure::rows(&m, first.geometry.kind().is_line())
@@ -650,9 +747,9 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                         byline: format!(
                             "{} · {}",
                             if c.author.trim().is_empty() {
-                                "Unknown author"
+                                tr!("Unknown author")
                             } else {
-                                c.author.as_str()
+                                c.author.clone()
                             },
                             date(c.created_at)
                         ),
@@ -668,18 +765,19 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                     })
                     .collect();
                 if slide.invalid.contains(&first.id) {
-                    warning = "This outline crosses itself (it was drawn with an older version). Its area uses the \
-                               even-odd rule, like the display; Repair turns it into simple parts."
-                        .to_string();
+                    warning = tr!(
+                        "This outline crosses itself (it was drawn with an older version). Its area uses the \
+                         even-odd rule, like the display; Repair turns it into simple parts."
+                    );
                 }
             } else {
                 detail_id = format!("multi:{}", selection.join(","));
-                title = format!("{} annotations selected", chosen.len());
+                title = tr!("{n} annotation selected" | "{n} annotations selected" % chosen.len());
                 let classes: HashSet<_> = chosen.iter().map(|a| a.class_id.clone()).collect();
                 if classes.len() > 1 {
-                    meta = "Mixed classes; changes apply to all selected.".to_string();
+                    meta = tr!("Mixed classes; changes apply to all selected.");
                 } else {
-                    meta = "Changes apply to all selected.".to_string();
+                    meta = tr!("Changes apply to all selected.");
                 }
             }
         }
@@ -723,7 +821,12 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
             hotkey_note: state
                 .refused_hotkeys
                 .get(&c.id)
-                .map(|reason| format!("eov refused the hotkey: {reason}"))
+                .map(|refused| {
+                    // Translators: under a class whose key does nothing; {} is
+                    // eov's reason, a whole sentence such as "Hotkey 'q' of …
+                    // was ignored: it is a key eov already uses."
+                    tr!("eov refused the hotkey: {}", refused.shown())
+                })
                 .unwrap_or_default(),
         })
         .collect();
@@ -754,23 +857,39 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
             .map_or(0, |l| slide.count_in(&l.id)) as i32;
         let t = counting::tally_cached(state, slide, &selection);
         scope = match (t.regions, t.area_mm2) {
-            (0, _) => {
+            (0, _) => tr!(
                 "Whole slide. Select regions or HPF fields to count inside them and get densities."
-                    .to_string()
-            }
-            (n, Some(area)) => format!(
-                "Inside {n} selected region(s){}: {}{}",
-                if t.fields > 0 {
-                    format!(" ({} HPF field(s))", t.fields)
-                } else {
-                    String::new()
-                },
-                if t.approximate { "≈ " } else { "" },
-                measure::format_area_um2(area * 1_000_000.0)
             ),
-            (n, None) => format!(
-                "Inside {n} selected region(s): {} (no pixel size, so no density)",
-                measure::format_px2(t.area_px)
+            (n, Some(area)) => {
+                let area = i18n::isolate(format!(
+                    "{}{}",
+                    if t.approximate { "≈ " } else { "" },
+                    measure::format_area_um2(area * 1_000_000.0)
+                ));
+                if t.fields > 0 {
+                    tr!(
+                        // Translators: {fields} is "1 HPF field" or "3 HPF fields"
+                        // (translated on its own; HPF is a high-power field).
+                        "Inside {n} selected region ({fields}): {area}"
+                            | "Inside {n} selected regions ({fields}): {area}" % n,
+                        fields = tr!(
+                            // Translators: {fields} in "Inside {n} selected regions ({fields}): {area}".
+                            "{n} HPF field" | "{n} HPF fields" % t.fields
+                        ),
+                        area = area
+                    )
+                } else {
+                    tr!(
+                        "Inside {n} selected region: {area}"
+                            | "Inside {n} selected regions: {area}" % n,
+                        area = area
+                    )
+                }
+            }
+            (n, None) => tr!(
+                "Inside {n} selected region: {area} (no pixel size, so no density)"
+                    | "Inside {n} selected regions: {area} (no pixel size, so no density)" % n,
+                area = i18n::isolate(measure::format_px2(t.area_px))
             ),
         };
         for row in &t.rows {
@@ -781,12 +900,21 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
                 _ => (String::new(), String::new()),
             };
             let per_field = if t.fields > 0 && t.fields == t.regions {
-                format!("{:.1} /HPF field", row.count as f64 / t.fields as f64)
+                // Translators: cells per high-power field.
+                tr!(
+                    "{} /HPF field",
+                    i18n::format_decimal(row.count as f64 / t.fields as f64, 1)
+                )
             } else {
                 per_hpf
             };
             tally_rows.push(TallyRow {
-                name: row.name.clone(),
+                // Points without a (known) class.
+                name: if row.class_id.is_none() {
+                    names.unclassified.clone()
+                } else {
+                    row.name.clone()
+                },
                 color: row.color.to_hex(),
                 count: row.count.to_string(),
                 density,
@@ -837,27 +965,29 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
             objective,
         } => {
             put(&mut p, "field-mode", 0);
+            // Numbers to edit, as the language writes them (`parse_decimal`
+            // reads them back, and `.` or `,` as well).
             put(
                 &mut p,
                 "field-number",
-                crate::stats::trim_number(field_number),
+                crate::stats::trim_decimal(field_number),
             );
             put(
                 &mut p,
                 "field-objective",
-                crate::stats::trim_number(objective),
+                crate::stats::trim_decimal(objective),
             );
             put(
                 &mut p,
                 "field-area",
-                format!("{:.4}", state.settings.field.area_mm2().unwrap_or(0.0)),
+                i18n::format_decimal(state.settings.field.area_mm2().unwrap_or(0.0), 4),
             );
         }
         FieldSize::Area { mm2 } => {
             put(&mut p, "field-mode", 1);
             put(&mut p, "field-number", "22");
             put(&mut p, "field-objective", "40");
-            put(&mut p, "field-area", crate::stats::trim_number(mm2));
+            put(&mut p, "field-area", crate::stats::trim_decimal(mm2));
         }
     }
 
@@ -865,10 +995,17 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
     let (path, status) = match &state.db {
         DbStatus::Ready { read_only, path } => (
             path.clone(),
-            if *read_only { "Read-only" } else { "Ready" }.to_string(),
+            if *read_only {
+                // Translators: the state of the annotation database.
+                tr!("Read-only")
+            } else {
+                // Translators: the state of the annotation database.
+                tr!("Ready")
+            },
         ),
-        DbStatus::Opening => (String::new(), "Opening…".to_string()),
-        DbStatus::Failed { error } => (String::new(), format!("Unavailable: {error}")),
+        // Translators: the state of the annotation database.
+        DbStatus::Opening => (String::new(), tr!("Opening…")),
+        DbStatus::Failed { error } => (String::new(), tr!("Unavailable: {}", error)),
     };
     // A second reader.
     let comparison = state
@@ -886,18 +1023,31 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
     put(
         &mut p,
         "compare-title",
-        comparison.map(|c| c.title.clone()).unwrap_or_default(),
+        comparison
+            .map(crate::state::Comparison::title)
+            .unwrap_or_default(),
     );
     put(
         &mut p,
         "compare-note",
-        comparison.map(|c| c.note.clone()).unwrap_or_default(),
+        comparison
+            .map(crate::state::Comparison::note)
+            .unwrap_or_default(),
     );
     put(&mut p, "compare-rows", &compare_rows);
 
     put(&mut p, "db-path", path);
     put(&mut p, "db-status", status);
-    put(&mut p, "db-notes", state.db_notes.join("\n"));
+    put(
+        &mut p,
+        "db-notes",
+        state
+            .db_notes
+            .iter()
+            .map(crate::db::DbNote::text)
+            .collect::<Vec<_>>()
+            .join("\n"),
+    );
     put(
         &mut p,
         "legacy-db",
@@ -914,31 +1064,38 @@ pub fn properties(state: &State, view: &SidebarView) -> Map<String, Value> {
         .map(|s| OrphanRow {
             id: s.record.id.to_string(),
             title: if s.record.filename.is_empty() {
-                format!("Slide #{} (from an older version)", s.record.id)
+                // Translators: a slide whose file name an older eov did not record; {} is its number in the annotation database.
+                tr!("Slide #{} (from an older version)", s.record.id)
             } else {
                 s.record.filename.clone()
             },
-            detail: format!(
-                "{}{} annotation(s) in {} layer(s) · last opened {}",
+            detail: {
+                let contents = tr!(
+                    // Translators: {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+                    "{n} annotation {layers} · last opened {date}"
+                        | "{n} annotations {layers} · last opened {date}" % s.annotations,
+                    layers = in_layers(s.layers),
+                    date = date(s.record.last_opened_at)
+                );
                 if s.record.width > 0 {
-                    format!("{} × {} px · ", s.record.width, s.record.height)
+                    // Isolated, so that the translated text sets the
+                    // direction of the line.
+                    let size = format!("{} × {} px", s.record.width, s.record.height);
+                    format!("{} · {contents}", i18n::isolate(size))
                 } else {
-                    String::new()
-                },
-                s.annotations,
-                s.layers,
-                date(s.record.last_opened_at)
-            ),
+                    contents
+                }
+            },
         })
         .collect();
     let orphans_note = match &state.orphans {
-        None => "Press \"List\" to see the other slides in the database.".to_string(),
-        Some(list) if list.is_empty() => "No other slides have annotations.".to_string(),
-        Some(_) => {
+        // Translators: "List" is the label of the button beside this text.
+        None => tr!("Press \"List\" to see the other slides in the database."),
+        Some(list) if list.is_empty() => tr!("No other slides have annotations."),
+        Some(_) => tr!(
             "If a slide was re-saved or de-identified, its annotations stay with the old file. \
-                    Attach them to the open slide here."
-                .to_string()
-        }
+             Attach them to the open slide here."
+        ),
     };
     put(&mut p, "orphans", &orphans);
     put(&mut p, "orphans-note", orphans_note);
@@ -1001,7 +1158,7 @@ fn confirm(core: &Arc<Core>, args: ConfirmArgs, pending: Pending) {
         Ok(request) => {
             core.state().pending.insert(request, pending);
         }
-        Err(e) => core.error("Cannot ask for confirmation", e.message),
+        Err(e) => core.error(tr!("Cannot ask for confirmation"), e.message),
     }
 }
 
@@ -1013,7 +1170,7 @@ pub fn callback(
     args: &[Value],
 ) -> Result<Value, String> {
     let file_id = core.state().active_file;
-    let need_file = || file_id.ok_or_else(|| "Open a slide first.".to_string());
+    let need_file = || file_id.ok_or_else(|| tr!("Open a slide first."));
     match name {
         "tab-changed" => {
             core.state().settings.tab = (n(args, 0) as i32).clamp(0, 3);
@@ -1053,34 +1210,36 @@ pub fn callback(
                         .as_ref()
                         .filter(|c| c.file_id == file_id)
                         .map(|c| c.path.clone())
-                        .ok_or("Compare with another reader's file first.")?;
+                        .ok_or_else(|| tr!("Compare with another reader's file first."))?;
                     transfer::compare_file(core, file_id, path);
                 }
                 "compare-clear" => core.state().comparison = None,
                 "export-all" => transfer::save_dialog(
                     core,
-                    "Export all annotations",
+                    &tr!("Export all annotations"),
                     "annotations-archive.json",
                     FileFilter {
-                        name: "eov annotation archive".into(),
+                        name: tr!("eov annotation archive"),
                         extensions: vec!["json".into()],
                     },
                     Pending::ExportAll,
                 ),
                 "backup" => transfer::save_dialog(
                     core,
-                    "Back up the annotation database",
+                    &tr!("Back up the annotation database"),
                     "annotations-backup.db",
                     FileFilter {
-                        name: "SQLite database".into(),
+                        name: tr!("SQLite database"),
                         extensions: vec!["db".into()],
                     },
                     Pending::Backup,
                 ),
                 "merge-db" => match core.host.open_file_dialog(FileDialogArgs {
-                    title: Some("Merge an annotation database (a backup, or annotations.db of eov before 1.0)".into()),
+                    title: Some(tr!(
+                        "Merge an annotation database (a backup, or annotations.db of eov before 1.0)"
+                    )),
                     filters: vec![FileFilter {
-                        name: "SQLite database".into(),
+                        name: tr!("SQLite database"),
                         extensions: vec!["db".into(), "sqlite".into()],
                     }],
                     ..Default::default()
@@ -1146,7 +1305,7 @@ pub fn callback(
                 core,
                 need_file()?,
                 s(args, 0),
-                "Show or hide layer",
+                label!(tr!("Show or hide layer")),
                 false,
                 move |l| {
                     l.visible = visible;
@@ -1160,7 +1319,7 @@ pub fn callback(
                 core,
                 need_file()?,
                 s(args, 0),
-                "Layer opacity",
+                label!(tr!("Layer opacity")),
                 false,
                 move |l| {
                     l.opacity = opacity;
@@ -1174,7 +1333,11 @@ pub fn callback(
                 core,
                 need_file()?,
                 s(args, 0),
-                if locked { "Lock layer" } else { "Unlock layer" },
+                if locked {
+                    label!(tr!("Lock layer"))
+                } else {
+                    label!(tr!("Unlock layer"))
+                },
                 true,
                 move |l| {
                     l.locked = locked;
@@ -1188,11 +1351,11 @@ pub fn callback(
                 core,
                 need_file()?,
                 s(args, 0),
-                "Change layer colour",
+                label!(tr!("Change layer colour")),
                 true,
                 move |l| {
                     l.color = Color::parse(&color)
-                        .ok_or_else(|| format!("\"{color}\" is not a colour."))?;
+                        .ok_or_else(|| tr!("\"{}\" is not a colour.", color))?;
                     Ok(())
                 },
             );
@@ -1204,10 +1367,10 @@ pub fn callback(
                 core,
                 need_file()?,
                 s(args, 0),
-                "Edit layer notes",
+                label!(tr!("Edit layer notes")),
                 true,
                 move |l| {
-                    l.notes = clean_text(&notes, "notes")?;
+                    l.notes = clean_text(&notes, Field::Notes)?;
                     Ok(())
                 },
             );
@@ -1221,21 +1384,24 @@ pub fn callback(
                 let state = core.state();
                 let slide = state
                     .slide_of(file_id)
-                    .ok_or("The slide is still loading.")?;
+                    .ok_or_else(|| tr!("The slide is still loading."))?;
                 let layer = slide
                     .layer(&layer_id)
-                    .ok_or("That layer no longer exists.")?;
+                    .ok_or_else(|| tr!("That layer no longer exists."))?;
                 (layer.name.clone(), slide.count_in(&layer_id))
             };
             confirm(
                 core,
                 ConfirmArgs {
-                    title: "Delete layer".into(),
-                    message: format!(
-                        "Delete layer \"{name}\" and its {count} annotation(s)? You can undo this with Ctrl+Z (⌘Z)."
+                    title: tr!("Dialog title" => "Delete layer"),
+                    message: tr!(
+                        "Delete layer \"{name}\" and its {n} annotation? You can undo this with Ctrl+Z (⌘Z)."
+                            | "Delete layer \"{name}\" and its {n} annotations? You can undo this with Ctrl+Z (⌘Z)."
+                                % count,
+                        name = i18n::isolate(&name)
                     ),
-                    confirm_label: "Delete".into(),
-                    cancel_label: "Cancel".into(),
+                    confirm_label: tr!("Delete"),
+                    cancel_label: tr!("Cancel"),
                     destructive: true,
                 },
                 Pending::DeleteLayer { file_id, layer_id },
@@ -1246,24 +1412,36 @@ pub fn callback(
             let (owner, text) = (s(args, 0), s(args, 1));
             let ids = owner_ids(core, file_id, &owner);
             if name == "detail-name-committed" {
-                let value = clean_name(&text, "name", true)?;
-                actions::edit(core, file_id, ids, "Rename annotation", move |a| {
-                    a.name = value.clone();
-                    Ok(())
-                });
+                let value = clean_name(&text, Field::Name, true)?;
+                actions::edit(
+                    core,
+                    file_id,
+                    ids,
+                    label!(tr!("Rename annotation")),
+                    move |a| {
+                        a.name = value.clone();
+                        Ok(())
+                    },
+                );
             } else {
-                let value = clean_text(&text, "description")?;
-                actions::edit(core, file_id, ids, "Edit description", move |a| {
-                    a.description = value.clone();
-                    Ok(())
-                });
+                let value = clean_text(&text, Field::Description)?;
+                actions::edit(
+                    core,
+                    file_id,
+                    ids,
+                    label!(tr!("Edit description")),
+                    move |a| {
+                        a.description = value.clone();
+                        Ok(())
+                    },
+                );
             }
         }
         "detail-class-chosen" => {
             let file_id = need_file()?;
             let class = class_by_index(&core.state(), n(args, 0));
             let ids = selection(core, file_id);
-            actions::edit(core, file_id, ids, "Set class", move |a| {
+            actions::edit(core, file_id, ids, label!(tr!("Set class")), move |a| {
                 a.class_id = class.clone();
                 Ok(())
             });
@@ -1276,7 +1454,11 @@ pub fn callback(
                 core,
                 file_id,
                 ids,
-                format!("Mark {}", status.label().to_lowercase()),
+                match status {
+                    Status::Draft => label!(tr!("Mark draft")),
+                    Status::Verified => label!(tr!("Mark verified")),
+                    Status::Rejected => label!(tr!("Mark rejected")),
+                },
                 move |a| {
                     a.status = status;
                     Ok(())
@@ -1289,9 +1471,9 @@ pub fn callback(
                 .state()
                 .slide_of(file_id)
                 .and_then(|s| s.layers.get(n(args, 0) as usize).map(|l| l.id.clone()))
-                .ok_or("That layer no longer exists.")?;
+                .ok_or_else(|| tr!("That layer no longer exists."))?;
             let ids = selection(core, file_id);
-            actions::edit(core, file_id, ids, "Move to layer", move |a| {
+            actions::edit(core, file_id, ids, label!(tr!("Move to layer")), move |a| {
                 a.layer_id = layer.clone();
                 Ok(())
             });
@@ -1304,7 +1486,11 @@ pub fn callback(
                 core,
                 file_id,
                 ids,
-                if locked { "Lock" } else { "Unlock" },
+                if locked {
+                    label!(tr!("Lock"))
+                } else {
+                    label!(tr!("Unlock"))
+                },
                 move |a| {
                     a.locked = locked;
                     Ok(())
@@ -1336,29 +1522,35 @@ pub fn callback(
             }
             let (key, value) = (s(args, 2), s(args, 3));
             let op = name.to_string();
-            actions::edit(core, file_id, ids, "Edit properties", move |a| {
-                match op.as_str() {
-                    "property-add" => a.properties.push((String::new(), String::new())),
-                    "property-remove" => {
-                        if row < a.properties.len() {
-                            a.properties.remove(row);
+            actions::edit(
+                core,
+                file_id,
+                ids,
+                label!(tr!("Edit properties")),
+                move |a| {
+                    match op.as_str() {
+                        "property-add" => a.properties.push((String::new(), String::new())),
+                        "property-remove" => {
+                            if row < a.properties.len() {
+                                a.properties.remove(row);
+                            }
+                        }
+                        _ => {
+                            if let Some(entry) = a.properties.get_mut(row) {
+                                *entry = (key.clone(), value.clone());
+                            }
                         }
                     }
-                    _ => {
-                        if let Some(entry) = a.properties.get_mut(row) {
-                            *entry = (key.clone(), value.clone());
-                        }
-                    }
-                }
-                a.properties = clean_properties(&a.properties)?;
-                Ok(())
-            });
+                    a.properties = clean_properties(&a.properties)?;
+                    Ok(())
+                },
+            );
         }
         "comment-add" => {
             let file_id = need_file()?;
             let (owner, text) = (s(args, 0), s(args, 1));
             if owner.is_empty() || owner.starts_with("multi:") {
-                return Err("Select one annotation to comment on.".to_string());
+                return Err(tr!("Select one annotation to comment on."));
             }
             actions::comment_add(core, file_id, owner, text);
         }
@@ -1371,7 +1563,7 @@ pub fn callback(
             let text = measurement_text(&core.state(), file_id);
             if !text.is_empty() {
                 core.host.copy_text(text).map_err(String::from)?;
-                core.notify(NotifyLevel::Info, "Measurements copied.");
+                core.notify(NotifyLevel::Info, tr!("Measurements copied."));
             }
         }
         "class-new" => actions::class_new(core),
@@ -1383,7 +1575,7 @@ pub fn callback(
             actions::class_update(
                 core,
                 s(args, 0),
-                "Show or hide class",
+                label!(tr!("Show or hide class")),
                 false,
                 move |_, c: &mut Class| {
                     c.visible = visible;
@@ -1396,7 +1588,7 @@ pub fn callback(
             actions::class_update(
                 core,
                 s(args, 0),
-                "Class opacity",
+                label!(tr!("Class opacity")),
                 false,
                 move |_, c: &mut Class| {
                     c.opacity = opacity;
@@ -1410,19 +1602,23 @@ pub fn callback(
                 let state = core.state();
                 let class = state
                     .class(&class_id)
-                    .ok_or("That class no longer exists.")?;
+                    .ok_or_else(|| tr!("That class no longer exists."))?;
                 (class.name.clone(), actions::class_usage(&state, &class_id))
             };
             confirm(
                 core,
                 ConfirmArgs {
-                    title: "Delete class".into(),
-                    message: format!(
-                        "Delete class \"{name}\"? {used} annotation(s) on open slides use it; they will show as \
+                    title: tr!("Dialog title" => "Delete class"),
+                    message: tr!(
+                        "Delete class \"{name}\"? {n} annotation on open slides uses it; it will show as \
                          unclassified. You can undo this."
+                            | "Delete class \"{name}\"? {n} annotations on open slides use it; they will show as \
+                         unclassified. You can undo this."
+                                % used,
+                        name = i18n::isolate(&name)
                     ),
-                    confirm_label: "Delete".into(),
-                    cancel_label: "Cancel".into(),
+                    confirm_label: tr!("Delete"),
+                    cancel_label: tr!("Cancel"),
                     destructive: true,
                 },
                 Pending::DeleteClass { class_id },
@@ -1469,12 +1665,18 @@ pub fn callback(
             confirm(
                 core,
                 ConfirmArgs {
-                    title: "Clear counts".into(),
-                    message: format!(
-                        "Remove all {count} count point(s) of this slide? You can undo this."
+                    title: tr!("Dialog title" => "Clear counts"),
+                    message: tr!(
+                        // Translators: the question of the "Clear counts" dialog, whose
+                        // button is "Clear": use the same verb.
+                        "Clear the {n} count point of this slide? You can undo this."
+                            | "Clear all {n} count points of this slide? You can undo this."
+                                % count
                     ),
-                    confirm_label: "Clear".into(),
-                    cancel_label: "Cancel".into(),
+                    // Translators: the button that removes the count points, in the
+                    // "Clear counts" dialog.
+                    confirm_label: tr!("Clear"),
+                    cancel_label: tr!("Cancel"),
                     destructive: true,
                 },
                 Pending::ClearCounts { file_id },
@@ -1483,21 +1685,27 @@ pub fn callback(
         "fields-select" => actions::select_fields(core, need_file()?),
         "field-config" => {
             let mode = n(args, 0) as i32;
-            let parse = |v: &str| v.trim().replace(',', ".").parse::<f64>().ok();
+            // As typed: with the language's decimal separator, `.` or `,`.
+            let parse = |v: &str| i18n::parse_decimal(v);
             let field = if mode == 1 {
                 FieldSize::Area {
-                    mm2: parse(&s(args, 3)).ok_or("Enter the field area in mm², e.g. 0.237.")?,
+                    mm2: parse(&s(args, 3)).ok_or_else(|| {
+                        tr!(
+                            "Enter the field area in mm², e.g. {}.",
+                            i18n::format_decimal(0.237, 3)
+                        )
+                    })?,
                 }
             } else {
                 FieldSize::FieldNumber {
                     field_number: parse(&s(args, 1))
-                        .ok_or("Enter the field number in mm, e.g. 22.")?,
+                        .ok_or_else(|| tr!("Enter the field number in mm, e.g. 22."))?,
                     objective: parse(&s(args, 2))
-                        .ok_or("Enter the objective magnification, e.g. 40.")?,
+                        .ok_or_else(|| tr!("Enter the objective magnification, e.g. 40."))?,
                 }
             };
             if field.area_mm2().is_none() {
-                return Err("That field size is not usable.".to_string());
+                return Err(tr!("That field size is not usable."));
             }
             core.state().settings.field = field;
             host.save_settings();
@@ -1509,7 +1717,7 @@ pub fn callback(
                 .state()
                 .legacy_db
                 .clone()
-                .ok_or("There is no database from before eov 1.0 to merge.")?;
+                .ok_or_else(|| tr!("There is no database from before eov 1.0 to merge."))?;
             transfer::merge_database(core, path, true);
         }
         "orphan-relink" => {
@@ -1526,7 +1734,7 @@ pub fn callback(
                     .iter()
                     .flatten()
                     .find(|o| o.record.id == from)
-                    .ok_or("That slide is not listed any more.")?;
+                    .ok_or_else(|| tr!("That slide is not listed any more."))?;
                 (
                     orphan.record.filename.clone(),
                     orphan.record.width > 0
@@ -1535,25 +1743,33 @@ pub fn callback(
                         }),
                 )
             };
-            let mut message = format!(
-                "Attach the annotations of \"{}\" to the open slide? Use this when the slide file was re-saved, \
-                 converted or de-identified. You can undo this.",
-                if title.is_empty() {
-                    "an older slide"
-                } else {
-                    title.as_str()
-                }
-            );
+            let mut message = if title.is_empty() {
+                tr!(
+                    "Attach the annotations of an older slide to the open slide? Use this when the slide file was re-saved, \
+                     converted or de-identified. You can undo this."
+                )
+            } else {
+                tr!(
+                    "Attach the annotations of \"{}\" to the open slide? Use this when the slide file was re-saved, \
+                     converted or de-identified. You can undo this.",
+                    i18n::isolate(&title)
+                )
+            };
             if dims_differ {
-                message.push_str(" Warning: the two slides have different sizes, so the annotations may not line up.");
+                message = i18n::join_sentences([
+                    message,
+                    tr!(
+                        "Warning: the two slides have different sizes, so the annotations may not line up."
+                    ),
+                ]);
             }
             confirm(
                 core,
                 ConfirmArgs {
-                    title: "Attach annotations".into(),
+                    title: tr!("Attach annotations"),
                     message,
-                    confirm_label: "Attach".into(),
-                    cancel_label: "Cancel".into(),
+                    confirm_label: tr!("Attach"),
+                    cancel_label: tr!("Cancel"),
                     destructive: dims_differ,
                 },
                 Pending::Relink { file_id, from },
@@ -1561,7 +1777,7 @@ pub fn callback(
         }
         "setting-text" => {
             let (key, value) = (s(args, 0), s(args, 1));
-            let value = clean_name(&value, "setting", true)?;
+            let value = clean_name(&value, Field::Setting, true)?;
             {
                 let mut state = core.state();
                 match key.as_str() {
@@ -1640,8 +1856,9 @@ pub fn callback(
     Ok(Value::Null)
 }
 
-/// Rebuilds every object after a display setting changed.
-fn restyle_all(core: &Arc<Core>) {
+/// Rebuilds every object after a display setting (or the language of
+/// their tooltips) changed.
+pub fn restyle_all(core: &Arc<Core>) {
     // Off the UI thread: this touches every object of every open slide.
     let task = move |core: &Arc<Core>, _: &mut crate::core::DbCtx| {
         let batch = crate::overlay::sync_all(&mut core.state());
@@ -1688,7 +1905,7 @@ pub fn measurement_text(state: &State, file_id: FileId) -> String {
             continue;
         };
         let m = measure::measure(&a.geometry, &calibration);
-        out.push_str(&a.display_name());
+        out.push_str(&a.shown_name());
         for (key, value) in measure::rows(&m, a.geometry.kind().is_line()) {
             out.push_str(&format!("\t{key}: {value}"));
         }

@@ -8,6 +8,7 @@
 
 use crate::geometry::{self, P};
 use crate::model::Geometry;
+use eov_plugin_api::i18n::{self, tr};
 
 /// Pixel spacing of a slide in µm per level-0 pixel.
 #[derive(Debug, Clone, Copy, PartialEq, Default)]
@@ -215,14 +216,15 @@ pub fn centroid(geometry: &Geometry) -> P {
 // Formatting
 // ---------------------------------------------------------------------------
 
-/// Formats `value` with about four significant digits.
+/// Formats `value` with about four significant digits, with the decimal
+/// separator of the interface's language.
 pub fn significant(value: f64) -> String {
     if value == 0.0 || !value.is_finite() {
         return "0".to_string();
     }
     let magnitude = value.abs().log10().floor() as i32;
     let decimals = (3 - magnitude).clamp(0, 6) as usize;
-    format!("{value:.decimals$}")
+    i18n::format_decimal(value, decimals)
 }
 
 /// A length in µm, switching to mm above 1000 µm.
@@ -271,33 +273,39 @@ pub fn rows(m: &Measurements, kind_is_line: bool) -> Vec<(String, String)> {
         }
     };
     if let Some(v) = both(m.area_um2, m.area_px2, true) {
-        rows.push(("Area".to_string(), v));
+        rows.push((tr!("Area"), v));
     }
     if let Some(v) = both(m.length_um, m.length_px, false) {
         rows.push((
-            if kind_is_line { "Length" } else { "Perimeter" }.to_string(),
+            if kind_is_line {
+                tr!("Length")
+            } else {
+                tr!("Perimeter")
+            },
             v,
         ));
     }
     if let Some(v) = both(m.feret_um, m.feret_px, false) {
-        rows.push(("Max diameter (Feret)".to_string(), v));
+        rows.push((tr!("Max diameter (Feret)"), v));
     }
     if let Some(v) = both(m.min_caliper_um, m.min_caliper_px, false) {
-        rows.push(("Min caliper".to_string(), v));
+        rows.push((tr!("Min diameter (Feret)"), v));
     }
+    // Pixel coordinates are written as eov writes them, whatever the
+    // language (a decimal comma would run into the comma between them).
     rows.push((
-        "Centre (px)".to_string(),
+        tr!("Centre (px)"),
         format!("{:.1}, {:.1}", m.centroid[0], m.centroid[1]),
     ));
     if !m.calibrated && (m.area_px2.is_some() || m.length_px.is_some()) {
         rows.push((
-            "Calibration".to_string(),
-            "No pixel size: values in level-0 pixels".to_string(),
+            tr!("Calibration"),
+            tr!("No pixel size: values in level-0 pixels"),
         ));
     } else if m.approximate {
         rows.push((
-            "Calibration".to_string(),
-            "One pixel axis missing; assumed square pixels".to_string(),
+            tr!("Calibration"),
+            tr!("One pixel axis missing; assumed square pixels"),
         ));
     }
     rows

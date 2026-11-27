@@ -1,0 +1,3306 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: annotations\n"
+"Report-Msgid-Bugs-To: https://github.com/eosin-platform/eov-annotations-"
+"plugin/issues\n"
+"Language-Team: Swedish\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Review-Status: machine-translated; not yet reviewed by a native speaker\n"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid "Annotations"
+msgstr "Annoteringar"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid ""
+"Point, region, line and text annotations with reusable classes, cell "
+"counting, HPF fields and measurements; GeoJSON (QuPath) import and export, "
+"ASAP and Aperio ImageScope XML import."
+msgstr ""
+"Punkt-, områdes-, linje- och textannoteringar med återanvändbara klasser, "
+"cellräkning, HPF-fält och mätningar; import och export av GeoJSON (QuPath), "
+"import av ASAP och Aperio ImageScope XML."
+
+#: src/actions.rs:23
+msgid "The annotations of this slide are still loading; try again in a moment."
+msgstr ""
+"Annoteringarna för det här preparatet läses fortfarande in; försök igen om "
+"en stund."
+
+#: src/actions.rs:27 src/sidebar.rs:1390 src/sidebar.rs:1474
+msgid "That layer no longer exists."
+msgstr "Det lagret finns inte längre."
+
+#: src/actions.rs:31
+msgid "That annotation no longer exists."
+msgstr "Den annoteringen finns inte längre."
+
+#: src/actions.rs:35 src/sidebar.rs:1605
+msgid "That class no longer exists."
+msgstr "Den klassen finns inte längre."
+
+#: src/actions.rs:39 src/transfer.rs:648 src/transfer.rs:658
+msgid "Layer \"{}\" is locked."
+msgstr "Lagret ”{}” är låst."
+
+#: src/actions.rs:43
+msgid "Parts outside the slide were cut off."
+msgstr "Delar utanför preparatet klipptes bort."
+
+#: src/actions.rs:62
+msgid "The slide is not open any more."
+msgstr "Preparatet är inte längre öppet."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:136
+msgid "The outline crossed itself and was split into {n} parts."
+msgid_plural "The outline crossed itself and was split into {n} parts."
+msgstr[0] "Konturen korsade sig själv och delades upp i {n} del."
+msgstr[1] "Konturen korsade sig själv och delades upp i {n} delar."
+
+#: src/actions.rs:140
+msgid "The outline crossed itself and was repaired."
+msgstr "Konturen korsade sig själv och reparerades."
+
+#: src/actions.rs:156
+msgid "The HPF size is not valid; check it in the Count tab."
+msgstr "HPF-storleken är ogiltig; kontrollera den på fliken Cellräkning."
+
+#: src/actions.rs:160
+msgid "This slide has no pixel size, so HPF fields cannot be sized."
+msgstr ""
+"Det här preparatet saknar pixelstorlek, så storleken på HPF-fält kan inte "
+"bestämmas."
+
+#: src/actions.rs:207
+msgid "Count cell"
+msgstr "räknad cell"
+
+#: src/actions.rs:218 src/lib.rs:613
+msgid "Add point"
+msgstr "ny punkt"
+
+#: src/actions.rs:228
+msgid "Add line"
+msgstr "ny linje"
+
+#: src/actions.rs:242
+msgid "Add arrow"
+msgstr "ny pil"
+
+#: src/actions.rs:258
+msgid "Add text"
+msgstr "ny text"
+
+#: src/actions.rs:303
+msgid ""
+"To add the shape to a region (Shift) or cut it from a region (Alt), select "
+"exactly one region first. The shape was added as a new annotation."
+msgstr ""
+"För att lägga till formen i ett område (Shift) eller skära ut den ur ett "
+"område (Alt) måste du först markera exakt ett område. Formen lades till som "
+"en ny annotering."
+
+#: src/actions.rs:314 src/actions.rs:325
+msgid "Add region"
+msgstr "nytt område"
+
+#: src/actions.rs:378
+msgid "Place HPF field"
+msgstr "placering av HPF-fält"
+
+#: src/actions.rs:399
+msgid "This field extends past the slide edge; its area includes empty canvas."
+msgstr ""
+"Det här fältet sträcker sig utanför preparatets kant; dess area omfattar tom "
+"yta."
+
+#: src/actions.rs:429
+msgid "Add to region"
+msgstr "utökning av område"
+
+#: src/actions.rs:431
+msgid "Cut from region"
+msgstr "utskärning ur område"
+
+#: src/actions.rs:439
+msgid "The selected region no longer exists."
+msgstr "Det markerade området finns inte längre."
+
+#: src/actions.rs:441
+msgid "The selected region is locked."
+msgstr "Det markerade området är låst."
+
+#: src/actions.rs:452
+msgid "Only regions can be combined."
+msgstr "Endast områden kan kombineras."
+
+#: src/actions.rs:460
+msgid "The cut removed the whole region."
+msgstr "Utskärningen tog bort hela området."
+
+#: src/actions.rs:483
+msgid ""
+"The shapes do not touch; the new shape was added as a separate annotation."
+msgstr ""
+"Formerna rör inte vid varandra; den nya formen lades till som en separat "
+"annotering."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:488
+msgid "The cut split the region into {n} parts."
+msgid_plural "The cut split the region into {n} parts."
+msgstr[0] "Utskärningen delade området i {n} del."
+msgstr[1] "Utskärningen delade området i {n} delar."
+
+#: src/actions.rs:522
+msgid "Edit shape"
+msgstr "redigering av form"
+
+#: src/actions.rs:544
+msgid "The annotation is locked."
+msgstr "Annoteringen är låst."
+
+#: src/actions.rs:560
+msgid "That edit would turn the arrow into another shape, so it was undone."
+msgstr ""
+"Den redigeringen skulle göra pilen till en annan form, så den ångrades."
+
+#: src/actions.rs:564
+msgid "That edit was undone."
+msgstr "Den redigeringen ångrades."
+
+#: src/actions.rs:591
+msgid "The edit was undone: {}"
+msgstr "Redigeringen ångrades: {}"
+
+#: src/actions.rs:596
+msgid "That edit would make the outline cross itself, so it was undone."
+msgstr ""
+"Den redigeringen skulle få konturen att korsa sig själv, så den ångrades."
+
+#: src/actions.rs:629
+msgid "Delete annotation"
+msgid_plural "Delete {n} annotations"
+msgstr[0] "radering av annotering"
+msgstr[1] "radering av {n} annoteringar"
+
+#: src/actions.rs:649
+msgid "{n} locked annotation was kept."
+msgid_plural "{n} locked annotations were kept."
+msgstr[0] "{n} låst annotering behölls."
+msgstr[1] "{n} låsta annoteringar behölls."
+
+#: src/actions.rs:703
+msgid "The target layer is locked or gone."
+msgstr "Mållagret är låst eller finns inte längre."
+
+#: src/actions.rs:712
+msgid "{n} locked annotation was not changed."
+msgid_plural "{n} locked annotations were not changed."
+msgstr[0] "{n} låst annotering ändrades inte."
+msgstr[1] "{n} låsta annoteringar ändrades inte."
+
+#: src/actions.rs:777
+msgid "Could not zoom to the annotation"
+msgstr "Det gick inte att zooma till annoteringen"
+
+#: src/actions.rs:790
+msgid "New layer"
+msgstr "nytt lager"
+
+#: src/actions.rs:865
+msgid "Rename layer"
+msgstr "namnbyte på lager"
+
+#: src/actions.rs:877
+msgid "Delete layer"
+msgstr "radering av lager"
+
+#: src/actions.rs:887
+msgid "Delete layer \"{}\""
+msgstr "radering av lagret ”{}”"
+
+#: src/actions.rs:897
+msgid "Choose layer"
+msgstr "val av lager"
+
+#: src/actions.rs:902
+msgid ""
+"New annotations go to a regular layer; count points and HPF fields have "
+"their own."
+msgstr ""
+"Nya annoteringar hamnar i ett vanligt lager; räknepunkter och HPF-fält har "
+"egna lager."
+
+#. Translators: an undo step, shown by eov as "Undo {}".
+#: src/actions.rs:918
+msgid "Clear counts"
+msgstr "rensning av räknepunkter"
+
+#: src/actions.rs:950
+msgid ""
+"There are no HPF fields on this slide yet. Use the HPF field tool (H) to "
+"place them."
+msgstr ""
+"Det finns inga HPF-fält på det här preparatet än. Använd verktyget HPF-fält "
+"(H) för att placera dem."
+
+#: src/actions.rs:960
+msgid "Repair outline"
+msgstr "reparation av kontur"
+
+#: src/actions.rs:975
+msgid "Nothing is left of the outline."
+msgstr "Ingenting återstår av konturen."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:997
+msgid "The outline was split into {n} parts."
+msgid_plural "The outline was split into {n} parts."
+msgstr[0] "Konturen delades upp i {n} del."
+msgstr[1] "Konturen delades upp i {n} delar."
+
+#: src/actions.rs:1012
+msgid "Could not attach the annotations"
+msgstr "Annoteringarna kunde inte kopplas till preparatet"
+
+#: src/actions.rs:1018
+msgid "Attach annotations of another slide"
+msgstr "koppling av annoteringar från ett annat preparat"
+
+#: src/actions.rs:1024
+msgid "Those annotations already belong to this slide."
+msgstr "De annoteringarna hör redan till det här preparatet."
+
+#: src/actions.rs:1027
+msgid "That slide has no annotations left."
+msgstr "Det preparatet har inga annoteringar kvar."
+
+#: src/actions.rs:1035
+msgid "Attached {n} layer to this slide."
+msgid_plural "Attached {n} layers to this slide."
+msgstr[0] "{n} lager har kopplats till det här preparatet."
+msgstr[1] "{n} lager har kopplats till det här preparatet."
+
+#: src/actions.rs:1076
+msgid "New class"
+msgstr "ny klass"
+
+#: src/actions.rs:1138
+msgid "Rename class"
+msgstr "namnbyte på klass"
+
+#: src/actions.rs:1147
+msgid "A class named \"{}\" already exists."
+msgstr "Det finns redan en klass med namnet ”{}”."
+
+#: src/actions.rs:1161
+msgid "Set class hotkey"
+msgstr "ändring av snabbtangent för klass"
+
+#: src/actions.rs:1186
+msgid "Change class colour"
+msgstr "ändring av klassfärg"
+
+#: src/actions.rs:1190 src/sidebar.rs:1358
+msgid "\"{}\" is not a colour."
+msgstr "”{}” är ingen färg."
+
+#: src/actions.rs:1197
+msgid "Delete class"
+msgstr "radering av klass"
+
+#: src/actions.rs:1201
+msgid "Delete class \"{}\""
+msgstr "radering av klassen ”{}”"
+
+#: src/actions.rs:1243 src/lib.rs:96 src/overlay.rs:164 src/sidebar.rs:151
+#: src/sidebar.rs:384
+msgid "Unclassified"
+msgstr "Oklassificerad"
+
+#: src/actions.rs:1244
+msgid "Class: {}"
+msgstr "Klass: {}"
+
+#. Translators: on the slide, beside the HPF field that follows the
+#. pointer: its area and how many points (such as counted cells) lie in it.
+#: src/actions.rs:1274
+msgid "1 HPF · {area} mm² · {n} point"
+msgid_plural "1 HPF · {area} mm² · {n} points"
+msgstr[0] "1 HPF · {area} mm² · {n} punkt"
+msgstr[1] "1 HPF · {area} mm² · {n} punkter"
+
+#: src/actions.rs:1466
+msgid "Add comment"
+msgstr "ny kommentar"
+
+#: src/actions.rs:1472
+msgid "Write the comment first."
+msgstr "Skriv kommentaren först."
+
+#: src/actions.rs:1481
+msgid "An annotation can have at most {n} comments."
+msgid_plural "An annotation can have at most {n} comments."
+msgstr[0] "En annotering kan ha högst {n} kommentar."
+msgstr[1] "En annotering kan ha högst {n} kommentarer."
+
+#: src/actions.rs:1511
+msgid "Delete comment"
+msgstr "radering av kommentar"
+
+#: src/actions.rs:1524
+msgid "That comment no longer exists."
+msgstr "Den kommentaren finns inte längre."
+
+#: src/actions.rs:1723
+msgid ""
+"Brush {} px, eraser: paint over a selected region to erase from it; [ and ] "
+"change the size"
+msgstr ""
+"Pensel {} px, radergummi: måla över ett markerat område för att sudda i det; "
+"[ och ] ändrar storleken"
+
+#: src/actions.rs:1728
+msgid ""
+"Brush {} px: paint a region (over a selected region to extend it); Alt "
+"erases; [ and ] change the size"
+msgstr ""
+"Pensel {} px: måla ett område (över ett markerat område för att utöka det); "
+"Alt suddar; [ och ] ändrar storleken"
+
+#: src/actions.rs:1742
+msgid "Erase"
+msgstr "suddning"
+
+#: src/actions.rs:1744
+msgid "Brush stroke"
+msgstr "penseldrag"
+
+#: src/actions.rs:1768
+msgid "The stroke is outside the slide."
+msgstr "Penseldraget ligger utanför preparatet."
+
+#: src/actions.rs:1818
+msgid "Select the region to erase from."
+msgstr "Markera det område som du vill sudda i."
+
+#: src/actions.rs:1843
+msgid "The eraser did not touch the selected region."
+msgstr "Radergummit rörde inte vid det markerade området."
+
+#. Translators: a part of the plugin that works in the background.
+#: src/core.rs:228
+msgid "Could not start a worker thread"
+msgstr "En arbetstråd kunde inte startas"
+
+#: src/core.rs:385
+msgid "Internal error while opening the database"
+msgstr "Internt fel när databasen öppnades"
+
+#: src/core.rs:393
+msgid "Internal error while loading annotations"
+msgstr "Internt fel när annoteringar lästes in"
+
+#: src/core.rs:398
+msgid "Internal error while saving annotations"
+msgstr "Internt fel när annoteringar sparades"
+
+#: src/core.rs:403
+msgid "Internal error while undoing"
+msgstr "Internt fel vid ångring"
+
+#: src/core.rs:408
+msgid "Internal error while working on the database"
+msgstr "Internt fel vid arbete med databasen"
+
+#: src/core.rs:427
+msgid "Internal error while reading or writing a file"
+msgstr "Internt fel vid läsning eller skrivning av en fil"
+
+#: src/core.rs:561
+msgid "The annotation database could not be opened"
+msgstr "Annoteringsdatabasen kunde inte öppnas"
+
+#: src/core.rs:590
+msgid "Annotations from eov before 1.0"
+msgstr "Annoteringar från eov före 1.0"
+
+#: src/core.rs:592
+msgid ""
+"The annotations plugin of eov before 1.0 left a database at {}. Bring its "
+"annotations into the current database? The old file is not changed. You can "
+"also do this later in the Data tab of the annotations panel."
+msgstr ""
+"Annoteringstillägget i eov före 1.0 lämnade en databas i {}. Vill du hämta "
+"in dess annoteringar i den aktuella databasen? Den gamla filen ändras inte. "
+"Du kan också göra detta senare på fliken Data i annoteringspanelen."
+
+#: src/core.rs:597
+msgid "Bring them in"
+msgstr "Hämta in dem"
+
+#: src/core.rs:598
+msgid "Not now"
+msgstr "Inte nu"
+
+#. Translators: the plugin could not ask whether to bring in the annotations made
+#. with eov before 1.0 (the title of that question is "Annotations from eov before 1.0").
+#: src/core.rs:612
+msgid "Could not offer the annotations from eov before 1.0"
+msgstr "Det gick inte att erbjuda annoteringarna från eov före 1.0"
+
+#: src/core.rs:657 src/sidebar.rs:457
+msgid "Could not load this slide's annotations: {}"
+msgstr "Preparatets annoteringar kunde inte läsas in: {}"
+
+#. Translators: a second read is an independent annotation of the slide by another person
+#. (as in a reader study), not a clinical second opinion. Data, Second reader and Blinded
+#. copy are the tab, section and button of the annotations panel: use their translations.
+#: src/core.rs:670
+msgid ""
+"{opened} has the same content as {annotated}, so it shows and edits the same "
+"annotations. For an independent second read, use Data → Second reader → "
+"Blinded copy."
+msgstr ""
+"{opened} har samma innehåll som {annotated}, så den visar och redigerar "
+"samma annoteringar. Använd Data → Andra bedömare → Blindad kopia för en "
+"oberoende andra bedömning."
+
+#: src/core.rs:721 src/core.rs:1019 src/core.rs:1156
+msgid "the database is not open"
+msgstr "databasen är inte öppen"
+
+#: src/core.rs:809
+msgid "{n} annotation of {file} could not be read and was skipped."
+msgid_plural "{n} annotations of {file} could not be read and were skipped."
+msgstr[0] "{n} annotering i {file} kunde inte läsas och hoppades över."
+msgstr[1] "{n} annoteringar i {file} kunde inte läsas och hoppades över."
+
+#: src/core.rs:900
+msgid "Could not reload annotations"
+msgstr "Annoteringarna kunde inte läsas in igen"
+
+#: src/core.rs:931
+msgid "Annotations were changed by another eov window and have been reloaded."
+msgstr ""
+"Annoteringarna ändrades i ett annat eov-fönster och har lästs in på nytt."
+
+#: src/core.rs:957
+msgid "the database stayed locked"
+msgstr "databasen förblev låst"
+
+#: src/core.rs:964
+msgid "a class with that name already exists"
+msgstr "det finns redan en klass med det namnet"
+
+#: src/core.rs:966
+msgid "the annotation database is read-only"
+msgstr "annoteringsdatabasen är skrivskyddad"
+
+#: src/core.rs:969
+msgid "the annotation was changed elsewhere in the meantime"
+msgstr "annoteringen har ändrats någon annanstans under tiden"
+
+#: src/core.rs:971
+msgid "the layer was changed elsewhere in the meantime"
+msgstr "lagret har ändrats någon annanstans under tiden"
+
+#: src/core.rs:972
+msgid "the class was changed elsewhere in the meantime"
+msgstr "klassen har ändrats någon annanstans under tiden"
+
+#: src/core.rs:973
+msgid "a layer being moved was changed elsewhere in the meantime"
+msgstr "ett lager som flyttades har ändrats någon annanstans under tiden"
+
+#: src/core.rs:1053
+msgid "Could not save \"{}\""
+msgstr "Ändringen ”{}” kunde inte sparas"
+
+#: src/core.rs:1123
+msgid "This annotation change can no longer be undone."
+msgstr "Den här ändringen av annoteringarna kan inte längre ångras."
+
+#: src/core.rs:1137
+msgid "The slide of this change is not open any more."
+msgstr "Preparatet för den här ändringen är inte längre öppet."
+
+#: src/core.rs:1176
+msgid "Could not redo \"{}\""
+msgstr "Ändringen ”{}” kunde inte göras om"
+
+#: src/core.rs:1178
+msgid "Could not undo \"{}\""
+msgstr "Ändringen ”{}” kunde inte ångras"
+
+#. Translators: cells per square millimetre, with the 95% confidence interval.
+#: src/counting.rs:185
+msgid "{density} /mm² (95% {low}–{high})"
+msgstr "{density} /mm² (95 % KI {low}–{high})"
+
+#. Translators: cells per 10 high-power fields.
+#: src/counting.rs:194
+msgid "{} /10 HPF"
+msgstr "{} /10 HPF"
+
+#: src/counting.rs:222
+msgid "100 (capped; the ratio is higher)"
+msgstr "100 (begränsat; kvoten är högre)"
+
+#. Translators: CPS is the PD-L1 combined positive score; {positive},
+#. {negative} and {immune} are names of classes of cells.
+#: src/counting.rs:234
+msgid ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cell "
+"({positive} + {negative}) × 100."
+msgid_plural ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cells "
+"({positive} + {negative}) × 100."
+msgstr[0] ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumörcell ({positive} "
+"+ {negative}) × 100."
+msgstr[1] ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumörceller "
+"({positive} + {negative}) × 100."
+
+#: src/counting.rs:248
+msgid "Fewer than {n} tumour cells: below the minimum for a valid score."
+msgid_plural ""
+"Fewer than {n} tumour cells: below the minimum for a valid score."
+msgstr[0] "Färre än {n} tumörcell: under minimiantalet för en giltig poäng."
+msgstr[1] "Färre än {n} tumörceller: under minimiantalet för en giltig poäng."
+
+#. Translators: e.g. "Ki-67+ index: 25.0 % (95% 20.1–30.4 %) — 25 of 100 (Ki-67+ + Ki-67-)";
+#. {class} and {other} are names of classes of cells.
+#: src/counting.rs:263
+msgid ""
+"{class} index: {value} % (95% {low}–{high} %) — {k} of {total} ({class} + "
+"{other})"
+msgstr ""
+"Index för {class}: {value} % (95 % KI {low}–{high} %) — {k} av {total} "
+"({class} + {other})"
+
+#: src/db/mod.rs:116
+msgid "The annotation database is read-only; editing is disabled."
+msgstr "Annoteringsdatabasen är skrivskyddad; redigering är inaktiverad."
+
+#: src/db/mod.rs:119
+msgid "{n} layer colour was unreadable and was replaced."
+msgid_plural "{n} layer colours were unreadable and were replaced."
+msgstr[0] "{n} lagerfärg var oläsbar och ersattes."
+msgstr[1] "{n} lagerfärger var oläsbara och ersattes."
+
+#. Translators: {slides} in "Upgraded the annotation database from the pre-1.0 format: {slides}, …".
+#: src/db/mod.rs:131
+msgid "{n} slide"
+msgid_plural "{n} slides"
+msgstr[0] "{n} preparat"
+msgstr[1] "{n} preparat"
+
+#. Translators: {slides} is "1 slide" or "3 slides" (translated on its own).
+#: src/db/mod.rs:136
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotation."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotations."
+msgstr[0] ""
+"Annoteringsdatabasen har uppgraderats från formatet före 1.0: {slides}, {n} "
+"annotering."
+msgstr[1] ""
+"Annoteringsdatabasen har uppgraderats från formatet före 1.0: {slides}, {n} "
+"annoteringar."
+
+#. Translators: {slides} is "1 slide" or "3 slides", {annotations} is
+#. "1 annotation" or "5 annotations" (each translated on its own).
+#: src/db/mod.rs:145
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotation skipped."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotations skipped."
+msgstr[0] ""
+"Annoteringsdatabasen har uppgraderats från formatet före 1.0: {slides}, "
+"{annotations}, {n} oläsbar annotering överhoppad."
+msgstr[1] ""
+"Annoteringsdatabasen har uppgraderats från formatet före 1.0: {slides}, "
+"{annotations}, {n} oläsbara annoteringar överhoppade."
+
+#. Translators: a number of annotations on its own, in two texts: {annotations} in
+#. "Upgraded the annotation database from the pre-1.0 format: {slides}, {annotations}, …"
+#. and {ours} in "This slide's visible layers ({ours}) against the {n} annotations in {name}, …".
+#: src/db/mod.rs:153 src/state.rs:516
+msgid "{n} annotation"
+msgid_plural "{n} annotations"
+msgstr[0] "{n} annotering"
+msgstr[1] "{n} annoteringar"
+
+#: src/db/mod.rs:159
+msgid ""
+"New database. If you annotated with eov before 1.0, those annotations are in "
+"annotations.db in eov's old settings folder (~/.config/eov on Linux, ~/"
+"Library/Application Support/eov on macOS, %APPDATA%\\eov on Windows): bring "
+"them in with Merge… above."
+msgstr ""
+"Ny databas. Om du annoterade med eov före 1.0 finns de annoteringarna i "
+"annotations.db i eov:s gamla inställningsmapp (~/.config/eov på Linux, ~/"
+"Library/Application Support/eov på macOS, %APPDATA%\\eov på Windows): hämta "
+"in dem med Sammanfoga… ovan."
+
+#: src/fileio.rs:105 src/fileio.rs:115
+msgid "cannot read {file}: {error}"
+msgstr "{file} kan inte läsas: {error}"
+
+#: src/fileio.rs:109
+msgid "{file} is {size} MB; imports are limited to {limit} MB"
+msgstr "{file} är {size} MB; importer är begränsade till {limit} MB"
+
+#: src/formats/dicom/mod.rs:605
+msgid "There are too many coordinates for one DICOM annotation group."
+msgstr "Det finns för många koordinater för en DICOM-annoteringsgrupp."
+
+#: src/formats/dicom/mod.rs:674
+msgid "There are too many annotation groups."
+msgstr "Det finns för många annoteringsgrupper."
+
+#: src/formats/dicom/mod.rs:695
+msgid "There are too many annotations in one group."
+msgstr "Det finns för många annoteringar i en grupp."
+
+#: src/formats/dicom/mod.rs:736
+msgid "The slide has no annotations to export."
+msgstr "Preparatet har inga annoteringar att exportera."
+
+#: src/formats/dicom/mod.rs:872
+msgid ""
+"It refers to this slide's DICOM image (series {}) and joins its study; the "
+"patient and study attributes are the slide's."
+msgstr ""
+"Den refererar till det här preparatets DICOM-bild (serie {}) och ingår i "
+"dess undersökning; patient- och undersökningsattributen är preparatets."
+
+#: src/formats/dicom/mod.rs:876
+msgid ""
+"This slide is not a DICOM image, so the file refers to no image: it is a "
+"study of its own with empty patient attributes, and DICOM viewers cannot "
+"attach it to a slide by themselves."
+msgstr ""
+"Det här preparatet är ingen DICOM-bild, så filen refererar inte till någon "
+"bild: den är en egen undersökning med tomma patientattribut, och DICOM-"
+"visningsprogram kan inte själva koppla den till ett preparat."
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot
+#. hold {}: …"; {regions} is "in 1 region" or "in 2 regions"; "drawn
+#. without it/them": other viewers draw these regions without their holes.
+#: src/formats/dicom/mod.rs:886
+msgid "{n} hole {regions} (drawn without it)"
+msgid_plural "{n} holes {regions} (drawn without them)"
+msgstr[0] "{n} hål {regions} (ritas utan hålet)"
+msgstr[1] "{n} hål {regions} (ritas utan hålen)"
+
+#. Translators: in "{n} holes {regions} (drawn without them)".
+#: src/formats/dicom/mod.rs:890
+msgid "in {n} region"
+msgid_plural "in {n} regions"
+msgstr[0] "i {n} område"
+msgstr[1] "i {n} områden"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:897
+msgid "the text of {n} text label (written as points)"
+msgid_plural "the text of {n} text labels (written as points)"
+msgstr[0] "texten i {n} textetikett (skrivs som en punkt)"
+msgstr[1] "texten i {n} textetiketter (skrivs som punkter)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:904
+msgid "the heads of {n} arrow (written as lines)"
+msgid_plural "the heads of {n} arrows (written as lines)"
+msgstr[0] "spetsen på {n} pil (skrivs som en linje)"
+msgstr[1] "spetsarna på {n} pilar (skrivs som linjer)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:911
+msgid "the names, descriptions and statuses of {n} annotation"
+msgid_plural "the names, descriptions and statuses of {n} annotations"
+msgstr[0] "namn, beskrivning och status för {n} annotering"
+msgstr[1] "namn, beskrivningar och status för {n} annoteringar"
+
+#. Translators: {} lists what is lost, such as "the heads of 2 arrows (written
+#. as lines) and the text of 1 text label (written as points)".
+#: src/formats/dicom/mod.rs:919
+msgid ""
+"DICOM bulk annotations cannot hold {}: other viewers do not see them, but "
+"eov reads them back from its private attributes."
+msgstr ""
+"DICOM-bulkannoteringar kan inte innehålla {}: andra visningsprogram ser dem "
+"inte, men eov läser tillbaka dem från sina privata attribut."
+
+#: src/formats/dicom/mod.rs:924
+msgid ""
+"Each layer, class and kind of shape is a group labelled with its class (or "
+"its layer). Authors, comments, properties and times are not exported (eov "
+"JSON keeps everything)."
+msgstr ""
+"Varje kombination av lager, klass och formtyp blir en grupp som märks med "
+"sin klass (eller sitt lager). Författare, kommentarer, egenskaper och "
+"tidpunkter exporteras inte (eov JSON behåller allt)."
+
+#: src/formats/dicom/mod.rs:928
+msgid ""
+"{n} annotation with too few points or unusable coordinates was left out."
+msgid_plural ""
+"{n} annotations with too few points or unusable coordinates were left out."
+msgstr[0] ""
+"{n} annotering med för få punkter eller oanvändbara koordinater utelämnades."
+msgstr[1] ""
+"{n} annoteringar med för få punkter eller oanvändbara koordinater "
+"utelämnades."
+
+#. Translators: the end of a list, "a, b and c": {first} is "a, b".
+#: src/formats/dicom/mod.rs:943
+msgid "{first} and {last}"
+msgstr "{first} och {last}"
+
+#. Translators: between the items of a list ("a, b and c").
+#: src/formats/dicom/mod.rs:946
+msgid ", "
+msgstr ", "
+
+#: src/formats/dicom/mod.rs:978
+msgid ""
+"Made for a DICOM slide; this one is not a DICOM image, so whether the "
+"annotations belong to it cannot be checked. Coordinates are taken as level-0 "
+"pixels of this slide."
+msgstr ""
+"Skapad för ett DICOM-preparat; det här är ingen DICOM-bild, så det går inte "
+"att kontrollera om annoteringarna hör till det. Koordinaterna tolkas som "
+"pixlar på nivå 0 i det här preparatet."
+
+#: src/formats/dicom/mod.rs:987
+msgid "Made for this slide (its DICOM image)."
+msgstr "Skapad för det här preparatet (dess DICOM-bild)."
+
+#: src/formats/dicom/mod.rs:994
+msgid "Made for this slide (its DICOM series)."
+msgstr "Skapad för det här preparatet (dess DICOM-serie)."
+
+#: src/formats/dicom/mod.rs:998
+msgid ""
+"Made for another image of this slide's DICOM series (another resolution "
+"level?), whose pixels may not be level-0 pixels."
+msgstr ""
+"Skapad för en annan bild i det här preparatets DICOM-serie (en annan "
+"upplösningsnivå?), vars pixlar kanske inte är pixlar på nivå 0."
+
+#: src/formats/dicom/mod.rs:1005
+msgid "Made for a different DICOM slide (it refers to other images)."
+msgstr ""
+"Skapad för ett annat DICOM-preparat (filen refererar till andra bilder)."
+
+#: src/formats/dicom/mod.rs:1014
+msgid ""
+"This DICOM file is a slide image (VL Whole Slide Microscopy), not "
+"annotations: open it as a slide. Annotations are read from Microscopy Bulk "
+"Simple Annotations objects (modality ANN)."
+msgstr ""
+"Den här DICOM-filen är en preparatbild (VL Whole Slide Microscopy), inte "
+"annoteringar: öppna den som ett preparat. Annoteringar läses från Microscopy "
+"Bulk Simple Annotations-objekt (modalitet ANN)."
+
+#: src/formats/dicom/mod.rs:1018
+msgid ""
+"This DICOM file is a structured report (SR). eov reads DICOM annotations "
+"from Microscopy Bulk Simple Annotations objects (modality ANN), not from "
+"structured reports."
+msgstr ""
+"Den här DICOM-filen är en strukturerad rapport (SR). eov läser DICOM-"
+"annoteringar från Microscopy Bulk Simple Annotations-objekt (modalitet ANN), "
+"inte från strukturerade rapporter."
+
+#: src/formats/dicom/mod.rs:1021
+msgid "This DICOM file does not say what it holds (it has no SOP Class UID)."
+msgstr ""
+"Den här DICOM-filen anger inte vad den innehåller (den saknar SOP Class UID)."
+
+#: src/formats/dicom/mod.rs:1024
+msgid ""
+"This DICOM file is not an annotation object (SOP class {}); eov reads "
+"Microscopy Bulk Simple Annotations (modality ANN)."
+msgstr ""
+"Den här DICOM-filen är inget annoteringsobjekt (SOP-klass {}); eov läser "
+"Microscopy Bulk Simple Annotations (modalitet ANN)."
+
+#: src/formats/dicom/mod.rs:1047
+msgid "eov's private description of the slide is unreadable and was ignored."
+msgstr "eov:s privata beskrivning av preparatet är oläsbar och ignorerades."
+
+#. Translators: {} says what is wrong with the file, in English.
+#: src/formats/dicom/mod.rs:1080
+msgid "The DICOM file cannot be read: {}."
+msgstr "DICOM-filen kan inte läsas: {}."
+
+#: src/formats/dicom/mod.rs:1099
+msgid ""
+"This file holds 3D annotations: their coordinates are millimetres in the "
+"slide's frame of reference (DICOM SCOORD3D), and eov places annotations by "
+"level-0 pixels. Only 2D (pixel) annotations can be imported."
+msgstr ""
+"Den här filen innehåller 3D-annoteringar: deras koordinater anges i "
+"millimeter i preparatets referensram (DICOM SCOORD3D), medan eov placerar "
+"annoteringar efter pixlar på nivå 0. Endast 2D-annoteringar "
+"(pixelkoordinater) kan importeras."
+
+#: src/formats/dicom/mod.rs:1104
+msgid ""
+"The file does not say whether its coordinates are 2D or 3D (Annotation "
+"Coordinate Type is missing)."
+msgstr ""
+"Filen anger inte om koordinaterna är 2D eller 3D (Annotation Coordinate Type "
+"saknas)."
+
+#: src/formats/dicom/mod.rs:1109
+msgid ""
+"The file's coordinates are of an unknown type (\"{}\"); 2D annotations can "
+"be imported."
+msgstr ""
+"Filens koordinater är av en okänd typ (”{}”); 2D-annoteringar kan importeras."
+
+#: src/formats/dicom/mod.rs:1126
+msgid ""
+"The annotations' pixel coordinates are relative to single frames (tiles) of "
+"the image (Pixel Origin Interpretation FRAME), which eov cannot place; "
+"coordinates relative to the whole image (VOLUME) can be imported."
+msgstr ""
+"Annoteringarnas pixelkoordinater är relativa till enskilda ramar (plattor) i "
+"bilden (Pixel Origin Interpretation FRAME), vilka eov inte kan placera; "
+"koordinater relativa till hela bilden (VOLUME) kan importeras."
+
+#: src/formats/dicom/mod.rs:1130
+msgid ""
+"Unknown pixel origin interpretation \"{}\"; coordinates are taken relative "
+"to the whole image."
+msgstr ""
+"Okänd tolkning av pixelorigo (”{}”); koordinaterna tolkas relativt hela "
+"bilden."
+
+#: src/formats/dicom/mod.rs:1136
+msgid "The DICOM file has no annotation groups."
+msgstr "DICOM-filen har inga annoteringsgrupper."
+
+#: src/formats/dicom/mod.rs:1146
+msgid ""
+"{n} rectangle or ellipse not aligned with the image axes became a polygon."
+msgid_plural ""
+"{n} rectangles and ellipses not aligned with the image axes became polygons."
+msgstr[0] ""
+"{n} rektangel eller ellips som inte var inriktad efter bildaxlarna blev en "
+"polygon."
+msgstr[1] ""
+"{n} rektanglar och ellipser som inte var inriktade efter bildaxlarna blev "
+"polygoner."
+
+#: src/formats/dicom/mod.rs:1178
+msgid "annotation group with lines or polygons without a point index list"
+msgstr "annoteringsgrupp med linjer eller polygoner utan punktindexlista"
+
+#: src/formats/dicom/mod.rs:1182
+msgid "annotation group with an unreadable point index list"
+msgstr "annoteringsgrupp med oläsbar punktindexlista"
+
+#: src/formats/dicom/mod.rs:1197
+msgid "annotation group with lines or polygons with an empty point index list"
+msgstr "annoteringsgrupp med linjer eller polygoner med tom punktindexlista"
+
+#: src/formats/dicom/mod.rs:1211
+msgid ""
+"The point index list of \"{}\" counts points rather than coordinate values; "
+"it was read that way."
+msgstr ""
+"Punktindexlistan för ”{}” räknar punkter i stället för koordinatvärden; den "
+"lästes på det sättet."
+
+#: src/formats/dicom/mod.rs:1217
+msgid ""
+"annotation group with a point index list that does not fit its coordinates"
+msgstr ""
+"annoteringsgrupp med en punktindexlista som inte passar dess koordinater"
+
+#. Translators: a reason why a measurement of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1333
+msgid "measurement without values"
+msgstr "mätning utan värden"
+
+#: src/formats/dicom/mod.rs:1340
+msgid "measurement with unreadable values"
+msgstr "mätning med oläsbara värden"
+
+#: src/formats/dicom/mod.rs:1352
+msgid "measurement that does not match its annotations"
+msgstr "mätning som inte stämmer med sina annoteringar"
+
+#. Translators: a reason why a group of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1398
+msgid "annotation group without coordinates"
+msgstr "annoteringsgrupp utan koordinater"
+
+#: src/formats/dicom/mod.rs:1402
+msgid "annotation group with unreadable coordinates"
+msgstr "annoteringsgrupp med oläsbara koordinater"
+
+#: src/formats/dicom/mod.rs:1408
+msgid "annotation group whose coordinates are not (column, row) pairs"
+msgstr "annoteringsgrupp vars koordinater inte är (kolumn, rad)-par"
+
+#: src/formats/dicom/mod.rs:1426
+msgid "rectangles or ellipses without four points each"
+msgstr "rektanglar eller ellipser som inte har fyra punkter vardera"
+
+#: src/formats/dicom/mod.rs:1439
+msgid "annotation group without a graphic type"
+msgstr "annoteringsgrupp utan grafiktyp"
+
+#: src/formats/dicom/mod.rs:1443
+msgid "annotation group of graphic type {}"
+msgstr "annoteringsgrupp av grafiktypen {}"
+
+#: src/formats/dicom/mod.rs:1451
+msgid ""
+"\"{name}\" says it has {n} annotation, but its coordinates hold {held}; the "
+"coordinates were read."
+msgid_plural ""
+"\"{name}\" says it has {n} annotations, but its coordinates hold {held}; the "
+"coordinates were read."
+msgstr[0] ""
+"”{name}” anger {n} annotering, men dess koordinater rymmer {held}; "
+"koordinaterna lästes."
+msgstr[1] ""
+"”{name}” anger {n} annoteringar, men dess koordinater rymmer {held}; "
+"koordinaterna lästes."
+
+#: src/formats/dicom/mod.rs:1463
+msgid ""
+"eov's private attributes of \"{}\" are unreadable; the group was read from "
+"its DICOM attributes alone."
+msgstr ""
+"eov:s privata attribut för ”{}” är oläsbara; gruppen lästes enbart från sina "
+"DICOM-attribut."
+
+#: src/formats/dicom/mod.rs:1529
+msgid "annotations beyond the limit of {} per file"
+msgstr "annoteringar utöver gränsen på {} per fil"
+
+#: src/formats/dicom/mod.rs:1537
+msgid "annotation with non-finite coordinates"
+msgstr "annotering med icke-ändliga koordinater"
+
+#: src/formats/eov.rs:209
+msgid ""
+"This file uses eov annotation format {version}; this plugin reads up to "
+"{supported}. Update the plugin."
+msgstr ""
+"Den här filen använder eov:s annoteringsformat {version}; det här tillägget "
+"läser upp till {supported}. Uppdatera tillägget."
+
+#: src/formats/eov.rs:261
+msgid "The file has no \"layers\"."
+msgstr "Filen har inga ”layers”."
+
+#: src/formats/eov.rs:277
+msgid "Layer \"{}\" has an unreadable colour; a palette colour is used."
+msgstr "Lagret ”{}” har en oläsbar färg; en färg från paletten används."
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/eov.rs:292
+msgid "unreadable geometry"
+msgstr "oläsbar geometri"
+
+#: src/formats/eov.rs:332
+msgid "The file has no \"annotation_layers\"."
+msgstr "Filen har inga ”annotation_layers”."
+
+#: src/formats/eov.rs:359
+msgid "point without coordinates"
+msgstr "punkt utan koordinater"
+
+#: src/formats/eov.rs:384
+msgid "polygon with unreadable vertices"
+msgstr "polygon med oläsbara hörnpunkter"
+
+#: src/formats/eov.rs:390
+msgid "unknown annotation type"
+msgstr "okänd annoteringstyp"
+
+#: src/formats/eov.rs:426
+msgid "The archive has no \"slides\"."
+msgstr "Arkivet har inga ”slides”."
+
+#: src/formats/eov.rs:432
+msgid "An archive entry was skipped: {}"
+msgstr "En post i arkivet hoppades över: {}"
+
+#. Translators: reasons why a shape of an imported file was skipped,
+#. listed as "2 × unreadable point".
+#: src/formats/geojson.rs:68
+msgid "unreadable point"
+msgstr "oläsbar punkt"
+
+#: src/formats/geojson.rs:69
+msgid "unreadable line"
+msgstr "oläsbar linje"
+
+#: src/formats/geojson.rs:70
+msgid "unreadable polygon"
+msgstr "oläsbar polygon"
+
+#: src/formats/geojson.rs:74
+msgid "geometry without a type"
+msgstr "geometri utan typ"
+
+#: src/formats/geojson.rs:84
+msgid "unreadable points"
+msgstr "oläsbara punkter"
+
+#: src/formats/geojson.rs:103
+msgid "unreadable lines"
+msgstr "oläsbara linjer"
+
+#: src/formats/geojson.rs:119
+msgid "unreadable polygons"
+msgstr "oläsbara polygoner"
+
+#: src/formats/geojson.rs:128
+msgid "unreadable geometry collection"
+msgstr "oläsbar geometrisamling"
+
+#: src/formats/geojson.rs:133
+msgid "unsupported geometry type"
+msgstr "geometrityp som inte stöds"
+
+#: src/formats/geojson.rs:221
+msgid "The FeatureCollection has no features."
+msgstr "FeatureCollection innehåller inga Feature-objekt."
+
+#: src/formats/geojson.rs:224 src/formats/geojson.rs:226
+msgid "Not GeoJSON."
+msgstr "Inte GeoJSON."
+
+#. Translators: a reason why an element of an imported file was skipped.
+#: src/formats/geojson.rs:242
+msgid "not a GeoJSON feature"
+msgstr "inte ett GeoJSON Feature-objekt"
+
+#: src/formats/geojson.rs:259
+msgid "feature without geometry"
+msgstr "Feature-objekt utan geometri"
+
+#: src/formats/geojson.rs:318
+msgid "properties beyond the limit of {} per annotation"
+msgstr "egenskaper utöver gränsen på {} per annotering"
+
+#: src/formats/geojson.rs:351
+msgid "The GeoJSON file contains no features."
+msgstr "GeoJSON-filen innehåller inga Feature-objekt."
+
+#: src/formats/mod.rs:240
+msgid "This .dcm file is not a DICOM file (\"DICM\" is missing at byte 128)."
+msgstr "Den här .dcm-filen är ingen DICOM-fil (”DICM” saknas vid byte 128)."
+
+#: src/formats/mod.rs:242
+msgid ""
+"The file is not UTF-8 text or DICOM, so it is not a supported annotation "
+"file."
+msgstr ""
+"Filen är varken UTF-8-text eller DICOM, så den är ingen annoteringsfil som "
+"stöds."
+
+#: src/formats/mod.rs:250
+msgid "The file is not valid JSON: {}"
+msgstr "Filen är inte giltig JSON: {}"
+
+#: src/formats/mod.rs:257
+msgid "This JSON file is neither GeoJSON nor an eov annotation export."
+msgstr ""
+"Den här JSON-filen är varken GeoJSON eller en annoteringsexport från eov."
+
+#: src/formats/mod.rs:263
+msgid ""
+"Unsupported file: expected GeoJSON, eov JSON, ASAP XML, ImageScope XML, NDPA "
+"or DICOM bulk annotations."
+msgstr ""
+"Filen stöds inte: förväntat format är GeoJSON, eov JSON, ASAP XML, "
+"ImageScope XML, NDPA eller DICOM-bulkannoteringar."
+
+#: src/formats/ndpa.rs:62
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide is not one, so they cannot be placed on it."
+msgstr ""
+"NDPA-koordinater mäts från mitten av ett Hamamatsu-preparat (NDPI), men det "
+"här preparatet är inte ett sådant, så de kan inte placeras på det."
+
+#. Translators: {} is the vendor of the slide's format ("aperio").
+#: src/formats/ndpa.rs:68
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide ({}) is not one, so they cannot be placed on it."
+msgstr ""
+"NDPA-koordinater mäts från mitten av ett Hamamatsu-preparat (NDPI), men det "
+"här preparatet ({}) är inte ett sådant, så de kan inte placeras på det."
+
+#: src/formats/ndpa.rs:79
+msgid ""
+"This NDPI does not give its offsets from the slide centre (hamamatsu."
+"XOffsetFromSlideCentre and YOffsetFromSlideCentre), so the NDPA coordinates "
+"cannot be placed on it."
+msgstr ""
+"Den här NDPI-filen anger inte sin förskjutning från preparatets mitt "
+"(hamamatsu.XOffsetFromSlideCentre och YOffsetFromSlideCentre), så NDPA-"
+"koordinaterna kan inte placeras på den."
+
+#: src/formats/ndpa.rs:88
+msgid ""
+"This slide has no pixel size, so the NDPA's nanometre coordinates cannot be "
+"converted to pixels."
+msgstr ""
+"Det här preparatet saknar pixelstorlek, så NDPA-filens koordinater i "
+"nanometer kan inte omvandlas till pixlar."
+
+#: src/formats/ndpa.rs:92
+msgid "The slide's size is unknown."
+msgstr "Preparatets storlek är okänd."
+
+#. Translators: a reason why an annotation of an imported file was skipped; {} is
+#. its type in the file ("freehand", "circle", "pin", …).
+#: src/formats/ndpa.rs:211
+msgid "{} annotation with unreadable coordinates"
+msgstr "{}-annotering med oläsbara koordinater"
+
+#: src/formats/ndpa.rs:267
+msgid "unsupported NDPA annotation type '{}'"
+msgstr "NDPA-annoteringstypen ”{}” stöds inte"
+
+#: src/formats/ndpa.rs:296
+msgid "annotation in unsupported coordinates ({})"
+msgstr "annotering i koordinater som inte stöds ({})"
+
+#: src/formats/ndpa.rs:300
+msgid "view state without an annotation"
+msgstr "vytillstånd utan annotering"
+
+#: src/formats/xml.rs:28
+msgid "The XML is not well-formed: {}"
+msgstr "XML-koden är inte välformad: {}"
+
+#: src/formats/xml.rs:37
+msgid ""
+"Unsupported XML annotations (root element <{}>); ASAP, Aperio ImageScope and "
+"Hamamatsu NDPA files are supported."
+msgstr ""
+"XML-annoteringarna stöds inte (rotelement <{}>); filer från ASAP, Aperio "
+"ImageScope och Hamamatsu NDPA stöds."
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/xml.rs:96
+msgid "annotation with unreadable coordinates"
+msgstr "annotering med oläsbara koordinater"
+
+#: src/formats/xml.rs:158
+msgid "unsupported ASAP annotation type"
+msgstr "ASAP-annoteringstyp som inte stöds"
+
+#: src/formats/xml.rs:198
+msgid "hole of a shape that is not a polygon"
+msgstr "hål i en form som inte är en polygon"
+
+#: src/formats/xml.rs:200
+msgid "hole of a missing polygon"
+msgstr "hål i en polygon som saknas"
+
+#: src/formats/xml.rs:275
+msgid "region with unreadable vertices"
+msgstr "område med oläsbara hörnpunkter"
+
+#: src/formats/xml.rs:357
+msgid "negative region outside every region"
+msgstr "negativt område utanför alla områden"
+
+#: src/geometry.rs:252
+msgid "The shape has invalid (non-finite) coordinates."
+msgstr "Formen har ogiltiga (icke-ändliga) koordinater."
+
+#: src/geometry.rs:256
+msgid "The shape has {n} vertices; the limit is {limit}."
+msgid_plural "The shape has {n} vertices; the limit is {limit}."
+msgstr[0] "Formen har {n} hörnpunkt; gränsen är {limit}."
+msgstr[1] "Formen har {n} hörnpunkter; gränsen är {limit}."
+
+#: src/geometry.rs:266
+msgid "The point is outside the slide."
+msgstr "Punkten ligger utanför preparatet."
+
+#: src/geometry.rs:288
+msgid "An arrow needs two distinct points."
+msgstr "En pil kräver två olika punkter."
+
+#: src/geometry.rs:290
+msgid "A line needs at least two distinct points."
+msgstr "En linje kräver minst två olika punkter."
+
+#: src/geometry.rs:317
+msgid "The rectangle is outside the slide."
+msgstr "Rektangeln ligger utanför preparatet."
+
+#: src/geometry.rs:325
+msgid "The rectangle has no area."
+msgstr "Rektangeln har ingen area."
+
+#: src/geometry.rs:337
+msgid "The ellipse has no area."
+msgstr "Ellipsen har ingen area."
+
+#: src/geometry.rs:340
+msgid "The ellipse is centred outside the slide."
+msgstr "Ellipsens mittpunkt ligger utanför preparatet."
+
+#: src/geometry.rs:352
+msgid "A polygon needs at least three distinct corners."
+msgstr "En polygon kräver minst tre olika hörn."
+
+#: src/geometry.rs:355 src/geometry.rs:393
+msgid "The polygon encloses no area."
+msgstr "Polygonen omsluter ingen area."
+
+#: src/geometry.rs:391
+msgid "The polygon is outside the slide."
+msgstr "Polygonen ligger utanför preparatet."
+
+#: src/lib.rs:80 src/lib.rs:202
+msgid "Annotations"
+msgstr "Annoteringar"
+
+#: src/lib.rs:85
+msgid "Show or hide annotations on this slide"
+msgstr "Visa eller dölj annoteringar på det här preparatet"
+
+#: src/lib.rs:102
+msgid "Counting {}"
+msgstr "Räknar {}"
+
+#: src/lib.rs:104
+msgid "Counting {class}, Shift+click: {alternate}"
+msgstr "Räknar {class}, Shift+klick: {alternate}"
+
+#: src/lib.rs:109
+msgid "Counting {class}, Alt+click: {immune}"
+msgstr "Räknar {class}, Alt+klick: {immune}"
+
+#: src/lib.rs:114
+msgid "Counting {class}, Shift+click: {alternate}, Alt+click: {immune}"
+msgstr "Räknar {class}, Shift+klick: {alternate}, Alt+klick: {immune}"
+
+#. Translators: HPF is a high-power field.
+#: src/lib.rs:123
+msgid ""
+"The dashed circle is one HPF: click to place a field, drag to pan, Esc to "
+"leave"
+msgstr ""
+"Den streckade cirkeln är ett HPF: klicka för att placera ett fält, dra för "
+"att panorera, Esc för att avsluta"
+
+#: src/lib.rs:125
+msgid "Click to select, drag to select several; drag handles to edit"
+msgstr ""
+"Klicka för att markera, dra för att markera flera; dra i handtagen för att "
+"redigera"
+
+#: src/lib.rs:127
+msgid "Drawing {}"
+msgstr "Ritar {}"
+
+#. Translators: {} is the name of a file format ("GeoJSON").
+#: src/lib.rs:441
+msgid "{} · cannot be placed on this slide"
+msgstr "{} · kan inte placeras på det här preparatet"
+
+#. Translators: {format} is the name of a file format ("GeoJSON");
+#. {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/lib.rs:448
+msgid "{format} · {n} annotation {layers}"
+msgid_plural "{format} · {n} annotations {layers}"
+msgstr[0] "{format} · {n} annotering {layers}"
+msgstr[1] "{format} · {n} annoteringar {layers}"
+
+#: src/lib.rs:455
+msgid "{n} class"
+msgid_plural "{n} classes"
+msgstr[0] "{n} klass"
+msgstr[1] "{n} klasser"
+
+#: src/lib.rs:465
+msgid "Layers with the same name already exist: {}"
+msgstr "Det finns redan lager med samma namn: {}"
+
+#: src/lib.rs:497 src/transfer.rs:373
+msgid "Import annotations"
+msgstr "Importera annoteringar"
+
+#: src/lib.rs:507
+msgid "Cannot show the import dialog"
+msgstr "Importdialogen kan inte visas"
+
+#: src/lib.rs:641 src/sidebar.rs:1490
+msgid "Lock"
+msgstr "låsning"
+
+#: src/lib.rs:643 src/sidebar.rs:1492
+msgid "Unlock"
+msgstr "upplåsning"
+
+#: src/lib.rs:789
+msgid "Could not save the annotation settings"
+msgstr "Annoteringsinställningarna kunde inte sparas"
+
+#: src/lib.rs:1063
+msgid "Show in annotations panel"
+msgstr "Visa i annoteringspanelen"
+
+#: src/lib.rs:1064
+msgid "Copy measurements"
+msgstr "Kopiera mätvärden"
+
+#: src/lib.rs:1066
+msgid "Unlock annotation"
+msgstr "Lås upp annotering"
+
+#: src/lib.rs:1068
+msgid "Lock annotation"
+msgstr "Lås annotering"
+
+#: src/lib.rs:1077
+msgctxt "Context menu"
+msgid "Delete annotation"
+msgstr "Radera annotering"
+
+#: src/lib.rs:1083
+msgid "Add point here"
+msgstr "Lägg till punkt här"
+
+#: src/lib.rs:1084
+msgid "Place HPF field here"
+msgstr "Placera HPF-fält här"
+
+#: src/lib.rs:1085
+msgid "Annotations panel"
+msgstr "Annoteringspanel"
+
+#: src/measure.rs:276
+msgid "Area"
+msgstr "Area"
+
+#: src/measure.rs:281
+msgid "Length"
+msgstr "Längd"
+
+#: src/measure.rs:283
+msgid "Perimeter"
+msgstr "Omkrets"
+
+#: src/measure.rs:289
+msgid "Max diameter (Feret)"
+msgstr "Största diameter (Feret)"
+
+#: src/measure.rs:292
+msgid "Min diameter (Feret)"
+msgstr "Minsta diameter (Feret)"
+
+#: src/measure.rs:297
+msgid "Centre (px)"
+msgstr "Centrum (px)"
+
+#: src/measure.rs:302 src/measure.rs:307
+msgid "Calibration"
+msgstr "Kalibrering"
+
+#: src/measure.rs:303
+msgid "No pixel size: values in level-0 pixels"
+msgstr "Ingen pixelstorlek: värden i pixlar på nivå 0"
+
+#: src/measure.rs:308
+msgid "One pixel axis missing; assumed square pixels"
+msgstr "En pixelaxel saknas; kvadratiska pixlar antas"
+
+#: src/model.rs:49 ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Draft"
+msgstr "Utkast"
+
+#: src/model.rs:50 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Verified"
+msgstr "Verifierad"
+
+#: src/model.rs:51 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Rejected"
+msgstr "Avvisad"
+
+#: src/model.rs:118
+msgctxt "Annotation kind"
+msgid "Point"
+msgstr "Punkt"
+
+#: src/model.rs:119
+msgctxt "Annotation kind"
+msgid "Line"
+msgstr "Linje"
+
+#: src/model.rs:120
+msgctxt "Annotation kind"
+msgid "Arrow"
+msgstr "Pil"
+
+#: src/model.rs:121
+msgctxt "Annotation kind"
+msgid "Polygon"
+msgstr "Polygon"
+
+#: src/model.rs:122
+msgctxt "Annotation kind"
+msgid "Rectangle"
+msgstr "Rektangel"
+
+#: src/model.rs:123
+msgctxt "Annotation kind"
+msgid "Ellipse"
+msgstr "Ellips"
+
+#: src/model.rs:124
+msgctxt "Annotation kind"
+msgid "Text"
+msgstr "Text"
+
+#: src/model.rs:750
+msgid "The layer name cannot be empty."
+msgstr "Lagernamnet får inte vara tomt."
+
+#: src/model.rs:751
+msgid "The class name cannot be empty."
+msgstr "Klassnamnet får inte vara tomt."
+
+#: src/model.rs:752
+msgid "The name cannot be empty."
+msgstr "Namnet får inte vara tomt."
+
+#: src/model.rs:759
+msgid "The name is {n} characters long; the limit is {limit}."
+msgid_plural "The name is {n} characters long; the limit is {limit}."
+msgstr[0] "Namnet är {n} tecken långt; gränsen är {limit}."
+msgstr[1] "Namnet är {n} tecken långt; gränsen är {limit}."
+
+#: src/model.rs:764
+msgid "The layer name is {n} characters long; the limit is {limit}."
+msgid_plural "The layer name is {n} characters long; the limit is {limit}."
+msgstr[0] "Lagernamnet är {n} tecken långt; gränsen är {limit}."
+msgstr[1] "Lagernamnet är {n} tecken långt; gränsen är {limit}."
+
+#: src/model.rs:769
+msgid "The class name is {n} characters long; the limit is {limit}."
+msgid_plural "The class name is {n} characters long; the limit is {limit}."
+msgstr[0] "Klassnamnet är {n} tecken långt; gränsen är {limit}."
+msgstr[1] "Klassnamnet är {n} tecken långt; gränsen är {limit}."
+
+#: src/model.rs:774
+msgid "The author is {n} characters long; the limit is {limit}."
+msgid_plural "The author is {n} characters long; the limit is {limit}."
+msgstr[0] "Författarnamnet är {n} tecken långt; gränsen är {limit}."
+msgstr[1] "Författarnamnet är {n} tecken långt; gränsen är {limit}."
+
+#: src/model.rs:779
+msgid "The setting is {n} characters long; the limit is {limit}."
+msgid_plural "The setting is {n} characters long; the limit is {limit}."
+msgstr[0] "Inställningen är {n} tecken lång; gränsen är {limit}."
+msgstr[1] "Inställningen är {n} tecken lång; gränsen är {limit}."
+
+#: src/model.rs:784
+msgid "The notes are {n} characters long; the limit is {limit}."
+msgid_plural "The notes are {n} characters long; the limit is {limit}."
+msgstr[0] "Anteckningarna är {n} tecken långa; gränsen är {limit}."
+msgstr[1] "Anteckningarna är {n} tecken långa; gränsen är {limit}."
+
+#: src/model.rs:789
+msgid "The description is {n} characters long; the limit is {limit}."
+msgid_plural "The description is {n} characters long; the limit is {limit}."
+msgstr[0] "Beskrivningen är {n} tecken lång; gränsen är {limit}."
+msgstr[1] "Beskrivningen är {n} tecken lång; gränsen är {limit}."
+
+#: src/model.rs:794
+msgid "The comment is {n} characters long; the limit is {limit}."
+msgid_plural "The comment is {n} characters long; the limit is {limit}."
+msgstr[0] "Kommentaren är {n} tecken lång; gränsen är {limit}."
+msgstr[1] "Kommentaren är {n} tecken lång; gränsen är {limit}."
+
+#: src/model.rs:837
+msgid "An annotation can have at most {n} properties."
+msgid_plural "An annotation can have at most {n} properties."
+msgstr[0] "En annotering kan ha högst {n} egenskap."
+msgstr[1] "En annotering kan ha högst {n} egenskaper."
+
+#: src/model.rs:851
+msgid "Property names are limited to {n} characters."
+msgid_plural "Property names are limited to {n} characters."
+msgstr[0] "Egenskapsnamn får vara högst {n} tecken långa."
+msgstr[1] "Egenskapsnamn får vara högst {n} tecken långa."
+
+#: src/model.rs:856
+msgid "Property values are limited to {n} characters."
+msgid_plural "Property values are limited to {n} characters."
+msgstr[0] "Egenskapsvärden får vara högst {n} tecken långa."
+msgstr[1] "Egenskapsvärden får vara högst {n} tecken långa."
+
+#: src/model.rs:884
+msgid "A hotkey is a single character (a letter or a symbol), not {}."
+msgstr ""
+"En snabbtangent är ett enda tecken (en bokstav eller en symbol), inte {}."
+
+#: src/model.rs:889
+msgid "A hotkey must be a visible character."
+msgstr "En snabbtangent måste vara ett synligt tecken."
+
+#: src/model.rs:892
+msgid "eov already uses the '{}' key."
+msgstr "eov använder redan tangenten ”{}”."
+
+#: src/model.rs:896
+msgid "'{}' is already used by an annotation tool or class."
+msgstr "”{}” används redan av ett annoteringsverktyg eller en klass."
+
+#. Translators: in the tooltip of a locked annotation, after its class and name.
+#: src/overlay.rs:171
+msgid "locked"
+msgstr "låst"
+
+#. Translators: this slide's points against the other reader's; F1 is the F1 score.
+#: src/sidebar.rs:360
+msgid "Points {ours} vs {theirs} · {matched} matched · F1 {f1}"
+msgstr "Punkter {ours} mot {theirs} · {matched} matchade · F1 {f1}"
+
+#. Translators: this slide's regions and their area against the other reader's;
+#. Dice is the Dice coefficient of the areas.
+#: src/sidebar.rs:373
+msgid "Regions {ours} vs {theirs} · {our_area} vs {their_area} · Dice {dice}"
+msgstr ""
+"Områden {ours} mot {theirs} · {our_area} mot {their_area} · Dice {dice}"
+
+#: src/sidebar.rs:385
+msgid "All regions"
+msgstr "Alla områden"
+
+#. Translators: {layers} in texts such as "{n} annotations {layers}" ("12 annotations in 3 layers").
+#: src/sidebar.rs:431
+msgid "in {n} layer"
+msgid_plural "in {n} layers"
+msgstr[0] "i {n} lager"
+msgstr[1] "i {n} lager"
+
+#: src/sidebar.rs:447
+msgid "No slide open"
+msgstr "Inget preparat öppet"
+
+#: src/sidebar.rs:453
+msgid "Annotation database unavailable: {}"
+msgstr "Annoteringsdatabasen är inte tillgänglig: {}"
+
+#: src/sidebar.rs:455
+msgid "Opening the annotation database…"
+msgstr "Öppnar annoteringsdatabasen…"
+
+#: src/sidebar.rs:461
+msgid "Loading annotations…"
+msgstr "Läser in annoteringar…"
+
+#: src/sidebar.rs:469
+msgid ""
+"The annotation database is read-only: annotations can be viewed and "
+"exported, not edited."
+msgstr ""
+"Annoteringsdatabasen är skrivskyddad: annoteringar kan visas och exporteras "
+"men inte redigeras."
+
+#: src/sidebar.rs:477
+msgid ""
+"This slide has no stable identity; its annotations are keyed by file name "
+"and size."
+msgstr ""
+"Det här preparatet har ingen stabil identitet; dess annoteringar knyts till "
+"filnamn och filstorlek."
+
+#. Translators: beside a layer of count points: the number of points.
+#: src/sidebar.rs:526
+msgid "{} · counts"
+msgstr "{} · cellräkning"
+
+#. Translators: beside the layer of HPF fields: the number of fields.
+#: src/sidebar.rs:528
+msgid "{} · HPF fields"
+msgstr "{} · HPF-fält"
+
+#: src/sidebar.rs:615
+msgid "{n} comment"
+msgid_plural "{n} comments"
+msgstr[0] "{n} kommentar"
+msgstr[1] "{n} kommentarer"
+
+#: src/sidebar.rs:649
+msgid "Show more ({n} not shown)"
+msgid_plural "Show more ({n} not shown)"
+msgstr[0] "Visa fler ({n} visas inte)"
+msgstr[1] "Visa fler ({n} visas inte)"
+
+#: src/sidebar.rs:667
+msgid "{n} match"
+msgid_plural "{n} matches"
+msgstr[0] "{n} träff"
+msgstr[1] "{n} träffar"
+
+#: src/sidebar.rs:670
+msgid ""
+"No annotations yet. Pick a tool in the toolbar (P polygon, . point, C count) "
+"and draw on the slide."
+msgstr ""
+"Inga annoteringar än. Välj ett verktyg i verktygsfältet (P polygon, . punkt, "
+"C cellräkning) och rita på preparatet."
+
+#: src/sidebar.rs:674
+msgid "Open a slide to see and draw its annotations."
+msgstr "Öppna ett preparat för att se och rita dess annoteringar."
+
+#: src/sidebar.rs:724
+msgid "created {created} · edited {edited}"
+msgstr "skapad {created} · redigerad {edited}"
+
+#: src/sidebar.rs:730
+msgid "By {author} · created {created} · edited {edited}"
+msgstr "Av {author} · skapad {created} · redigerad {edited}"
+
+#: src/sidebar.rs:750
+msgid "Unknown author"
+msgstr "Okänd författare"
+
+#: src/sidebar.rs:769
+msgid ""
+"This outline crosses itself (it was drawn with an older version). Its area "
+"uses the even-odd rule, like the display; Repair turns it into simple parts."
+msgstr ""
+"Den här konturen korsar sig själv (den ritades med en äldre version). Dess "
+"area beräknas med jämn-udda-regeln, precis som i visningen; Reparera delar "
+"upp den i enkla delar."
+
+#: src/sidebar.rs:775
+msgid "{n} annotation selected"
+msgid_plural "{n} annotations selected"
+msgstr[0] "{n} annotering markerad"
+msgstr[1] "{n} annoteringar markerade"
+
+#: src/sidebar.rs:778
+msgid "Mixed classes; changes apply to all selected."
+msgstr "Blandade klasser; ändringar gäller alla markerade."
+
+#: src/sidebar.rs:780
+msgid "Changes apply to all selected."
+msgstr "Ändringar gäller alla markerade."
+
+#. Translators: under a class whose key does nothing; {} is
+#. eov's reason, a whole sentence such as "Hotkey 'q' of …
+#. was ignored: it is a key eov already uses."
+#: src/sidebar.rs:828
+msgid "eov refused the hotkey: {}"
+msgstr "eov avvisade snabbtangenten: {}"
+
+#: src/sidebar.rs:861
+msgid ""
+"Whole slide. Select regions or HPF fields to count inside them and get "
+"densities."
+msgstr ""
+"Hela preparatet. Markera områden eller HPF-fält för att räkna inom dem och "
+"få tätheter."
+
+#. Translators: {fields} is "1 HPF field" or "3 HPF fields"
+#. (translated on its own; HPF is a high-power field).
+#: src/sidebar.rs:873
+msgid "Inside {n} selected region ({fields}): {area}"
+msgid_plural "Inside {n} selected regions ({fields}): {area}"
+msgstr[0] "Inom {n} markerat område ({fields}): {area}"
+msgstr[1] "Inom {n} markerade områden ({fields}): {area}"
+
+#. Translators: {fields} in "Inside {n} selected regions ({fields}): {area}".
+#: src/sidebar.rs:877
+msgid "{n} HPF field"
+msgid_plural "{n} HPF fields"
+msgstr[0] "{n} HPF-fält"
+msgstr[1] "{n} HPF-fält"
+
+#: src/sidebar.rs:883
+msgid "Inside {n} selected region: {area}"
+msgid_plural "Inside {n} selected regions: {area}"
+msgstr[0] "Inom {n} markerat område: {area}"
+msgstr[1] "Inom {n} markerade områden: {area}"
+
+#: src/sidebar.rs:890
+msgid "Inside {n} selected region: {area} (no pixel size, so no density)"
+msgid_plural ""
+"Inside {n} selected regions: {area} (no pixel size, so no density)"
+msgstr[0] ""
+"Inom {n} markerat område: {area} (ingen pixelstorlek, så ingen täthet)"
+msgstr[1] ""
+"Inom {n} markerade områden: {area} (ingen pixelstorlek, så ingen täthet)"
+
+#. Translators: cells per high-power field.
+#: src/sidebar.rs:905
+msgid "{} /HPF field"
+msgstr "{} /HPF-fält"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1000
+msgid "Read-only"
+msgstr "Skrivskyddad"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1003
+msgid "Ready"
+msgstr "Klar"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1007
+msgid "Opening…"
+msgstr "Öppnar…"
+
+#: src/sidebar.rs:1008
+msgid "Unavailable: {}"
+msgstr "Inte tillgänglig: {}"
+
+#. Translators: a slide whose file name an older eov did not record; {} is its number in the annotation database.
+#: src/sidebar.rs:1068
+msgid "Slide #{} (from an older version)"
+msgstr "Preparat nr {} (från en äldre version)"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/sidebar.rs:1075
+msgid "{n} annotation {layers} · last opened {date}"
+msgid_plural "{n} annotations {layers} · last opened {date}"
+msgstr[0] "{n} annotering {layers} · senast öppnat {date}"
+msgstr[1] "{n} annoteringar {layers} · senast öppnat {date}"
+
+#. Translators: "List" is the label of the button beside this text.
+#: src/sidebar.rs:1093
+msgid "Press \"List\" to see the other slides in the database."
+msgstr "Tryck på ”Lista” för att se de andra preparaten i databasen."
+
+#: src/sidebar.rs:1094
+msgid "No other slides have annotations."
+msgstr "Inga andra preparat har annoteringar."
+
+#: src/sidebar.rs:1096
+msgid ""
+"If a slide was re-saved or de-identified, its annotations stay with the old "
+"file. Attach them to the open slide here."
+msgstr ""
+"Om ett preparat har sparats om eller avidentifierats stannar dess "
+"annoteringar kvar hos den gamla filen. Koppla dem till det öppna preparatet "
+"här."
+
+#: src/sidebar.rs:1161
+msgid "Cannot ask for confirmation"
+msgstr "Det går inte att be om bekräftelse"
+
+#: src/sidebar.rs:1173
+msgid "Open a slide first."
+msgstr "Öppna ett preparat först."
+
+#: src/sidebar.rs:1213
+msgid "Compare with another reader's file first."
+msgstr "Jämför först med en annan bedömares fil."
+
+#: src/sidebar.rs:1219
+msgid "Export all annotations"
+msgstr "Exportera alla annoteringar"
+
+#: src/sidebar.rs:1222
+msgid "eov annotation archive"
+msgstr "eov-annoteringsarkiv"
+
+#: src/sidebar.rs:1229
+msgid "Back up the annotation database"
+msgstr "Säkerhetskopiera annoteringsdatabasen"
+
+#: src/sidebar.rs:1232 src/sidebar.rs:1242
+msgid "SQLite database"
+msgstr "SQLite-databas"
+
+#: src/sidebar.rs:1239
+msgid ""
+"Merge an annotation database (a backup, or annotations.db of eov before 1.0)"
+msgstr ""
+"Sammanfoga en annoteringsdatabas (en säkerhetskopia eller annotations.db "
+"från eov före 1.0)"
+
+#: src/sidebar.rs:1308
+msgid "Show or hide layer"
+msgstr "ändring av synlighet för lager"
+
+#: src/sidebar.rs:1322
+msgid "Layer opacity"
+msgstr "ändring av lageropacitet"
+
+#: src/sidebar.rs:1337
+msgid "Lock layer"
+msgstr "låsning av lager"
+
+#: src/sidebar.rs:1339
+msgid "Unlock layer"
+msgstr "upplåsning av lager"
+
+#: src/sidebar.rs:1354
+msgid "Change layer colour"
+msgstr "ändring av lagerfärg"
+
+#: src/sidebar.rs:1370
+msgid "Edit layer notes"
+msgstr "redigering av lageranteckningar"
+
+#: src/sidebar.rs:1387
+msgid "The slide is still loading."
+msgstr "Preparatet läses fortfarande in."
+
+#: src/sidebar.rs:1396
+msgctxt "Dialog title"
+msgid "Delete layer"
+msgstr "Radera lager"
+
+#: src/sidebar.rs:1398
+msgid ""
+"Delete layer \"{name}\" and its {n} annotation? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgid_plural ""
+"Delete layer \"{name}\" and its {n} annotations? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgstr[0] ""
+"Vill du radera lagret ”{name}” och dess {n} annotering? Du kan ångra detta "
+"med Ctrl+Z (⌘Z)."
+msgstr[1] ""
+"Vill du radera lagret ”{name}” och dess {n} annoteringar? Du kan ångra detta "
+"med Ctrl+Z (⌘Z)."
+
+#: src/sidebar.rs:1403 src/sidebar.rs:1620
+msgid "Delete"
+msgstr "Radera"
+
+#: src/sidebar.rs:1404 src/sidebar.rs:1621 src/sidebar.rs:1679
+#: src/sidebar.rs:1772
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: src/sidebar.rs:1420
+msgid "Rename annotation"
+msgstr "namnbyte på annotering"
+
+#: src/sidebar.rs:1432
+msgid "Edit description"
+msgstr "redigering av beskrivning"
+
+#: src/sidebar.rs:1444
+msgid "Set class"
+msgstr "ändring av klass"
+
+#: src/sidebar.rs:1458
+msgid "Mark draft"
+msgstr "markering som utkast"
+
+#: src/sidebar.rs:1459
+msgid "Mark verified"
+msgstr "markering som verifierad"
+
+#: src/sidebar.rs:1460
+msgid "Mark rejected"
+msgstr "markering som avvisad"
+
+#: src/sidebar.rs:1476
+msgid "Move to layer"
+msgstr "flytt till lager"
+
+#: src/sidebar.rs:1529
+msgid "Edit properties"
+msgstr "redigering av egenskaper"
+
+#: src/sidebar.rs:1553
+msgid "Select one annotation to comment on."
+msgstr "Markera en enda annotering att kommentera."
+
+#: src/sidebar.rs:1566
+msgid "Measurements copied."
+msgstr "Mätvärdena har kopierats."
+
+#: src/sidebar.rs:1578
+msgid "Show or hide class"
+msgstr "ändring av synlighet för klass"
+
+#: src/sidebar.rs:1591
+msgid "Class opacity"
+msgstr "ändring av klassopacitet"
+
+#: src/sidebar.rs:1611
+msgctxt "Dialog title"
+msgid "Delete class"
+msgstr "Radera klass"
+
+#: src/sidebar.rs:1613
+msgid ""
+"Delete class \"{name}\"? {n} annotation on open slides uses it; it will show "
+"as unclassified. You can undo this."
+msgid_plural ""
+"Delete class \"{name}\"? {n} annotations on open slides use it; they will "
+"show as unclassified. You can undo this."
+msgstr[0] ""
+"Vill du radera klassen ”{name}”? {n} annotering på öppna preparat använder "
+"den; den kommer att visas som oklassificerad. Du kan ångra detta."
+msgstr[1] ""
+"Vill du radera klassen ”{name}”? {n} annoteringar på öppna preparat använder "
+"den; de kommer att visas som oklassificerade. Du kan ångra detta."
+
+#: src/sidebar.rs:1668
+msgctxt "Dialog title"
+msgid "Clear counts"
+msgstr "Rensa räknepunkter"
+
+#. Translators: the question of the "Clear counts" dialog, whose
+#. button is "Clear": use the same verb.
+#: src/sidebar.rs:1672
+msgid "Clear the {n} count point of this slide? You can undo this."
+msgid_plural "Clear all {n} count points of this slide? You can undo this."
+msgstr[0] ""
+"Vill du rensa den enda räknepunkten på det här preparatet? Du kan ångra "
+"detta."
+msgstr[1] ""
+"Vill du rensa alla {n} räknepunkter på det här preparatet? Du kan ångra "
+"detta."
+
+#. Translators: the button that removes the count points, in the
+#. "Clear counts" dialog.
+#: src/sidebar.rs:1678
+msgid "Clear"
+msgstr "Rensa"
+
+#: src/sidebar.rs:1694
+msgid "Enter the field area in mm², e.g. {}."
+msgstr "Ange fältarean i mm², t.ex. {}."
+
+#: src/sidebar.rs:1702
+msgid "Enter the field number in mm, e.g. 22."
+msgstr "Ange fältnumret i mm, t.ex. 22."
+
+#: src/sidebar.rs:1704
+msgid "Enter the objective magnification, e.g. 40."
+msgstr "Ange objektivförstoringen, t.ex. 40."
+
+#: src/sidebar.rs:1708
+msgid "That field size is not usable."
+msgstr "Den fältstorleken går inte att använda."
+
+#: src/sidebar.rs:1720
+msgid "There is no database from before eov 1.0 to merge."
+msgstr "Det finns ingen databas från före eov 1.0 att sammanfoga."
+
+#: src/sidebar.rs:1737
+msgid "That slide is not listed any more."
+msgstr "Det preparatet finns inte längre i listan."
+
+#: src/sidebar.rs:1748
+msgid ""
+"Attach the annotations of an older slide to the open slide? Use this when "
+"the slide file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"Vill du koppla annoteringarna från ett äldre preparat till det öppna "
+"preparatet? Använd detta när preparatfilen har sparats om, konverterats "
+"eller avidentifierats. Du kan ångra detta."
+
+#: src/sidebar.rs:1753
+msgid ""
+"Attach the annotations of \"{}\" to the open slide? Use this when the slide "
+"file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"Vill du koppla annoteringarna från ”{}” till det öppna preparatet? Använd "
+"detta när preparatfilen har sparats om, konverterats eller avidentifierats. "
+"Du kan ångra detta."
+
+#: src/sidebar.rs:1762
+msgid ""
+"Warning: the two slides have different sizes, so the annotations may not "
+"line up."
+msgstr ""
+"Varning: de två preparaten har olika storlek, så annoteringarna kanske inte "
+"hamnar rätt."
+
+#: src/sidebar.rs:1769
+msgid "Attach annotations"
+msgstr "Koppla annoteringar"
+
+#: src/sidebar.rs:1771
+msgid "Attach"
+msgstr "Koppla"
+
+#: src/state.rs:501
+msgid "Compared with {}"
+msgstr "Jämfört med {}"
+
+#. Translators: {ours} is "1 annotation" or "5 annotations" (translated on its own).
+#: src/state.rs:509
+msgid ""
+"This slide's visible layers ({ours}) against the {n} annotation in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgid_plural ""
+"This slide's visible layers ({ours}) against the {n} annotations in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgstr[0] ""
+"Det här preparatets synliga lager ({ours}) mot {n} annotering i {name}, utan "
+"HPF-fält; antalen anges först för det här preparatet, sedan för den andra "
+"bedömaren. Punkter i en klass matchas en mot en inom {radius} (F1 = 2 · "
+"matchade / summan av antalen); områden efter sin överlappning (Dice = 2 · "
+"gemensam area / summan av areorna)."
+msgstr[1] ""
+"Det här preparatets synliga lager ({ours}) mot {n} annoteringar i {name}, "
+"utan HPF-fält; antalen anges först för det här preparatet, sedan för den "
+"andra bedömaren. Punkter i en klass matchas en mot en inom {radius} (F1 = 2 "
+"· matchade / summan av antalen); områden efter sin överlappning (Dice = 2 · "
+"gemensam area / summan av areorna)."
+
+#: src/state.rs:522
+msgid "Check the file: {}"
+msgstr "Kontrollera filen: {}"
+
+#: src/state.rs:664
+msgid "The annotation database is read-only."
+msgstr "Annoteringsdatabasen är skrivskyddad."
+
+#: src/state.rs:665
+msgid "The annotation database is still opening."
+msgstr "Annoteringsdatabasen håller fortfarande på att öppnas."
+
+#: src/state.rs:667
+msgid "The annotation database is unavailable: {}"
+msgstr "Annoteringsdatabasen är inte tillgänglig: {}"
+
+#: src/stats.rs:97
+msgid "Invalid field size"
+msgstr "Ogiltig fältstorlek"
+
+#. Translators: HPF is a high-power field; ⌀ its diameter.
+#: src/stats.rs:110
+msgid "1 HPF = {area} mm² (field number {number} at {objective}×, ⌀ {d} mm)"
+msgstr "1 HPF = {area} mm² (fältnummer {number} vid {objective}×, ⌀ {d} mm)"
+
+#: src/stats.rs:116
+msgid "1 HPF = {area} mm² (⌀ {d} mm)"
+msgstr "1 HPF = {area} mm² (⌀ {d} mm)"
+
+#: src/tools.rs:63
+msgid "Select and edit annotations"
+msgstr "Markera och redigera annoteringar"
+
+#: src/tools.rs:64
+msgid "Point annotation"
+msgstr "Punktannotering"
+
+#: src/tools.rs:65
+msgid "Count cells (Shift+click: second class)"
+msgstr "Räkna celler (Shift+klick: andra klassen)"
+
+#: src/tools.rs:66
+msgid "Polygon (Shift: add to selection, Alt: cut from it)"
+msgstr "Polygon (Shift: lägg till i markeringen, Alt: skär ut ur den)"
+
+#: src/tools.rs:67
+msgid "Freehand outline (Shift: add, Alt: cut)"
+msgstr "Frihandskontur (Shift: lägg till, Alt: skär ut)"
+
+#: src/tools.rs:68
+msgid "Rectangle"
+msgstr "Rektangel"
+
+#: src/tools.rs:69
+msgid "Ellipse"
+msgstr "Ellips"
+
+#: src/tools.rs:70
+msgid "Line / path"
+msgstr "Linje/bana"
+
+#: src/tools.rs:72
+msgid ""
+"Brush (paint a region, over a selected region to extend it; Alt or the "
+"eraser erases; [ and ] change the size)"
+msgstr ""
+"Pensel (måla ett område, över ett markerat område för att utöka det; Alt "
+"eller radergummit suddar; [ och ] ändrar storleken)"
+
+#: src/tools.rs:74
+msgid "Arrow (click the tail, double-click the tip; more clicks bend it)"
+msgstr ""
+"Pil (klicka där pilen börjar, dubbelklicka vid spetsen; fler klick böjer den)"
+
+#: src/tools.rs:75
+msgid "Text label"
+msgstr "Textetikett"
+
+#: src/tools.rs:77
+msgid ""
+"HPF field (a field of the configured size follows the pointer; click to "
+"place it, drag to pan)"
+msgstr ""
+"HPF-fält (ett fält av den inställda storleken följer pekaren; klicka för att "
+"placera det, dra för att panorera)"
+
+#: src/tools.rs:225
+msgid "Annotation class: {}"
+msgstr "Annoteringsklass: {}"
+
+#. Translators: {} lists what was skipped, as "2 × reason; 1 × other reason".
+#: src/transfer.rs:249
+msgid "Skipped: {}."
+msgstr "Överhoppat: {}."
+
+#: src/transfer.rs:253
+msgid "{n} outline crossed itself and was repaired with the even-odd rule."
+msgid_plural ""
+"{n} outlines crossed themselves and were repaired with the even-odd rule."
+msgstr[0] "{n} kontur korsade sig själv och reparerades med jämn-udda-regeln."
+msgstr[1] ""
+"{n} konturer korsade sig själva och reparerades med jämn-udda-regeln."
+
+#: src/transfer.rs:260
+msgid "{n} shape extended past the slide and was cut at its edge."
+msgid_plural "{n} shapes extended past the slide and were cut at its edge."
+msgstr[0] "{n} form sträckte sig utanför preparatet och klipptes vid kanten."
+msgstr[1] "{n} former sträckte sig utanför preparatet och klipptes vid kanten."
+
+#: src/transfer.rs:265
+msgid "{n} over-long name or text was shortened."
+msgid_plural "{n} over-long names or texts were shortened."
+msgstr[0] "{n} för långt namn eller för lång text kortades."
+msgstr[1] "{n} för långa namn eller texter kortades."
+
+#: src/transfer.rs:270
+msgid "The file contains no annotations."
+msgstr "Filen innehåller inga annoteringar."
+
+#: src/transfer.rs:272
+msgid "Nothing could be imported. {}"
+msgstr "Ingenting kunde importeras. {}"
+
+#: src/transfer.rs:339
+msgid "Made for this slide."
+msgstr "Skapad för det här preparatet."
+
+#: src/transfer.rs:342
+msgid "Made for a different slide (its identity does not match)."
+msgstr "Skapad för ett annat preparat (identiteten stämmer inte)."
+
+#: src/transfer.rs:352
+msgid "Made for a slide of {theirs}; this one is {ours}."
+msgstr ""
+"Skapad för ett preparat med storleken {theirs}; det här har storleken {ours}."
+
+#: src/transfer.rs:360
+msgid "Made for a slide of the same size."
+msgstr "Skapad för ett preparat av samma storlek."
+
+#: src/transfer.rs:364
+msgid ""
+"The file does not say which slide it belongs to; coordinates are taken as "
+"level-0 pixels of this slide."
+msgstr ""
+"Filen anger inte vilket preparat den hör till; koordinaterna tolkas som "
+"pixlar på nivå 0 i det här preparatet."
+
+#: src/transfer.rs:376
+msgid "Annotations (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "Annoteringar (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:386
+msgid "All files"
+msgstr "Alla filer"
+
+#: src/transfer.rs:398 src/transfer.rs:853 src/transfer.rs:1007
+msgid "Cannot show the file dialog"
+msgstr "Fildialogen kan inte visas"
+
+#: src/transfer.rs:413
+msgid "The annotations of this slide are still loading."
+msgstr "Annoteringarna för det här preparatet läses fortfarande in."
+
+#: src/transfer.rs:434
+msgid "Importing {}"
+msgstr "Importerar {}"
+
+#. Translators: the step of an import that reads the file.
+#: src/transfer.rs:447
+msgid "Reading"
+msgstr "Läser"
+
+#: src/transfer.rs:474
+msgid ""
+"NDP.view annotations, placed with this slide's offsets from the slide centre "
+"and its pixel size."
+msgstr ""
+"NDP.view-annoteringar, placerade med det här preparatets förskjutning från "
+"preparatets mitt och dess pixelstorlek."
+
+#: src/transfer.rs:486
+msgid "Checking the slide"
+msgstr "Kontrollerar preparatet"
+
+#: src/transfer.rs:489
+msgid "cannot read the slide to check the import: {}"
+msgstr "preparatet kan inte läsas för att kontrollera importen: {}"
+
+#: src/transfer.rs:494
+msgid "Made for this slide (checked by content)."
+msgstr "Skapad för det här preparatet (kontrollerat via innehållet)."
+
+#: src/transfer.rs:497
+msgid "Made for a different slide (its checksum does not match)."
+msgstr "Skapad för ett annat preparat (kontrollsumman stämmer inte)."
+
+#: src/transfer.rs:521
+msgid "Import cancelled."
+msgstr "Importen avbröts."
+
+#: src/transfer.rs:522
+msgid "Could not import {}"
+msgstr "{} kunde inte importeras"
+
+#. Translators: "Merge a database…" is the item of the Import and export
+#. menu: quote it as it is translated there.
+#: src/transfer.rs:560
+msgid ""
+"This archive has no annotations for the current slide. Restore whole backups "
+"with \"Merge a database…\"."
+msgstr ""
+"Det här arkivet har inga annoteringar för det aktuella preparatet. Återställ "
+"hela säkerhetskopior med ”Sammanfoga en databas…”."
+
+#: src/transfer.rs:574
+msgid "Import {n} annotation"
+msgid_plural "Import {n} annotations"
+msgstr[0] "Importera {n} annotering"
+msgstr[1] "Importera {n} annoteringar"
+
+#: src/transfer.rs:581
+msgid "The slide this import was started on is not open any more."
+msgstr "Preparatet som importen startades på är inte längre öppet."
+
+#: src/transfer.rs:737
+msgid "Imported {n} annotation from {file}."
+msgid_plural "Imported {n} annotations from {file}."
+msgstr[0] "{n} annotering har importerats från {file}."
+msgstr[1] "{n} annoteringar har importerats från {file}."
+
+#: src/transfer.rs:783 src/transfer.rs:818
+msgid "eov annotations"
+msgstr "eov-annoteringar"
+
+#: src/transfer.rs:811
+msgid "DICOM bulk annotations"
+msgstr "DICOM-bulkannoteringar"
+
+#: src/transfer.rs:824
+msgid "Export a blinded copy for another reader"
+msgstr "Exportera en blindad kopia för en annan bedömare"
+
+#: src/transfer.rs:825
+msgid "Export annotations"
+msgstr "Exportera annoteringar"
+
+#: src/transfer.rs:942
+msgid "Exported {n} annotation to {file}."
+msgid_plural "Exported {n} annotations to {file}."
+msgstr[0] "{n} annotering har exporterats till {file}."
+msgstr[1] "{n} annoteringar har exporterats till {file}."
+
+#: src/transfer.rs:948
+msgid "Could not export to {}"
+msgstr "Det gick inte att exportera till {}"
+
+#: src/transfer.rs:988
+msgid "Compare with another reader's annotations"
+msgstr "Jämför med en annan bedömares annoteringar"
+
+#: src/transfer.rs:990
+msgid "Annotations (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "Annoteringar (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:1114
+msgid "Could not compare with {}"
+msgstr "Det gick inte att jämföra med {}"
+
+#: src/transfer.rs:1123
+msgid "Exporting all annotations"
+msgstr "Exporterar alla annoteringar"
+
+#: src/transfer.rs:1176
+msgid "Exported the annotations of {n} slide."
+msgid_plural "Exported the annotations of {n} slides."
+msgstr[0] "Annoteringarna för {n} preparat har exporterats."
+msgstr[1] "Annoteringarna för {n} preparat har exporterats."
+
+#: src/transfer.rs:1184
+msgid "Could not export all annotations"
+msgstr "Det gick inte att exportera alla annoteringar"
+
+#: src/transfer.rs:1201
+msgid "Annotation database backed up."
+msgstr "Annoteringsdatabasen har säkerhetskopierats."
+
+#: src/transfer.rs:1203
+msgid "Could not back up the annotation database"
+msgstr "Annoteringsdatabasen kunde inte säkerhetskopieras"
+
+#: src/transfer.rs:1217
+msgid "Merging annotation database"
+msgstr "Sammanfogar annoteringsdatabas"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers", {slides}
+#. is "1 new slide" or "3 new slides" (each translated on its own).
+#: src/transfer.rs:1232
+msgid "Merged {n} annotation {layers} ({slides})."
+msgid_plural "Merged {n} annotations {layers} ({slides})."
+msgstr[0] "{n} annotering {layers} har sammanfogats ({slides})."
+msgstr[1] "{n} annoteringar {layers} har sammanfogats ({slides})."
+
+#. Translators: {slides} in "Merged {n} annotations {layers} ({slides})."
+#: src/transfer.rs:1237
+msgid "{n} new slide"
+msgid_plural "{n} new slides"
+msgstr[0] "{n} nytt preparat"
+msgstr[1] "{n} nya preparat"
+
+#: src/transfer.rs:1249
+msgid "Could not merge the database"
+msgstr "Databasen kunde inte sammanfogas"
+
+#. Translators: read out for the layer new annotations go into; {} is its
+#. number of annotations.
+#: ui/annotations-sidebar.slint:115
+msgctxt "TreeItem"
+msgid "{} · new annotations go here"
+msgstr "{} · nya annoteringar hamnar här"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Collapse layer"
+msgstr "Fäll ihop lager"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Expand layer"
+msgstr "Fäll ut lager"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Hide layer"
+msgstr "Dölj lager"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Show layer"
+msgstr "Visa lager"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Lock layer"
+msgstr "Lås lager"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Unlock layer"
+msgstr "Lås upp lager"
+
+#: ui/annotations-sidebar.slint:222
+msgctxt "TreeItem"
+msgid "Layer settings"
+msgstr "Lagerinställningar"
+
+#: ui/annotations-sidebar.slint:292
+msgctxt "TreeItem"
+msgid "Locked"
+msgstr "Låst"
+
+#: ui/annotations-sidebar.slint:314
+msgctxt "AnnotationsSidebar"
+msgid "No slide open"
+msgstr "Inget preparat öppet"
+
+#: ui/annotations-sidebar.slint:321
+msgctxt "AnnotationsSidebar"
+msgid "Unclassified"
+msgstr "Oklassificerad"
+
+#: ui/annotations-sidebar.slint:488
+msgctxt "AnnotationsSidebar"
+msgid "Import annotations…"
+msgstr "Importera annoteringar…"
+
+#: ui/annotations-sidebar.slint:489
+msgctxt "AnnotationsSidebar"
+msgid "Export as GeoJSON (QuPath)…"
+msgstr "Exportera som GeoJSON (QuPath)…"
+
+#: ui/annotations-sidebar.slint:490
+msgctxt "AnnotationsSidebar"
+msgid "Export as eov JSON…"
+msgstr "Exportera som eov JSON…"
+
+#: ui/annotations-sidebar.slint:491
+msgctxt "AnnotationsSidebar"
+msgid "Export as ASAP XML…"
+msgstr "Exportera som ASAP XML…"
+
+#: ui/annotations-sidebar.slint:492
+msgctxt "AnnotationsSidebar"
+msgid "Export as ImageScope XML…"
+msgstr "Exportera som ImageScope XML…"
+
+#: ui/annotations-sidebar.slint:493
+msgctxt "AnnotationsSidebar"
+msgid "Export as DICOM annotations…"
+msgstr "Exportera som DICOM-annoteringar…"
+
+#: ui/annotations-sidebar.slint:494
+msgctxt "AnnotationsSidebar"
+msgid "Export measurements (CSV)…"
+msgstr "Exportera mätvärden (CSV)…"
+
+#: ui/annotations-sidebar.slint:495
+msgctxt "AnnotationsSidebar"
+msgid "Export a blinded copy…"
+msgstr "Exportera en blindad kopia…"
+
+#: ui/annotations-sidebar.slint:496
+msgctxt "AnnotationsSidebar"
+msgid "Compare with another reader…"
+msgstr "Jämför med en annan bedömare…"
+
+#. Translators: exports the annotations of every slide in the database to one
+#. annotation archive (a JSON file), not the slide images.
+#: ui/annotations-sidebar.slint:497 ui/annotations-sidebar.slint:1986
+msgctxt "AnnotationsSidebar"
+msgid "Export all slides…"
+msgstr "Exportera alla preparat…"
+
+#: ui/annotations-sidebar.slint:498
+msgctxt "AnnotationsSidebar"
+msgid "Back up the database…"
+msgstr "Säkerhetskopiera databasen…"
+
+#: ui/annotations-sidebar.slint:499
+msgctxt "AnnotationsSidebar"
+msgid "Merge a database…"
+msgstr "Sammanfoga en databas…"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field area"
+msgstr "Fältarea"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field number and objective"
+msgstr "Fältnummer och objektiv"
+
+#: ui/annotations-sidebar.slint:600
+msgctxt "AnnotationsSidebar"
+msgid "Annotations"
+msgstr "Annoteringar"
+
+#: ui/annotations-sidebar.slint:635
+msgctxt "AnnotationsSidebar"
+msgid "Import and export"
+msgstr "Import och export"
+
+#: ui/annotations-sidebar.slint:668
+msgctxt "AnnotationsSidebar"
+msgid "Retry"
+msgstr "Försök igen"
+
+#: ui/annotations-sidebar.slint:683
+msgctxt "AnnotationsSidebar"
+msgid "Layers"
+msgstr "Lager"
+
+#: ui/annotations-sidebar.slint:691
+msgctxt "AnnotationsSidebar"
+msgid "Classes"
+msgstr "Klasser"
+
+#. Translators: the tab for counting cells.
+#: ui/annotations-sidebar.slint:700
+msgctxt "AnnotationsSidebar"
+msgid "Count"
+msgstr "Cellräkning"
+
+#: ui/annotations-sidebar.slint:708
+msgctxt "AnnotationsSidebar"
+msgid "Data"
+msgstr "Data"
+
+#: ui/annotations-sidebar.slint:747
+msgctxt "AnnotationsSidebar"
+msgid "Filter by name, class, kind or status"
+msgstr "Filtrera efter namn, klass, typ eller status"
+
+#: ui/annotations-sidebar.slint:769
+msgctxt "AnnotationsSidebar"
+msgid "Filter annotations"
+msgstr "Filtrera annoteringar"
+
+#: ui/annotations-sidebar.slint:786
+msgctxt "AnnotationsSidebar"
+msgid "New layer"
+msgstr "Nytt lager"
+
+#: ui/annotations-sidebar.slint:870 ui/annotations-sidebar.slint:1079
+#: ui/annotations-sidebar.slint:1500
+msgctxt "AnnotationsSidebar"
+msgid "Name"
+msgstr "Namn"
+
+#: ui/annotations-sidebar.slint:876 ui/annotations-sidebar.slint:878
+msgctxt "AnnotationsSidebar"
+msgid "Layer name"
+msgstr "Lagernamn"
+
+#: ui/annotations-sidebar.slint:889
+msgctxt "AnnotationsSidebar"
+msgid "Colour"
+msgstr "Färg"
+
+#: ui/annotations-sidebar.slint:898
+msgctxt "AnnotationsSidebar"
+msgid "Layer colour"
+msgstr "Lagerfärg"
+
+#: ui/annotations-sidebar.slint:906 ui/annotations-sidebar.slint:1518
+msgctxt "AnnotationsSidebar"
+msgid "Opacity"
+msgstr "Opacitet"
+
+#: ui/annotations-sidebar.slint:912
+msgctxt "AnnotationsSidebar"
+msgid "Layer opacity"
+msgstr "Lageropacitet"
+
+#: ui/annotations-sidebar.slint:923 ui/annotations-sidebar.slint:1162
+msgctxt "AnnotationsSidebar"
+msgid "Notes"
+msgstr "Anteckningar"
+
+#: ui/annotations-sidebar.slint:931
+msgctxt "AnnotationsSidebar"
+msgid "Notes about this layer"
+msgstr "Anteckningar om det här lagret"
+
+#: ui/annotations-sidebar.slint:933
+msgctxt "AnnotationsSidebar"
+msgid "Layer notes"
+msgstr "Lageranteckningar"
+
+#: ui/annotations-sidebar.slint:941
+msgctxt "AnnotationsSidebar"
+msgid "Draw into this layer"
+msgstr "Rita i det här lagret"
+
+#: ui/annotations-sidebar.slint:942
+msgctxt "AnnotationsSidebar"
+msgid "Delete layer…"
+msgstr "Radera lager…"
+
+#: ui/annotations-sidebar.slint:1020
+msgctxt "AnnotationsSidebar"
+msgid "Zoom to the annotation"
+msgstr "Zooma till annoteringen"
+
+#: ui/annotations-sidebar.slint:1028
+msgctxt "AnnotationsSidebar"
+msgid "Copy measurements"
+msgstr "Kopiera mätvärden"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the annotation"
+msgstr "Radera annoteringen"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the selected annotations"
+msgstr "Radera de markerade annoteringarna"
+
+#: ui/annotations-sidebar.slint:1065
+msgctxt "AnnotationsSidebar"
+msgid "Repair"
+msgstr "Reparera"
+
+#: ui/annotations-sidebar.slint:1085
+msgctxt "AnnotationsSidebar"
+msgid "Unnamed"
+msgstr "Namnlös"
+
+#: ui/annotations-sidebar.slint:1087
+msgctxt "AnnotationsSidebar"
+msgid "Annotation name"
+msgstr "Annoteringsnamn"
+
+#: ui/annotations-sidebar.slint:1098
+msgctxt "AnnotationsSidebar"
+msgid "Class"
+msgstr "Klass"
+
+#: ui/annotations-sidebar.slint:1104
+msgctxt "AnnotationsSidebar"
+msgid "Annotation class"
+msgstr "Annoteringsklass"
+
+#: ui/annotations-sidebar.slint:1115
+msgctxt "AnnotationsSidebar"
+msgid "Status"
+msgstr "Status"
+
+#: ui/annotations-sidebar.slint:1121
+msgctxt "AnnotationsSidebar"
+msgid "Review status"
+msgstr "Granskningsstatus"
+
+#: ui/annotations-sidebar.slint:1132
+msgctxt "AnnotationsSidebar"
+msgid "Layer"
+msgstr "Lager"
+
+#: ui/annotations-sidebar.slint:1138
+msgctxt "AnnotationsSidebar"
+msgid "Annotation layer"
+msgstr "Annoteringslager"
+
+#: ui/annotations-sidebar.slint:1149
+msgctxt "AnnotationsSidebar"
+msgid "Locked"
+msgstr "Låst"
+
+#: ui/annotations-sidebar.slint:1170 ui/annotations-sidebar.slint:1172
+msgctxt "AnnotationsSidebar"
+msgid "Description"
+msgstr "Beskrivning"
+
+#: ui/annotations-sidebar.slint:1183
+msgctxt "AnnotationsSidebar"
+msgid "MEASUREMENTS"
+msgstr "MÄTVÄRDEN"
+
+#: ui/annotations-sidebar.slint:1213
+msgctxt "AnnotationsSidebar"
+msgid "PROPERTIES"
+msgstr "EGENSKAPER"
+
+#: ui/annotations-sidebar.slint:1224
+msgctxt "AnnotationsSidebar"
+msgid "Property name"
+msgstr "Egenskapsnamn"
+
+#: ui/annotations-sidebar.slint:1233
+msgctxt "AnnotationsSidebar"
+msgid "Value"
+msgstr "Värde"
+
+#: ui/annotations-sidebar.slint:1235
+msgctxt "AnnotationsSidebar"
+msgid "Property value"
+msgstr "Egenskapsvärde"
+
+#: ui/annotations-sidebar.slint:1243
+msgctxt "AnnotationsSidebar"
+msgid "Remove property"
+msgstr "Ta bort egenskap"
+
+#: ui/annotations-sidebar.slint:1255
+msgctxt "AnnotationsSidebar"
+msgid "Add property"
+msgstr "Lägg till egenskap"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS"
+msgstr "KOMMENTARER"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS ({})"
+msgstr "KOMMENTARER ({})"
+
+#: ui/annotations-sidebar.slint:1294
+msgctxt "AnnotationsSidebar"
+msgid "Delete comment"
+msgstr "Radera kommentar"
+
+#: ui/annotations-sidebar.slint:1314
+msgctxt "AnnotationsSidebar"
+msgid "Add a comment"
+msgstr "Lägg till en kommentar"
+
+#: ui/annotations-sidebar.slint:1316
+msgctxt "AnnotationsSidebar"
+msgid "New comment"
+msgstr "Ny kommentar"
+
+#. Translators: a button that adds the comment typed above.
+#: ui/annotations-sidebar.slint:1324
+msgctxt "AnnotationsSidebar"
+msgid "Comment"
+msgstr "Kommentera"
+
+#: ui/annotations-sidebar.slint:1358
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Select an annotation on the slide or in the list to see its details. Double-"
+"click a row to zoom to it; Ctrl+click selects several."
+msgstr ""
+"Markera en annotering på preparatet eller i listan för att se detaljerna. "
+"Dubbelklicka på en rad för att zooma till den; Ctrl+klick markerar flera."
+
+#: ui/annotations-sidebar.slint:1379
+msgctxt "AnnotationsSidebar"
+msgid ""
+"New annotations get the active class (●), and the Count tool counts it; "
+"Shift+click counts the second class (◐). Pressing a class's hotkey makes it "
+"active."
+msgstr ""
+"Nya annoteringar får den aktiva klassen (●), och räkneverktyget räknar den; "
+"Shift+klick räknar den andra klassen (◐). Tryck på snabbtangenten för en "
+"klass för att göra den aktiv."
+
+#: ui/annotations-sidebar.slint:1418
+msgctxt "AnnotationsSidebar"
+msgid "Colour of {}"
+msgstr "Färg för {}"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Hide {}"
+msgstr "Dölj {}"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Show {}"
+msgstr "Visa {}"
+
+#: ui/annotations-sidebar.slint:1466
+msgctxt "AnnotationsSidebar"
+msgid "Class settings"
+msgstr "Klassinställningar"
+
+#: ui/annotations-sidebar.slint:1506 ui/annotations-sidebar.slint:1507
+msgctxt "AnnotationsSidebar"
+msgid "Class name"
+msgstr "Klassnamn"
+
+#: ui/annotations-sidebar.slint:1523
+msgctxt "AnnotationsSidebar"
+msgid "Class opacity"
+msgstr "Klassopacitet"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Count with Shift+click"
+msgstr "Räkna med Shift+klick"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Stop counting with Shift+click"
+msgstr "Sluta räkna med Shift+klick"
+
+#: ui/annotations-sidebar.slint:1539
+msgctxt "AnnotationsSidebar"
+msgid "Delete…"
+msgstr "Radera…"
+
+#: ui/annotations-sidebar.slint:1558
+msgctxt "AnnotationsSidebar"
+msgid "New class"
+msgstr "Ny klass"
+
+#: ui/annotations-sidebar.slint:1596
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Pick the Count tool (C) and click cells; Shift+click and Alt+click count the "
+"second and third class. Select regions or HPF fields to count inside them."
+msgstr ""
+"Välj räkneverktyget (C) och klicka på celler; Shift+klick och Alt+klick "
+"räknar den andra och tredje klassen. Markera områden eller HPF-fält för att "
+"räkna inom dem."
+
+#: ui/annotations-sidebar.slint:1601
+msgctxt "AnnotationsSidebar"
+msgid "Count tool (C)"
+msgstr "Räkneverktyg (C)"
+
+#: ui/annotations-sidebar.slint:1602
+msgctxt "AnnotationsSidebar"
+msgid "HPF field (H)"
+msgstr "HPF-fält (H)"
+
+#. Translators: the class a click with the Count tool counts.
+#: ui/annotations-sidebar.slint:1614
+msgctxt "AnnotationsSidebar"
+msgid "Click"
+msgstr "Klick"
+
+#: ui/annotations-sidebar.slint:1620
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by a click"
+msgstr "Klass som räknas med ett klick"
+
+#: ui/annotations-sidebar.slint:1631
+msgctxt "AnnotationsSidebar"
+msgid "Shift+click"
+msgstr "Shift+klick"
+
+#: ui/annotations-sidebar.slint:1636
+msgctxt "AnnotationsSidebar"
+msgid "(same as click)"
+msgstr "(samma som klick)"
+
+#: ui/annotations-sidebar.slint:1637
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by Shift+click"
+msgstr "Klass som räknas med Shift+klick"
+
+#: ui/annotations-sidebar.slint:1648
+msgctxt "AnnotationsSidebar"
+msgid "Alt+click"
+msgstr "Alt+klick"
+
+#: ui/annotations-sidebar.slint:1653
+msgctxt "AnnotationsSidebar"
+msgid "(none)"
+msgstr "(ingen)"
+
+#: ui/annotations-sidebar.slint:1654
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Class counted by Alt+click: PD-L1-positive immune cells for the combined "
+"positive score"
+msgstr ""
+"Klass som räknas med Alt+klick: PD-L1-positiva immunceller för kombinerad "
+"positiv poäng (CPS)"
+
+#: ui/annotations-sidebar.slint:1662
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Combined positive score: the click and Alt+click classes (PD-L1-positive "
+"tumour cells and PD-L1-positive immune cells) per 100 tumour cells (the "
+"click and Shift+click classes)."
+msgstr ""
+"Kombinerad positiv poäng (CPS): klick- och Alt+klick-klasserna (PD-L1-"
+"positiva tumörceller och PD-L1-positiva immunceller) per 100 tumörceller "
+"(klick- och Shift+klick-klasserna)."
+
+#: ui/annotations-sidebar.slint:1677
+msgctxt "AnnotationsSidebar"
+msgid "Nothing counted here yet."
+msgstr "Inget har räknats här än."
+
+#: ui/annotations-sidebar.slint:1748
+msgctxt "AnnotationsSidebar"
+msgid "Count points in hidden layers"
+msgstr "Räkna punkter i dolda lager"
+
+#: ui/annotations-sidebar.slint:1759
+msgctxt "AnnotationsSidebar"
+msgid "Clear counts…"
+msgstr "Rensa räknepunkter…"
+
+#: ui/annotations-sidebar.slint:1771
+msgctxt "AnnotationsSidebar"
+msgid "HIGH-POWER FIELDS"
+msgstr "STORFÖRSTORINGSFÄLT"
+
+#: ui/annotations-sidebar.slint:1785
+msgctxt "AnnotationsSidebar"
+msgid "How the field size is given"
+msgstr "Hur fältstorleken anges"
+
+#. Translators: FN is the eyepiece's field number, the diameter of the field
+#. of view.
+#: ui/annotations-sidebar.slint:1796
+msgctxt "AnnotationsSidebar"
+msgid "FN (mm)"
+msgstr "FN (mm)"
+
+#: ui/annotations-sidebar.slint:1803
+msgctxt "AnnotationsSidebar"
+msgid "Field number in mm"
+msgstr "Fältnummer i mm"
+
+#. Translators: the magnification of the objective, as in 40×.
+#: ui/annotations-sidebar.slint:1811
+msgctxt "AnnotationsSidebar"
+msgid "Objective ×"
+msgstr "Objektiv ×"
+
+#: ui/annotations-sidebar.slint:1821
+msgctxt "AnnotationsSidebar"
+msgid "Objective magnification"
+msgstr "Objektivförstoring"
+
+#: ui/annotations-sidebar.slint:1828 ui/annotations-sidebar.slint:1853
+msgctxt "AnnotationsSidebar"
+msgid "Apply"
+msgstr "Tillämpa"
+
+#: ui/annotations-sidebar.slint:1839
+msgctxt "AnnotationsSidebar"
+msgid "Area (mm²)"
+msgstr "Area (mm²)"
+
+#: ui/annotations-sidebar.slint:1846
+msgctxt "AnnotationsSidebar"
+msgid "Field area in square millimetres"
+msgstr "Fältarea i kvadratmillimeter"
+
+#: ui/annotations-sidebar.slint:1873
+msgctxt "AnnotationsSidebar"
+msgid "{n} field placed on this slide."
+msgid_plural "{n} fields placed on this slide."
+msgstr[0] "{n} fält placerat på det här preparatet."
+msgstr[1] "{n} fält placerade på det här preparatet."
+
+#: ui/annotations-sidebar.slint:1885
+msgctxt "AnnotationsSidebar"
+msgid "Select all fields"
+msgstr "Markera alla fält"
+
+#: ui/annotations-sidebar.slint:1924
+msgctxt "AnnotationsSidebar"
+msgid "IMPORT AND EXPORT"
+msgstr "IMPORT OCH EXPORT"
+
+#: ui/annotations-sidebar.slint:1928
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Imports: GeoJSON (QuPath and others), eov JSON, ASAP XML, Aperio ImageScope "
+"XML, Hamamatsu NDPA and DICOM bulk annotations. Coordinates are level-0 "
+"pixels with y pointing down."
+msgstr ""
+"Import stöds för: GeoJSON (QuPath med flera), eov JSON, ASAP XML, Aperio "
+"ImageScope XML, Hamamatsu NDPA och DICOM-bulkannoteringar. Koordinaterna är "
+"pixlar på nivå 0 med y-axeln riktad nedåt."
+
+#: ui/annotations-sidebar.slint:1935
+msgctxt "AnnotationsSidebar"
+msgid "Import…"
+msgstr "Importera…"
+
+#: ui/annotations-sidebar.slint:1991
+msgctxt "AnnotationsSidebar"
+msgid "Back up…"
+msgstr "Säkerhetskopiera…"
+
+#: ui/annotations-sidebar.slint:1992
+msgctxt "AnnotationsSidebar"
+msgid "Merge…"
+msgstr "Sammanfoga…"
+
+#. Translators: a reader is a person who annotates slides; a second reader
+#. annotates a blinded copy independently so two readers can be compared (as
+#. in a reader study); use the word for an observer or annotator, not the
+#. clinical term for a second diagnostic opinion.
+#: ui/annotations-sidebar.slint:2009
+msgctxt "AnnotationsSidebar"
+msgid "SECOND READER"
+msgstr "ANDRA BEDÖMARE"
+
+#: ui/annotations-sidebar.slint:2013
+msgctxt "AnnotationsSidebar"
+msgid ""
+"A blinded copy holds the visible layers' shapes, classes and names, without "
+"authors, comments, statuses, descriptions or properties. Compare reads "
+"another reader's export and compares it with the visible layers: counts per "
+"class, matched points and overlapping regions."
+msgstr ""
+"En blindad kopia innehåller de synliga lagrens former, klasser och namn, "
+"utan författare, kommentarer, status, beskrivningar eller egenskaper. "
+"Funktionen Jämför läser en annan bedömares export och jämför den med de "
+"synliga lagren: antal per klass, matchade punkter och överlappande områden."
+
+#: ui/annotations-sidebar.slint:2018
+msgctxt "AnnotationsSidebar"
+msgid "Blinded copy…"
+msgstr "Blindad kopia…"
+
+#: ui/annotations-sidebar.slint:2019
+msgctxt "AnnotationsSidebar"
+msgid "Compare…"
+msgstr "Jämför…"
+
+#. Translators: a button: compare with the same file again.
+#: ui/annotations-sidebar.slint:2022
+msgctxt "AnnotationsSidebar"
+msgid "Again"
+msgstr "Igen"
+
+#. Translators: a button: remove the comparison.
+#: ui/annotations-sidebar.slint:2029
+msgctxt "AnnotationsSidebar"
+msgid "Clear"
+msgstr "Rensa"
+
+#: ui/annotations-sidebar.slint:2066
+msgctxt "AnnotationsSidebar"
+msgid "Neither reader has points or regions in the compared layers."
+msgstr "Ingen av bedömarna har punkter eller områden i de jämförda lagren."
+
+#: ui/annotations-sidebar.slint:2126
+msgctxt "AnnotationsSidebar"
+msgid "DATABASE"
+msgstr "DATABAS"
+
+#: ui/annotations-sidebar.slint:2150
+msgctxt "AnnotationsSidebar"
+msgid "Database file"
+msgstr "Databasfil"
+
+#. Translators: {} is the path of the old database file.
+#: ui/annotations-sidebar.slint:2167
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Annotations made with eov before 1.0 are in {}. Bring them into this "
+"database (the old file is not changed):"
+msgstr ""
+"Annoteringar som gjorts med eov före 1.0 finns i {}. Hämta in dem i den här "
+"databasen (den gamla filen ändras inte):"
+
+#: ui/annotations-sidebar.slint:2179
+msgctxt "AnnotationsSidebar"
+msgid "Bring them in"
+msgstr "Hämta in dem"
+
+#: ui/annotations-sidebar.slint:2195
+msgctxt "AnnotationsSidebar"
+msgid "OTHER SLIDES"
+msgstr "ANDRA PREPARAT"
+
+#. Translators: a button that lists the other slides in the database.
+#: ui/annotations-sidebar.slint:2202
+msgctxt "AnnotationsSidebar"
+msgid "List"
+msgstr "Lista"
+
+#. Translators: a button: attach the annotations of this slide to the open
+#. slide.
+#: ui/annotations-sidebar.slint:2236
+msgctxt "AnnotationsSidebar"
+msgid "Attach"
+msgstr "Koppla"
+
+#: ui/annotations-sidebar.slint:2258
+msgctxt "AnnotationsSidebar"
+msgid "AUTHOR AND EXPORTS"
+msgstr "FÖRFATTARE OCH EXPORTER"
+
+#: ui/annotations-sidebar.slint:2265 ui/annotations-sidebar.slint:2273
+msgctxt "AnnotationsSidebar"
+msgid "Author"
+msgstr "Författare"
+
+#: ui/annotations-sidebar.slint:2272
+msgctxt "AnnotationsSidebar"
+msgid "Your name or initials"
+msgstr "Ditt namn eller dina initialer"
+
+#: ui/annotations-sidebar.slint:2284 ui/annotations-sidebar.slint:2291
+msgctxt "AnnotationsSidebar"
+msgid "Organization"
+msgstr "Organisation"
+
+#: ui/annotations-sidebar.slint:2302 ui/annotations-sidebar.slint:2309
+msgctxt "AnnotationsSidebar"
+msgid "Project"
+msgstr "Projekt"
+
+#: ui/annotations-sidebar.slint:2320 ui/annotations-sidebar.slint:2328
+msgctxt "AnnotationsSidebar"
+msgid "License"
+msgstr "Licens"
+
+#: ui/annotations-sidebar.slint:2327
+msgctxt "AnnotationsSidebar"
+msgid "e.g. CC-BY-4.0"
+msgstr "t.ex. CC-BY-4.0"
+
+#: ui/annotations-sidebar.slint:2336
+msgctxt "AnnotationsSidebar"
+msgid "Include the slide's file name in exports"
+msgstr "Ta med preparatets filnamn i exporter"
+
+#: ui/annotations-sidebar.slint:2346
+msgctxt "AnnotationsSidebar"
+msgid "DISPLAY"
+msgstr "VISNING"
+
+#: ui/annotations-sidebar.slint:2350
+msgctxt "AnnotationsSidebar"
+msgid "Show names on the slide"
+msgstr "Visa namn på preparatet"
+
+#: ui/annotations-sidebar.slint:2361 ui/annotations-sidebar.slint:2369
+msgctxt "AnnotationsSidebar"
+msgid "Point size"
+msgstr "Punktstorlek"
+
+#: ui/annotations-sidebar.slint:2380 ui/annotations-sidebar.slint:2386
+msgctxt "AnnotationsSidebar"
+msgid "Fill opacity"
+msgstr "Fyllnadsopacitet"
+
+#. Translators: S is the brush tool's key.
+#: ui/annotations-sidebar.slint:2397
+msgctxt "AnnotationsSidebar"
+msgid "BRUSH (S)"
+msgstr "PENSEL (S)"
+
+#. Translators: the size of the brush.
+#: ui/annotations-sidebar.slint:2405
+msgctxt "AnnotationsSidebar"
+msgid "Size"
+msgstr "Storlek"
+
+#: ui/annotations-sidebar.slint:2413
+msgctxt "AnnotationsSidebar"
+msgid "Brush size"
+msgstr "Penselstorlek"
+
+#: ui/annotations-sidebar.slint:2429
+msgctxt "AnnotationsSidebar"
+msgid "Erase from the selected region"
+msgstr "Sudda i det markerade området"
+
+#: ui/annotations-sidebar.slint:2437
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Paint over a selected region to extend it, elsewhere to make a new one. Hold "
+"Alt to erase; [ and ] change the size."
+msgstr ""
+"Måla över ett markerat område för att utöka det, någon annanstans för att "
+"skapa ett nytt. Håll ned Alt för att sudda; [ och ] ändrar storleken."
+
+#: ui/annotations-sidebar.slint:2557
+msgctxt "AnnotationsSidebar"
+msgid "Colours"
+msgstr "Färger"
+
+#: ui/import-dialog.slint:117 ui/import-dialog.slint:124
+msgctxt "ImportDialog"
+msgid "Import annotations"
+msgstr "Importera annoteringar"
+
+#: ui/import-dialog.slint:186
+msgctxt "ImportDialog"
+msgid "NOTES"
+msgstr "ANMÄRKNINGAR"
+
+#: ui/import-dialog.slint:214
+msgctxt "ImportDialog"
+msgid "Add to the existing layers"
+msgstr "Lägg till i befintliga lager"
+
+#: ui/import-dialog.slint:215
+msgctxt "ImportDialog"
+msgid "Imported annotations join the layer with the same name."
+msgstr "Importerade annoteringar läggs i lagret med samma namn."
+
+#: ui/import-dialog.slint:223
+msgctxt "ImportDialog"
+msgid "Replace the existing layers"
+msgstr "Ersätt befintliga lager"
+
+#: ui/import-dialog.slint:224
+msgctxt "ImportDialog"
+msgid "The existing layers are deleted (this can be undone)."
+msgstr "De befintliga lagren raderas (detta kan ångras)."
+
+#: ui/import-dialog.slint:232
+msgctxt "ImportDialog"
+msgid "Keep both"
+msgstr "Behåll båda"
+
+#. Translators: "Tumour" is only an example of a layer name from the imported
+#. file: translate it, and keep the " (2)" that eov adds.
+#: ui/import-dialog.slint:234
+msgctxt "ImportDialog"
+msgid "Imported layers get a new name, such as \"Tumour (2)\"."
+msgstr "Importerade lager får ett nytt namn, till exempel ”Tumör (2)”."
+
+#: ui/import-dialog.slint:243
+msgctxt "ImportDialog"
+msgid "The import is one step: Ctrl+Z (⌘Z) removes everything it added."
+msgstr ""
+"Importen är ett enda steg: Ctrl+Z (⌘Z) tar bort allt som den lade till."
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Close"
+msgstr "Stäng"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import"
+msgstr "Importera"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import anyway"
+msgstr "Importera ändå"
+
+#: ui/widgets.slint:655
+msgctxt "Swatch"
+msgid "Change colour"
+msgstr "Ändra färg"
+
+#: ui/widgets.slint:694
+msgctxt "KeyField"
+msgid "Hotkey"
+msgstr "Snabbtangent"
+
+#: ui/widgets.slint:696
+msgctxt "KeyField"
+msgid "Click, then press a key. Backspace removes the hotkey."
+msgstr ""
+"Klicka och tryck sedan på en tangent. Backspace tar bort snabbtangenten."

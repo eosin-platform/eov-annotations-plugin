@@ -1,0 +1,3403 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: annotations\n"
+"Report-Msgid-Bugs-To: https://github.com/eosin-platform/eov-annotations-"
+"plugin/issues\n"
+"Language-Team: Ukrainian\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Review-Status: machine-translated; not yet reviewed by a native speaker\n"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid "Annotations"
+msgstr "Анотації"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid ""
+"Point, region, line and text annotations with reusable classes, cell "
+"counting, HPF fields and measurements; GeoJSON (QuPath) import and export, "
+"ASAP and Aperio ImageScope XML import."
+msgstr ""
+"Анотації у вигляді точок, ділянок, ліній і тексту з багаторазовими класами, "
+"підрахунок клітин, поля HPF і вимірювання; імпорт та експорт GeoJSON "
+"(QuPath), імпорт XML з ASAP та Aperio ImageScope."
+
+#: src/actions.rs:23
+msgid "The annotations of this slide are still loading; try again in a moment."
+msgstr "Анотації цього препарату ще завантажуються; спробуйте ще раз за мить."
+
+#: src/actions.rs:27 src/sidebar.rs:1390 src/sidebar.rs:1474
+msgid "That layer no longer exists."
+msgstr "Цього шару більше не існує."
+
+#: src/actions.rs:31
+msgid "That annotation no longer exists."
+msgstr "Цієї анотації більше не існує."
+
+#: src/actions.rs:35 src/sidebar.rs:1605
+msgid "That class no longer exists."
+msgstr "Цього класу більше не існує."
+
+#: src/actions.rs:39 src/transfer.rs:648 src/transfer.rs:658
+msgid "Layer \"{}\" is locked."
+msgstr "Шар «{}» заблоковано."
+
+#: src/actions.rs:43
+msgid "Parts outside the slide were cut off."
+msgstr "Частини поза межами препарату обрізано."
+
+#: src/actions.rs:62
+msgid "The slide is not open any more."
+msgstr "Цей препарат уже закрито."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:136
+msgid "The outline crossed itself and was split into {n} parts."
+msgid_plural "The outline crossed itself and was split into {n} parts."
+msgstr[0] "Контур перетинав сам себе, тому його розділено на {n} частину."
+msgstr[1] "Контур перетинав сам себе, тому його розділено на {n} частини."
+msgstr[2] "Контур перетинав сам себе, тому його розділено на {n} частин."
+
+#: src/actions.rs:140
+msgid "The outline crossed itself and was repaired."
+msgstr "Контур перетинав сам себе, тому його виправлено."
+
+#: src/actions.rs:156
+msgid "The HPF size is not valid; check it in the Count tab."
+msgstr "Розмір HPF неприпустимий; перевірте його на вкладці «Підрахунок»."
+
+#: src/actions.rs:160
+msgid "This slide has no pixel size, so HPF fields cannot be sized."
+msgstr ""
+"Для цього препарату не вказано розміру пікселя, тому неможливо визначити "
+"розмір полів HPF."
+
+#: src/actions.rs:207
+msgid "Count cell"
+msgstr "Підрахунок клітини"
+
+#: src/actions.rs:218 src/lib.rs:613
+msgid "Add point"
+msgstr "Додавання точки"
+
+#: src/actions.rs:228
+msgid "Add line"
+msgstr "Додавання лінії"
+
+#: src/actions.rs:242
+msgid "Add arrow"
+msgstr "Додавання стрілки"
+
+#: src/actions.rs:258
+msgid "Add text"
+msgstr "Додавання тексту"
+
+#: src/actions.rs:303
+msgid ""
+"To add the shape to a region (Shift) or cut it from a region (Alt), select "
+"exactly one region first. The shape was added as a new annotation."
+msgstr ""
+"Щоб додати фігуру до ділянки (Shift) або вирізати її з ділянки (Alt), спершу "
+"виділіть рівно одну ділянку. Фігуру додано як нову анотацію."
+
+#: src/actions.rs:314 src/actions.rs:325
+msgid "Add region"
+msgstr "Додавання ділянки"
+
+#: src/actions.rs:378
+msgid "Place HPF field"
+msgstr "Розміщення поля HPF"
+
+#: src/actions.rs:399
+msgid "This field extends past the slide edge; its area includes empty canvas."
+msgstr ""
+"Це поле виходить за край препарату; його площа охоплює й порожнє місце поза "
+"зображенням."
+
+#: src/actions.rs:429
+msgid "Add to region"
+msgstr "Додавання до ділянки"
+
+#: src/actions.rs:431
+msgid "Cut from region"
+msgstr "Вирізання з ділянки"
+
+#: src/actions.rs:439
+msgid "The selected region no longer exists."
+msgstr "Виділеної ділянки більше не існує."
+
+#: src/actions.rs:441
+msgid "The selected region is locked."
+msgstr "Виділену ділянку заблоковано."
+
+#: src/actions.rs:452
+msgid "Only regions can be combined."
+msgstr "Об’єднувати можна лише ділянки."
+
+#: src/actions.rs:460
+msgid "The cut removed the whole region."
+msgstr "Вирізання видалило всю ділянку."
+
+#: src/actions.rs:483
+msgid ""
+"The shapes do not touch; the new shape was added as a separate annotation."
+msgstr "Фігури не торкаються; нову фігуру додано як окрему анотацію."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:488
+msgid "The cut split the region into {n} parts."
+msgid_plural "The cut split the region into {n} parts."
+msgstr[0] "Вирізання розділило ділянку на {n} частину."
+msgstr[1] "Вирізання розділило ділянку на {n} частини."
+msgstr[2] "Вирізання розділило ділянку на {n} частин."
+
+#: src/actions.rs:522
+msgid "Edit shape"
+msgstr "Редагування фігури"
+
+#: src/actions.rs:544
+msgid "The annotation is locked."
+msgstr "Анотацію заблоковано."
+
+#: src/actions.rs:560
+msgid "That edit would turn the arrow into another shape, so it was undone."
+msgstr "Ця зміна перетворила б стрілку на іншу фігуру, тому зміну відмінено."
+
+#: src/actions.rs:564
+msgid "That edit was undone."
+msgstr "Цю зміну відмінено."
+
+#: src/actions.rs:591
+msgid "The edit was undone: {}"
+msgstr "Зміну відмінено: {}"
+
+#: src/actions.rs:596
+msgid "That edit would make the outline cross itself, so it was undone."
+msgstr "Через цю зміну контур перетнув би сам себе, тому її відмінено."
+
+#: src/actions.rs:629
+msgid "Delete annotation"
+msgid_plural "Delete {n} annotations"
+msgstr[0] "Видалення {n} анотації"
+msgstr[1] "Видалення {n} анотацій"
+msgstr[2] "Видалення {n} анотацій"
+
+#: src/actions.rs:649
+msgid "{n} locked annotation was kept."
+msgid_plural "{n} locked annotations were kept."
+msgstr[0] "{n} заблоковану анотацію не видалено."
+msgstr[1] "{n} заблоковані анотації не видалено."
+msgstr[2] "{n} заблокованих анотацій не видалено."
+
+#: src/actions.rs:703
+msgid "The target layer is locked or gone."
+msgstr "Цільовий шар заблоковано або його більше не існує."
+
+#: src/actions.rs:712
+msgid "{n} locked annotation was not changed."
+msgid_plural "{n} locked annotations were not changed."
+msgstr[0] "{n} заблоковану анотацію не змінено."
+msgstr[1] "{n} заблоковані анотації не змінено."
+msgstr[2] "{n} заблокованих анотацій не змінено."
+
+#: src/actions.rs:777
+msgid "Could not zoom to the annotation"
+msgstr "Не вдалося наблизити до анотації"
+
+#: src/actions.rs:790
+msgid "New layer"
+msgstr "Створення шару"
+
+#: src/actions.rs:865
+msgid "Rename layer"
+msgstr "Перейменування шару"
+
+#: src/actions.rs:877
+msgid "Delete layer"
+msgstr "Видалення шару"
+
+#: src/actions.rs:887
+msgid "Delete layer \"{}\""
+msgstr "Видалення шару «{}»"
+
+#: src/actions.rs:897
+msgid "Choose layer"
+msgstr "Вибір шару"
+
+#: src/actions.rs:902
+msgid ""
+"New annotations go to a regular layer; count points and HPF fields have "
+"their own."
+msgstr ""
+"Нові анотації потрапляють до звичайного шару; точки підрахунку та поля HPF "
+"мають власні шари."
+
+#. Translators: an undo step, shown by eov as "Undo {}".
+#: src/actions.rs:918
+msgid "Clear counts"
+msgstr "Очищення підрахунку"
+
+#: src/actions.rs:950
+msgid ""
+"There are no HPF fields on this slide yet. Use the HPF field tool (H) to "
+"place them."
+msgstr ""
+"На цьому препараті ще немає полів HPF. Розмістіть їх інструментом «Поле "
+"HPF» (H)."
+
+#: src/actions.rs:960
+msgid "Repair outline"
+msgstr "Виправлення контуру"
+
+#: src/actions.rs:975
+msgid "Nothing is left of the outline."
+msgstr "Від контуру нічого не залишилося."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:997
+msgid "The outline was split into {n} parts."
+msgid_plural "The outline was split into {n} parts."
+msgstr[0] "Контур розділено на {n} частину."
+msgstr[1] "Контур розділено на {n} частини."
+msgstr[2] "Контур розділено на {n} частин."
+
+#: src/actions.rs:1012
+msgid "Could not attach the annotations"
+msgstr "Не вдалося приєднати анотації"
+
+#: src/actions.rs:1018
+msgid "Attach annotations of another slide"
+msgstr "Приєднання анотацій іншого препарату"
+
+#: src/actions.rs:1024
+msgid "Those annotations already belong to this slide."
+msgstr "Ці анотації вже належать цьому препарату."
+
+#: src/actions.rs:1027
+msgid "That slide has no annotations left."
+msgstr "У того препарату не залишилося анотацій."
+
+#: src/actions.rs:1035
+msgid "Attached {n} layer to this slide."
+msgid_plural "Attached {n} layers to this slide."
+msgstr[0] "До цього препарату приєднано {n} шар."
+msgstr[1] "До цього препарату приєднано {n} шари."
+msgstr[2] "До цього препарату приєднано {n} шарів."
+
+#: src/actions.rs:1076
+msgid "New class"
+msgstr "Створення класу"
+
+#: src/actions.rs:1138
+msgid "Rename class"
+msgstr "Перейменування класу"
+
+#: src/actions.rs:1147
+msgid "A class named \"{}\" already exists."
+msgstr "Клас із назвою «{}» уже існує."
+
+#: src/actions.rs:1161
+msgid "Set class hotkey"
+msgstr "Призначення гарячої клавіші класу"
+
+#: src/actions.rs:1186
+msgid "Change class colour"
+msgstr "Зміна кольору класу"
+
+#: src/actions.rs:1190 src/sidebar.rs:1358
+msgid "\"{}\" is not a colour."
+msgstr "«{}» не є кольором."
+
+#: src/actions.rs:1197
+msgid "Delete class"
+msgstr "Видалення класу"
+
+#: src/actions.rs:1201
+msgid "Delete class \"{}\""
+msgstr "Видалення класу «{}»"
+
+#: src/actions.rs:1243 src/lib.rs:96 src/overlay.rs:164 src/sidebar.rs:151
+#: src/sidebar.rs:384
+msgid "Unclassified"
+msgstr "Без класу"
+
+#: src/actions.rs:1244
+msgid "Class: {}"
+msgstr "Клас: {}"
+
+#. Translators: on the slide, beside the HPF field that follows the
+#. pointer: its area and how many points (such as counted cells) lie in it.
+#: src/actions.rs:1274
+msgid "1 HPF · {area} mm² · {n} point"
+msgid_plural "1 HPF · {area} mm² · {n} points"
+msgstr[0] "1 HPF · {area} mm² · {n} точка"
+msgstr[1] "1 HPF · {area} mm² · {n} точки"
+msgstr[2] "1 HPF · {area} mm² · {n} точок"
+
+#: src/actions.rs:1466
+msgid "Add comment"
+msgstr "Додавання коментаря"
+
+#: src/actions.rs:1472
+msgid "Write the comment first."
+msgstr "Спершу напишіть коментар."
+
+#: src/actions.rs:1481
+msgid "An annotation can have at most {n} comments."
+msgid_plural "An annotation can have at most {n} comments."
+msgstr[0] "Анотація може мати не більше ніж {n} коментар."
+msgstr[1] "Анотація може мати не більше ніж {n} коментарі."
+msgstr[2] "Анотація може мати не більше ніж {n} коментарів."
+
+#: src/actions.rs:1511
+msgid "Delete comment"
+msgstr "Видалення коментаря"
+
+#: src/actions.rs:1524
+msgid "That comment no longer exists."
+msgstr "Цього коментаря більше не існує."
+
+#: src/actions.rs:1723
+msgid ""
+"Brush {} px, eraser: paint over a selected region to erase from it; [ and ] "
+"change the size"
+msgstr ""
+"Пензель {} px, гумка: зафарбовуйте поверх виділеної ділянки, щоб стерти з "
+"неї; [ і ] змінюють розмір"
+
+#: src/actions.rs:1728
+msgid ""
+"Brush {} px: paint a region (over a selected region to extend it); Alt "
+"erases; [ and ] change the size"
+msgstr ""
+"Пензель {} px: зафарбовуйте ділянку (поверх виділеної ділянки, щоб розширити "
+"її); Alt — стирання; [ і ] змінюють розмір"
+
+#: src/actions.rs:1742
+msgid "Erase"
+msgstr "Стирання"
+
+#: src/actions.rs:1744
+msgid "Brush stroke"
+msgstr "Мазок пензля"
+
+#: src/actions.rs:1768
+msgid "The stroke is outside the slide."
+msgstr "Мазок поза межами препарату."
+
+#: src/actions.rs:1818
+msgid "Select the region to erase from."
+msgstr "Виділіть ділянку, з якої потрібно стерти."
+
+#: src/actions.rs:1843
+msgid "The eraser did not touch the selected region."
+msgstr "Гумка не торкнулася виділеної ділянки."
+
+#. Translators: a part of the plugin that works in the background.
+#: src/core.rs:228
+msgid "Could not start a worker thread"
+msgstr "Не вдалося запустити робочий потік"
+
+#: src/core.rs:385
+msgid "Internal error while opening the database"
+msgstr "Внутрішня помилка під час відкриття бази даних"
+
+#: src/core.rs:393
+msgid "Internal error while loading annotations"
+msgstr "Внутрішня помилка під час завантаження анотацій"
+
+#: src/core.rs:398
+msgid "Internal error while saving annotations"
+msgstr "Внутрішня помилка під час збереження анотацій"
+
+#: src/core.rs:403
+msgid "Internal error while undoing"
+msgstr "Внутрішня помилка під час відмінення"
+
+#: src/core.rs:408
+msgid "Internal error while working on the database"
+msgstr "Внутрішня помилка під час роботи з базою даних"
+
+#: src/core.rs:427
+msgid "Internal error while reading or writing a file"
+msgstr "Внутрішня помилка під час читання або запису файлу"
+
+#: src/core.rs:561
+msgid "The annotation database could not be opened"
+msgstr "Не вдалося відкрити базу даних анотацій"
+
+#: src/core.rs:590
+msgid "Annotations from eov before 1.0"
+msgstr "Анотації з eov до версії 1.0"
+
+#: src/core.rs:592
+msgid ""
+"The annotations plugin of eov before 1.0 left a database at {}. Bring its "
+"annotations into the current database? The old file is not changed. You can "
+"also do this later in the Data tab of the annotations panel."
+msgstr ""
+"Плагін анотацій eov до версії 1.0 залишив базу даних за шляхом {}. Перенести "
+"її анотації до поточної бази даних? Старий файл не буде змінено. Це також "
+"можна зробити пізніше на вкладці «Дані» панелі анотацій."
+
+#: src/core.rs:597
+msgid "Bring them in"
+msgstr "Перенести"
+
+#: src/core.rs:598
+msgid "Not now"
+msgstr "Не зараз"
+
+#. Translators: the plugin could not ask whether to bring in the annotations made
+#. with eov before 1.0 (the title of that question is "Annotations from eov before 1.0").
+#: src/core.rs:612
+msgid "Could not offer the annotations from eov before 1.0"
+msgstr "Не вдалося запропонувати перенесення анотацій з eov до версії 1.0"
+
+#: src/core.rs:657 src/sidebar.rs:457
+msgid "Could not load this slide's annotations: {}"
+msgstr "Не вдалося завантажити анотації цього препарату: {}"
+
+#. Translators: a second read is an independent annotation of the slide by another person
+#. (as in a reader study), not a clinical second opinion. Data, Second reader and Blinded
+#. copy are the tab, section and button of the annotations panel: use their translations.
+#: src/core.rs:670
+msgid ""
+"{opened} has the same content as {annotated}, so it shows and edits the same "
+"annotations. For an independent second read, use Data → Second reader → "
+"Blinded copy."
+msgstr ""
+"{opened} має той самий вміст, що й {annotated}, тому показує й редагує ті "
+"самі анотації. Для незалежного другого оцінювання скористайтеся командою "
+"Дані → Другий оцінювач → Засліплена копія."
+
+#: src/core.rs:721 src/core.rs:1019 src/core.rs:1156
+msgid "the database is not open"
+msgstr "базу даних не відкрито"
+
+#: src/core.rs:809
+msgid "{n} annotation of {file} could not be read and was skipped."
+msgid_plural "{n} annotations of {file} could not be read and were skipped."
+msgstr[0] "Пропущено {n} анотацію з {file}, яку не вдалося прочитати."
+msgstr[1] "Пропущено {n} анотації з {file}, які не вдалося прочитати."
+msgstr[2] "Пропущено {n} анотацій з {file}, які не вдалося прочитати."
+
+#: src/core.rs:900
+msgid "Could not reload annotations"
+msgstr "Не вдалося перезавантажити анотації"
+
+#: src/core.rs:931
+msgid "Annotations were changed by another eov window and have been reloaded."
+msgstr "Анотації змінено в іншому вікні eov; їх перезавантажено."
+
+#: src/core.rs:957
+msgid "the database stayed locked"
+msgstr "база даних залишалася заблокованою"
+
+#: src/core.rs:964
+msgid "a class with that name already exists"
+msgstr "клас із такою назвою вже існує"
+
+#: src/core.rs:966
+msgid "the annotation database is read-only"
+msgstr "база даних анотацій доступна лише для читання"
+
+#: src/core.rs:969
+msgid "the annotation was changed elsewhere in the meantime"
+msgstr "тим часом анотацію було змінено в іншому місці"
+
+#: src/core.rs:971
+msgid "the layer was changed elsewhere in the meantime"
+msgstr "тим часом шар було змінено в іншому місці"
+
+#: src/core.rs:972
+msgid "the class was changed elsewhere in the meantime"
+msgstr "тим часом клас було змінено в іншому місці"
+
+#: src/core.rs:973
+msgid "a layer being moved was changed elsewhere in the meantime"
+msgstr "тим часом шар, що переміщувався, було змінено в іншому місці"
+
+#: src/core.rs:1053
+msgid "Could not save \"{}\""
+msgstr "Не вдалося зберегти зміну «{}»"
+
+#: src/core.rs:1123
+msgid "This annotation change can no longer be undone."
+msgstr "Цю зміну анотацій більше неможливо відмінити."
+
+#: src/core.rs:1137
+msgid "The slide of this change is not open any more."
+msgstr "Препарат, якого стосується ця зміна, уже закрито."
+
+#: src/core.rs:1176
+msgid "Could not redo \"{}\""
+msgstr "Не вдалося повторити дію «{}»"
+
+#: src/core.rs:1178
+msgid "Could not undo \"{}\""
+msgstr "Не вдалося відмінити дію «{}»"
+
+#. Translators: cells per square millimetre, with the 95% confidence interval.
+#: src/counting.rs:185
+msgid "{density} /mm² (95% {low}–{high})"
+msgstr "{density} /mm² (95 % ДІ {low}–{high})"
+
+#. Translators: cells per 10 high-power fields.
+#: src/counting.rs:194
+msgid "{} /10 HPF"
+msgstr "{} /10 HPF"
+
+#: src/counting.rs:222
+msgid "100 (capped; the ratio is higher)"
+msgstr "100 (обмежено; фактичне співвідношення вище)"
+
+#. Translators: CPS is the PD-L1 combined positive score; {positive},
+#. {negative} and {immune} are names of classes of cells.
+#: src/counting.rs:234
+msgid ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cell "
+"({positive} + {negative}) × 100."
+msgid_plural ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cells "
+"({positive} + {negative}) × 100."
+msgstr[0] ""
+"CPS {score} — ({a} {positive} + {c} {immune}) на {n} пухлинну клітину "
+"({positive} + {negative}) × 100."
+msgstr[1] ""
+"CPS {score} — ({a} {positive} + {c} {immune}) на {n} пухлинні клітини "
+"({positive} + {negative}) × 100."
+msgstr[2] ""
+"CPS {score} — ({a} {positive} + {c} {immune}) на {n} пухлинних клітин "
+"({positive} + {negative}) × 100."
+
+#: src/counting.rs:248
+msgid "Fewer than {n} tumour cells: below the minimum for a valid score."
+msgid_plural ""
+"Fewer than {n} tumour cells: below the minimum for a valid score."
+msgstr[0] ""
+"Пухлинних клітин менше ніж {n}: це нижче мінімуму для коректного розрахунку "
+"показника."
+msgstr[1] ""
+"Пухлинних клітин менше ніж {n}: це нижче мінімуму для коректного розрахунку "
+"показника."
+msgstr[2] ""
+"Пухлинних клітин менше ніж {n}: це нижче мінімуму для коректного розрахунку "
+"показника."
+
+#. Translators: e.g. "Ki-67+ index: 25.0 % (95% 20.1–30.4 %) — 25 of 100 (Ki-67+ + Ki-67-)";
+#. {class} and {other} are names of classes of cells.
+#: src/counting.rs:263
+msgid ""
+"{class} index: {value} % (95% {low}–{high} %) — {k} of {total} ({class} + "
+"{other})"
+msgstr ""
+"Індекс {class}: {value} % (95 % ДІ {low}–{high} %) — {k} з {total} ({class} "
+"+ {other})"
+
+#: src/db/mod.rs:116
+msgid "The annotation database is read-only; editing is disabled."
+msgstr "База даних анотацій доступна лише для читання; редагування вимкнено."
+
+#: src/db/mod.rs:119
+msgid "{n} layer colour was unreadable and was replaced."
+msgid_plural "{n} layer colours were unreadable and were replaced."
+msgstr[0] "Замінено {n} колір шару, який не вдалося прочитати."
+msgstr[1] "Замінено {n} кольори шарів, які не вдалося прочитати."
+msgstr[2] "Замінено {n} кольорів шарів, які не вдалося прочитати."
+
+#. Translators: {slides} in "Upgraded the annotation database from the pre-1.0 format: {slides}, …".
+#: src/db/mod.rs:131
+msgid "{n} slide"
+msgid_plural "{n} slides"
+msgstr[0] "{n} препарат"
+msgstr[1] "{n} препарати"
+msgstr[2] "{n} препаратів"
+
+#. Translators: {slides} is "1 slide" or "3 slides" (translated on its own).
+#: src/db/mod.rs:136
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotation."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotations."
+msgstr[0] ""
+"Базу даних анотацій оновлено з формату до версії 1.0: {slides}, {n} анотація."
+msgstr[1] ""
+"Базу даних анотацій оновлено з формату до версії 1.0: {slides}, {n} анотації."
+msgstr[2] ""
+"Базу даних анотацій оновлено з формату до версії 1.0: {slides}, {n} анотацій."
+
+#. Translators: {slides} is "1 slide" or "3 slides", {annotations} is
+#. "1 annotation" or "5 annotations" (each translated on its own).
+#: src/db/mod.rs:145
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotation skipped."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotations skipped."
+msgstr[0] ""
+"Базу даних анотацій оновлено з формату до версії 1.0: {slides}, "
+"{annotations}; пропущено {n} анотацію, яку не вдалося прочитати."
+msgstr[1] ""
+"Базу даних анотацій оновлено з формату до версії 1.0: {slides}, "
+"{annotations}; пропущено {n} анотації, які не вдалося прочитати."
+msgstr[2] ""
+"Базу даних анотацій оновлено з формату до версії 1.0: {slides}, "
+"{annotations}; пропущено {n} анотацій, які не вдалося прочитати."
+
+#. Translators: a number of annotations on its own, in two texts: {annotations} in
+#. "Upgraded the annotation database from the pre-1.0 format: {slides}, {annotations}, …"
+#. and {ours} in "This slide's visible layers ({ours}) against the {n} annotations in {name}, …".
+#: src/db/mod.rs:153 src/state.rs:516
+msgid "{n} annotation"
+msgid_plural "{n} annotations"
+msgstr[0] "{n} анотація"
+msgstr[1] "{n} анотації"
+msgstr[2] "{n} анотацій"
+
+#: src/db/mod.rs:159
+msgid ""
+"New database. If you annotated with eov before 1.0, those annotations are in "
+"annotations.db in eov's old settings folder (~/.config/eov on Linux, ~/"
+"Library/Application Support/eov on macOS, %APPDATA%\\eov on Windows): bring "
+"them in with Merge… above."
+msgstr ""
+"Нова база даних. Якщо ви створювали анотації в eov до версії 1.0, вони "
+"зберігаються у файлі annotations.db у старій папці налаштувань eov (~/."
+"config/eov у Linux, ~/Library/Application Support/eov у macOS, %APPDATA%"
+"\\eov у Windows): перенесіть їх кнопкою «Об’єднати…» вище."
+
+#: src/fileio.rs:105 src/fileio.rs:115
+msgid "cannot read {file}: {error}"
+msgstr "не вдалося прочитати {file}: {error}"
+
+#: src/fileio.rs:109
+msgid "{file} is {size} MB; imports are limited to {limit} MB"
+msgstr ""
+"{file} має розмір {size} MB; для імпорту дозволено щонайбільше {limit} MB"
+
+#: src/formats/dicom/mod.rs:605
+msgid "There are too many coordinates for one DICOM annotation group."
+msgstr "Забагато координат для однієї групи анотацій DICOM."
+
+#: src/formats/dicom/mod.rs:674
+msgid "There are too many annotation groups."
+msgstr "Забагато груп анотацій."
+
+#: src/formats/dicom/mod.rs:695
+msgid "There are too many annotations in one group."
+msgstr "Забагато анотацій в одній групі."
+
+#: src/formats/dicom/mod.rs:736
+msgid "The slide has no annotations to export."
+msgstr "Препарат не має анотацій для експорту."
+
+#: src/formats/dicom/mod.rs:872
+msgid ""
+"It refers to this slide's DICOM image (series {}) and joins its study; the "
+"patient and study attributes are the slide's."
+msgstr ""
+"Файл посилається на зображення DICOM цього препарату (серія {}) і входить до "
+"його дослідження; атрибути пацієнта й дослідження взято з препарату."
+
+#: src/formats/dicom/mod.rs:876
+msgid ""
+"This slide is not a DICOM image, so the file refers to no image: it is a "
+"study of its own with empty patient attributes, and DICOM viewers cannot "
+"attach it to a slide by themselves."
+msgstr ""
+"Цей препарат не є зображенням DICOM, тому файл не посилається на жодне "
+"зображення: це окреме дослідження з порожніми атрибутами пацієнта, і "
+"переглядачі DICOM не зможуть самостійно пов’язати його з препаратом."
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot
+#. hold {}: …"; {regions} is "in 1 region" or "in 2 regions"; "drawn
+#. without it/them": other viewers draw these regions without their holes.
+#: src/formats/dicom/mod.rs:886
+msgid "{n} hole {regions} (drawn without it)"
+msgid_plural "{n} holes {regions} (drawn without them)"
+msgstr[0] "{n} отвір {regions} (показано без отворів)"
+msgstr[1] "{n} отвори {regions} (показано без отворів)"
+msgstr[2] "{n} отворів {regions} (показано без отворів)"
+
+#. Translators: in "{n} holes {regions} (drawn without them)".
+#: src/formats/dicom/mod.rs:890
+msgid "in {n} region"
+msgid_plural "in {n} regions"
+msgstr[0] "у {n} ділянці"
+msgstr[1] "у {n} ділянках"
+msgstr[2] "у {n} ділянках"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:897
+msgid "the text of {n} text label (written as points)"
+msgid_plural "the text of {n} text labels (written as points)"
+msgstr[0] "текст {n} текстової мітки (записано як точки)"
+msgstr[1] "текст {n} текстових міток (записано як точки)"
+msgstr[2] "текст {n} текстових міток (записано як точки)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:904
+msgid "the heads of {n} arrow (written as lines)"
+msgid_plural "the heads of {n} arrows (written as lines)"
+msgstr[0] "наконечники {n} стрілки (записано як лінії)"
+msgstr[1] "наконечники {n} стрілок (записано як лінії)"
+msgstr[2] "наконечники {n} стрілок (записано як лінії)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:911
+msgid "the names, descriptions and statuses of {n} annotation"
+msgid_plural "the names, descriptions and statuses of {n} annotations"
+msgstr[0] "назви, описи й статуси {n} анотації"
+msgstr[1] "назви, описи й статуси {n} анотацій"
+msgstr[2] "назви, описи й статуси {n} анотацій"
+
+#. Translators: {} lists what is lost, such as "the heads of 2 arrows (written
+#. as lines) and the text of 1 text label (written as points)".
+#: src/formats/dicom/mod.rs:919
+msgid ""
+"DICOM bulk annotations cannot hold {}: other viewers do not see them, but "
+"eov reads them back from its private attributes."
+msgstr ""
+"Масові анотації DICOM не можуть містити {}: інші переглядачі їх не бачать, "
+"але eov зчитує їх зі своїх приватних атрибутів."
+
+#: src/formats/dicom/mod.rs:924
+msgid ""
+"Each layer, class and kind of shape is a group labelled with its class (or "
+"its layer). Authors, comments, properties and times are not exported (eov "
+"JSON keeps everything)."
+msgstr ""
+"Кожен шар, клас і тип фігури утворює групу, позначену своїм класом (або "
+"шаром). Автори, коментарі, властивості та часові позначки не експортуються "
+"(eov JSON зберігає все)."
+
+#: src/formats/dicom/mod.rs:928
+msgid ""
+"{n} annotation with too few points or unusable coordinates was left out."
+msgid_plural ""
+"{n} annotations with too few points or unusable coordinates were left out."
+msgstr[0] ""
+"Пропущено {n} анотацію, що має замало точок або непридатні координати."
+msgstr[1] ""
+"Пропущено {n} анотації, що мають замало точок або непридатні координати."
+msgstr[2] ""
+"Пропущено {n} анотацій, що мають замало точок або непридатні координати."
+
+#. Translators: the end of a list, "a, b and c": {first} is "a, b".
+#: src/formats/dicom/mod.rs:943
+msgid "{first} and {last}"
+msgstr "{first} і {last}"
+
+#. Translators: between the items of a list ("a, b and c").
+#: src/formats/dicom/mod.rs:946
+msgid ", "
+msgstr ", "
+
+#: src/formats/dicom/mod.rs:978
+msgid ""
+"Made for a DICOM slide; this one is not a DICOM image, so whether the "
+"annotations belong to it cannot be checked. Coordinates are taken as level-0 "
+"pixels of this slide."
+msgstr ""
+"Створено для препарату DICOM; цей препарат не є зображенням DICOM, тому "
+"неможливо перевірити, чи належать до нього анотації. Координати вважаються "
+"пікселями рівня 0 цього препарату."
+
+#: src/formats/dicom/mod.rs:987
+msgid "Made for this slide (its DICOM image)."
+msgstr "Створено для цього препарату (його зображення DICOM)."
+
+#: src/formats/dicom/mod.rs:994
+msgid "Made for this slide (its DICOM series)."
+msgstr "Створено для цього препарату (його серії DICOM)."
+
+#: src/formats/dicom/mod.rs:998
+msgid ""
+"Made for another image of this slide's DICOM series (another resolution "
+"level?), whose pixels may not be level-0 pixels."
+msgstr ""
+"Створено для іншого зображення серії DICOM цього препарату (іншого рівня "
+"роздільної здатності?), пікселі якого можуть не бути пікселями рівня 0."
+
+#: src/formats/dicom/mod.rs:1005
+msgid "Made for a different DICOM slide (it refers to other images)."
+msgstr ""
+"Створено для іншого препарату DICOM (файл посилається на інші зображення)."
+
+#: src/formats/dicom/mod.rs:1014
+msgid ""
+"This DICOM file is a slide image (VL Whole Slide Microscopy), not "
+"annotations: open it as a slide. Annotations are read from Microscopy Bulk "
+"Simple Annotations objects (modality ANN)."
+msgstr ""
+"Цей файл DICOM — зображення препарату (VL Whole Slide Microscopy), а не "
+"анотації: відкрийте його як препарат. Анотації зчитуються з об’єктів "
+"Microscopy Bulk Simple Annotations (модальність ANN)."
+
+#: src/formats/dicom/mod.rs:1018
+msgid ""
+"This DICOM file is a structured report (SR). eov reads DICOM annotations "
+"from Microscopy Bulk Simple Annotations objects (modality ANN), not from "
+"structured reports."
+msgstr ""
+"Цей файл DICOM — структурований звіт (SR). eov зчитує анотації DICOM з "
+"об’єктів Microscopy Bulk Simple Annotations (модальність ANN), а не зі "
+"структурованих звітів."
+
+#: src/formats/dicom/mod.rs:1021
+msgid "This DICOM file does not say what it holds (it has no SOP Class UID)."
+msgstr "У цьому файлі DICOM не вказано, що він містить (немає SOP Class UID)."
+
+#: src/formats/dicom/mod.rs:1024
+msgid ""
+"This DICOM file is not an annotation object (SOP class {}); eov reads "
+"Microscopy Bulk Simple Annotations (modality ANN)."
+msgstr ""
+"Цей файл DICOM не є об’єктом анотацій (клас SOP {}); eov зчитує Microscopy "
+"Bulk Simple Annotations (модальність ANN)."
+
+#: src/formats/dicom/mod.rs:1047
+msgid "eov's private description of the slide is unreadable and was ignored."
+msgstr ""
+"Приватний опис препарату, записаний eov, не вдалося прочитати; його "
+"проігноровано."
+
+#. Translators: {} says what is wrong with the file, in English.
+#: src/formats/dicom/mod.rs:1080
+msgid "The DICOM file cannot be read: {}."
+msgstr "Не вдалося прочитати файл DICOM: {}."
+
+#: src/formats/dicom/mod.rs:1099
+msgid ""
+"This file holds 3D annotations: their coordinates are millimetres in the "
+"slide's frame of reference (DICOM SCOORD3D), and eov places annotations by "
+"level-0 pixels. Only 2D (pixel) annotations can be imported."
+msgstr ""
+"Цей файл містить 3D-анотації: їхні координати задано в міліметрах у системі "
+"відліку препарату (DICOM SCOORD3D), а eov розміщує анотації за пікселями "
+"рівня 0. Імпортувати можна лише 2D-анотації (у пікселях)."
+
+#: src/formats/dicom/mod.rs:1104
+msgid ""
+"The file does not say whether its coordinates are 2D or 3D (Annotation "
+"Coordinate Type is missing)."
+msgstr ""
+"У файлі не вказано, чи його координати 2D, чи 3D (немає Annotation "
+"Coordinate Type)."
+
+#: src/formats/dicom/mod.rs:1109
+msgid ""
+"The file's coordinates are of an unknown type (\"{}\"); 2D annotations can "
+"be imported."
+msgstr ""
+"Координати файлу мають невідомий тип («{}»); імпортувати можна 2D-анотації."
+
+#: src/formats/dicom/mod.rs:1126
+msgid ""
+"The annotations' pixel coordinates are relative to single frames (tiles) of "
+"the image (Pixel Origin Interpretation FRAME), which eov cannot place; "
+"coordinates relative to the whole image (VOLUME) can be imported."
+msgstr ""
+"Піксельні координати анотацій задано відносно окремих кадрів (плиток) "
+"зображення (Pixel Origin Interpretation FRAME), тому eov не може їх "
+"розмістити; імпортувати можна координати відносно всього зображення (VOLUME)."
+
+#: src/formats/dicom/mod.rs:1130
+msgid ""
+"Unknown pixel origin interpretation \"{}\"; coordinates are taken relative "
+"to the whole image."
+msgstr ""
+"Невідома інтерпретація початку піксельних координат «{}»; координати "
+"вважаються заданими відносно всього зображення."
+
+#: src/formats/dicom/mod.rs:1136
+msgid "The DICOM file has no annotation groups."
+msgstr "У файлі DICOM немає груп анотацій."
+
+#: src/formats/dicom/mod.rs:1146
+msgid ""
+"{n} rectangle or ellipse not aligned with the image axes became a polygon."
+msgid_plural ""
+"{n} rectangles and ellipses not aligned with the image axes became polygons."
+msgstr[0] ""
+"{n} прямокутник або еліпс, не вирівняний за осями зображення, перетворено на "
+"багатокутник."
+msgstr[1] ""
+"{n} прямокутники та еліпси, не вирівняні за осями зображення, перетворено на "
+"багатокутники."
+msgstr[2] ""
+"{n} прямокутників та еліпсів, не вирівняних за осями зображення, перетворено "
+"на багатокутники."
+
+#: src/formats/dicom/mod.rs:1178
+msgid "annotation group with lines or polygons without a point index list"
+msgstr "група анотацій з лініями або багатокутниками без списку індексів точок"
+
+#: src/formats/dicom/mod.rs:1182
+msgid "annotation group with an unreadable point index list"
+msgstr "група анотацій з нечитабельним списком індексів точок"
+
+#: src/formats/dicom/mod.rs:1197
+msgid "annotation group with lines or polygons with an empty point index list"
+msgstr ""
+"група анотацій з лініями або багатокутниками з порожнім списком індексів "
+"точок"
+
+#: src/formats/dicom/mod.rs:1211
+msgid ""
+"The point index list of \"{}\" counts points rather than coordinate values; "
+"it was read that way."
+msgstr ""
+"Список індексів точок «{}» нумерує точки, а не значення координат; його "
+"прочитано саме так."
+
+#: src/formats/dicom/mod.rs:1217
+msgid ""
+"annotation group with a point index list that does not fit its coordinates"
+msgstr ""
+"група анотацій зі списком індексів точок, який не відповідає її координатам"
+
+#. Translators: a reason why a measurement of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1333
+msgid "measurement without values"
+msgstr "вимірювання без значень"
+
+#: src/formats/dicom/mod.rs:1340
+msgid "measurement with unreadable values"
+msgstr "вимірювання з нечитабельними значеннями"
+
+#: src/formats/dicom/mod.rs:1352
+msgid "measurement that does not match its annotations"
+msgstr "вимірювання, що не відповідає своїм анотаціям"
+
+#. Translators: a reason why a group of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1398
+msgid "annotation group without coordinates"
+msgstr "група анотацій без координат"
+
+#: src/formats/dicom/mod.rs:1402
+msgid "annotation group with unreadable coordinates"
+msgstr "група анотацій з нечитабельними координатами"
+
+#: src/formats/dicom/mod.rs:1408
+msgid "annotation group whose coordinates are not (column, row) pairs"
+msgstr "група анотацій, координати якої не є парами (стовпець, рядок)"
+
+#: src/formats/dicom/mod.rs:1426
+msgid "rectangles or ellipses without four points each"
+msgstr "прямокутники або еліпси, що не мають по чотири точки"
+
+#: src/formats/dicom/mod.rs:1439
+msgid "annotation group without a graphic type"
+msgstr "група анотацій без графічного типу"
+
+#: src/formats/dicom/mod.rs:1443
+msgid "annotation group of graphic type {}"
+msgstr "група анотацій графічного типу {}"
+
+#: src/formats/dicom/mod.rs:1451
+msgid ""
+"\"{name}\" says it has {n} annotation, but its coordinates hold {held}; the "
+"coordinates were read."
+msgid_plural ""
+"\"{name}\" says it has {n} annotations, but its coordinates hold {held}; the "
+"coordinates were read."
+msgstr[0] ""
+"У «{name}» вказано {n} анотацію, а координати містять {held}; прочитано "
+"координати."
+msgstr[1] ""
+"У «{name}» вказано {n} анотації, а координати містять {held}; прочитано "
+"координати."
+msgstr[2] ""
+"У «{name}» вказано {n} анотацій, а координати містять {held}; прочитано "
+"координати."
+
+#: src/formats/dicom/mod.rs:1463
+msgid ""
+"eov's private attributes of \"{}\" are unreadable; the group was read from "
+"its DICOM attributes alone."
+msgstr ""
+"Не вдалося прочитати приватні атрибути eov групи «{}»; групу прочитано лише "
+"з її атрибутів DICOM."
+
+#: src/formats/dicom/mod.rs:1529
+msgid "annotations beyond the limit of {} per file"
+msgstr "анотації понад обмеження {} на файл"
+
+#: src/formats/dicom/mod.rs:1537
+msgid "annotation with non-finite coordinates"
+msgstr "анотація з нескінченними або невизначеними координатами"
+
+#: src/formats/eov.rs:209
+msgid ""
+"This file uses eov annotation format {version}; this plugin reads up to "
+"{supported}. Update the plugin."
+msgstr ""
+"Цей файл використовує формат анотацій eov версії {version}; цей плагін читає "
+"формати до версії {supported}. Оновіть плагін."
+
+#: src/formats/eov.rs:261
+msgid "The file has no \"layers\"."
+msgstr "У файлі немає «layers»."
+
+#: src/formats/eov.rs:277
+msgid "Layer \"{}\" has an unreadable colour; a palette colour is used."
+msgstr "Не вдалося прочитати колір шару «{}»; використано колір із палітри."
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/eov.rs:292
+msgid "unreadable geometry"
+msgstr "нечитабельна геометрія"
+
+#: src/formats/eov.rs:332
+msgid "The file has no \"annotation_layers\"."
+msgstr "У файлі немає «annotation_layers»."
+
+#: src/formats/eov.rs:359
+msgid "point without coordinates"
+msgstr "точка без координат"
+
+#: src/formats/eov.rs:384
+msgid "polygon with unreadable vertices"
+msgstr "багатокутник з нечитабельними вершинами"
+
+#: src/formats/eov.rs:390
+msgid "unknown annotation type"
+msgstr "невідомий тип анотації"
+
+#: src/formats/eov.rs:426
+msgid "The archive has no \"slides\"."
+msgstr "В архіві немає «slides»."
+
+#: src/formats/eov.rs:432
+msgid "An archive entry was skipped: {}"
+msgstr "Елемент архіву пропущено: {}"
+
+#. Translators: reasons why a shape of an imported file was skipped,
+#. listed as "2 × unreadable point".
+#: src/formats/geojson.rs:68
+msgid "unreadable point"
+msgstr "нечитабельна точка"
+
+#: src/formats/geojson.rs:69
+msgid "unreadable line"
+msgstr "нечитабельна лінія"
+
+#: src/formats/geojson.rs:70
+msgid "unreadable polygon"
+msgstr "нечитабельний багатокутник"
+
+#: src/formats/geojson.rs:74
+msgid "geometry without a type"
+msgstr "геометрія без типу"
+
+#: src/formats/geojson.rs:84
+msgid "unreadable points"
+msgstr "нечитабельні точки"
+
+#: src/formats/geojson.rs:103
+msgid "unreadable lines"
+msgstr "нечитабельні лінії"
+
+#: src/formats/geojson.rs:119
+msgid "unreadable polygons"
+msgstr "нечитабельні багатокутники"
+
+#: src/formats/geojson.rs:128
+msgid "unreadable geometry collection"
+msgstr "нечитабельна колекція геометрій"
+
+#: src/formats/geojson.rs:133
+msgid "unsupported geometry type"
+msgstr "непідтримуваний тип геометрії"
+
+#: src/formats/geojson.rs:221
+msgid "The FeatureCollection has no features."
+msgstr "FeatureCollection не містить об’єктів (features)."
+
+#: src/formats/geojson.rs:224 src/formats/geojson.rs:226
+msgid "Not GeoJSON."
+msgstr "Це не GeoJSON."
+
+#. Translators: a reason why an element of an imported file was skipped.
+#: src/formats/geojson.rs:242
+msgid "not a GeoJSON feature"
+msgstr "не є об’єктом GeoJSON (feature)"
+
+#: src/formats/geojson.rs:259
+msgid "feature without geometry"
+msgstr "об’єкт без геометрії"
+
+#: src/formats/geojson.rs:318
+msgid "properties beyond the limit of {} per annotation"
+msgstr "властивості понад обмеження {} на анотацію"
+
+#: src/formats/geojson.rs:351
+msgid "The GeoJSON file contains no features."
+msgstr "Файл GeoJSON не містить об’єктів (features)."
+
+#: src/formats/mod.rs:240
+msgid "This .dcm file is not a DICOM file (\"DICM\" is missing at byte 128)."
+msgstr "Цей файл .dcm не є файлом DICOM (немає «DICM» у байті 128)."
+
+#: src/formats/mod.rs:242
+msgid ""
+"The file is not UTF-8 text or DICOM, so it is not a supported annotation "
+"file."
+msgstr ""
+"Файл не є ні текстом UTF-8, ні файлом DICOM, тому це не підтримуваний файл "
+"анотацій."
+
+#: src/formats/mod.rs:250
+msgid "The file is not valid JSON: {}"
+msgstr "Файл не є коректним JSON: {}"
+
+#: src/formats/mod.rs:257
+msgid "This JSON file is neither GeoJSON nor an eov annotation export."
+msgstr "Цей файл JSON не є ні GeoJSON, ні експортом анотацій eov."
+
+#: src/formats/mod.rs:263
+msgid ""
+"Unsupported file: expected GeoJSON, eov JSON, ASAP XML, ImageScope XML, NDPA "
+"or DICOM bulk annotations."
+msgstr ""
+"Непідтримуваний файл: очікувалися GeoJSON, eov JSON, ASAP XML, ImageScope "
+"XML, NDPA або масові анотації DICOM."
+
+#: src/formats/ndpa.rs:62
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide is not one, so they cannot be placed on it."
+msgstr ""
+"Координати NDPA відраховуються від центру препарату Hamamatsu (NDPI), але "
+"цей препарат не є препаратом Hamamatsu, тому їх неможливо на ньому "
+"розмістити."
+
+#. Translators: {} is the vendor of the slide's format ("aperio").
+#: src/formats/ndpa.rs:68
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide ({}) is not one, so they cannot be placed on it."
+msgstr ""
+"Координати NDPA відраховуються від центру препарату Hamamatsu (NDPI), але "
+"цей препарат ({}) не є препаратом Hamamatsu, тому їх неможливо на ньому "
+"розмістити."
+
+#: src/formats/ndpa.rs:79
+msgid ""
+"This NDPI does not give its offsets from the slide centre (hamamatsu."
+"XOffsetFromSlideCentre and YOffsetFromSlideCentre), so the NDPA coordinates "
+"cannot be placed on it."
+msgstr ""
+"Цей NDPI не вказує своїх зміщень від центру предметного скла (hamamatsu."
+"XOffsetFromSlideCentre і YOffsetFromSlideCentre), тому координати NDPA "
+"неможливо на ньому розмістити."
+
+#: src/formats/ndpa.rs:88
+msgid ""
+"This slide has no pixel size, so the NDPA's nanometre coordinates cannot be "
+"converted to pixels."
+msgstr ""
+"Для цього препарату не вказано розміру пікселя, тому нанометрові координати "
+"NDPA неможливо перетворити на пікселі."
+
+#: src/formats/ndpa.rs:92
+msgid "The slide's size is unknown."
+msgstr "Розмір препарату невідомий."
+
+#. Translators: a reason why an annotation of an imported file was skipped; {} is
+#. its type in the file ("freehand", "circle", "pin", …).
+#: src/formats/ndpa.rs:211
+msgid "{} annotation with unreadable coordinates"
+msgstr "анотація «{}» з нечитабельними координатами"
+
+#: src/formats/ndpa.rs:267
+msgid "unsupported NDPA annotation type '{}'"
+msgstr "непідтримуваний тип анотації NDPA «{}»"
+
+#: src/formats/ndpa.rs:296
+msgid "annotation in unsupported coordinates ({})"
+msgstr "анотація в непідтримуваних координатах ({})"
+
+#: src/formats/ndpa.rs:300
+msgid "view state without an annotation"
+msgstr "стан перегляду без анотації"
+
+#: src/formats/xml.rs:28
+msgid "The XML is not well-formed: {}"
+msgstr "XML не є правильно сформованим: {}"
+
+#: src/formats/xml.rs:37
+msgid ""
+"Unsupported XML annotations (root element <{}>); ASAP, Aperio ImageScope and "
+"Hamamatsu NDPA files are supported."
+msgstr ""
+"Непідтримувані анотації XML (кореневий елемент <{}>); підтримуються файли "
+"ASAP, Aperio ImageScope і Hamamatsu NDPA."
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/xml.rs:96
+msgid "annotation with unreadable coordinates"
+msgstr "анотація з нечитабельними координатами"
+
+#: src/formats/xml.rs:158
+msgid "unsupported ASAP annotation type"
+msgstr "непідтримуваний тип анотації ASAP"
+
+#: src/formats/xml.rs:198
+msgid "hole of a shape that is not a polygon"
+msgstr "отвір фігури, яка не є багатокутником"
+
+#: src/formats/xml.rs:200
+msgid "hole of a missing polygon"
+msgstr "отвір відсутнього багатокутника"
+
+#: src/formats/xml.rs:275
+msgid "region with unreadable vertices"
+msgstr "ділянка з нечитабельними вершинами"
+
+#: src/formats/xml.rs:357
+msgid "negative region outside every region"
+msgstr "негативна ділянка поза всіма ділянками"
+
+#: src/geometry.rs:252
+msgid "The shape has invalid (non-finite) coordinates."
+msgstr "Фігура має неприпустимі координати (нескінченні або невизначені)."
+
+#: src/geometry.rs:256
+msgid "The shape has {n} vertices; the limit is {limit}."
+msgid_plural "The shape has {n} vertices; the limit is {limit}."
+msgstr[0] "Фігура має {n} вершину; обмеження — {limit}."
+msgstr[1] "Фігура має {n} вершини; обмеження — {limit}."
+msgstr[2] "Фігура має {n} вершин; обмеження — {limit}."
+
+#: src/geometry.rs:266
+msgid "The point is outside the slide."
+msgstr "Точка поза межами препарату."
+
+#: src/geometry.rs:288
+msgid "An arrow needs two distinct points."
+msgstr "Для стрілки потрібні дві різні точки."
+
+#: src/geometry.rs:290
+msgid "A line needs at least two distinct points."
+msgstr "Для лінії потрібні щонайменше дві різні точки."
+
+#: src/geometry.rs:317
+msgid "The rectangle is outside the slide."
+msgstr "Прямокутник поза межами препарату."
+
+#: src/geometry.rs:325
+msgid "The rectangle has no area."
+msgstr "Прямокутник має нульову площу."
+
+#: src/geometry.rs:337
+msgid "The ellipse has no area."
+msgstr "Еліпс має нульову площу."
+
+#: src/geometry.rs:340
+msgid "The ellipse is centred outside the slide."
+msgstr "Центр еліпса поза межами препарату."
+
+#: src/geometry.rs:352
+msgid "A polygon needs at least three distinct corners."
+msgstr "Для багатокутника потрібні щонайменше три різні вершини."
+
+#: src/geometry.rs:355 src/geometry.rs:393
+msgid "The polygon encloses no area."
+msgstr "Багатокутник має нульову площу."
+
+#: src/geometry.rs:391
+msgid "The polygon is outside the slide."
+msgstr "Багатокутник поза межами препарату."
+
+#: src/lib.rs:80 src/lib.rs:202
+msgid "Annotations"
+msgstr "Анотації"
+
+#: src/lib.rs:85
+msgid "Show or hide annotations on this slide"
+msgstr "Показати або сховати анотації на цьому препараті"
+
+#: src/lib.rs:102
+msgid "Counting {}"
+msgstr "Підрахунок: {}"
+
+#: src/lib.rs:104
+msgid "Counting {class}, Shift+click: {alternate}"
+msgstr "Підрахунок: {class}, Shift+клацання: {alternate}"
+
+#: src/lib.rs:109
+msgid "Counting {class}, Alt+click: {immune}"
+msgstr "Підрахунок: {class}, Alt+клацання: {immune}"
+
+#: src/lib.rs:114
+msgid "Counting {class}, Shift+click: {alternate}, Alt+click: {immune}"
+msgstr ""
+"Підрахунок: {class}, Shift+клацання: {alternate}, Alt+клацання: {immune}"
+
+#. Translators: HPF is a high-power field.
+#: src/lib.rs:123
+msgid ""
+"The dashed circle is one HPF: click to place a field, drag to pan, Esc to "
+"leave"
+msgstr ""
+"Штрихове коло — це одне поле HPF: клацніть, щоб розмістити поле, "
+"перетягніть, щоб перемістити зображення, Esc — вийти"
+
+#: src/lib.rs:125
+msgid "Click to select, drag to select several; drag handles to edit"
+msgstr ""
+"Клацніть, щоб виділити, перетягніть, щоб виділити кілька; перетягуйте "
+"контрольні точки, щоб редагувати"
+
+#: src/lib.rs:127
+msgid "Drawing {}"
+msgstr "Малювання: {}"
+
+#. Translators: {} is the name of a file format ("GeoJSON").
+#: src/lib.rs:441
+msgid "{} · cannot be placed on this slide"
+msgstr "{} · неможливо розмістити на цьому препараті"
+
+#. Translators: {format} is the name of a file format ("GeoJSON");
+#. {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/lib.rs:448
+msgid "{format} · {n} annotation {layers}"
+msgid_plural "{format} · {n} annotations {layers}"
+msgstr[0] "{format} · {n} анотація {layers}"
+msgstr[1] "{format} · {n} анотації {layers}"
+msgstr[2] "{format} · {n} анотацій {layers}"
+
+#: src/lib.rs:455
+msgid "{n} class"
+msgid_plural "{n} classes"
+msgstr[0] "{n} клас"
+msgstr[1] "{n} класи"
+msgstr[2] "{n} класів"
+
+#: src/lib.rs:465
+msgid "Layers with the same name already exist: {}"
+msgstr "Шари з такими назвами вже існують: {}"
+
+#: src/lib.rs:497 src/transfer.rs:373
+msgid "Import annotations"
+msgstr "Імпорт анотацій"
+
+#: src/lib.rs:507
+msgid "Cannot show the import dialog"
+msgstr "Неможливо показати діалогове вікно імпорту"
+
+#: src/lib.rs:641 src/sidebar.rs:1490
+msgid "Lock"
+msgstr "Блокування"
+
+#: src/lib.rs:643 src/sidebar.rs:1492
+msgid "Unlock"
+msgstr "Розблокування"
+
+#: src/lib.rs:789
+msgid "Could not save the annotation settings"
+msgstr "Не вдалося зберегти налаштування анотацій"
+
+#: src/lib.rs:1063
+msgid "Show in annotations panel"
+msgstr "Показати на панелі анотацій"
+
+#: src/lib.rs:1064
+msgid "Copy measurements"
+msgstr "Копіювати вимірювання"
+
+#: src/lib.rs:1066
+msgid "Unlock annotation"
+msgstr "Розблокувати анотацію"
+
+#: src/lib.rs:1068
+msgid "Lock annotation"
+msgstr "Заблокувати анотацію"
+
+#: src/lib.rs:1077
+msgctxt "Context menu"
+msgid "Delete annotation"
+msgstr "Видалити анотацію"
+
+#: src/lib.rs:1083
+msgid "Add point here"
+msgstr "Додати точку тут"
+
+#: src/lib.rs:1084
+msgid "Place HPF field here"
+msgstr "Розмістити поле HPF тут"
+
+#: src/lib.rs:1085
+msgid "Annotations panel"
+msgstr "Панель анотацій"
+
+#: src/measure.rs:276
+msgid "Area"
+msgstr "Площа"
+
+#: src/measure.rs:281
+msgid "Length"
+msgstr "Довжина"
+
+#: src/measure.rs:283
+msgid "Perimeter"
+msgstr "Периметр"
+
+#: src/measure.rs:289
+msgid "Max diameter (Feret)"
+msgstr "Макс. діаметр Ферета"
+
+#: src/measure.rs:292
+msgid "Min diameter (Feret)"
+msgstr "Мін. діаметр Ферета"
+
+#: src/measure.rs:297
+msgid "Centre (px)"
+msgstr "Центр (px)"
+
+#: src/measure.rs:302 src/measure.rs:307
+msgid "Calibration"
+msgstr "Калібрування"
+
+#: src/measure.rs:303
+msgid "No pixel size: values in level-0 pixels"
+msgstr "Розмір пікселя невідомий: значення в пікселях рівня 0"
+
+#: src/measure.rs:308
+msgid "One pixel axis missing; assumed square pixels"
+msgstr ""
+"Розмір пікселя відомий лише для однієї осі; пікселі вважаються квадратними"
+
+#: src/model.rs:49 ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Draft"
+msgstr "Чернетка"
+
+#: src/model.rs:50 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Verified"
+msgstr "Перевірено"
+
+#: src/model.rs:51 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Rejected"
+msgstr "Відхилено"
+
+#: src/model.rs:118
+msgctxt "Annotation kind"
+msgid "Point"
+msgstr "Точка"
+
+#: src/model.rs:119
+msgctxt "Annotation kind"
+msgid "Line"
+msgstr "Лінія"
+
+#: src/model.rs:120
+msgctxt "Annotation kind"
+msgid "Arrow"
+msgstr "Стрілка"
+
+#: src/model.rs:121
+msgctxt "Annotation kind"
+msgid "Polygon"
+msgstr "Багатокутник"
+
+#: src/model.rs:122
+msgctxt "Annotation kind"
+msgid "Rectangle"
+msgstr "Прямокутник"
+
+#: src/model.rs:123
+msgctxt "Annotation kind"
+msgid "Ellipse"
+msgstr "Еліпс"
+
+#: src/model.rs:124
+msgctxt "Annotation kind"
+msgid "Text"
+msgstr "Текст"
+
+#: src/model.rs:750
+msgid "The layer name cannot be empty."
+msgstr "Назва шару не може бути порожньою."
+
+#: src/model.rs:751
+msgid "The class name cannot be empty."
+msgstr "Назва класу не може бути порожньою."
+
+#: src/model.rs:752
+msgid "The name cannot be empty."
+msgstr "Назва не може бути порожньою."
+
+#: src/model.rs:759
+msgid "The name is {n} characters long; the limit is {limit}."
+msgid_plural "The name is {n} characters long; the limit is {limit}."
+msgstr[0] "Назва містить {n} символ; дозволено щонайбільше {limit}."
+msgstr[1] "Назва містить {n} символи; дозволено щонайбільше {limit}."
+msgstr[2] "Назва містить {n} символів; дозволено щонайбільше {limit}."
+
+#: src/model.rs:764
+msgid "The layer name is {n} characters long; the limit is {limit}."
+msgid_plural "The layer name is {n} characters long; the limit is {limit}."
+msgstr[0] "Назва шару містить {n} символ; дозволено щонайбільше {limit}."
+msgstr[1] "Назва шару містить {n} символи; дозволено щонайбільше {limit}."
+msgstr[2] "Назва шару містить {n} символів; дозволено щонайбільше {limit}."
+
+#: src/model.rs:769
+msgid "The class name is {n} characters long; the limit is {limit}."
+msgid_plural "The class name is {n} characters long; the limit is {limit}."
+msgstr[0] "Назва класу містить {n} символ; дозволено щонайбільше {limit}."
+msgstr[1] "Назва класу містить {n} символи; дозволено щонайбільше {limit}."
+msgstr[2] "Назва класу містить {n} символів; дозволено щонайбільше {limit}."
+
+#: src/model.rs:774
+msgid "The author is {n} characters long; the limit is {limit}."
+msgid_plural "The author is {n} characters long; the limit is {limit}."
+msgstr[0] "Ім’я автора містить {n} символ; дозволено щонайбільше {limit}."
+msgstr[1] "Ім’я автора містить {n} символи; дозволено щонайбільше {limit}."
+msgstr[2] "Ім’я автора містить {n} символів; дозволено щонайбільше {limit}."
+
+#: src/model.rs:779
+msgid "The setting is {n} characters long; the limit is {limit}."
+msgid_plural "The setting is {n} characters long; the limit is {limit}."
+msgstr[0] ""
+"Значення параметра містить {n} символ; дозволено щонайбільше {limit}."
+msgstr[1] ""
+"Значення параметра містить {n} символи; дозволено щонайбільше {limit}."
+msgstr[2] ""
+"Значення параметра містить {n} символів; дозволено щонайбільше {limit}."
+
+#: src/model.rs:784
+msgid "The notes are {n} characters long; the limit is {limit}."
+msgid_plural "The notes are {n} characters long; the limit is {limit}."
+msgstr[0] "Нотатки містять {n} символ; дозволено щонайбільше {limit}."
+msgstr[1] "Нотатки містять {n} символи; дозволено щонайбільше {limit}."
+msgstr[2] "Нотатки містять {n} символів; дозволено щонайбільше {limit}."
+
+#: src/model.rs:789
+msgid "The description is {n} characters long; the limit is {limit}."
+msgid_plural "The description is {n} characters long; the limit is {limit}."
+msgstr[0] "Опис містить {n} символ; дозволено щонайбільше {limit}."
+msgstr[1] "Опис містить {n} символи; дозволено щонайбільше {limit}."
+msgstr[2] "Опис містить {n} символів; дозволено щонайбільше {limit}."
+
+#: src/model.rs:794
+msgid "The comment is {n} characters long; the limit is {limit}."
+msgid_plural "The comment is {n} characters long; the limit is {limit}."
+msgstr[0] "Коментар містить {n} символ; дозволено щонайбільше {limit}."
+msgstr[1] "Коментар містить {n} символи; дозволено щонайбільше {limit}."
+msgstr[2] "Коментар містить {n} символів; дозволено щонайбільше {limit}."
+
+#: src/model.rs:837
+msgid "An annotation can have at most {n} properties."
+msgid_plural "An annotation can have at most {n} properties."
+msgstr[0] "Анотація може мати не більше ніж {n} властивість."
+msgstr[1] "Анотація може мати не більше ніж {n} властивості."
+msgstr[2] "Анотація може мати не більше ніж {n} властивостей."
+
+#: src/model.rs:851
+msgid "Property names are limited to {n} characters."
+msgid_plural "Property names are limited to {n} characters."
+msgstr[0] "Назва властивості може містити щонайбільше {n} символ."
+msgstr[1] "Назва властивості може містити щонайбільше {n} символи."
+msgstr[2] "Назва властивості може містити щонайбільше {n} символів."
+
+#: src/model.rs:856
+msgid "Property values are limited to {n} characters."
+msgid_plural "Property values are limited to {n} characters."
+msgstr[0] "Значення властивості може містити щонайбільше {n} символ."
+msgstr[1] "Значення властивості може містити щонайбільше {n} символи."
+msgstr[2] "Значення властивості може містити щонайбільше {n} символів."
+
+#: src/model.rs:884
+msgid "A hotkey is a single character (a letter or a symbol), not {}."
+msgstr "Гаряча клавіша — це один символ (літера або знак), а не {}."
+
+#: src/model.rs:889
+msgid "A hotkey must be a visible character."
+msgstr "Гаряча клавіша має бути видимим символом."
+
+#: src/model.rs:892
+msgid "eov already uses the '{}' key."
+msgstr "eov уже використовує клавішу «{}»."
+
+#: src/model.rs:896
+msgid "'{}' is already used by an annotation tool or class."
+msgstr "«{}» уже використовується інструментом анотацій або класом."
+
+#. Translators: in the tooltip of a locked annotation, after its class and name.
+#: src/overlay.rs:171
+msgid "locked"
+msgstr "заблоковано"
+
+#. Translators: this slide's points against the other reader's; F1 is the F1 score.
+#: src/sidebar.rs:360
+msgid "Points {ours} vs {theirs} · {matched} matched · F1 {f1}"
+msgstr "Точки: {ours} проти {theirs} · збіглося: {matched} · F1 {f1}"
+
+#. Translators: this slide's regions and their area against the other reader's;
+#. Dice is the Dice coefficient of the areas.
+#: src/sidebar.rs:373
+msgid "Regions {ours} vs {theirs} · {our_area} vs {their_area} · Dice {dice}"
+msgstr ""
+"Ділянки: {ours} проти {theirs} · {our_area} проти {their_area} · Dice {dice}"
+
+#: src/sidebar.rs:385
+msgid "All regions"
+msgstr "Усі ділянки"
+
+#. Translators: {layers} in texts such as "{n} annotations {layers}" ("12 annotations in 3 layers").
+#: src/sidebar.rs:431
+msgid "in {n} layer"
+msgid_plural "in {n} layers"
+msgstr[0] "у {n} шарі"
+msgstr[1] "у {n} шарах"
+msgstr[2] "у {n} шарах"
+
+#: src/sidebar.rs:447
+msgid "No slide open"
+msgstr "Немає відкритого препарату"
+
+#: src/sidebar.rs:453
+msgid "Annotation database unavailable: {}"
+msgstr "База даних анотацій недоступна: {}"
+
+#: src/sidebar.rs:455
+msgid "Opening the annotation database…"
+msgstr "Відкриття бази даних анотацій…"
+
+#: src/sidebar.rs:461
+msgid "Loading annotations…"
+msgstr "Завантаження анотацій…"
+
+#: src/sidebar.rs:469
+msgid ""
+"The annotation database is read-only: annotations can be viewed and "
+"exported, not edited."
+msgstr ""
+"База даних анотацій доступна лише для читання: анотації можна переглядати й "
+"експортувати, але не редагувати."
+
+#: src/sidebar.rs:477
+msgid ""
+"This slide has no stable identity; its annotations are keyed by file name "
+"and size."
+msgstr ""
+"Цей препарат не має стабільного ідентифікатора; його анотації прив’язано до "
+"назви та розміру файлу."
+
+#. Translators: beside a layer of count points: the number of points.
+#: src/sidebar.rs:526
+msgid "{} · counts"
+msgstr "{} · підрахунок"
+
+#. Translators: beside the layer of HPF fields: the number of fields.
+#: src/sidebar.rs:528
+msgid "{} · HPF fields"
+msgstr "{} · поля HPF"
+
+#: src/sidebar.rs:615
+msgid "{n} comment"
+msgid_plural "{n} comments"
+msgstr[0] "{n} коментар"
+msgstr[1] "{n} коментарі"
+msgstr[2] "{n} коментарів"
+
+#: src/sidebar.rs:649
+msgid "Show more ({n} not shown)"
+msgid_plural "Show more ({n} not shown)"
+msgstr[0] "Показати більше (приховано: {n})"
+msgstr[1] "Показати більше (приховано: {n})"
+msgstr[2] "Показати більше (приховано: {n})"
+
+#: src/sidebar.rs:667
+msgid "{n} match"
+msgid_plural "{n} matches"
+msgstr[0] "{n} збіг"
+msgstr[1] "{n} збіги"
+msgstr[2] "{n} збігів"
+
+#: src/sidebar.rs:670
+msgid ""
+"No annotations yet. Pick a tool in the toolbar (P polygon, . point, C count) "
+"and draw on the slide."
+msgstr ""
+"Анотацій ще немає. Виберіть інструмент на панелі інструментів (P — "
+"багатокутник, . — точка, C — підрахунок) і малюйте на препараті."
+
+#: src/sidebar.rs:674
+msgid "Open a slide to see and draw its annotations."
+msgstr "Відкрийте препарат, щоб переглядати й малювати його анотації."
+
+#: src/sidebar.rs:724
+msgid "created {created} · edited {edited}"
+msgstr "створено {created} · змінено {edited}"
+
+#: src/sidebar.rs:730
+msgid "By {author} · created {created} · edited {edited}"
+msgstr "Автор: {author} · створено {created} · змінено {edited}"
+
+#: src/sidebar.rs:750
+msgid "Unknown author"
+msgstr "Невідомий автор"
+
+#: src/sidebar.rs:769
+msgid ""
+"This outline crosses itself (it was drawn with an older version). Its area "
+"uses the even-odd rule, like the display; Repair turns it into simple parts."
+msgstr ""
+"Цей контур перетинає сам себе (його намальовано в старішій версії). Його "
+"площа обчислюється за правилом парності (even-odd), як і на екрані; кнопка "
+"«Виправити» перетворює його на прості частини."
+
+#: src/sidebar.rs:775
+msgid "{n} annotation selected"
+msgid_plural "{n} annotations selected"
+msgstr[0] "Виділено {n} анотацію"
+msgstr[1] "Виділено {n} анотації"
+msgstr[2] "Виділено {n} анотацій"
+
+#: src/sidebar.rs:778
+msgid "Mixed classes; changes apply to all selected."
+msgstr "Різні класи; зміни застосовуються до всіх виділених."
+
+#: src/sidebar.rs:780
+msgid "Changes apply to all selected."
+msgstr "Зміни застосовуються до всіх виділених."
+
+#. Translators: under a class whose key does nothing; {} is
+#. eov's reason, a whole sentence such as "Hotkey 'q' of …
+#. was ignored: it is a key eov already uses."
+#: src/sidebar.rs:828
+msgid "eov refused the hotkey: {}"
+msgstr "Гарячу клавішу відхилено: {}"
+
+#: src/sidebar.rs:861
+msgid ""
+"Whole slide. Select regions or HPF fields to count inside them and get "
+"densities."
+msgstr ""
+"Увесь препарат. Виділіть ділянки або поля HPF, щоб рахувати в них і отримати "
+"щільність."
+
+#. Translators: {fields} is "1 HPF field" or "3 HPF fields"
+#. (translated on its own; HPF is a high-power field).
+#: src/sidebar.rs:873
+msgid "Inside {n} selected region ({fields}): {area}"
+msgid_plural "Inside {n} selected regions ({fields}): {area}"
+msgstr[0] "У {n} виділеній ділянці ({fields}): {area}"
+msgstr[1] "У {n} виділених ділянках ({fields}): {area}"
+msgstr[2] "У {n} виділених ділянках ({fields}): {area}"
+
+#. Translators: {fields} in "Inside {n} selected regions ({fields}): {area}".
+#: src/sidebar.rs:877
+msgid "{n} HPF field"
+msgid_plural "{n} HPF fields"
+msgstr[0] "{n} поле HPF"
+msgstr[1] "{n} поля HPF"
+msgstr[2] "{n} полів HPF"
+
+#: src/sidebar.rs:883
+msgid "Inside {n} selected region: {area}"
+msgid_plural "Inside {n} selected regions: {area}"
+msgstr[0] "У {n} виділеній ділянці: {area}"
+msgstr[1] "У {n} виділених ділянках: {area}"
+msgstr[2] "У {n} виділених ділянках: {area}"
+
+#: src/sidebar.rs:890
+msgid "Inside {n} selected region: {area} (no pixel size, so no density)"
+msgid_plural ""
+"Inside {n} selected regions: {area} (no pixel size, so no density)"
+msgstr[0] ""
+"У {n} виділеній ділянці: {area} (розмір пікселя невідомий, тому щільність не "
+"обчислено)"
+msgstr[1] ""
+"У {n} виділених ділянках: {area} (розмір пікселя невідомий, тому щільність "
+"не обчислено)"
+msgstr[2] ""
+"У {n} виділених ділянках: {area} (розмір пікселя невідомий, тому щільність "
+"не обчислено)"
+
+#. Translators: cells per high-power field.
+#: src/sidebar.rs:905
+msgid "{} /HPF field"
+msgstr "{} /поле HPF"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1000
+msgid "Read-only"
+msgstr "Лише читання"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1003
+msgid "Ready"
+msgstr "Готово"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1007
+msgid "Opening…"
+msgstr "Відкриття…"
+
+#: src/sidebar.rs:1008
+msgid "Unavailable: {}"
+msgstr "Недоступно: {}"
+
+#. Translators: a slide whose file name an older eov did not record; {} is its number in the annotation database.
+#: src/sidebar.rs:1068
+msgid "Slide #{} (from an older version)"
+msgstr "Препарат № {} (зі старішої версії)"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/sidebar.rs:1075
+msgid "{n} annotation {layers} · last opened {date}"
+msgid_plural "{n} annotations {layers} · last opened {date}"
+msgstr[0] "{n} анотація {layers} · востаннє відкрито {date}"
+msgstr[1] "{n} анотації {layers} · востаннє відкрито {date}"
+msgstr[2] "{n} анотацій {layers} · востаннє відкрито {date}"
+
+#. Translators: "List" is the label of the button beside this text.
+#: src/sidebar.rs:1093
+msgid "Press \"List\" to see the other slides in the database."
+msgstr "Натисніть «Список», щоб побачити інші препарати в базі даних."
+
+#: src/sidebar.rs:1094
+msgid "No other slides have annotations."
+msgstr "Інших препаратів з анотаціями немає."
+
+#: src/sidebar.rs:1096
+msgid ""
+"If a slide was re-saved or de-identified, its annotations stay with the old "
+"file. Attach them to the open slide here."
+msgstr ""
+"Якщо препарат було повторно збережено або знеособлено, його анотації "
+"залишаються прив’язаними до старого файлу. Приєднайте їх тут до відкритого "
+"препарату."
+
+#: src/sidebar.rs:1161
+msgid "Cannot ask for confirmation"
+msgstr "Неможливо запитати підтвердження"
+
+#: src/sidebar.rs:1173
+msgid "Open a slide first."
+msgstr "Спершу відкрийте препарат."
+
+#: src/sidebar.rs:1213
+msgid "Compare with another reader's file first."
+msgstr "Спершу порівняйте з файлом іншого оцінювача."
+
+#: src/sidebar.rs:1219
+msgid "Export all annotations"
+msgstr "Експорт усіх анотацій"
+
+#: src/sidebar.rs:1222
+msgid "eov annotation archive"
+msgstr "Архів анотацій eov"
+
+#: src/sidebar.rs:1229
+msgid "Back up the annotation database"
+msgstr "Резервне копіювання бази даних анотацій"
+
+#: src/sidebar.rs:1232 src/sidebar.rs:1242
+msgid "SQLite database"
+msgstr "База даних SQLite"
+
+#: src/sidebar.rs:1239
+msgid ""
+"Merge an annotation database (a backup, or annotations.db of eov before 1.0)"
+msgstr ""
+"Об’єднання з базою даних анотацій (резервною копією або annotations.db з eov "
+"до версії 1.0)"
+
+#: src/sidebar.rs:1308
+msgid "Show or hide layer"
+msgstr "Показ або приховування шару"
+
+#: src/sidebar.rs:1322
+msgid "Layer opacity"
+msgstr "Зміна непрозорості шару"
+
+#: src/sidebar.rs:1337
+msgid "Lock layer"
+msgstr "Блокування шару"
+
+#: src/sidebar.rs:1339
+msgid "Unlock layer"
+msgstr "Розблокування шару"
+
+#: src/sidebar.rs:1354
+msgid "Change layer colour"
+msgstr "Зміна кольору шару"
+
+#: src/sidebar.rs:1370
+msgid "Edit layer notes"
+msgstr "Редагування нотаток шару"
+
+#: src/sidebar.rs:1387
+msgid "The slide is still loading."
+msgstr "Препарат ще завантажується."
+
+#: src/sidebar.rs:1396
+msgctxt "Dialog title"
+msgid "Delete layer"
+msgstr "Видалення шару"
+
+#: src/sidebar.rs:1398
+msgid ""
+"Delete layer \"{name}\" and its {n} annotation? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgid_plural ""
+"Delete layer \"{name}\" and its {n} annotations? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgstr[0] ""
+"Видалити шар «{name}» і його {n} анотацію? Цю дію можна відмінити "
+"сполученням Ctrl+Z (⌘Z)."
+msgstr[1] ""
+"Видалити шар «{name}» і його {n} анотації? Цю дію можна відмінити "
+"сполученням Ctrl+Z (⌘Z)."
+msgstr[2] ""
+"Видалити шар «{name}» і його {n} анотацій? Цю дію можна відмінити "
+"сполученням Ctrl+Z (⌘Z)."
+
+#: src/sidebar.rs:1403 src/sidebar.rs:1620
+msgid "Delete"
+msgstr "Видалити"
+
+#: src/sidebar.rs:1404 src/sidebar.rs:1621 src/sidebar.rs:1679
+#: src/sidebar.rs:1772
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: src/sidebar.rs:1420
+msgid "Rename annotation"
+msgstr "Перейменування анотації"
+
+#: src/sidebar.rs:1432
+msgid "Edit description"
+msgstr "Редагування опису"
+
+#: src/sidebar.rs:1444
+msgid "Set class"
+msgstr "Призначення класу"
+
+#: src/sidebar.rs:1458
+msgid "Mark draft"
+msgstr "Позначення як чернетки"
+
+#: src/sidebar.rs:1459
+msgid "Mark verified"
+msgstr "Позначення як перевіреної"
+
+#: src/sidebar.rs:1460
+msgid "Mark rejected"
+msgstr "Позначення як відхиленої"
+
+#: src/sidebar.rs:1476
+msgid "Move to layer"
+msgstr "Переміщення до шару"
+
+#: src/sidebar.rs:1529
+msgid "Edit properties"
+msgstr "Редагування властивостей"
+
+#: src/sidebar.rs:1553
+msgid "Select one annotation to comment on."
+msgstr "Виділіть одну анотацію, щоб її прокоментувати."
+
+#: src/sidebar.rs:1566
+msgid "Measurements copied."
+msgstr "Вимірювання скопійовано."
+
+#: src/sidebar.rs:1578
+msgid "Show or hide class"
+msgstr "Показ або приховування класу"
+
+#: src/sidebar.rs:1591
+msgid "Class opacity"
+msgstr "Зміна непрозорості класу"
+
+#: src/sidebar.rs:1611
+msgctxt "Dialog title"
+msgid "Delete class"
+msgstr "Видалення класу"
+
+#: src/sidebar.rs:1613
+msgid ""
+"Delete class \"{name}\"? {n} annotation on open slides uses it; it will show "
+"as unclassified. You can undo this."
+msgid_plural ""
+"Delete class \"{name}\"? {n} annotations on open slides use it; they will "
+"show as unclassified. You can undo this."
+msgstr[0] ""
+"Видалити клас «{name}»? Його використовує {n} анотація на відкритих "
+"препаратах; така анотація відображатиметься без класу. Цю дію можна "
+"відмінити."
+msgstr[1] ""
+"Видалити клас «{name}»? Його використовують {n} анотації на відкритих "
+"препаратах; такі анотації відображатимуться без класу. Цю дію можна "
+"відмінити."
+msgstr[2] ""
+"Видалити клас «{name}»? Його використовують {n} анотацій на відкритих "
+"препаратах; такі анотації відображатимуться без класу. Цю дію можна "
+"відмінити."
+
+#: src/sidebar.rs:1668
+msgctxt "Dialog title"
+msgid "Clear counts"
+msgstr "Очищення підрахунку"
+
+#. Translators: the question of the "Clear counts" dialog, whose
+#. button is "Clear": use the same verb.
+#: src/sidebar.rs:1672
+msgid "Clear the {n} count point of this slide? You can undo this."
+msgid_plural "Clear all {n} count points of this slide? You can undo this."
+msgstr[0] ""
+"Очистити {n} точку підрахунку на цьому препараті? Цю дію можна відмінити."
+msgstr[1] ""
+"Очистити всі {n} точки підрахунку на цьому препараті? Цю дію можна відмінити."
+msgstr[2] ""
+"Очистити всі {n} точок підрахунку на цьому препараті? Цю дію можна відмінити."
+
+#. Translators: the button that removes the count points, in the
+#. "Clear counts" dialog.
+#: src/sidebar.rs:1678
+msgid "Clear"
+msgstr "Очистити"
+
+#: src/sidebar.rs:1694
+msgid "Enter the field area in mm², e.g. {}."
+msgstr "Введіть площу поля в mm², наприклад {}."
+
+#: src/sidebar.rs:1702
+msgid "Enter the field number in mm, e.g. 22."
+msgstr "Введіть польове число в mm, наприклад 22."
+
+#: src/sidebar.rs:1704
+msgid "Enter the objective magnification, e.g. 40."
+msgstr "Введіть збільшення об’єктива, наприклад 40."
+
+#: src/sidebar.rs:1708
+msgid "That field size is not usable."
+msgstr "Цей розмір поля непридатний."
+
+#: src/sidebar.rs:1720
+msgid "There is no database from before eov 1.0 to merge."
+msgstr "Немає бази даних з eov до версії 1.0, яку можна було б об’єднати."
+
+#: src/sidebar.rs:1737
+msgid "That slide is not listed any more."
+msgstr "Цього препарату вже немає в списку."
+
+#: src/sidebar.rs:1748
+msgid ""
+"Attach the annotations of an older slide to the open slide? Use this when "
+"the slide file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"Приєднати анотації старішого препарату до відкритого препарату? "
+"Скористайтеся цим, якщо файл препарату було повторно збережено, перетворено "
+"або знеособлено. Цю дію можна відмінити."
+
+#: src/sidebar.rs:1753
+msgid ""
+"Attach the annotations of \"{}\" to the open slide? Use this when the slide "
+"file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"Приєднати анотації «{}» до відкритого препарату? Скористайтеся цим, якщо "
+"файл препарату було повторно збережено, перетворено або знеособлено. Цю дію "
+"можна відмінити."
+
+#: src/sidebar.rs:1762
+msgid ""
+"Warning: the two slides have different sizes, so the annotations may not "
+"line up."
+msgstr ""
+"Попередження: препарати мають різні розміри, тому анотації можуть не "
+"збігатися із зображенням."
+
+#: src/sidebar.rs:1769
+msgid "Attach annotations"
+msgstr "Приєднання анотацій"
+
+#: src/sidebar.rs:1771
+msgid "Attach"
+msgstr "Приєднати"
+
+#: src/state.rs:501
+msgid "Compared with {}"
+msgstr "Порівняно з {}"
+
+#. Translators: {ours} is "1 annotation" or "5 annotations" (translated on its own).
+#: src/state.rs:509
+msgid ""
+"This slide's visible layers ({ours}) against the {n} annotation in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgid_plural ""
+"This slide's visible layers ({ours}) against the {n} annotations in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgstr[0] ""
+"Видимі шари цього препарату ({ours}) порівняно з {n} анотацією в {name}, без "
+"полів HPF; спершу наведено кількості цього препарату, потім — іншого "
+"оцінювача. Точки одного класу зіставляються попарно в межах {radius} (F1 = 2 "
+"· збіги / сума обох кількостей); ділянки — за їхнім перекриттям (Dice = 2 · "
+"спільна площа / сума обох площ)."
+msgstr[1] ""
+"Видимі шари цього препарату ({ours}) порівняно з {n} анотаціями в {name}, "
+"без полів HPF; спершу наведено кількості цього препарату, потім — іншого "
+"оцінювача. Точки одного класу зіставляються попарно в межах {radius} (F1 = 2 "
+"· збіги / сума обох кількостей); ділянки — за їхнім перекриттям (Dice = 2 · "
+"спільна площа / сума обох площ)."
+msgstr[2] ""
+"Видимі шари цього препарату ({ours}) порівняно з {n} анотаціями в {name}, "
+"без полів HPF; спершу наведено кількості цього препарату, потім — іншого "
+"оцінювача. Точки одного класу зіставляються попарно в межах {radius} (F1 = 2 "
+"· збіги / сума обох кількостей); ділянки — за їхнім перекриттям (Dice = 2 · "
+"спільна площа / сума обох площ)."
+
+#: src/state.rs:522
+msgid "Check the file: {}"
+msgstr "Перевірте файл: {}"
+
+#: src/state.rs:664
+msgid "The annotation database is read-only."
+msgstr "База даних анотацій доступна лише для читання."
+
+#: src/state.rs:665
+msgid "The annotation database is still opening."
+msgstr "База даних анотацій ще відкривається."
+
+#: src/state.rs:667
+msgid "The annotation database is unavailable: {}"
+msgstr "База даних анотацій недоступна: {}"
+
+#: src/stats.rs:97
+msgid "Invalid field size"
+msgstr "Неприпустимий розмір поля"
+
+#. Translators: HPF is a high-power field; ⌀ its diameter.
+#: src/stats.rs:110
+msgid "1 HPF = {area} mm² (field number {number} at {objective}×, ⌀ {d} mm)"
+msgstr ""
+"1 HPF = {area} mm² (польове число {number}, об’єктив {objective}×, ⌀ {d} mm)"
+
+#: src/stats.rs:116
+msgid "1 HPF = {area} mm² (⌀ {d} mm)"
+msgstr "1 HPF = {area} mm² (⌀ {d} mm)"
+
+#: src/tools.rs:63
+msgid "Select and edit annotations"
+msgstr "Виділення та редагування анотацій"
+
+#: src/tools.rs:64
+msgid "Point annotation"
+msgstr "Точкова анотація"
+
+#: src/tools.rs:65
+msgid "Count cells (Shift+click: second class)"
+msgstr "Підрахунок клітин (Shift+клацання: другий клас)"
+
+#: src/tools.rs:66
+msgid "Polygon (Shift: add to selection, Alt: cut from it)"
+msgstr "Багатокутник (Shift: додати до виділеної ділянки, Alt: вирізати з неї)"
+
+#: src/tools.rs:67
+msgid "Freehand outline (Shift: add, Alt: cut)"
+msgstr "Контур від руки (Shift: додати, Alt: вирізати)"
+
+#: src/tools.rs:68
+msgid "Rectangle"
+msgstr "Прямокутник"
+
+#: src/tools.rs:69
+msgid "Ellipse"
+msgstr "Еліпс"
+
+#: src/tools.rs:70
+msgid "Line / path"
+msgstr "Лінія / ламана"
+
+#: src/tools.rs:72
+msgid ""
+"Brush (paint a region, over a selected region to extend it; Alt or the "
+"eraser erases; [ and ] change the size)"
+msgstr ""
+"Пензель (зафарбовуйте ділянку, поверх виділеної ділянки — щоб розширити її; "
+"Alt або гумка стирає; [ і ] змінюють розмір)"
+
+#: src/tools.rs:74
+msgid "Arrow (click the tail, double-click the tip; more clicks bend it)"
+msgstr ""
+"Стрілка (клацніть початок, двічі клацніть вістря; проміжні клацання "
+"вигинають її)"
+
+#: src/tools.rs:75
+msgid "Text label"
+msgstr "Текстова мітка"
+
+#: src/tools.rs:77
+msgid ""
+"HPF field (a field of the configured size follows the pointer; click to "
+"place it, drag to pan)"
+msgstr ""
+"Поле HPF (поле налаштованого розміру рухається за вказівником; клацніть, щоб "
+"розмістити його, перетягніть, щоб перемістити зображення)"
+
+#: src/tools.rs:225
+msgid "Annotation class: {}"
+msgstr "Клас анотації: {}"
+
+#. Translators: {} lists what was skipped, as "2 × reason; 1 × other reason".
+#: src/transfer.rs:249
+msgid "Skipped: {}."
+msgstr "Пропущено: {}."
+
+#: src/transfer.rs:253
+msgid "{n} outline crossed itself and was repaired with the even-odd rule."
+msgid_plural ""
+"{n} outlines crossed themselves and were repaired with the even-odd rule."
+msgstr[0] ""
+"Виправлено за правилом парності (even-odd) {n} контур, що перетинав сам себе."
+msgstr[1] ""
+"Виправлено за правилом парності (even-odd) {n} контури, що перетинали самі "
+"себе."
+msgstr[2] ""
+"Виправлено за правилом парності (even-odd) {n} контурів, що перетинали самі "
+"себе."
+
+#: src/transfer.rs:260
+msgid "{n} shape extended past the slide and was cut at its edge."
+msgid_plural "{n} shapes extended past the slide and were cut at its edge."
+msgstr[0] "Обрізано по краю препарату {n} фігуру, що виходила за його межі."
+msgstr[1] "Обрізано по краю препарату {n} фігури, що виходили за його межі."
+msgstr[2] "Обрізано по краю препарату {n} фігур, що виходили за його межі."
+
+#: src/transfer.rs:265
+msgid "{n} over-long name or text was shortened."
+msgid_plural "{n} over-long names or texts were shortened."
+msgstr[0] "Скорочено {n} задовгу назву або текст."
+msgstr[1] "Скорочено {n} задовгі назви або тексти."
+msgstr[2] "Скорочено {n} задовгих назв або текстів."
+
+#: src/transfer.rs:270
+msgid "The file contains no annotations."
+msgstr "Файл не містить анотацій."
+
+#: src/transfer.rs:272
+msgid "Nothing could be imported. {}"
+msgstr "Нічого не вдалося імпортувати. {}"
+
+#: src/transfer.rs:339
+msgid "Made for this slide."
+msgstr "Створено для цього препарату."
+
+#: src/transfer.rs:342
+msgid "Made for a different slide (its identity does not match)."
+msgstr "Створено для іншого препарату (його ідентифікатор не збігається)."
+
+#: src/transfer.rs:352
+msgid "Made for a slide of {theirs}; this one is {ours}."
+msgstr ""
+"Створено для препарату розміром {theirs}; розмір цього препарату — {ours}."
+
+#: src/transfer.rs:360
+msgid "Made for a slide of the same size."
+msgstr "Створено для препарату такого самого розміру."
+
+#: src/transfer.rs:364
+msgid ""
+"The file does not say which slide it belongs to; coordinates are taken as "
+"level-0 pixels of this slide."
+msgstr ""
+"У файлі не вказано, до якого препарату він належить; координати вважаються "
+"пікселями рівня 0 цього препарату."
+
+#: src/transfer.rs:376
+msgid "Annotations (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "Анотації (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:386
+msgid "All files"
+msgstr "Усі файли"
+
+#: src/transfer.rs:398 src/transfer.rs:853 src/transfer.rs:1007
+msgid "Cannot show the file dialog"
+msgstr "Неможливо показати діалогове вікно вибору файлу"
+
+#: src/transfer.rs:413
+msgid "The annotations of this slide are still loading."
+msgstr "Анотації цього препарату ще завантажуються."
+
+#: src/transfer.rs:434
+msgid "Importing {}"
+msgstr "Імпорт {}"
+
+#. Translators: the step of an import that reads the file.
+#: src/transfer.rs:447
+msgid "Reading"
+msgstr "Читання"
+
+#: src/transfer.rs:474
+msgid ""
+"NDP.view annotations, placed with this slide's offsets from the slide centre "
+"and its pixel size."
+msgstr ""
+"Анотації NDP.view, розміщені з урахуванням зміщень цього препарату від "
+"центру предметного скла та його розміру пікселя."
+
+#: src/transfer.rs:486
+msgid "Checking the slide"
+msgstr "Перевірка препарату"
+
+#: src/transfer.rs:489
+msgid "cannot read the slide to check the import: {}"
+msgstr "не вдалося прочитати препарат для перевірки імпорту: {}"
+
+#: src/transfer.rs:494
+msgid "Made for this slide (checked by content)."
+msgstr "Створено для цього препарату (перевірено за вмістом)."
+
+#: src/transfer.rs:497
+msgid "Made for a different slide (its checksum does not match)."
+msgstr "Створено для іншого препарату (контрольна сума не збігається)."
+
+#: src/transfer.rs:521
+msgid "Import cancelled."
+msgstr "Імпорт скасовано."
+
+#: src/transfer.rs:522
+msgid "Could not import {}"
+msgstr "Не вдалося імпортувати {}"
+
+#. Translators: "Merge a database…" is the item of the Import and export
+#. menu: quote it as it is translated there.
+#: src/transfer.rs:560
+msgid ""
+"This archive has no annotations for the current slide. Restore whole backups "
+"with \"Merge a database…\"."
+msgstr ""
+"Цей архів не містить анотацій для поточного препарату. Цілі резервні копії "
+"відновлюйте командою «Об’єднати базу даних…»."
+
+#: src/transfer.rs:574
+msgid "Import {n} annotation"
+msgid_plural "Import {n} annotations"
+msgstr[0] "Імпорт {n} анотації"
+msgstr[1] "Імпорт {n} анотацій"
+msgstr[2] "Імпорт {n} анотацій"
+
+#: src/transfer.rs:581
+msgid "The slide this import was started on is not open any more."
+msgstr "Препарат, для якого було розпочато цей імпорт, уже закрито."
+
+#: src/transfer.rs:737
+msgid "Imported {n} annotation from {file}."
+msgid_plural "Imported {n} annotations from {file}."
+msgstr[0] "Імпортовано {n} анотацію з {file}."
+msgstr[1] "Імпортовано {n} анотації з {file}."
+msgstr[2] "Імпортовано {n} анотацій з {file}."
+
+#: src/transfer.rs:783 src/transfer.rs:818
+msgid "eov annotations"
+msgstr "Анотації eov"
+
+#: src/transfer.rs:811
+msgid "DICOM bulk annotations"
+msgstr "Масові анотації DICOM"
+
+#: src/transfer.rs:824
+msgid "Export a blinded copy for another reader"
+msgstr "Експорт засліпленої копії для іншого оцінювача"
+
+#: src/transfer.rs:825
+msgid "Export annotations"
+msgstr "Експорт анотацій"
+
+#: src/transfer.rs:942
+msgid "Exported {n} annotation to {file}."
+msgid_plural "Exported {n} annotations to {file}."
+msgstr[0] "Експортовано {n} анотацію у {file}."
+msgstr[1] "Експортовано {n} анотації у {file}."
+msgstr[2] "Експортовано {n} анотацій у {file}."
+
+#: src/transfer.rs:948
+msgid "Could not export to {}"
+msgstr "Не вдалося експортувати у {}"
+
+#: src/transfer.rs:988
+msgid "Compare with another reader's annotations"
+msgstr "Порівняння з анотаціями іншого оцінювача"
+
+#: src/transfer.rs:990
+msgid "Annotations (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "Анотації (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:1114
+msgid "Could not compare with {}"
+msgstr "Не вдалося порівняти з {}"
+
+#: src/transfer.rs:1123
+msgid "Exporting all annotations"
+msgstr "Експорт усіх анотацій"
+
+#: src/transfer.rs:1176
+msgid "Exported the annotations of {n} slide."
+msgid_plural "Exported the annotations of {n} slides."
+msgstr[0] "Експортовано анотації {n} препарату."
+msgstr[1] "Експортовано анотації {n} препаратів."
+msgstr[2] "Експортовано анотації {n} препаратів."
+
+#: src/transfer.rs:1184
+msgid "Could not export all annotations"
+msgstr "Не вдалося експортувати всі анотації"
+
+#: src/transfer.rs:1201
+msgid "Annotation database backed up."
+msgstr "Резервну копію бази даних анотацій створено."
+
+#: src/transfer.rs:1203
+msgid "Could not back up the annotation database"
+msgstr "Не вдалося створити резервну копію бази даних анотацій"
+
+#: src/transfer.rs:1217
+msgid "Merging annotation database"
+msgstr "Об’єднання бази даних анотацій"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers", {slides}
+#. is "1 new slide" or "3 new slides" (each translated on its own).
+#: src/transfer.rs:1232
+msgid "Merged {n} annotation {layers} ({slides})."
+msgid_plural "Merged {n} annotations {layers} ({slides})."
+msgstr[0] "Під час об’єднання додано {n} анотацію {layers} ({slides})."
+msgstr[1] "Під час об’єднання додано {n} анотації {layers} ({slides})."
+msgstr[2] "Під час об’єднання додано {n} анотацій {layers} ({slides})."
+
+#. Translators: {slides} in "Merged {n} annotations {layers} ({slides})."
+#: src/transfer.rs:1237
+msgid "{n} new slide"
+msgid_plural "{n} new slides"
+msgstr[0] "{n} новий препарат"
+msgstr[1] "{n} нові препарати"
+msgstr[2] "{n} нових препаратів"
+
+#: src/transfer.rs:1249
+msgid "Could not merge the database"
+msgstr "Не вдалося об’єднати базу даних"
+
+#. Translators: read out for the layer new annotations go into; {} is its
+#. number of annotations.
+#: ui/annotations-sidebar.slint:115
+msgctxt "TreeItem"
+msgid "{} · new annotations go here"
+msgstr "{} · сюди додаються нові анотації"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Collapse layer"
+msgstr "Згорнути шар"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Expand layer"
+msgstr "Розгорнути шар"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Hide layer"
+msgstr "Сховати шар"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Show layer"
+msgstr "Показати шар"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Lock layer"
+msgstr "Заблокувати шар"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Unlock layer"
+msgstr "Розблокувати шар"
+
+#: ui/annotations-sidebar.slint:222
+msgctxt "TreeItem"
+msgid "Layer settings"
+msgstr "Параметри шару"
+
+#: ui/annotations-sidebar.slint:292
+msgctxt "TreeItem"
+msgid "Locked"
+msgstr "Заблоковано"
+
+#: ui/annotations-sidebar.slint:314
+msgctxt "AnnotationsSidebar"
+msgid "No slide open"
+msgstr "Немає відкритого препарату"
+
+#: ui/annotations-sidebar.slint:321
+msgctxt "AnnotationsSidebar"
+msgid "Unclassified"
+msgstr "Без класу"
+
+#: ui/annotations-sidebar.slint:488
+msgctxt "AnnotationsSidebar"
+msgid "Import annotations…"
+msgstr "Імпортувати анотації…"
+
+#: ui/annotations-sidebar.slint:489
+msgctxt "AnnotationsSidebar"
+msgid "Export as GeoJSON (QuPath)…"
+msgstr "Експортувати як GeoJSON (QuPath)…"
+
+#: ui/annotations-sidebar.slint:490
+msgctxt "AnnotationsSidebar"
+msgid "Export as eov JSON…"
+msgstr "Експортувати як eov JSON…"
+
+#: ui/annotations-sidebar.slint:491
+msgctxt "AnnotationsSidebar"
+msgid "Export as ASAP XML…"
+msgstr "Експортувати як ASAP XML…"
+
+#: ui/annotations-sidebar.slint:492
+msgctxt "AnnotationsSidebar"
+msgid "Export as ImageScope XML…"
+msgstr "Експортувати як ImageScope XML…"
+
+#: ui/annotations-sidebar.slint:493
+msgctxt "AnnotationsSidebar"
+msgid "Export as DICOM annotations…"
+msgstr "Експортувати як анотації DICOM…"
+
+#: ui/annotations-sidebar.slint:494
+msgctxt "AnnotationsSidebar"
+msgid "Export measurements (CSV)…"
+msgstr "Експортувати вимірювання (CSV)…"
+
+#: ui/annotations-sidebar.slint:495
+msgctxt "AnnotationsSidebar"
+msgid "Export a blinded copy…"
+msgstr "Експортувати засліплену копію…"
+
+#: ui/annotations-sidebar.slint:496
+msgctxt "AnnotationsSidebar"
+msgid "Compare with another reader…"
+msgstr "Порівняти з іншим оцінювачем…"
+
+#. Translators: exports the annotations of every slide in the database to one
+#. annotation archive (a JSON file), not the slide images.
+#: ui/annotations-sidebar.slint:497 ui/annotations-sidebar.slint:1986
+msgctxt "AnnotationsSidebar"
+msgid "Export all slides…"
+msgstr "Експортувати всі препарати…"
+
+#: ui/annotations-sidebar.slint:498
+msgctxt "AnnotationsSidebar"
+msgid "Back up the database…"
+msgstr "Створити резервну копію бази даних…"
+
+#: ui/annotations-sidebar.slint:499
+msgctxt "AnnotationsSidebar"
+msgid "Merge a database…"
+msgstr "Об’єднати базу даних…"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field area"
+msgstr "Площа поля"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field number and objective"
+msgstr "Польове число й об’єктив"
+
+#: ui/annotations-sidebar.slint:600
+msgctxt "AnnotationsSidebar"
+msgid "Annotations"
+msgstr "Анотації"
+
+#: ui/annotations-sidebar.slint:635
+msgctxt "AnnotationsSidebar"
+msgid "Import and export"
+msgstr "Імпорт і експорт"
+
+#: ui/annotations-sidebar.slint:668
+msgctxt "AnnotationsSidebar"
+msgid "Retry"
+msgstr "Повторити спробу"
+
+#: ui/annotations-sidebar.slint:683
+msgctxt "AnnotationsSidebar"
+msgid "Layers"
+msgstr "Шари"
+
+#: ui/annotations-sidebar.slint:691
+msgctxt "AnnotationsSidebar"
+msgid "Classes"
+msgstr "Класи"
+
+#. Translators: the tab for counting cells.
+#: ui/annotations-sidebar.slint:700
+msgctxt "AnnotationsSidebar"
+msgid "Count"
+msgstr "Підрахунок"
+
+#: ui/annotations-sidebar.slint:708
+msgctxt "AnnotationsSidebar"
+msgid "Data"
+msgstr "Дані"
+
+#: ui/annotations-sidebar.slint:747
+msgctxt "AnnotationsSidebar"
+msgid "Filter by name, class, kind or status"
+msgstr "Фільтр за назвою, класом, типом або статусом"
+
+#: ui/annotations-sidebar.slint:769
+msgctxt "AnnotationsSidebar"
+msgid "Filter annotations"
+msgstr "Фільтрувати анотації"
+
+#: ui/annotations-sidebar.slint:786
+msgctxt "AnnotationsSidebar"
+msgid "New layer"
+msgstr "Новий шар"
+
+#: ui/annotations-sidebar.slint:870 ui/annotations-sidebar.slint:1079
+#: ui/annotations-sidebar.slint:1500
+msgctxt "AnnotationsSidebar"
+msgid "Name"
+msgstr "Назва"
+
+#: ui/annotations-sidebar.slint:876 ui/annotations-sidebar.slint:878
+msgctxt "AnnotationsSidebar"
+msgid "Layer name"
+msgstr "Назва шару"
+
+#: ui/annotations-sidebar.slint:889
+msgctxt "AnnotationsSidebar"
+msgid "Colour"
+msgstr "Колір"
+
+#: ui/annotations-sidebar.slint:898
+msgctxt "AnnotationsSidebar"
+msgid "Layer colour"
+msgstr "Колір шару"
+
+#: ui/annotations-sidebar.slint:906 ui/annotations-sidebar.slint:1518
+msgctxt "AnnotationsSidebar"
+msgid "Opacity"
+msgstr "Непрозорість"
+
+#: ui/annotations-sidebar.slint:912
+msgctxt "AnnotationsSidebar"
+msgid "Layer opacity"
+msgstr "Непрозорість шару"
+
+#: ui/annotations-sidebar.slint:923 ui/annotations-sidebar.slint:1162
+msgctxt "AnnotationsSidebar"
+msgid "Notes"
+msgstr "Нотатки"
+
+#: ui/annotations-sidebar.slint:931
+msgctxt "AnnotationsSidebar"
+msgid "Notes about this layer"
+msgstr "Нотатки про цей шар"
+
+#: ui/annotations-sidebar.slint:933
+msgctxt "AnnotationsSidebar"
+msgid "Layer notes"
+msgstr "Нотатки шару"
+
+#: ui/annotations-sidebar.slint:941
+msgctxt "AnnotationsSidebar"
+msgid "Draw into this layer"
+msgstr "Малювати в цьому шарі"
+
+#: ui/annotations-sidebar.slint:942
+msgctxt "AnnotationsSidebar"
+msgid "Delete layer…"
+msgstr "Видалити шар…"
+
+#: ui/annotations-sidebar.slint:1020
+msgctxt "AnnotationsSidebar"
+msgid "Zoom to the annotation"
+msgstr "Наблизити до анотації"
+
+#: ui/annotations-sidebar.slint:1028
+msgctxt "AnnotationsSidebar"
+msgid "Copy measurements"
+msgstr "Копіювати вимірювання"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the annotation"
+msgstr "Видалити анотацію"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the selected annotations"
+msgstr "Видалити виділені анотації"
+
+#: ui/annotations-sidebar.slint:1065
+msgctxt "AnnotationsSidebar"
+msgid "Repair"
+msgstr "Виправити"
+
+#: ui/annotations-sidebar.slint:1085
+msgctxt "AnnotationsSidebar"
+msgid "Unnamed"
+msgstr "Без назви"
+
+#: ui/annotations-sidebar.slint:1087
+msgctxt "AnnotationsSidebar"
+msgid "Annotation name"
+msgstr "Назва анотації"
+
+#: ui/annotations-sidebar.slint:1098
+msgctxt "AnnotationsSidebar"
+msgid "Class"
+msgstr "Клас"
+
+#: ui/annotations-sidebar.slint:1104
+msgctxt "AnnotationsSidebar"
+msgid "Annotation class"
+msgstr "Клас анотації"
+
+#: ui/annotations-sidebar.slint:1115
+msgctxt "AnnotationsSidebar"
+msgid "Status"
+msgstr "Статус"
+
+#: ui/annotations-sidebar.slint:1121
+msgctxt "AnnotationsSidebar"
+msgid "Review status"
+msgstr "Статус перевірки"
+
+#: ui/annotations-sidebar.slint:1132
+msgctxt "AnnotationsSidebar"
+msgid "Layer"
+msgstr "Шар"
+
+#: ui/annotations-sidebar.slint:1138
+msgctxt "AnnotationsSidebar"
+msgid "Annotation layer"
+msgstr "Шар анотації"
+
+#: ui/annotations-sidebar.slint:1149
+msgctxt "AnnotationsSidebar"
+msgid "Locked"
+msgstr "Заблоковано"
+
+#: ui/annotations-sidebar.slint:1170 ui/annotations-sidebar.slint:1172
+msgctxt "AnnotationsSidebar"
+msgid "Description"
+msgstr "Опис"
+
+#: ui/annotations-sidebar.slint:1183
+msgctxt "AnnotationsSidebar"
+msgid "MEASUREMENTS"
+msgstr "ВИМІРЮВАННЯ"
+
+#: ui/annotations-sidebar.slint:1213
+msgctxt "AnnotationsSidebar"
+msgid "PROPERTIES"
+msgstr "ВЛАСТИВОСТІ"
+
+#: ui/annotations-sidebar.slint:1224
+msgctxt "AnnotationsSidebar"
+msgid "Property name"
+msgstr "Назва властивості"
+
+#: ui/annotations-sidebar.slint:1233
+msgctxt "AnnotationsSidebar"
+msgid "Value"
+msgstr "Значення"
+
+#: ui/annotations-sidebar.slint:1235
+msgctxt "AnnotationsSidebar"
+msgid "Property value"
+msgstr "Значення властивості"
+
+#: ui/annotations-sidebar.slint:1243
+msgctxt "AnnotationsSidebar"
+msgid "Remove property"
+msgstr "Вилучити властивість"
+
+#: ui/annotations-sidebar.slint:1255
+msgctxt "AnnotationsSidebar"
+msgid "Add property"
+msgstr "Додати властивість"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS"
+msgstr "КОМЕНТАРІ"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS ({})"
+msgstr "КОМЕНТАРІ ({})"
+
+#: ui/annotations-sidebar.slint:1294
+msgctxt "AnnotationsSidebar"
+msgid "Delete comment"
+msgstr "Видалити коментар"
+
+#: ui/annotations-sidebar.slint:1314
+msgctxt "AnnotationsSidebar"
+msgid "Add a comment"
+msgstr "Додати коментар"
+
+#: ui/annotations-sidebar.slint:1316
+msgctxt "AnnotationsSidebar"
+msgid "New comment"
+msgstr "Новий коментар"
+
+#. Translators: a button that adds the comment typed above.
+#: ui/annotations-sidebar.slint:1324
+msgctxt "AnnotationsSidebar"
+msgid "Comment"
+msgstr "Коментувати"
+
+#: ui/annotations-sidebar.slint:1358
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Select an annotation on the slide or in the list to see its details. Double-"
+"click a row to zoom to it; Ctrl+click selects several."
+msgstr ""
+"Виділіть анотацію на препараті або в списку, щоб побачити її подробиці. "
+"Двічі клацніть рядок, щоб наблизити до неї; Ctrl+клацання виділяє кілька."
+
+#: ui/annotations-sidebar.slint:1379
+msgctxt "AnnotationsSidebar"
+msgid ""
+"New annotations get the active class (●), and the Count tool counts it; "
+"Shift+click counts the second class (◐). Pressing a class's hotkey makes it "
+"active."
+msgstr ""
+"Нові анотації отримують активний клас (●), і інструмент підрахунку зараховує "
+"саме його; Shift+клацання зараховує другий клас (◐). Натискання гарячої "
+"клавіші класу робить його активним."
+
+#: ui/annotations-sidebar.slint:1418
+msgctxt "AnnotationsSidebar"
+msgid "Colour of {}"
+msgstr "Колір класу {}"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Hide {}"
+msgstr "Сховати {}"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Show {}"
+msgstr "Показати {}"
+
+#: ui/annotations-sidebar.slint:1466
+msgctxt "AnnotationsSidebar"
+msgid "Class settings"
+msgstr "Параметри класу"
+
+#: ui/annotations-sidebar.slint:1506 ui/annotations-sidebar.slint:1507
+msgctxt "AnnotationsSidebar"
+msgid "Class name"
+msgstr "Назва класу"
+
+#: ui/annotations-sidebar.slint:1523
+msgctxt "AnnotationsSidebar"
+msgid "Class opacity"
+msgstr "Непрозорість класу"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Count with Shift+click"
+msgstr "Рахувати Shift+клацанням"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Stop counting with Shift+click"
+msgstr "Не рахувати Shift+клацанням"
+
+#: ui/annotations-sidebar.slint:1539
+msgctxt "AnnotationsSidebar"
+msgid "Delete…"
+msgstr "Видалити…"
+
+#: ui/annotations-sidebar.slint:1558
+msgctxt "AnnotationsSidebar"
+msgid "New class"
+msgstr "Новий клас"
+
+#: ui/annotations-sidebar.slint:1596
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Pick the Count tool (C) and click cells; Shift+click and Alt+click count the "
+"second and third class. Select regions or HPF fields to count inside them."
+msgstr ""
+"Виберіть інструмент підрахунку (C) і клацайте клітини; Shift+клацання та "
+"Alt+клацання зараховують другий і третій клас. Виділіть ділянки або поля "
+"HPF, щоб рахувати в них."
+
+#: ui/annotations-sidebar.slint:1601
+msgctxt "AnnotationsSidebar"
+msgid "Count tool (C)"
+msgstr "Інструмент підрахунку (C)"
+
+#: ui/annotations-sidebar.slint:1602
+msgctxt "AnnotationsSidebar"
+msgid "HPF field (H)"
+msgstr "Поле HPF (H)"
+
+#. Translators: the class a click with the Count tool counts.
+#: ui/annotations-sidebar.slint:1614
+msgctxt "AnnotationsSidebar"
+msgid "Click"
+msgstr "Клацання"
+
+#: ui/annotations-sidebar.slint:1620
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by a click"
+msgstr "Клас, що зараховується клацанням"
+
+#: ui/annotations-sidebar.slint:1631
+msgctxt "AnnotationsSidebar"
+msgid "Shift+click"
+msgstr "Shift+клацання"
+
+#: ui/annotations-sidebar.slint:1636
+msgctxt "AnnotationsSidebar"
+msgid "(same as click)"
+msgstr "(те саме, що й клацання)"
+
+#: ui/annotations-sidebar.slint:1637
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by Shift+click"
+msgstr "Клас, що зараховується Shift+клацанням"
+
+#: ui/annotations-sidebar.slint:1648
+msgctxt "AnnotationsSidebar"
+msgid "Alt+click"
+msgstr "Alt+клацання"
+
+#: ui/annotations-sidebar.slint:1653
+msgctxt "AnnotationsSidebar"
+msgid "(none)"
+msgstr "(немає)"
+
+#: ui/annotations-sidebar.slint:1654
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Class counted by Alt+click: PD-L1-positive immune cells for the combined "
+"positive score"
+msgstr ""
+"Клас, що зараховується Alt+клацанням: PD-L1-позитивні імунні клітини для "
+"комбінованого показника позитивності"
+
+#: ui/annotations-sidebar.slint:1662
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Combined positive score: the click and Alt+click classes (PD-L1-positive "
+"tumour cells and PD-L1-positive immune cells) per 100 tumour cells (the "
+"click and Shift+click classes)."
+msgstr ""
+"Комбінований показник позитивності: класи клацання та Alt+клацання (PD-L1-"
+"позитивні пухлинні клітини та PD-L1-позитивні імунні клітини) на 100 "
+"пухлинних клітин (класи клацання та Shift+клацання)."
+
+#: ui/annotations-sidebar.slint:1677
+msgctxt "AnnotationsSidebar"
+msgid "Nothing counted here yet."
+msgstr "Тут ще нічого не підраховано."
+
+#: ui/annotations-sidebar.slint:1748
+msgctxt "AnnotationsSidebar"
+msgid "Count points in hidden layers"
+msgstr "Враховувати точки з прихованих шарів"
+
+#: ui/annotations-sidebar.slint:1759
+msgctxt "AnnotationsSidebar"
+msgid "Clear counts…"
+msgstr "Очистити підрахунок…"
+
+#: ui/annotations-sidebar.slint:1771
+msgctxt "AnnotationsSidebar"
+msgid "HIGH-POWER FIELDS"
+msgstr "ПОЛЯ ЗОРУ ВЕЛИКОГО ЗБІЛЬШЕННЯ"
+
+#: ui/annotations-sidebar.slint:1785
+msgctxt "AnnotationsSidebar"
+msgid "How the field size is given"
+msgstr "Як задано розмір поля"
+
+#. Translators: FN is the eyepiece's field number, the diameter of the field
+#. of view.
+#: ui/annotations-sidebar.slint:1796
+msgctxt "AnnotationsSidebar"
+msgid "FN (mm)"
+msgstr "FN (mm)"
+
+#: ui/annotations-sidebar.slint:1803
+msgctxt "AnnotationsSidebar"
+msgid "Field number in mm"
+msgstr "Польове число в mm"
+
+#. Translators: the magnification of the objective, as in 40×.
+#: ui/annotations-sidebar.slint:1811
+msgctxt "AnnotationsSidebar"
+msgid "Objective ×"
+msgstr "Об’єктив ×"
+
+#: ui/annotations-sidebar.slint:1821
+msgctxt "AnnotationsSidebar"
+msgid "Objective magnification"
+msgstr "Збільшення об’єктива"
+
+#: ui/annotations-sidebar.slint:1828 ui/annotations-sidebar.slint:1853
+msgctxt "AnnotationsSidebar"
+msgid "Apply"
+msgstr "Застосувати"
+
+#: ui/annotations-sidebar.slint:1839
+msgctxt "AnnotationsSidebar"
+msgid "Area (mm²)"
+msgstr "Площа (mm²)"
+
+#: ui/annotations-sidebar.slint:1846
+msgctxt "AnnotationsSidebar"
+msgid "Field area in square millimetres"
+msgstr "Площа поля у квадратних міліметрах"
+
+#: ui/annotations-sidebar.slint:1873
+msgctxt "AnnotationsSidebar"
+msgid "{n} field placed on this slide."
+msgid_plural "{n} fields placed on this slide."
+msgstr[0] "На цьому препараті розміщено {n} поле."
+msgstr[1] "На цьому препараті розміщено {n} поля."
+msgstr[2] "На цьому препараті розміщено {n} полів."
+
+#: ui/annotations-sidebar.slint:1885
+msgctxt "AnnotationsSidebar"
+msgid "Select all fields"
+msgstr "Виділити всі поля"
+
+#: ui/annotations-sidebar.slint:1924
+msgctxt "AnnotationsSidebar"
+msgid "IMPORT AND EXPORT"
+msgstr "ІМПОРТ І ЕКСПОРТ"
+
+#: ui/annotations-sidebar.slint:1928
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Imports: GeoJSON (QuPath and others), eov JSON, ASAP XML, Aperio ImageScope "
+"XML, Hamamatsu NDPA and DICOM bulk annotations. Coordinates are level-0 "
+"pixels with y pointing down."
+msgstr ""
+"Можна імпортувати: GeoJSON (QuPath та інші), eov JSON, ASAP XML, Aperio "
+"ImageScope XML, Hamamatsu NDPA і масові анотації DICOM. Координати — пікселі "
+"рівня 0, вісь y спрямована вниз."
+
+#: ui/annotations-sidebar.slint:1935
+msgctxt "AnnotationsSidebar"
+msgid "Import…"
+msgstr "Імпортувати…"
+
+#: ui/annotations-sidebar.slint:1991
+msgctxt "AnnotationsSidebar"
+msgid "Back up…"
+msgstr "Створити резервну копію…"
+
+#: ui/annotations-sidebar.slint:1992
+msgctxt "AnnotationsSidebar"
+msgid "Merge…"
+msgstr "Об’єднати…"
+
+#. Translators: a reader is a person who annotates slides; a second reader
+#. annotates a blinded copy independently so two readers can be compared (as
+#. in a reader study); use the word for an observer or annotator, not the
+#. clinical term for a second diagnostic opinion.
+#: ui/annotations-sidebar.slint:2009
+msgctxt "AnnotationsSidebar"
+msgid "SECOND READER"
+msgstr "ДРУГИЙ ОЦІНЮВАЧ"
+
+#: ui/annotations-sidebar.slint:2013
+msgctxt "AnnotationsSidebar"
+msgid ""
+"A blinded copy holds the visible layers' shapes, classes and names, without "
+"authors, comments, statuses, descriptions or properties. Compare reads "
+"another reader's export and compares it with the visible layers: counts per "
+"class, matched points and overlapping regions."
+msgstr ""
+"Засліплена копія містить фігури, класи й назви видимих шарів — без авторів, "
+"коментарів, статусів, описів і властивостей. «Порівняти» зчитує експорт "
+"іншого оцінювача й порівнює його з видимими шарами: кількості за класами, "
+"зіставлені точки та ділянки, що перекриваються."
+
+#: ui/annotations-sidebar.slint:2018
+msgctxt "AnnotationsSidebar"
+msgid "Blinded copy…"
+msgstr "Засліплена копія…"
+
+#: ui/annotations-sidebar.slint:2019
+msgctxt "AnnotationsSidebar"
+msgid "Compare…"
+msgstr "Порівняти…"
+
+#. Translators: a button: compare with the same file again.
+#: ui/annotations-sidebar.slint:2022
+msgctxt "AnnotationsSidebar"
+msgid "Again"
+msgstr "Ще раз"
+
+#. Translators: a button: remove the comparison.
+#: ui/annotations-sidebar.slint:2029
+msgctxt "AnnotationsSidebar"
+msgid "Clear"
+msgstr "Очистити"
+
+#: ui/annotations-sidebar.slint:2066
+msgctxt "AnnotationsSidebar"
+msgid "Neither reader has points or regions in the compared layers."
+msgstr "Жоден з оцінювачів не має точок або ділянок у порівнюваних шарах."
+
+#: ui/annotations-sidebar.slint:2126
+msgctxt "AnnotationsSidebar"
+msgid "DATABASE"
+msgstr "БАЗА ДАНИХ"
+
+#: ui/annotations-sidebar.slint:2150
+msgctxt "AnnotationsSidebar"
+msgid "Database file"
+msgstr "Файл бази даних"
+
+#. Translators: {} is the path of the old database file.
+#: ui/annotations-sidebar.slint:2167
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Annotations made with eov before 1.0 are in {}. Bring them into this "
+"database (the old file is not changed):"
+msgstr ""
+"Анотації, створені в eov до версії 1.0, зберігаються в {}. Перенесіть їх до "
+"цієї бази даних (старий файл не буде змінено):"
+
+#: ui/annotations-sidebar.slint:2179
+msgctxt "AnnotationsSidebar"
+msgid "Bring them in"
+msgstr "Перенести"
+
+#: ui/annotations-sidebar.slint:2195
+msgctxt "AnnotationsSidebar"
+msgid "OTHER SLIDES"
+msgstr "ІНШІ ПРЕПАРАТИ"
+
+#. Translators: a button that lists the other slides in the database.
+#: ui/annotations-sidebar.slint:2202
+msgctxt "AnnotationsSidebar"
+msgid "List"
+msgstr "Список"
+
+#. Translators: a button: attach the annotations of this slide to the open
+#. slide.
+#: ui/annotations-sidebar.slint:2236
+msgctxt "AnnotationsSidebar"
+msgid "Attach"
+msgstr "Приєднати"
+
+#: ui/annotations-sidebar.slint:2258
+msgctxt "AnnotationsSidebar"
+msgid "AUTHOR AND EXPORTS"
+msgstr "АВТОР І ЕКСПОРТ"
+
+#: ui/annotations-sidebar.slint:2265 ui/annotations-sidebar.slint:2273
+msgctxt "AnnotationsSidebar"
+msgid "Author"
+msgstr "Автор"
+
+#: ui/annotations-sidebar.slint:2272
+msgctxt "AnnotationsSidebar"
+msgid "Your name or initials"
+msgstr "Ваше ім’я або ініціали"
+
+#: ui/annotations-sidebar.slint:2284 ui/annotations-sidebar.slint:2291
+msgctxt "AnnotationsSidebar"
+msgid "Organization"
+msgstr "Організація"
+
+#: ui/annotations-sidebar.slint:2302 ui/annotations-sidebar.slint:2309
+msgctxt "AnnotationsSidebar"
+msgid "Project"
+msgstr "Проєкт"
+
+#: ui/annotations-sidebar.slint:2320 ui/annotations-sidebar.slint:2328
+msgctxt "AnnotationsSidebar"
+msgid "License"
+msgstr "Ліцензія"
+
+#: ui/annotations-sidebar.slint:2327
+msgctxt "AnnotationsSidebar"
+msgid "e.g. CC-BY-4.0"
+msgstr "наприклад, CC-BY-4.0"
+
+#: ui/annotations-sidebar.slint:2336
+msgctxt "AnnotationsSidebar"
+msgid "Include the slide's file name in exports"
+msgstr "Включати назву файлу препарату в експорт"
+
+#: ui/annotations-sidebar.slint:2346
+msgctxt "AnnotationsSidebar"
+msgid "DISPLAY"
+msgstr "ВІДОБРАЖЕННЯ"
+
+#: ui/annotations-sidebar.slint:2350
+msgctxt "AnnotationsSidebar"
+msgid "Show names on the slide"
+msgstr "Показувати назви на препараті"
+
+#: ui/annotations-sidebar.slint:2361 ui/annotations-sidebar.slint:2369
+msgctxt "AnnotationsSidebar"
+msgid "Point size"
+msgstr "Розмір точки"
+
+#: ui/annotations-sidebar.slint:2380 ui/annotations-sidebar.slint:2386
+msgctxt "AnnotationsSidebar"
+msgid "Fill opacity"
+msgstr "Непрозорість заливки"
+
+#. Translators: S is the brush tool's key.
+#: ui/annotations-sidebar.slint:2397
+msgctxt "AnnotationsSidebar"
+msgid "BRUSH (S)"
+msgstr "ПЕНЗЕЛЬ (S)"
+
+#. Translators: the size of the brush.
+#: ui/annotations-sidebar.slint:2405
+msgctxt "AnnotationsSidebar"
+msgid "Size"
+msgstr "Розмір"
+
+#: ui/annotations-sidebar.slint:2413
+msgctxt "AnnotationsSidebar"
+msgid "Brush size"
+msgstr "Розмір пензля"
+
+#: ui/annotations-sidebar.slint:2429
+msgctxt "AnnotationsSidebar"
+msgid "Erase from the selected region"
+msgstr "Стирати з виділеної ділянки"
+
+#: ui/annotations-sidebar.slint:2437
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Paint over a selected region to extend it, elsewhere to make a new one. Hold "
+"Alt to erase; [ and ] change the size."
+msgstr ""
+"Зафарбовуйте поверх виділеної ділянки, щоб розширити її, а деінде — щоб "
+"створити нову. Утримуйте Alt, щоб стирати; [ і ] змінюють розмір."
+
+#: ui/annotations-sidebar.slint:2557
+msgctxt "AnnotationsSidebar"
+msgid "Colours"
+msgstr "Кольори"
+
+#: ui/import-dialog.slint:117 ui/import-dialog.slint:124
+msgctxt "ImportDialog"
+msgid "Import annotations"
+msgstr "Імпорт анотацій"
+
+#: ui/import-dialog.slint:186
+msgctxt "ImportDialog"
+msgid "NOTES"
+msgstr "ПРИМІТКИ"
+
+#: ui/import-dialog.slint:214
+msgctxt "ImportDialog"
+msgid "Add to the existing layers"
+msgstr "Додати до наявних шарів"
+
+#: ui/import-dialog.slint:215
+msgctxt "ImportDialog"
+msgid "Imported annotations join the layer with the same name."
+msgstr "Імпортовані анотації додаються до шару з такою самою назвою."
+
+#: ui/import-dialog.slint:223
+msgctxt "ImportDialog"
+msgid "Replace the existing layers"
+msgstr "Замінити наявні шари"
+
+#: ui/import-dialog.slint:224
+msgctxt "ImportDialog"
+msgid "The existing layers are deleted (this can be undone)."
+msgstr "Наявні шари буде видалено (цю дію можна відмінити)."
+
+#: ui/import-dialog.slint:232
+msgctxt "ImportDialog"
+msgid "Keep both"
+msgstr "Зберегти обидва"
+
+#. Translators: "Tumour" is only an example of a layer name from the imported
+#. file: translate it, and keep the " (2)" that eov adds.
+#: ui/import-dialog.slint:234
+msgctxt "ImportDialog"
+msgid "Imported layers get a new name, such as \"Tumour (2)\"."
+msgstr "Імпортовані шари отримують нову назву, наприклад «Пухлина (2)»."
+
+#: ui/import-dialog.slint:243
+msgctxt "ImportDialog"
+msgid "The import is one step: Ctrl+Z (⌘Z) removes everything it added."
+msgstr ""
+"Імпорт виконується як один крок: Ctrl+Z (⌘Z) вилучає все, що він додав."
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Close"
+msgstr "Закрити"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import"
+msgstr "Імпортувати"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import anyway"
+msgstr "Усе одно імпортувати"
+
+#: ui/widgets.slint:655
+msgctxt "Swatch"
+msgid "Change colour"
+msgstr "Змінити колір"
+
+#: ui/widgets.slint:694
+msgctxt "KeyField"
+msgid "Hotkey"
+msgstr "Гаряча клавіша"
+
+#: ui/widgets.slint:696
+msgctxt "KeyField"
+msgid "Click, then press a key. Backspace removes the hotkey."
+msgstr "Клацніть, потім натисніть клавішу. Backspace вилучає гарячу клавішу."

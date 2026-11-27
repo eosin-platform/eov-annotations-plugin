@@ -1,0 +1,3323 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: annotations\n"
+"Report-Msgid-Bugs-To: https://github.com/eosin-platform/eov-annotations-"
+"plugin/issues\n"
+"Language-Team: Finnish\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Review-Status: machine-translated; not yet reviewed by a native speaker\n"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid "Annotations"
+msgstr "Annotaatiot"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid ""
+"Point, region, line and text annotations with reusable classes, cell "
+"counting, HPF fields and measurements; GeoJSON (QuPath) import and export, "
+"ASAP and Aperio ImageScope XML import."
+msgstr ""
+"Piste-, alue-, viiva- ja tekstiannotaatiot uudelleenkäytettävine luokkineen, "
+"solulaskenta, HPF-kentät ja mittaukset; GeoJSON-tuonti ja -vienti (QuPath) "
+"sekä XML-tuonti ASAP- ja Aperio ImageScope -muodoista."
+
+#: src/actions.rs:23
+msgid "The annotations of this slide are still loading; try again in a moment."
+msgstr ""
+"Tämän näytelasin annotaatioita ladataan vielä; yritä hetken kuluttua "
+"uudelleen."
+
+#: src/actions.rs:27 src/sidebar.rs:1390 src/sidebar.rs:1474
+msgid "That layer no longer exists."
+msgstr "Kerrosta ei ole enää olemassa."
+
+#: src/actions.rs:31
+msgid "That annotation no longer exists."
+msgstr "Annotaatiota ei ole enää olemassa."
+
+#: src/actions.rs:35 src/sidebar.rs:1605
+msgid "That class no longer exists."
+msgstr "Luokkaa ei ole enää olemassa."
+
+#: src/actions.rs:39 src/transfer.rs:648 src/transfer.rs:658
+msgid "Layer \"{}\" is locked."
+msgstr "Kerros ”{}” on lukittu."
+
+#: src/actions.rs:43
+msgid "Parts outside the slide were cut off."
+msgstr "Näytelasin ulkopuolelle ulottuneet osat leikattiin pois."
+
+#: src/actions.rs:62
+msgid "The slide is not open any more."
+msgstr "Näytelasi ei ole enää auki."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:136
+msgid "The outline crossed itself and was split into {n} parts."
+msgid_plural "The outline crossed itself and was split into {n} parts."
+msgstr[0] "Ääriviiva leikkasi itseään, ja se jaettiin {n} osaan."
+msgstr[1] "Ääriviiva leikkasi itseään, ja se jaettiin {n} osaan."
+
+#: src/actions.rs:140
+msgid "The outline crossed itself and was repaired."
+msgstr "Ääriviiva leikkasi itseään, ja se korjattiin."
+
+#: src/actions.rs:156
+msgid "The HPF size is not valid; check it in the Count tab."
+msgstr "HPF-koko ei kelpaa; tarkista se Laskenta-välilehdellä."
+
+#: src/actions.rs:160
+msgid "This slide has no pixel size, so HPF fields cannot be sized."
+msgstr ""
+"Tällä näytelasilla ei ole pikselikokoa, joten HPF-kenttien kokoa ei voi "
+"määrittää."
+
+#: src/actions.rs:207
+msgid "Count cell"
+msgstr "Laske solu"
+
+#: src/actions.rs:218 src/lib.rs:613
+msgid "Add point"
+msgstr "Lisää piste"
+
+#: src/actions.rs:228
+msgid "Add line"
+msgstr "Lisää viiva"
+
+#: src/actions.rs:242
+msgid "Add arrow"
+msgstr "Lisää nuoli"
+
+#: src/actions.rs:258
+msgid "Add text"
+msgstr "Lisää teksti"
+
+#: src/actions.rs:303
+msgid ""
+"To add the shape to a region (Shift) or cut it from a region (Alt), select "
+"exactly one region first. The shape was added as a new annotation."
+msgstr ""
+"Jos haluat lisätä muodon alueeseen (Shift) tai leikata sen alueesta (Alt), "
+"valitse ensin täsmälleen yksi alue. Muoto lisättiin uutena annotaationa."
+
+#: src/actions.rs:314 src/actions.rs:325
+msgid "Add region"
+msgstr "Lisää alue"
+
+#: src/actions.rs:378
+msgid "Place HPF field"
+msgstr "Sijoita HPF-kenttä"
+
+#: src/actions.rs:399
+msgid "This field extends past the slide edge; its area includes empty canvas."
+msgstr ""
+"Kenttä ulottuu näytelasin reunan yli; sen pinta-alaan sisältyy tyhjää "
+"piirtoaluetta."
+
+#: src/actions.rs:429
+msgid "Add to region"
+msgstr "Lisää alueeseen"
+
+#: src/actions.rs:431
+msgid "Cut from region"
+msgstr "Leikkaa alueesta"
+
+#: src/actions.rs:439
+msgid "The selected region no longer exists."
+msgstr "Valittua aluetta ei ole enää olemassa."
+
+#: src/actions.rs:441
+msgid "The selected region is locked."
+msgstr "Valittu alue on lukittu."
+
+#: src/actions.rs:452
+msgid "Only regions can be combined."
+msgstr "Vain alueita voi yhdistää."
+
+#: src/actions.rs:460
+msgid "The cut removed the whole region."
+msgstr "Leikkaus poisti koko alueen."
+
+#: src/actions.rs:483
+msgid ""
+"The shapes do not touch; the new shape was added as a separate annotation."
+msgstr ""
+"Muodot eivät kosketa toisiaan; uusi muoto lisättiin erillisenä annotaationa."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:488
+msgid "The cut split the region into {n} parts."
+msgid_plural "The cut split the region into {n} parts."
+msgstr[0] "Leikkaus jakoi alueen {n} osaan."
+msgstr[1] "Leikkaus jakoi alueen {n} osaan."
+
+#: src/actions.rs:522
+msgid "Edit shape"
+msgstr "Muokkaa muotoa"
+
+#: src/actions.rs:544
+msgid "The annotation is locked."
+msgstr "Annotaatio on lukittu."
+
+#: src/actions.rs:560
+msgid "That edit would turn the arrow into another shape, so it was undone."
+msgstr "Muokkaus olisi muuttanut nuolen toiseksi muodoksi, joten se kumottiin."
+
+#: src/actions.rs:564
+msgid "That edit was undone."
+msgstr "Muokkaus kumottiin."
+
+#: src/actions.rs:591
+msgid "The edit was undone: {}"
+msgstr "Muokkaus kumottiin: {}"
+
+#: src/actions.rs:596
+msgid "That edit would make the outline cross itself, so it was undone."
+msgstr ""
+"Muokkaus olisi saanut ääriviivan leikkaamaan itseään, joten se kumottiin."
+
+#: src/actions.rs:629
+msgid "Delete annotation"
+msgid_plural "Delete {n} annotations"
+msgstr[0] "Poista annotaatio"
+msgstr[1] "Poista {n} annotaatiota"
+
+#: src/actions.rs:649
+msgid "{n} locked annotation was kept."
+msgid_plural "{n} locked annotations were kept."
+msgstr[0] "{n} lukittu annotaatio säilytettiin."
+msgstr[1] "{n} lukittua annotaatiota säilytettiin."
+
+#: src/actions.rs:703
+msgid "The target layer is locked or gone."
+msgstr "Kohdekerros on lukittu tai sitä ei ole enää."
+
+#: src/actions.rs:712
+msgid "{n} locked annotation was not changed."
+msgid_plural "{n} locked annotations were not changed."
+msgstr[0] "{n} lukittu annotaatio jäi muuttamatta."
+msgstr[1] "{n} lukittua annotaatiota jäi muuttamatta."
+
+#: src/actions.rs:777
+msgid "Could not zoom to the annotation"
+msgstr "Annotaatioon ei voitu zoomata"
+
+#: src/actions.rs:790
+msgid "New layer"
+msgstr "Uusi kerros"
+
+#: src/actions.rs:865
+msgid "Rename layer"
+msgstr "Nimeä kerros uudelleen"
+
+#: src/actions.rs:877
+msgid "Delete layer"
+msgstr "Poista kerros"
+
+#: src/actions.rs:887
+msgid "Delete layer \"{}\""
+msgstr "Poista kerros ”{}”"
+
+#: src/actions.rs:897
+msgid "Choose layer"
+msgstr "Valitse kerros"
+
+#: src/actions.rs:902
+msgid ""
+"New annotations go to a regular layer; count points and HPF fields have "
+"their own."
+msgstr ""
+"Uudet annotaatiot menevät tavalliseen kerrokseen; laskentapisteillä ja HPF-"
+"kentillä on omat kerroksensa."
+
+#. Translators: an undo step, shown by eov as "Undo {}".
+#: src/actions.rs:918
+msgid "Clear counts"
+msgstr "Tyhjennä laskenta"
+
+#: src/actions.rs:950
+msgid ""
+"There are no HPF fields on this slide yet. Use the HPF field tool (H) to "
+"place them."
+msgstr ""
+"Tällä näytelasilla ei ole vielä HPF-kenttiä. Sijoita niitä HPF-"
+"kenttätyökalulla (H)."
+
+#: src/actions.rs:960
+msgid "Repair outline"
+msgstr "Korjaa ääriviiva"
+
+#: src/actions.rs:975
+msgid "Nothing is left of the outline."
+msgstr "Ääriviivasta ei jäänyt mitään jäljelle."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:997
+msgid "The outline was split into {n} parts."
+msgid_plural "The outline was split into {n} parts."
+msgstr[0] "Ääriviiva jaettiin {n} osaan."
+msgstr[1] "Ääriviiva jaettiin {n} osaan."
+
+#: src/actions.rs:1012
+msgid "Could not attach the annotations"
+msgstr "Annotaatioita ei voitu liittää"
+
+#: src/actions.rs:1018
+msgid "Attach annotations of another slide"
+msgstr "Liitä toisen näytelasin annotaatiot"
+
+#: src/actions.rs:1024
+msgid "Those annotations already belong to this slide."
+msgstr "Nämä annotaatiot kuuluvat jo tähän näytelasiin."
+
+#: src/actions.rs:1027
+msgid "That slide has no annotations left."
+msgstr "Kyseisellä näytelasilla ei ole enää annotaatioita."
+
+#: src/actions.rs:1035
+msgid "Attached {n} layer to this slide."
+msgid_plural "Attached {n} layers to this slide."
+msgstr[0] "Tähän näytelasiin liitettiin {n} kerros."
+msgstr[1] "Tähän näytelasiin liitettiin {n} kerrosta."
+
+#: src/actions.rs:1076
+msgid "New class"
+msgstr "Uusi luokka"
+
+#: src/actions.rs:1138
+msgid "Rename class"
+msgstr "Nimeä luokka uudelleen"
+
+#: src/actions.rs:1147
+msgid "A class named \"{}\" already exists."
+msgstr "Luokka nimeltä ”{}” on jo olemassa."
+
+#: src/actions.rs:1161
+msgid "Set class hotkey"
+msgstr "Aseta luokan pikanäppäin"
+
+#: src/actions.rs:1186
+msgid "Change class colour"
+msgstr "Vaihda luokan väri"
+
+#: src/actions.rs:1190 src/sidebar.rs:1358
+msgid "\"{}\" is not a colour."
+msgstr "”{}” ei ole väri."
+
+#: src/actions.rs:1197
+msgid "Delete class"
+msgstr "Poista luokka"
+
+#: src/actions.rs:1201
+msgid "Delete class \"{}\""
+msgstr "Poista luokka ”{}”"
+
+#: src/actions.rs:1243 src/lib.rs:96 src/overlay.rs:164 src/sidebar.rs:151
+#: src/sidebar.rs:384
+msgid "Unclassified"
+msgstr "Luokittelematon"
+
+#: src/actions.rs:1244
+msgid "Class: {}"
+msgstr "Luokka: {}"
+
+#. Translators: on the slide, beside the HPF field that follows the
+#. pointer: its area and how many points (such as counted cells) lie in it.
+#: src/actions.rs:1274
+msgid "1 HPF · {area} mm² · {n} point"
+msgid_plural "1 HPF · {area} mm² · {n} points"
+msgstr[0] "1 HPF · {area} mm² · {n} piste"
+msgstr[1] "1 HPF · {area} mm² · {n} pistettä"
+
+#: src/actions.rs:1466
+msgid "Add comment"
+msgstr "Lisää kommentti"
+
+#: src/actions.rs:1472
+msgid "Write the comment first."
+msgstr "Kirjoita ensin kommentti."
+
+#: src/actions.rs:1481
+msgid "An annotation can have at most {n} comments."
+msgid_plural "An annotation can have at most {n} comments."
+msgstr[0] "Annotaatiolla voi olla enintään {n} kommentti."
+msgstr[1] "Annotaatiolla voi olla enintään {n} kommenttia."
+
+#: src/actions.rs:1511
+msgid "Delete comment"
+msgstr "Poista kommentti"
+
+#: src/actions.rs:1524
+msgid "That comment no longer exists."
+msgstr "Kommenttia ei ole enää olemassa."
+
+#: src/actions.rs:1723
+msgid ""
+"Brush {} px, eraser: paint over a selected region to erase from it; [ and ] "
+"change the size"
+msgstr ""
+"Sivellin {} px, pyyhekumi: maalaa valitun alueen päälle pyyhkiäksesi siitä; "
+"[ ja ] muuttavat kokoa"
+
+#: src/actions.rs:1728
+msgid ""
+"Brush {} px: paint a region (over a selected region to extend it); Alt "
+"erases; [ and ] change the size"
+msgstr ""
+"Sivellin {} px: maalaa alue (valitun alueen päälle laajentaaksesi sitä); Alt "
+"pyyhkii; [ ja ] muuttavat kokoa"
+
+#: src/actions.rs:1742
+msgid "Erase"
+msgstr "Pyyhi"
+
+#: src/actions.rs:1744
+msgid "Brush stroke"
+msgstr "Siveltimen veto"
+
+#: src/actions.rs:1768
+msgid "The stroke is outside the slide."
+msgstr "Veto on näytelasin ulkopuolella."
+
+#: src/actions.rs:1818
+msgid "Select the region to erase from."
+msgstr "Valitse alue, josta pyyhitään."
+
+#: src/actions.rs:1843
+msgid "The eraser did not touch the selected region."
+msgstr "Pyyhekumi ei osunut valittuun alueeseen."
+
+#. Translators: a part of the plugin that works in the background.
+#: src/core.rs:228
+msgid "Could not start a worker thread"
+msgstr "Työsäiettä ei voitu käynnistää"
+
+#: src/core.rs:385
+msgid "Internal error while opening the database"
+msgstr "Sisäinen virhe tietokantaa avattaessa"
+
+#: src/core.rs:393
+msgid "Internal error while loading annotations"
+msgstr "Sisäinen virhe annotaatioita ladattaessa"
+
+#: src/core.rs:398
+msgid "Internal error while saving annotations"
+msgstr "Sisäinen virhe annotaatioita tallennettaessa"
+
+#: src/core.rs:403
+msgid "Internal error while undoing"
+msgstr "Sisäinen virhe kumottaessa"
+
+#: src/core.rs:408
+msgid "Internal error while working on the database"
+msgstr "Sisäinen virhe tietokantaa käsiteltäessä"
+
+#: src/core.rs:427
+msgid "Internal error while reading or writing a file"
+msgstr "Sisäinen virhe tiedostoa luettaessa tai kirjoitettaessa"
+
+#: src/core.rs:561
+msgid "The annotation database could not be opened"
+msgstr "Annotaatiotietokantaa ei voitu avata"
+
+#: src/core.rs:590
+msgid "Annotations from eov before 1.0"
+msgstr "Annotaatiot eov:n alle 1.0 -versioista"
+
+#: src/core.rs:592
+msgid ""
+"The annotations plugin of eov before 1.0 left a database at {}. Bring its "
+"annotations into the current database? The old file is not changed. You can "
+"also do this later in the Data tab of the annotations panel."
+msgstr ""
+"eov:n alle 1.0 -versioiden annotaatiolaajennus jätti tietokannan sijaintiin "
+"{}. Tuodaanko sen annotaatiot nykyiseen tietokantaan? Vanhaa tiedostoa ei "
+"muuteta. Voit tehdä tämän myös myöhemmin annotaatiopaneelin Tiedot-"
+"välilehdellä."
+
+#: src/core.rs:597
+msgid "Bring them in"
+msgstr "Tuo ne"
+
+#: src/core.rs:598
+msgid "Not now"
+msgstr "Ei nyt"
+
+#. Translators: the plugin could not ask whether to bring in the annotations made
+#. with eov before 1.0 (the title of that question is "Annotations from eov before 1.0").
+#: src/core.rs:612
+msgid "Could not offer the annotations from eov before 1.0"
+msgstr "Annotaatioita eov:n alle 1.0 -versioista ei voitu tarjota tuotaviksi"
+
+#: src/core.rs:657 src/sidebar.rs:457
+msgid "Could not load this slide's annotations: {}"
+msgstr "Tämän näytelasin annotaatioita ei voitu ladata: {}"
+
+#. Translators: a second read is an independent annotation of the slide by another person
+#. (as in a reader study), not a clinical second opinion. Data, Second reader and Blinded
+#. copy are the tab, section and button of the annotations panel: use their translations.
+#: src/core.rs:670
+msgid ""
+"{opened} has the same content as {annotated}, so it shows and edits the same "
+"annotations. For an independent second read, use Data → Second reader → "
+"Blinded copy."
+msgstr ""
+"{opened} on sisällöltään sama kuin {annotated}, joten se näyttää ja muokkaa "
+"samoja annotaatioita. Jos haluat riippumattoman toisen arvion, valitse "
+"Tiedot → Toinen arvioija → Sokkoutettu kopio."
+
+#: src/core.rs:721 src/core.rs:1019 src/core.rs:1156
+msgid "the database is not open"
+msgstr "tietokanta ei ole auki"
+
+#: src/core.rs:809
+msgid "{n} annotation of {file} could not be read and was skipped."
+msgid_plural "{n} annotations of {file} could not be read and were skipped."
+msgstr[0] ""
+"Tiedoston {file} annotaatioista {n} oli lukukelvoton, ja se ohitettiin."
+msgstr[1] ""
+"Tiedoston {file} annotaatioista {n} oli lukukelvottomia, ja ne ohitettiin."
+
+#: src/core.rs:900
+msgid "Could not reload annotations"
+msgstr "Annotaatioita ei voitu ladata uudelleen"
+
+#: src/core.rs:931
+msgid "Annotations were changed by another eov window and have been reloaded."
+msgstr "Toinen eov-ikkuna muutti annotaatioita, joten ne ladattiin uudelleen."
+
+#: src/core.rs:957
+msgid "the database stayed locked"
+msgstr "tietokanta pysyi lukittuna"
+
+#: src/core.rs:964
+msgid "a class with that name already exists"
+msgstr "samanniminen luokka on jo olemassa"
+
+#: src/core.rs:966
+msgid "the annotation database is read-only"
+msgstr "annotaatiotietokanta on vain luku -tilassa"
+
+#: src/core.rs:969
+msgid "the annotation was changed elsewhere in the meantime"
+msgstr "annotaatiota muutettiin sillä välin muualla"
+
+#: src/core.rs:971
+msgid "the layer was changed elsewhere in the meantime"
+msgstr "kerrosta muutettiin sillä välin muualla"
+
+#: src/core.rs:972
+msgid "the class was changed elsewhere in the meantime"
+msgstr "luokkaa muutettiin sillä välin muualla"
+
+#: src/core.rs:973
+msgid "a layer being moved was changed elsewhere in the meantime"
+msgstr "siirrettävää kerrosta muutettiin sillä välin muualla"
+
+#: src/core.rs:1053
+msgid "Could not save \"{}\""
+msgstr "Toimintoa ”{}” ei voitu tallentaa"
+
+#: src/core.rs:1123
+msgid "This annotation change can no longer be undone."
+msgstr "Tätä annotaatiomuutosta ei voi enää kumota."
+
+#: src/core.rs:1137
+msgid "The slide of this change is not open any more."
+msgstr "Tämän muutoksen näytelasi ei ole enää auki."
+
+#: src/core.rs:1176
+msgid "Could not redo \"{}\""
+msgstr "Toimintoa ”{}” ei voitu tehdä uudelleen"
+
+#: src/core.rs:1178
+msgid "Could not undo \"{}\""
+msgstr "Toimintoa ”{}” ei voitu kumota"
+
+#. Translators: cells per square millimetre, with the 95% confidence interval.
+#: src/counting.rs:185
+msgid "{density} /mm² (95% {low}–{high})"
+msgstr "{density} /mm² (95 % {low}–{high})"
+
+#. Translators: cells per 10 high-power fields.
+#: src/counting.rs:194
+msgid "{} /10 HPF"
+msgstr "{} /10 HPF"
+
+#: src/counting.rs:222
+msgid "100 (capped; the ratio is higher)"
+msgstr "100 (rajattu; suhde on suurempi)"
+
+#. Translators: CPS is the PD-L1 combined positive score; {positive},
+#. {negative} and {immune} are names of classes of cells.
+#: src/counting.rs:234
+msgid ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cell "
+"({positive} + {negative}) × 100."
+msgid_plural ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cells "
+"({positive} + {negative}) × 100."
+msgstr[0] ""
+"CPS {score} — ({a} {positive} + {c} {immune}) jaettuna {n} kasvainsolulla "
+"({positive} + {negative}) × 100."
+msgstr[1] ""
+"CPS {score} — ({a} {positive} + {c} {immune}) jaettuna {n} kasvainsolulla "
+"({positive} + {negative}) × 100."
+
+#: src/counting.rs:248
+msgid "Fewer than {n} tumour cells: below the minimum for a valid score."
+msgid_plural ""
+"Fewer than {n} tumour cells: below the minimum for a valid score."
+msgstr[0] "Kasvainsoluja alle {n}: vähemmän kuin pätevä pistemäärä edellyttää."
+msgstr[1] "Kasvainsoluja alle {n}: vähemmän kuin pätevä pistemäärä edellyttää."
+
+#. Translators: e.g. "Ki-67+ index: 25.0 % (95% 20.1–30.4 %) — 25 of 100 (Ki-67+ + Ki-67-)";
+#. {class} and {other} are names of classes of cells.
+#: src/counting.rs:263
+msgid ""
+"{class} index: {value} % (95% {low}–{high} %) — {k} of {total} ({class} + "
+"{other})"
+msgstr ""
+"{class} -indeksi: {value} % (95 % {low}–{high} %) — {k}/{total} ({class} + "
+"{other})"
+
+#: src/db/mod.rs:116
+msgid "The annotation database is read-only; editing is disabled."
+msgstr ""
+"Annotaatiotietokanta on vain luku -tilassa; muokkaus on poistettu käytöstä."
+
+#: src/db/mod.rs:119
+msgid "{n} layer colour was unreadable and was replaced."
+msgid_plural "{n} layer colours were unreadable and were replaced."
+msgstr[0] "{n} kerroksen väri oli lukukelvoton, joten se korvattiin."
+msgstr[1] "{n} kerroksen värit olivat lukukelvottomia, joten ne korvattiin."
+
+#. Translators: {slides} in "Upgraded the annotation database from the pre-1.0 format: {slides}, …".
+#: src/db/mod.rs:131
+msgid "{n} slide"
+msgid_plural "{n} slides"
+msgstr[0] "{n} näytelasi"
+msgstr[1] "{n} näytelasia"
+
+#. Translators: {slides} is "1 slide" or "3 slides" (translated on its own).
+#: src/db/mod.rs:136
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotation."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotations."
+msgstr[0] ""
+"Annotaatiotietokanta päivitettiin alle 1.0 -versioiden muodosta: {slides}, "
+"{n} annotaatio."
+msgstr[1] ""
+"Annotaatiotietokanta päivitettiin alle 1.0 -versioiden muodosta: {slides}, "
+"{n} annotaatiota."
+
+#. Translators: {slides} is "1 slide" or "3 slides", {annotations} is
+#. "1 annotation" or "5 annotations" (each translated on its own).
+#: src/db/mod.rs:145
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotation skipped."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotations skipped."
+msgstr[0] ""
+"Annotaatiotietokanta päivitettiin alle 1.0 -versioiden muodosta: {slides}, "
+"{annotations}, {n} lukukelvoton annotaatio ohitettu."
+msgstr[1] ""
+"Annotaatiotietokanta päivitettiin alle 1.0 -versioiden muodosta: {slides}, "
+"{annotations}, {n} lukukelvotonta annotaatiota ohitettu."
+
+#. Translators: a number of annotations on its own, in two texts: {annotations} in
+#. "Upgraded the annotation database from the pre-1.0 format: {slides}, {annotations}, …"
+#. and {ours} in "This slide's visible layers ({ours}) against the {n} annotations in {name}, …".
+#: src/db/mod.rs:153 src/state.rs:516
+msgid "{n} annotation"
+msgid_plural "{n} annotations"
+msgstr[0] "{n} annotaatio"
+msgstr[1] "{n} annotaatiota"
+
+#: src/db/mod.rs:159
+msgid ""
+"New database. If you annotated with eov before 1.0, those annotations are in "
+"annotations.db in eov's old settings folder (~/.config/eov on Linux, ~/"
+"Library/Application Support/eov on macOS, %APPDATA%\\eov on Windows): bring "
+"them in with Merge… above."
+msgstr ""
+"Uusi tietokanta. Jos teit annotaatioita eov:n alle 1.0 -versioilla, ne ovat "
+"tiedostossa annotations.db eov:n vanhassa asetuskansiossa (~/.config/eov "
+"Linuxissa, ~/Library/Application Support/eov macOS:ssä, %APPDATA%\\eov "
+"Windowsissa): tuo ne yllä olevalla Yhdistä…-painikkeella."
+
+#: src/fileio.rs:105 src/fileio.rs:115
+msgid "cannot read {file}: {error}"
+msgstr "tiedostoa {file} ei voi lukea: {error}"
+
+#: src/fileio.rs:109
+msgid "{file} is {size} MB; imports are limited to {limit} MB"
+msgstr "{file} on {size} MB; tuotavan tiedoston enimmäiskoko on {limit} MB"
+
+#: src/formats/dicom/mod.rs:605
+msgid "There are too many coordinates for one DICOM annotation group."
+msgstr "Yhdessä DICOM-annotaatioryhmässä on liian monta koordinaattia."
+
+#: src/formats/dicom/mod.rs:674
+msgid "There are too many annotation groups."
+msgstr "Annotaatioryhmiä on liian monta."
+
+#: src/formats/dicom/mod.rs:695
+msgid "There are too many annotations in one group."
+msgstr "Yhdessä ryhmässä on liian monta annotaatiota."
+
+#: src/formats/dicom/mod.rs:736
+msgid "The slide has no annotations to export."
+msgstr "Näytelasilla ei ole vietäviä annotaatioita."
+
+#: src/formats/dicom/mod.rs:872
+msgid ""
+"It refers to this slide's DICOM image (series {}) and joins its study; the "
+"patient and study attributes are the slide's."
+msgstr ""
+"Tiedosto viittaa tämän näytelasin DICOM-kuvaan (sarja {}) ja liittyy sen "
+"tutkimukseen; potilas- ja tutkimusattribuutit otetaan näytelasilta."
+
+#: src/formats/dicom/mod.rs:876
+msgid ""
+"This slide is not a DICOM image, so the file refers to no image: it is a "
+"study of its own with empty patient attributes, and DICOM viewers cannot "
+"attach it to a slide by themselves."
+msgstr ""
+"Tämä näytelasi ei ole DICOM-kuva, joten tiedosto ei viittaa mihinkään "
+"kuvaan: se on oma tutkimuksensa tyhjin potilasattribuutein, eivätkä DICOM-"
+"katseluohjelmat pysty itse liittämään sitä näytelasiin."
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot
+#. hold {}: …"; {regions} is "in 1 region" or "in 2 regions"; "drawn
+#. without it/them": other viewers draw these regions without their holes.
+#: src/formats/dicom/mod.rs:886
+msgid "{n} hole {regions} (drawn without it)"
+msgid_plural "{n} holes {regions} (drawn without them)"
+msgstr[0] "{n} reikä {regions} (piirretään ilman sitä)"
+msgstr[1] "{n} reikää {regions} (piirretään ilman niitä)"
+
+#. Translators: in "{n} holes {regions} (drawn without them)".
+#: src/formats/dicom/mod.rs:890
+msgid "in {n} region"
+msgid_plural "in {n} regions"
+msgstr[0] "{n} alueessa"
+msgstr[1] "{n} alueessa"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:897
+msgid "the text of {n} text label (written as points)"
+msgid_plural "the text of {n} text labels (written as points)"
+msgstr[0] "{n} tekstiselitteen teksti (tallennetaan pisteenä)"
+msgstr[1] "{n} tekstiselitteen tekstit (tallennetaan pisteinä)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:904
+msgid "the heads of {n} arrow (written as lines)"
+msgid_plural "the heads of {n} arrows (written as lines)"
+msgstr[0] "{n} nuolen kärki (tallennetaan viivana)"
+msgstr[1] "{n} nuolen kärjet (tallennetaan viivoina)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:911
+msgid "the names, descriptions and statuses of {n} annotation"
+msgid_plural "the names, descriptions and statuses of {n} annotations"
+msgstr[0] "{n} annotaation nimi, kuvaus ja tila"
+msgstr[1] "{n} annotaation nimet, kuvaukset ja tilat"
+
+#. Translators: {} lists what is lost, such as "the heads of 2 arrows (written
+#. as lines) and the text of 1 text label (written as points)".
+#: src/formats/dicom/mod.rs:919
+msgid ""
+"DICOM bulk annotations cannot hold {}: other viewers do not see them, but "
+"eov reads them back from its private attributes."
+msgstr ""
+"DICOM-joukkoannotaatioihin ei voi tallentaa seuraavia: {}. Muut "
+"katseluohjelmat eivät näe niitä, mutta eov lukee ne takaisin yksityisistä "
+"attribuuteistaan."
+
+#: src/formats/dicom/mod.rs:924
+msgid ""
+"Each layer, class and kind of shape is a group labelled with its class (or "
+"its layer). Authors, comments, properties and times are not exported (eov "
+"JSON keeps everything)."
+msgstr ""
+"Jokainen kerros, luokka ja muototyyppi on oma ryhmänsä, joka nimetään luokan "
+"(tai kerroksen) mukaan. Tekijöitä, kommentteja, ominaisuuksia ja aikaleimoja "
+"ei viedä (eov JSON säilyttää kaiken)."
+
+#: src/formats/dicom/mod.rs:928
+msgid ""
+"{n} annotation with too few points or unusable coordinates was left out."
+msgid_plural ""
+"{n} annotations with too few points or unusable coordinates were left out."
+msgstr[0] ""
+"{n} annotaatio, jossa oli liian vähän pisteitä tai käyttökelvottomat "
+"koordinaatit, jätettiin pois."
+msgstr[1] ""
+"{n} annotaatiota, joissa oli liian vähän pisteitä tai käyttökelvottomat "
+"koordinaatit, jätettiin pois."
+
+#. Translators: the end of a list, "a, b and c": {first} is "a, b".
+#: src/formats/dicom/mod.rs:943
+msgid "{first} and {last}"
+msgstr "{first} ja {last}"
+
+#. Translators: between the items of a list ("a, b and c").
+#: src/formats/dicom/mod.rs:946
+msgid ", "
+msgstr ", "
+
+#: src/formats/dicom/mod.rs:978
+msgid ""
+"Made for a DICOM slide; this one is not a DICOM image, so whether the "
+"annotations belong to it cannot be checked. Coordinates are taken as level-0 "
+"pixels of this slide."
+msgstr ""
+"Tehty DICOM-näytelasille; tämä näytelasi ei ole DICOM-kuva, joten ei voi "
+"tarkistaa, kuuluvatko annotaatiot siihen. Koordinaatit tulkitaan tämän "
+"näytelasin tason 0 pikseleiksi."
+
+#: src/formats/dicom/mod.rs:987
+msgid "Made for this slide (its DICOM image)."
+msgstr "Tehty tälle näytelasille (sen DICOM-kuvalle)."
+
+#: src/formats/dicom/mod.rs:994
+msgid "Made for this slide (its DICOM series)."
+msgstr "Tehty tälle näytelasille (sen DICOM-sarjalle)."
+
+#: src/formats/dicom/mod.rs:998
+msgid ""
+"Made for another image of this slide's DICOM series (another resolution "
+"level?), whose pixels may not be level-0 pixels."
+msgstr ""
+"Tehty toiselle kuvalle tämän näytelasin DICOM-sarjassa (toinen "
+"resoluutiotaso?), jonka pikselit eivät välttämättä ole tason 0 pikseleitä."
+
+#: src/formats/dicom/mod.rs:1005
+msgid "Made for a different DICOM slide (it refers to other images)."
+msgstr "Tehty eri DICOM-näytelasille (tiedosto viittaa muihin kuviin)."
+
+#: src/formats/dicom/mod.rs:1014
+msgid ""
+"This DICOM file is a slide image (VL Whole Slide Microscopy), not "
+"annotations: open it as a slide. Annotations are read from Microscopy Bulk "
+"Simple Annotations objects (modality ANN)."
+msgstr ""
+"Tämä DICOM-tiedosto on näytelasikuva (VL Whole Slide Microscopy) eikä "
+"annotaatioita: avaa se näytelasina. Annotaatiot luetaan Microscopy Bulk "
+"Simple Annotations -objekteista (modaliteetti ANN)."
+
+#: src/formats/dicom/mod.rs:1018
+msgid ""
+"This DICOM file is a structured report (SR). eov reads DICOM annotations "
+"from Microscopy Bulk Simple Annotations objects (modality ANN), not from "
+"structured reports."
+msgstr ""
+"Tämä DICOM-tiedosto on strukturoitu raportti (SR). eov lukee DICOM-"
+"annotaatiot Microscopy Bulk Simple Annotations -objekteista (modaliteetti "
+"ANN), ei strukturoiduista raporteista."
+
+#: src/formats/dicom/mod.rs:1021
+msgid "This DICOM file does not say what it holds (it has no SOP Class UID)."
+msgstr ""
+"Tämä DICOM-tiedosto ei kerro, mitä se sisältää (siitä puuttuu SOP Class UID)."
+
+#: src/formats/dicom/mod.rs:1024
+msgid ""
+"This DICOM file is not an annotation object (SOP class {}); eov reads "
+"Microscopy Bulk Simple Annotations (modality ANN)."
+msgstr ""
+"Tämä DICOM-tiedosto ei ole annotaatio-objekti (SOP-luokka {}); eov lukee "
+"Microscopy Bulk Simple Annotations -objekteja (modaliteetti ANN)."
+
+#: src/formats/dicom/mod.rs:1047
+msgid "eov's private description of the slide is unreadable and was ignored."
+msgstr ""
+"eov:n yksityinen kuvaus näytelasista on lukukelvoton, joten se ohitettiin."
+
+#. Translators: {} says what is wrong with the file, in English.
+#: src/formats/dicom/mod.rs:1080
+msgid "The DICOM file cannot be read: {}."
+msgstr "DICOM-tiedostoa ei voi lukea: {}."
+
+#: src/formats/dicom/mod.rs:1099
+msgid ""
+"This file holds 3D annotations: their coordinates are millimetres in the "
+"slide's frame of reference (DICOM SCOORD3D), and eov places annotations by "
+"level-0 pixels. Only 2D (pixel) annotations can be imported."
+msgstr ""
+"Tämä tiedosto sisältää 3D-annotaatioita: niiden koordinaatit ovat "
+"millimetrejä näytelasin koordinaatistossa (DICOM SCOORD3D), mutta eov "
+"sijoittaa annotaatiot tason 0 pikselien mukaan. Vain 2D-annotaatioita "
+"(pikselikoordinaatit) voi tuoda."
+
+#: src/formats/dicom/mod.rs:1104
+msgid ""
+"The file does not say whether its coordinates are 2D or 3D (Annotation "
+"Coordinate Type is missing)."
+msgstr ""
+"Tiedosto ei kerro, ovatko sen koordinaatit 2D- vai 3D-koordinaatteja "
+"(Annotation Coordinate Type puuttuu)."
+
+#: src/formats/dicom/mod.rs:1109
+msgid ""
+"The file's coordinates are of an unknown type (\"{}\"); 2D annotations can "
+"be imported."
+msgstr ""
+"Tiedoston koordinaatit ovat tuntematonta tyyppiä (”{}”); 2D-annotaatioita "
+"voi tuoda."
+
+#: src/formats/dicom/mod.rs:1126
+msgid ""
+"The annotations' pixel coordinates are relative to single frames (tiles) of "
+"the image (Pixel Origin Interpretation FRAME), which eov cannot place; "
+"coordinates relative to the whole image (VOLUME) can be imported."
+msgstr ""
+"Annotaatioiden pikselikoordinaatit ovat suhteessa kuvan yksittäisiin "
+"kehyksiin eli tiiliin (Pixel Origin Interpretation FRAME), joita eov ei "
+"pysty sijoittamaan; koko kuvaan suhteutettuja koordinaatteja (VOLUME) voi "
+"tuoda."
+
+#: src/formats/dicom/mod.rs:1130
+msgid ""
+"Unknown pixel origin interpretation \"{}\"; coordinates are taken relative "
+"to the whole image."
+msgstr ""
+"Tuntematon pikseliorigon tulkinta ”{}”; koordinaatit tulkitaan suhteessa "
+"koko kuvaan."
+
+#: src/formats/dicom/mod.rs:1136
+msgid "The DICOM file has no annotation groups."
+msgstr "DICOM-tiedostossa ei ole annotaatioryhmiä."
+
+#: src/formats/dicom/mod.rs:1146
+msgid ""
+"{n} rectangle or ellipse not aligned with the image axes became a polygon."
+msgid_plural ""
+"{n} rectangles and ellipses not aligned with the image axes became polygons."
+msgstr[0] ""
+"{n} suorakulmio tai ellipsi, joka ei ollut kuvan akselien suuntainen, "
+"muunnettiin monikulmioksi."
+msgstr[1] ""
+"{n} suorakulmiota ja ellipsiä, jotka eivät olleet kuvan akselien suuntaisia, "
+"muunnettiin monikulmioiksi."
+
+#: src/formats/dicom/mod.rs:1178
+msgid "annotation group with lines or polygons without a point index list"
+msgstr ""
+"annotaatioryhmä, jossa on viivoja tai monikulmioita ilman "
+"pisteindeksiluetteloa"
+
+#: src/formats/dicom/mod.rs:1182
+msgid "annotation group with an unreadable point index list"
+msgstr "annotaatioryhmä, jonka pisteindeksiluettelo on lukukelvoton"
+
+#: src/formats/dicom/mod.rs:1197
+msgid "annotation group with lines or polygons with an empty point index list"
+msgstr ""
+"annotaatioryhmä, jossa on viivoja tai monikulmioita ja tyhjä "
+"pisteindeksiluettelo"
+
+#: src/formats/dicom/mod.rs:1211
+msgid ""
+"The point index list of \"{}\" counts points rather than coordinate values; "
+"it was read that way."
+msgstr ""
+"Ryhmän ”{}” pisteindeksiluettelo indeksoi pisteitä eikä koordinaattiarvoja; "
+"se luettiin näin."
+
+#: src/formats/dicom/mod.rs:1217
+msgid ""
+"annotation group with a point index list that does not fit its coordinates"
+msgstr ""
+"annotaatioryhmä, jonka pisteindeksiluettelo ei sovi sen koordinaatteihin"
+
+#. Translators: a reason why a measurement of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1333
+msgid "measurement without values"
+msgstr "mittaus ilman arvoja"
+
+#: src/formats/dicom/mod.rs:1340
+msgid "measurement with unreadable values"
+msgstr "mittaus, jonka arvot ovat lukukelvottomia"
+
+#: src/formats/dicom/mod.rs:1352
+msgid "measurement that does not match its annotations"
+msgstr "mittaus, joka ei vastaa annotaatioitaan"
+
+#. Translators: a reason why a group of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1398
+msgid "annotation group without coordinates"
+msgstr "annotaatioryhmä ilman koordinaatteja"
+
+#: src/formats/dicom/mod.rs:1402
+msgid "annotation group with unreadable coordinates"
+msgstr "annotaatioryhmä, jonka koordinaatit ovat lukukelvottomia"
+
+#: src/formats/dicom/mod.rs:1408
+msgid "annotation group whose coordinates are not (column, row) pairs"
+msgstr "annotaatioryhmä, jonka koordinaatit eivät ole (sarake, rivi) -pareja"
+
+#: src/formats/dicom/mod.rs:1426
+msgid "rectangles or ellipses without four points each"
+msgstr "suorakulmiot tai ellipsit, joilla ei ole kullakin neljää pistettä"
+
+#: src/formats/dicom/mod.rs:1439
+msgid "annotation group without a graphic type"
+msgstr "annotaatioryhmä ilman grafiikkatyyppiä"
+
+#: src/formats/dicom/mod.rs:1443
+msgid "annotation group of graphic type {}"
+msgstr "annotaatioryhmä, jonka grafiikkatyyppi on {}"
+
+#: src/formats/dicom/mod.rs:1451
+msgid ""
+"\"{name}\" says it has {n} annotation, but its coordinates hold {held}; the "
+"coordinates were read."
+msgid_plural ""
+"\"{name}\" says it has {n} annotations, but its coordinates hold {held}; the "
+"coordinates were read."
+msgstr[0] ""
+"”{name}” ilmoittaa sisältävänsä {n} annotaation, mutta sen koordinaateissa "
+"on {held}; koordinaatit luettiin."
+msgstr[1] ""
+"”{name}” ilmoittaa sisältävänsä {n} annotaatiota, mutta sen koordinaateissa "
+"on {held}; koordinaatit luettiin."
+
+#: src/formats/dicom/mod.rs:1463
+msgid ""
+"eov's private attributes of \"{}\" are unreadable; the group was read from "
+"its DICOM attributes alone."
+msgstr ""
+"Ryhmän ”{}” eov-kohtaiset yksityiset attribuutit ovat lukukelvottomia; ryhmä "
+"luettiin pelkistä DICOM-attribuuteista."
+
+#: src/formats/dicom/mod.rs:1529
+msgid "annotations beyond the limit of {} per file"
+msgstr "tiedostokohtaisen enimmäismäärän ({}) ylittävät annotaatiot"
+
+#: src/formats/dicom/mod.rs:1537
+msgid "annotation with non-finite coordinates"
+msgstr "annotaatio, jonka koordinaatit eivät ole äärellisiä"
+
+#: src/formats/eov.rs:209
+msgid ""
+"This file uses eov annotation format {version}; this plugin reads up to "
+"{supported}. Update the plugin."
+msgstr ""
+"Tämä tiedosto käyttää eov:n annotaatiomuodon versiota {version}; tämä "
+"laajennus lukee enintään version {supported}. Päivitä laajennus."
+
+#: src/formats/eov.rs:261
+msgid "The file has no \"layers\"."
+msgstr "Tiedostosta puuttuu ”layers”."
+
+#: src/formats/eov.rs:277
+msgid "Layer \"{}\" has an unreadable colour; a palette colour is used."
+msgstr "Kerroksen ”{}” väri on lukukelvoton; käytetään paletin väriä."
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/eov.rs:292
+msgid "unreadable geometry"
+msgstr "lukukelvoton geometria"
+
+#: src/formats/eov.rs:332
+msgid "The file has no \"annotation_layers\"."
+msgstr "Tiedostosta puuttuu ”annotation_layers”."
+
+#: src/formats/eov.rs:359
+msgid "point without coordinates"
+msgstr "piste ilman koordinaatteja"
+
+#: src/formats/eov.rs:384
+msgid "polygon with unreadable vertices"
+msgstr "monikulmio, jonka kärkipisteet ovat lukukelvottomia"
+
+#: src/formats/eov.rs:390
+msgid "unknown annotation type"
+msgstr "tuntematon annotaatiotyyppi"
+
+#: src/formats/eov.rs:426
+msgid "The archive has no \"slides\"."
+msgstr "Arkistosta puuttuu ”slides”."
+
+#: src/formats/eov.rs:432
+msgid "An archive entry was skipped: {}"
+msgstr "Arkiston kohde ohitettiin: {}"
+
+#. Translators: reasons why a shape of an imported file was skipped,
+#. listed as "2 × unreadable point".
+#: src/formats/geojson.rs:68
+msgid "unreadable point"
+msgstr "lukukelvoton piste"
+
+#: src/formats/geojson.rs:69
+msgid "unreadable line"
+msgstr "lukukelvoton viiva"
+
+#: src/formats/geojson.rs:70
+msgid "unreadable polygon"
+msgstr "lukukelvoton monikulmio"
+
+#: src/formats/geojson.rs:74
+msgid "geometry without a type"
+msgstr "geometria ilman tyyppiä"
+
+#: src/formats/geojson.rs:84
+msgid "unreadable points"
+msgstr "lukukelvottomat pisteet"
+
+#: src/formats/geojson.rs:103
+msgid "unreadable lines"
+msgstr "lukukelvottomat viivat"
+
+#: src/formats/geojson.rs:119
+msgid "unreadable polygons"
+msgstr "lukukelvottomat monikulmiot"
+
+#: src/formats/geojson.rs:128
+msgid "unreadable geometry collection"
+msgstr "lukukelvoton geometriakokoelma"
+
+#: src/formats/geojson.rs:133
+msgid "unsupported geometry type"
+msgstr "tukematon geometriatyyppi"
+
+#: src/formats/geojson.rs:221
+msgid "The FeatureCollection has no features."
+msgstr "FeatureCollection-kokoelmassa ei ole kohteita (features)."
+
+#: src/formats/geojson.rs:224 src/formats/geojson.rs:226
+msgid "Not GeoJSON."
+msgstr "Ei GeoJSON-muotoa."
+
+#. Translators: a reason why an element of an imported file was skipped.
+#: src/formats/geojson.rs:242
+msgid "not a GeoJSON feature"
+msgstr "ei GeoJSON-kohde (feature)"
+
+#: src/formats/geojson.rs:259
+msgid "feature without geometry"
+msgstr "kohde ilman geometriaa"
+
+#: src/formats/geojson.rs:318
+msgid "properties beyond the limit of {} per annotation"
+msgstr "annotaatiokohtaisen enimmäismäärän ({}) ylittävät ominaisuudet"
+
+#: src/formats/geojson.rs:351
+msgid "The GeoJSON file contains no features."
+msgstr "GeoJSON-tiedostossa ei ole kohteita (features)."
+
+#: src/formats/mod.rs:240
+msgid "This .dcm file is not a DICOM file (\"DICM\" is missing at byte 128)."
+msgstr ""
+"Tämä .dcm-tiedosto ei ole DICOM-tiedosto (tavusta 128 alkaen puuttuu ”DICM”)."
+
+#: src/formats/mod.rs:242
+msgid ""
+"The file is not UTF-8 text or DICOM, so it is not a supported annotation "
+"file."
+msgstr ""
+"Tiedosto ei ole UTF-8-tekstiä eikä DICOM-tiedosto, joten se ei ole tuettu "
+"annotaatiotiedosto."
+
+#: src/formats/mod.rs:250
+msgid "The file is not valid JSON: {}"
+msgstr "Tiedosto ei ole kelvollista JSONia: {}"
+
+#: src/formats/mod.rs:257
+msgid "This JSON file is neither GeoJSON nor an eov annotation export."
+msgstr ""
+"Tämä JSON-tiedosto ei ole GeoJSON-tiedosto eikä eov:n annotaatiovienti."
+
+#: src/formats/mod.rs:263
+msgid ""
+"Unsupported file: expected GeoJSON, eov JSON, ASAP XML, ImageScope XML, NDPA "
+"or DICOM bulk annotations."
+msgstr ""
+"Tiedostoa ei tueta: odotettiin muotoa GeoJSON, eov JSON, ASAP XML, "
+"ImageScope XML, NDPA tai DICOM-joukkoannotaatiot."
+
+#: src/formats/ndpa.rs:62
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide is not one, so they cannot be placed on it."
+msgstr ""
+"NDPA-koordinaatit mitataan Hamamatsu-näytelasin (NDPI) keskipisteestä, mutta "
+"tämä näytelasi ei ole sellainen, joten niitä ei voi sijoittaa siihen."
+
+#. Translators: {} is the vendor of the slide's format ("aperio").
+#: src/formats/ndpa.rs:68
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide ({}) is not one, so they cannot be placed on it."
+msgstr ""
+"NDPA-koordinaatit mitataan Hamamatsu-näytelasin (NDPI) keskipisteestä, mutta "
+"tämä näytelasi ({}) ei ole sellainen, joten niitä ei voi sijoittaa siihen."
+
+#: src/formats/ndpa.rs:79
+msgid ""
+"This NDPI does not give its offsets from the slide centre (hamamatsu."
+"XOffsetFromSlideCentre and YOffsetFromSlideCentre), so the NDPA coordinates "
+"cannot be placed on it."
+msgstr ""
+"Tämä NDPI-tiedosto ei ilmoita siirtymiään näytelasin keskipisteestä "
+"(hamamatsu.XOffsetFromSlideCentre ja YOffsetFromSlideCentre), joten NDPA-"
+"koordinaatteja ei voi sijoittaa siihen."
+
+#: src/formats/ndpa.rs:88
+msgid ""
+"This slide has no pixel size, so the NDPA's nanometre coordinates cannot be "
+"converted to pixels."
+msgstr ""
+"Tällä näytelasilla ei ole pikselikokoa, joten NDPA-tiedoston "
+"nanometrikoordinaatteja ei voi muuntaa pikseleiksi."
+
+#: src/formats/ndpa.rs:92
+msgid "The slide's size is unknown."
+msgstr "Näytelasin koko on tuntematon."
+
+#. Translators: a reason why an annotation of an imported file was skipped; {} is
+#. its type in the file ("freehand", "circle", "pin", …).
+#: src/formats/ndpa.rs:211
+msgid "{} annotation with unreadable coordinates"
+msgstr "annotaatio (tyyppi {}), jonka koordinaatit ovat lukukelvottomia"
+
+#: src/formats/ndpa.rs:267
+msgid "unsupported NDPA annotation type '{}'"
+msgstr "tukematon NDPA-annotaatiotyyppi ”{}”"
+
+#: src/formats/ndpa.rs:296
+msgid "annotation in unsupported coordinates ({})"
+msgstr "annotaatio tukemattomassa koordinaatistossa ({})"
+
+#: src/formats/ndpa.rs:300
+msgid "view state without an annotation"
+msgstr "näkymän tila ilman annotaatiota"
+
+#: src/formats/xml.rs:28
+msgid "The XML is not well-formed: {}"
+msgstr "XML ei ole hyvin muodostettua: {}"
+
+#: src/formats/xml.rs:37
+msgid ""
+"Unsupported XML annotations (root element <{}>); ASAP, Aperio ImageScope and "
+"Hamamatsu NDPA files are supported."
+msgstr ""
+"Tukemattomat XML-annotaatiot (juurielementti <{}>); tuetut muodot ovat ASAP, "
+"Aperio ImageScope ja Hamamatsu NDPA."
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/xml.rs:96
+msgid "annotation with unreadable coordinates"
+msgstr "annotaatio, jonka koordinaatit ovat lukukelvottomia"
+
+#: src/formats/xml.rs:158
+msgid "unsupported ASAP annotation type"
+msgstr "tukematon ASAP-annotaatiotyyppi"
+
+#: src/formats/xml.rs:198
+msgid "hole of a shape that is not a polygon"
+msgstr "reikä muodossa, joka ei ole monikulmio"
+
+#: src/formats/xml.rs:200
+msgid "hole of a missing polygon"
+msgstr "puuttuvan monikulmion reikä"
+
+#: src/formats/xml.rs:275
+msgid "region with unreadable vertices"
+msgstr "alue, jonka kärkipisteet ovat lukukelvottomia"
+
+#: src/formats/xml.rs:357
+msgid "negative region outside every region"
+msgstr "negatiivinen alue kaikkien alueiden ulkopuolella"
+
+#: src/geometry.rs:252
+msgid "The shape has invalid (non-finite) coordinates."
+msgstr "Muodon koordinaatit ovat virheellisiä (eivät äärellisiä)."
+
+#: src/geometry.rs:256
+msgid "The shape has {n} vertices; the limit is {limit}."
+msgid_plural "The shape has {n} vertices; the limit is {limit}."
+msgstr[0] "Muodossa on {n} kärkipiste; enimmäismäärä on {limit}."
+msgstr[1] "Muodossa on {n} kärkipistettä; enimmäismäärä on {limit}."
+
+#: src/geometry.rs:266
+msgid "The point is outside the slide."
+msgstr "Piste on näytelasin ulkopuolella."
+
+#: src/geometry.rs:288
+msgid "An arrow needs two distinct points."
+msgstr "Nuoli tarvitsee kaksi eri pistettä."
+
+#: src/geometry.rs:290
+msgid "A line needs at least two distinct points."
+msgstr "Viiva tarvitsee vähintään kaksi eri pistettä."
+
+#: src/geometry.rs:317
+msgid "The rectangle is outside the slide."
+msgstr "Suorakulmio on näytelasin ulkopuolella."
+
+#: src/geometry.rs:325
+msgid "The rectangle has no area."
+msgstr "Suorakulmiolla ei ole pinta-alaa."
+
+#: src/geometry.rs:337
+msgid "The ellipse has no area."
+msgstr "Ellipsillä ei ole pinta-alaa."
+
+#: src/geometry.rs:340
+msgid "The ellipse is centred outside the slide."
+msgstr "Ellipsin keskipiste on näytelasin ulkopuolella."
+
+#: src/geometry.rs:352
+msgid "A polygon needs at least three distinct corners."
+msgstr "Monikulmio tarvitsee vähintään kolme eri kulmapistettä."
+
+#: src/geometry.rs:355 src/geometry.rs:393
+msgid "The polygon encloses no area."
+msgstr "Monikulmio ei rajaa pinta-alaa."
+
+#: src/geometry.rs:391
+msgid "The polygon is outside the slide."
+msgstr "Monikulmio on näytelasin ulkopuolella."
+
+#: src/lib.rs:80 src/lib.rs:202
+msgid "Annotations"
+msgstr "Annotaatiot"
+
+#: src/lib.rs:85
+msgid "Show or hide annotations on this slide"
+msgstr "Näytä tai piilota tämän näytelasin annotaatiot"
+
+#: src/lib.rs:102
+msgid "Counting {}"
+msgstr "Lasketaan: {}"
+
+#: src/lib.rs:104
+msgid "Counting {class}, Shift+click: {alternate}"
+msgstr "Lasketaan: {class}, Shift+napsautus: {alternate}"
+
+#: src/lib.rs:109
+msgid "Counting {class}, Alt+click: {immune}"
+msgstr "Lasketaan: {class}, Alt+napsautus: {immune}"
+
+#: src/lib.rs:114
+msgid "Counting {class}, Shift+click: {alternate}, Alt+click: {immune}"
+msgstr ""
+"Lasketaan: {class}, Shift+napsautus: {alternate}, Alt+napsautus: {immune}"
+
+#. Translators: HPF is a high-power field.
+#: src/lib.rs:123
+msgid ""
+"The dashed circle is one HPF: click to place a field, drag to pan, Esc to "
+"leave"
+msgstr ""
+"Katkoviivaympyrä on yksi HPF: sijoita kenttä napsauttamalla, siirrä näkymää "
+"vetämällä, poistu Esc-näppäimellä"
+
+#: src/lib.rs:125
+msgid "Click to select, drag to select several; drag handles to edit"
+msgstr "Valitse napsauttamalla, useita vetämällä; muokkaa vetämällä kahvoista"
+
+#: src/lib.rs:127
+msgid "Drawing {}"
+msgstr "Piirretään: {}"
+
+#. Translators: {} is the name of a file format ("GeoJSON").
+#: src/lib.rs:441
+msgid "{} · cannot be placed on this slide"
+msgstr "{} · ei voi sijoittaa tälle näytelasille"
+
+#. Translators: {format} is the name of a file format ("GeoJSON");
+#. {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/lib.rs:448
+msgid "{format} · {n} annotation {layers}"
+msgid_plural "{format} · {n} annotations {layers}"
+msgstr[0] "{format} · {n} annotaatio {layers}"
+msgstr[1] "{format} · {n} annotaatiota {layers}"
+
+#: src/lib.rs:455
+msgid "{n} class"
+msgid_plural "{n} classes"
+msgstr[0] "{n} luokka"
+msgstr[1] "{n} luokkaa"
+
+#: src/lib.rs:465
+msgid "Layers with the same name already exist: {}"
+msgstr "Samannimisiä kerroksia on jo olemassa: {}"
+
+#: src/lib.rs:497 src/transfer.rs:373
+msgid "Import annotations"
+msgstr "Tuo annotaatioita"
+
+#: src/lib.rs:507
+msgid "Cannot show the import dialog"
+msgstr "Tuontivalintaikkunaa ei voi näyttää"
+
+#: src/lib.rs:641 src/sidebar.rs:1490
+msgid "Lock"
+msgstr "Lukitse"
+
+#: src/lib.rs:643 src/sidebar.rs:1492
+msgid "Unlock"
+msgstr "Avaa lukitus"
+
+#: src/lib.rs:789
+msgid "Could not save the annotation settings"
+msgstr "Annotaatioasetuksia ei voitu tallentaa"
+
+#: src/lib.rs:1063
+msgid "Show in annotations panel"
+msgstr "Näytä annotaatiopaneelissa"
+
+#: src/lib.rs:1064
+msgid "Copy measurements"
+msgstr "Kopioi mittaukset"
+
+#: src/lib.rs:1066
+msgid "Unlock annotation"
+msgstr "Avaa annotaation lukitus"
+
+#: src/lib.rs:1068
+msgid "Lock annotation"
+msgstr "Lukitse annotaatio"
+
+#: src/lib.rs:1077
+msgctxt "Context menu"
+msgid "Delete annotation"
+msgstr "Poista annotaatio"
+
+#: src/lib.rs:1083
+msgid "Add point here"
+msgstr "Lisää piste tähän"
+
+#: src/lib.rs:1084
+msgid "Place HPF field here"
+msgstr "Sijoita HPF-kenttä tähän"
+
+#: src/lib.rs:1085
+msgid "Annotations panel"
+msgstr "Annotaatiopaneeli"
+
+#: src/measure.rs:276
+msgid "Area"
+msgstr "Pinta-ala"
+
+#: src/measure.rs:281
+msgid "Length"
+msgstr "Pituus"
+
+#: src/measure.rs:283
+msgid "Perimeter"
+msgstr "Piiri"
+
+#: src/measure.rs:289
+msgid "Max diameter (Feret)"
+msgstr "Suurin halkaisija (Feret)"
+
+#: src/measure.rs:292
+msgid "Min diameter (Feret)"
+msgstr "Pienin halkaisija (Feret)"
+
+#: src/measure.rs:297
+msgid "Centre (px)"
+msgstr "Keskipiste (px)"
+
+#: src/measure.rs:302 src/measure.rs:307
+msgid "Calibration"
+msgstr "Kalibrointi"
+
+#: src/measure.rs:303
+msgid "No pixel size: values in level-0 pixels"
+msgstr "Ei pikselikokoa: arvot tason 0 pikseleinä"
+
+#: src/measure.rs:308
+msgid "One pixel axis missing; assumed square pixels"
+msgstr "Toisen akselin pikselikoko puuttuu; pikselit oletetaan neliöiksi"
+
+#: src/model.rs:49 ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Draft"
+msgstr "Luonnos"
+
+#: src/model.rs:50 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Verified"
+msgstr "Vahvistettu"
+
+#: src/model.rs:51 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Rejected"
+msgstr "Hylätty"
+
+#: src/model.rs:118
+msgctxt "Annotation kind"
+msgid "Point"
+msgstr "Piste"
+
+#: src/model.rs:119
+msgctxt "Annotation kind"
+msgid "Line"
+msgstr "Viiva"
+
+#: src/model.rs:120
+msgctxt "Annotation kind"
+msgid "Arrow"
+msgstr "Nuoli"
+
+#: src/model.rs:121
+msgctxt "Annotation kind"
+msgid "Polygon"
+msgstr "Monikulmio"
+
+#: src/model.rs:122
+msgctxt "Annotation kind"
+msgid "Rectangle"
+msgstr "Suorakulmio"
+
+#: src/model.rs:123
+msgctxt "Annotation kind"
+msgid "Ellipse"
+msgstr "Ellipsi"
+
+#: src/model.rs:124
+msgctxt "Annotation kind"
+msgid "Text"
+msgstr "Teksti"
+
+#: src/model.rs:750
+msgid "The layer name cannot be empty."
+msgstr "Kerroksen nimi ei voi olla tyhjä."
+
+#: src/model.rs:751
+msgid "The class name cannot be empty."
+msgstr "Luokan nimi ei voi olla tyhjä."
+
+#: src/model.rs:752
+msgid "The name cannot be empty."
+msgstr "Nimi ei voi olla tyhjä."
+
+#: src/model.rs:759
+msgid "The name is {n} characters long; the limit is {limit}."
+msgid_plural "The name is {n} characters long; the limit is {limit}."
+msgstr[0] "Nimessä on {n} merkki; enimmäismäärä on {limit}."
+msgstr[1] "Nimessä on {n} merkkiä; enimmäismäärä on {limit}."
+
+#: src/model.rs:764
+msgid "The layer name is {n} characters long; the limit is {limit}."
+msgid_plural "The layer name is {n} characters long; the limit is {limit}."
+msgstr[0] "Kerroksen nimessä on {n} merkki; enimmäismäärä on {limit}."
+msgstr[1] "Kerroksen nimessä on {n} merkkiä; enimmäismäärä on {limit}."
+
+#: src/model.rs:769
+msgid "The class name is {n} characters long; the limit is {limit}."
+msgid_plural "The class name is {n} characters long; the limit is {limit}."
+msgstr[0] "Luokan nimessä on {n} merkki; enimmäismäärä on {limit}."
+msgstr[1] "Luokan nimessä on {n} merkkiä; enimmäismäärä on {limit}."
+
+#: src/model.rs:774
+msgid "The author is {n} characters long; the limit is {limit}."
+msgid_plural "The author is {n} characters long; the limit is {limit}."
+msgstr[0] "Tekijän nimessä on {n} merkki; enimmäismäärä on {limit}."
+msgstr[1] "Tekijän nimessä on {n} merkkiä; enimmäismäärä on {limit}."
+
+#: src/model.rs:779
+msgid "The setting is {n} characters long; the limit is {limit}."
+msgid_plural "The setting is {n} characters long; the limit is {limit}."
+msgstr[0] "Asetuksessa on {n} merkki; enimmäismäärä on {limit}."
+msgstr[1] "Asetuksessa on {n} merkkiä; enimmäismäärä on {limit}."
+
+#: src/model.rs:784
+msgid "The notes are {n} characters long; the limit is {limit}."
+msgid_plural "The notes are {n} characters long; the limit is {limit}."
+msgstr[0] "Muistiinpanoissa on {n} merkki; enimmäismäärä on {limit}."
+msgstr[1] "Muistiinpanoissa on {n} merkkiä; enimmäismäärä on {limit}."
+
+#: src/model.rs:789
+msgid "The description is {n} characters long; the limit is {limit}."
+msgid_plural "The description is {n} characters long; the limit is {limit}."
+msgstr[0] "Kuvauksessa on {n} merkki; enimmäismäärä on {limit}."
+msgstr[1] "Kuvauksessa on {n} merkkiä; enimmäismäärä on {limit}."
+
+#: src/model.rs:794
+msgid "The comment is {n} characters long; the limit is {limit}."
+msgid_plural "The comment is {n} characters long; the limit is {limit}."
+msgstr[0] "Kommentissa on {n} merkki; enimmäismäärä on {limit}."
+msgstr[1] "Kommentissa on {n} merkkiä; enimmäismäärä on {limit}."
+
+#: src/model.rs:837
+msgid "An annotation can have at most {n} properties."
+msgid_plural "An annotation can have at most {n} properties."
+msgstr[0] "Annotaatiolla voi olla enintään {n} ominaisuus."
+msgstr[1] "Annotaatiolla voi olla enintään {n} ominaisuutta."
+
+#: src/model.rs:851
+msgid "Property names are limited to {n} characters."
+msgid_plural "Property names are limited to {n} characters."
+msgstr[0] "Ominaisuuden nimessä voi olla enintään {n} merkki."
+msgstr[1] "Ominaisuuden nimessä voi olla enintään {n} merkkiä."
+
+#: src/model.rs:856
+msgid "Property values are limited to {n} characters."
+msgid_plural "Property values are limited to {n} characters."
+msgstr[0] "Ominaisuuden arvossa voi olla enintään {n} merkki."
+msgstr[1] "Ominaisuuden arvossa voi olla enintään {n} merkkiä."
+
+#: src/model.rs:884
+msgid "A hotkey is a single character (a letter or a symbol), not {}."
+msgstr "Pikanäppäin on yksittäinen merkki (kirjain tai symboli), ei {}."
+
+#: src/model.rs:889
+msgid "A hotkey must be a visible character."
+msgstr "Pikanäppäimen on oltava näkyvä merkki."
+
+#: src/model.rs:892
+msgid "eov already uses the '{}' key."
+msgstr "eov käyttää jo näppäintä ”{}”."
+
+#: src/model.rs:896
+msgid "'{}' is already used by an annotation tool or class."
+msgstr "”{}” on jo annotaatiotyökalun tai luokan käytössä."
+
+#. Translators: in the tooltip of a locked annotation, after its class and name.
+#: src/overlay.rs:171
+msgid "locked"
+msgstr "lukittu"
+
+#. Translators: this slide's points against the other reader's; F1 is the F1 score.
+#: src/sidebar.rs:360
+msgid "Points {ours} vs {theirs} · {matched} matched · F1 {f1}"
+msgstr "Pisteet {ours} vs. {theirs} · täsmää {matched} · F1 {f1}"
+
+#. Translators: this slide's regions and their area against the other reader's;
+#. Dice is the Dice coefficient of the areas.
+#: src/sidebar.rs:373
+msgid "Regions {ours} vs {theirs} · {our_area} vs {their_area} · Dice {dice}"
+msgstr "Alueet {ours} vs. {theirs} · {our_area} vs. {their_area} · Dice {dice}"
+
+#: src/sidebar.rs:385
+msgid "All regions"
+msgstr "Kaikki alueet"
+
+#. Translators: {layers} in texts such as "{n} annotations {layers}" ("12 annotations in 3 layers").
+#: src/sidebar.rs:431
+msgid "in {n} layer"
+msgid_plural "in {n} layers"
+msgstr[0] "{n} kerroksessa"
+msgstr[1] "{n} kerroksessa"
+
+#: src/sidebar.rs:447
+msgid "No slide open"
+msgstr "Ei avointa näytelasia"
+
+#: src/sidebar.rs:453
+msgid "Annotation database unavailable: {}"
+msgstr "Annotaatiotietokanta ei ole käytettävissä: {}"
+
+#: src/sidebar.rs:455
+msgid "Opening the annotation database…"
+msgstr "Avataan annotaatiotietokantaa…"
+
+#: src/sidebar.rs:461
+msgid "Loading annotations…"
+msgstr "Ladataan annotaatioita…"
+
+#: src/sidebar.rs:469
+msgid ""
+"The annotation database is read-only: annotations can be viewed and "
+"exported, not edited."
+msgstr ""
+"Annotaatiotietokanta on vain luku -tilassa: annotaatioita voi katsella ja "
+"viedä, mutta ei muokata."
+
+#: src/sidebar.rs:477
+msgid ""
+"This slide has no stable identity; its annotations are keyed by file name "
+"and size."
+msgstr ""
+"Tällä näytelasilla ei ole pysyvää tunnistetta; sen annotaatiot yhdistetään "
+"siihen tiedostonimen ja koon perusteella."
+
+#. Translators: beside a layer of count points: the number of points.
+#: src/sidebar.rs:526
+msgid "{} · counts"
+msgstr "{} · laskentapisteet"
+
+#. Translators: beside the layer of HPF fields: the number of fields.
+#: src/sidebar.rs:528
+msgid "{} · HPF fields"
+msgstr "{} · HPF-kentät"
+
+#: src/sidebar.rs:615
+msgid "{n} comment"
+msgid_plural "{n} comments"
+msgstr[0] "{n} kommentti"
+msgstr[1] "{n} kommenttia"
+
+#: src/sidebar.rs:649
+msgid "Show more ({n} not shown)"
+msgid_plural "Show more ({n} not shown)"
+msgstr[0] "Näytä lisää ({n} näyttämättä)"
+msgstr[1] "Näytä lisää ({n} näyttämättä)"
+
+#: src/sidebar.rs:667
+msgid "{n} match"
+msgid_plural "{n} matches"
+msgstr[0] "{n} osuma"
+msgstr[1] "{n} osumaa"
+
+#: src/sidebar.rs:670
+msgid ""
+"No annotations yet. Pick a tool in the toolbar (P polygon, . point, C count) "
+"and draw on the slide."
+msgstr ""
+"Ei vielä annotaatioita. Valitse työkalu työkaluriviltä (P monikulmio, . "
+"piste, C laskenta) ja piirrä näytelasille."
+
+#: src/sidebar.rs:674
+msgid "Open a slide to see and draw its annotations."
+msgstr "Avaa näytelasi nähdäksesi ja piirtääksesi sen annotaatioita."
+
+#: src/sidebar.rs:724
+msgid "created {created} · edited {edited}"
+msgstr "luotu {created} · muokattu {edited}"
+
+#: src/sidebar.rs:730
+msgid "By {author} · created {created} · edited {edited}"
+msgstr "Tekijä {author} · luotu {created} · muokattu {edited}"
+
+#: src/sidebar.rs:750
+msgid "Unknown author"
+msgstr "Tuntematon tekijä"
+
+#: src/sidebar.rs:769
+msgid ""
+"This outline crosses itself (it was drawn with an older version). Its area "
+"uses the even-odd rule, like the display; Repair turns it into simple parts."
+msgstr ""
+"Tämä ääriviiva leikkaa itseään (se piirrettiin vanhemmalla versiolla). Sen "
+"pinta-ala lasketaan parillisuussäännöllä (even-odd) kuten näytöllä; Korjaa "
+"jakaa sen yksinkertaisiksi osiksi."
+
+#: src/sidebar.rs:775
+msgid "{n} annotation selected"
+msgid_plural "{n} annotations selected"
+msgstr[0] "{n} annotaatio valittu"
+msgstr[1] "{n} annotaatiota valittu"
+
+#: src/sidebar.rs:778
+msgid "Mixed classes; changes apply to all selected."
+msgstr "Eri luokkia; muutokset koskevat kaikkia valittuja."
+
+#: src/sidebar.rs:780
+msgid "Changes apply to all selected."
+msgstr "Muutokset koskevat kaikkia valittuja."
+
+#. Translators: under a class whose key does nothing; {} is
+#. eov's reason, a whole sentence such as "Hotkey 'q' of …
+#. was ignored: it is a key eov already uses."
+#: src/sidebar.rs:828
+msgid "eov refused the hotkey: {}"
+msgstr "eov hylkäsi pikanäppäimen: {}"
+
+#: src/sidebar.rs:861
+msgid ""
+"Whole slide. Select regions or HPF fields to count inside them and get "
+"densities."
+msgstr ""
+"Koko näytelasi. Valitse alueita tai HPF-kenttiä, jos haluat laskea niiden "
+"sisältä ja saada tiheydet."
+
+#. Translators: {fields} is "1 HPF field" or "3 HPF fields"
+#. (translated on its own; HPF is a high-power field).
+#: src/sidebar.rs:873
+msgid "Inside {n} selected region ({fields}): {area}"
+msgid_plural "Inside {n} selected regions ({fields}): {area}"
+msgstr[0] "{n} valitun alueen sisällä ({fields}): {area}"
+msgstr[1] "{n} valitun alueen sisällä ({fields}): {area}"
+
+#. Translators: {fields} in "Inside {n} selected regions ({fields}): {area}".
+#: src/sidebar.rs:877
+msgid "{n} HPF field"
+msgid_plural "{n} HPF fields"
+msgstr[0] "{n} HPF-kenttä"
+msgstr[1] "{n} HPF-kenttää"
+
+#: src/sidebar.rs:883
+msgid "Inside {n} selected region: {area}"
+msgid_plural "Inside {n} selected regions: {area}"
+msgstr[0] "{n} valitun alueen sisällä: {area}"
+msgstr[1] "{n} valitun alueen sisällä: {area}"
+
+#: src/sidebar.rs:890
+msgid "Inside {n} selected region: {area} (no pixel size, so no density)"
+msgid_plural ""
+"Inside {n} selected regions: {area} (no pixel size, so no density)"
+msgstr[0] ""
+"{n} valitun alueen sisällä: {area} (ei pikselikokoa, joten ei tiheyttä)"
+msgstr[1] ""
+"{n} valitun alueen sisällä: {area} (ei pikselikokoa, joten ei tiheyttä)"
+
+#. Translators: cells per high-power field.
+#: src/sidebar.rs:905
+msgid "{} /HPF field"
+msgstr "{} /HPF-kenttä"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1000
+msgid "Read-only"
+msgstr "Vain luku"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1003
+msgid "Ready"
+msgstr "Valmis"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1007
+msgid "Opening…"
+msgstr "Avataan…"
+
+#: src/sidebar.rs:1008
+msgid "Unavailable: {}"
+msgstr "Ei käytettävissä: {}"
+
+#. Translators: a slide whose file name an older eov did not record; {} is its number in the annotation database.
+#: src/sidebar.rs:1068
+msgid "Slide #{} (from an older version)"
+msgstr "Näytelasi #{} (vanhemmasta versiosta)"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/sidebar.rs:1075
+msgid "{n} annotation {layers} · last opened {date}"
+msgid_plural "{n} annotations {layers} · last opened {date}"
+msgstr[0] "{n} annotaatio {layers} · avattu viimeksi {date}"
+msgstr[1] "{n} annotaatiota {layers} · avattu viimeksi {date}"
+
+#. Translators: "List" is the label of the button beside this text.
+#: src/sidebar.rs:1093
+msgid "Press \"List\" to see the other slides in the database."
+msgstr "Paina ”Luettele” nähdäksesi tietokannan muut näytelasit."
+
+#: src/sidebar.rs:1094
+msgid "No other slides have annotations."
+msgstr "Muilla näytelaseilla ei ole annotaatioita."
+
+#: src/sidebar.rs:1096
+msgid ""
+"If a slide was re-saved or de-identified, its annotations stay with the old "
+"file. Attach them to the open slide here."
+msgstr ""
+"Jos näytelasi on tallennettu uudelleen tai sen tunnistetiedot on poistettu, "
+"sen annotaatiot jäävät vanhalle tiedostolle. Liitä ne tässä avoimeen "
+"näytelasiin."
+
+#: src/sidebar.rs:1161
+msgid "Cannot ask for confirmation"
+msgstr "Vahvistusta ei voi kysyä"
+
+#: src/sidebar.rs:1173
+msgid "Open a slide first."
+msgstr "Avaa ensin näytelasi."
+
+#: src/sidebar.rs:1213
+msgid "Compare with another reader's file first."
+msgstr "Vertaa ensin toisen arvioijan tiedostoon."
+
+#: src/sidebar.rs:1219
+msgid "Export all annotations"
+msgstr "Vie kaikki annotaatiot"
+
+#: src/sidebar.rs:1222
+msgid "eov annotation archive"
+msgstr "eov-annotaatioarkisto"
+
+#: src/sidebar.rs:1229
+msgid "Back up the annotation database"
+msgstr "Varmuuskopioi annotaatiotietokanta"
+
+#: src/sidebar.rs:1232 src/sidebar.rs:1242
+msgid "SQLite database"
+msgstr "SQLite-tietokanta"
+
+#: src/sidebar.rs:1239
+msgid ""
+"Merge an annotation database (a backup, or annotations.db of eov before 1.0)"
+msgstr ""
+"Yhdistä annotaatiotietokanta (varmuuskopio tai eov:n alle 1.0 -versioiden "
+"annotations.db)"
+
+#: src/sidebar.rs:1308
+msgid "Show or hide layer"
+msgstr "Näytä tai piilota kerros"
+
+#: src/sidebar.rs:1322
+msgid "Layer opacity"
+msgstr "Kerroksen peittävyys"
+
+#: src/sidebar.rs:1337
+msgid "Lock layer"
+msgstr "Lukitse kerros"
+
+#: src/sidebar.rs:1339
+msgid "Unlock layer"
+msgstr "Avaa kerroksen lukitus"
+
+#: src/sidebar.rs:1354
+msgid "Change layer colour"
+msgstr "Vaihda kerroksen väri"
+
+#: src/sidebar.rs:1370
+msgid "Edit layer notes"
+msgstr "Muokkaa kerroksen muistiinpanoja"
+
+#: src/sidebar.rs:1387
+msgid "The slide is still loading."
+msgstr "Näytelasia ladataan vielä."
+
+#: src/sidebar.rs:1396
+msgctxt "Dialog title"
+msgid "Delete layer"
+msgstr "Poista kerros"
+
+#: src/sidebar.rs:1398
+msgid ""
+"Delete layer \"{name}\" and its {n} annotation? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgid_plural ""
+"Delete layer \"{name}\" and its {n} annotations? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgstr[0] ""
+"Poistetaanko kerros ”{name}” ja sen {n} annotaatio? Voit kumota tämän "
+"painamalla Ctrl+Z (⌘Z)."
+msgstr[1] ""
+"Poistetaanko kerros ”{name}” ja sen {n} annotaatiota? Voit kumota tämän "
+"painamalla Ctrl+Z (⌘Z)."
+
+#: src/sidebar.rs:1403 src/sidebar.rs:1620
+msgid "Delete"
+msgstr "Poista"
+
+#: src/sidebar.rs:1404 src/sidebar.rs:1621 src/sidebar.rs:1679
+#: src/sidebar.rs:1772
+msgid "Cancel"
+msgstr "Peruuta"
+
+#: src/sidebar.rs:1420
+msgid "Rename annotation"
+msgstr "Nimeä annotaatio uudelleen"
+
+#: src/sidebar.rs:1432
+msgid "Edit description"
+msgstr "Muokkaa kuvausta"
+
+#: src/sidebar.rs:1444
+msgid "Set class"
+msgstr "Aseta luokka"
+
+#: src/sidebar.rs:1458
+msgid "Mark draft"
+msgstr "Merkitse luonnokseksi"
+
+#: src/sidebar.rs:1459
+msgid "Mark verified"
+msgstr "Merkitse vahvistetuksi"
+
+#: src/sidebar.rs:1460
+msgid "Mark rejected"
+msgstr "Merkitse hylätyksi"
+
+#: src/sidebar.rs:1476
+msgid "Move to layer"
+msgstr "Siirrä kerrokseen"
+
+#: src/sidebar.rs:1529
+msgid "Edit properties"
+msgstr "Muokkaa ominaisuuksia"
+
+#: src/sidebar.rs:1553
+msgid "Select one annotation to comment on."
+msgstr "Valitse kommentoitavaksi yksi annotaatio."
+
+#: src/sidebar.rs:1566
+msgid "Measurements copied."
+msgstr "Mittaukset kopioitu."
+
+#: src/sidebar.rs:1578
+msgid "Show or hide class"
+msgstr "Näytä tai piilota luokka"
+
+#: src/sidebar.rs:1591
+msgid "Class opacity"
+msgstr "Luokan peittävyys"
+
+#: src/sidebar.rs:1611
+msgctxt "Dialog title"
+msgid "Delete class"
+msgstr "Poista luokka"
+
+#: src/sidebar.rs:1613
+msgid ""
+"Delete class \"{name}\"? {n} annotation on open slides uses it; it will show "
+"as unclassified. You can undo this."
+msgid_plural ""
+"Delete class \"{name}\"? {n} annotations on open slides use it; they will "
+"show as unclassified. You can undo this."
+msgstr[0] ""
+"Poistetaanko luokka ”{name}”? Avoimilla näytelaseilla {n} annotaatio käyttää "
+"sitä; se näytetään luokittelemattomana. Voit kumota tämän."
+msgstr[1] ""
+"Poistetaanko luokka ”{name}”? Avoimilla näytelaseilla {n} annotaatiota "
+"käyttää sitä; ne näytetään luokittelemattomina. Voit kumota tämän."
+
+#: src/sidebar.rs:1668
+msgctxt "Dialog title"
+msgid "Clear counts"
+msgstr "Tyhjennä laskenta"
+
+#. Translators: the question of the "Clear counts" dialog, whose
+#. button is "Clear": use the same verb.
+#: src/sidebar.rs:1672
+msgid "Clear the {n} count point of this slide? You can undo this."
+msgid_plural "Clear all {n} count points of this slide? You can undo this."
+msgstr[0] ""
+"Tyhjennetäänkö tämän näytelasin {n} laskentapiste? Voit kumota tämän."
+msgstr[1] ""
+"Tyhjennetäänkö tämän näytelasin kaikki {n} laskentapistettä? Voit kumota "
+"tämän."
+
+#. Translators: the button that removes the count points, in the
+#. "Clear counts" dialog.
+#: src/sidebar.rs:1678
+msgid "Clear"
+msgstr "Tyhjennä"
+
+#: src/sidebar.rs:1694
+msgid "Enter the field area in mm², e.g. {}."
+msgstr "Anna kentän pinta-ala neliömillimetreinä (mm²), esim. {}."
+
+#: src/sidebar.rs:1702
+msgid "Enter the field number in mm, e.g. 22."
+msgstr "Anna kenttäluku millimetreinä, esim. 22."
+
+#: src/sidebar.rs:1704
+msgid "Enter the objective magnification, e.g. 40."
+msgstr "Anna objektiivin suurennos, esim. 40."
+
+#: src/sidebar.rs:1708
+msgid "That field size is not usable."
+msgstr "Kentän koko ei kelpaa."
+
+#: src/sidebar.rs:1720
+msgid "There is no database from before eov 1.0 to merge."
+msgstr "Yhdistettävää tietokantaa eov:n alle 1.0 -versioista ei ole."
+
+#: src/sidebar.rs:1737
+msgid "That slide is not listed any more."
+msgstr "Näytelasi ei ole enää luettelossa."
+
+#: src/sidebar.rs:1748
+msgid ""
+"Attach the annotations of an older slide to the open slide? Use this when "
+"the slide file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"Liitetäänkö vanhemman näytelasin annotaatiot avoimeen näytelasiin? Käytä "
+"tätä, kun näytelasitiedosto on tallennettu uudelleen tai muunnettu tai sen "
+"tunnistetiedot on poistettu. Voit kumota tämän."
+
+#: src/sidebar.rs:1753
+msgid ""
+"Attach the annotations of \"{}\" to the open slide? Use this when the slide "
+"file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"Liitetäänkö näytelasin ”{}” annotaatiot avoimeen näytelasiin? Käytä tätä, "
+"kun näytelasitiedosto on tallennettu uudelleen tai muunnettu tai sen "
+"tunnistetiedot on poistettu. Voit kumota tämän."
+
+#: src/sidebar.rs:1762
+msgid ""
+"Warning: the two slides have different sizes, so the annotations may not "
+"line up."
+msgstr ""
+"Varoitus: näytelasit ovat erikokoisia, joten annotaatiot eivät välttämättä "
+"osu kohdalleen."
+
+#: src/sidebar.rs:1769
+msgid "Attach annotations"
+msgstr "Liitä annotaatiot"
+
+#: src/sidebar.rs:1771
+msgid "Attach"
+msgstr "Liitä"
+
+#: src/state.rs:501
+msgid "Compared with {}"
+msgstr "Verrattu: {}"
+
+#. Translators: {ours} is "1 annotation" or "5 annotations" (translated on its own).
+#: src/state.rs:509
+msgid ""
+"This slide's visible layers ({ours}) against the {n} annotation in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgid_plural ""
+"This slide's visible layers ({ours}) against the {n} annotations in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgstr[0] ""
+"Tämän näytelasin näkyvät kerrokset ({ours}) verrattuna {n} annotaatioon "
+"tiedostossa {name}, ilman HPF-kenttiä; määrissä ensin tämä näytelasi, sitten "
+"toinen arvioija. Saman luokan pisteet paritetaan yksi yhteen enintään "
+"{radius} etäisyydeltä (F1 = 2 · täsmäävät / molempien määrät); alueet "
+"päällekkäisyyden perusteella (Dice = 2 · yhteinen pinta-ala / molempien "
+"pinta-alat)."
+msgstr[1] ""
+"Tämän näytelasin näkyvät kerrokset ({ours}) verrattuna {n} annotaatioon "
+"tiedostossa {name}, ilman HPF-kenttiä; määrissä ensin tämä näytelasi, sitten "
+"toinen arvioija. Saman luokan pisteet paritetaan yksi yhteen enintään "
+"{radius} etäisyydeltä (F1 = 2 · täsmäävät / molempien määrät); alueet "
+"päällekkäisyyden perusteella (Dice = 2 · yhteinen pinta-ala / molempien "
+"pinta-alat)."
+
+#: src/state.rs:522
+msgid "Check the file: {}"
+msgstr "Tarkista tiedosto: {}"
+
+#: src/state.rs:664
+msgid "The annotation database is read-only."
+msgstr "Annotaatiotietokanta on vain luku -tilassa."
+
+#: src/state.rs:665
+msgid "The annotation database is still opening."
+msgstr "Annotaatiotietokantaa avataan vielä."
+
+#: src/state.rs:667
+msgid "The annotation database is unavailable: {}"
+msgstr "Annotaatiotietokanta ei ole käytettävissä: {}"
+
+#: src/stats.rs:97
+msgid "Invalid field size"
+msgstr "Virheellinen kentän koko"
+
+#. Translators: HPF is a high-power field; ⌀ its diameter.
+#: src/stats.rs:110
+msgid "1 HPF = {area} mm² (field number {number} at {objective}×, ⌀ {d} mm)"
+msgstr ""
+"1 HPF = {area} mm² (kenttäluku {number}, objektiivi {objective}×, ⌀ {d} mm)"
+
+#: src/stats.rs:116
+msgid "1 HPF = {area} mm² (⌀ {d} mm)"
+msgstr "1 HPF = {area} mm² (⌀ {d} mm)"
+
+#: src/tools.rs:63
+msgid "Select and edit annotations"
+msgstr "Valitse ja muokkaa annotaatioita"
+
+#: src/tools.rs:64
+msgid "Point annotation"
+msgstr "Pisteannotaatio"
+
+#: src/tools.rs:65
+msgid "Count cells (Shift+click: second class)"
+msgstr "Laske soluja (Shift+napsautus: toinen luokka)"
+
+#: src/tools.rs:66
+msgid "Polygon (Shift: add to selection, Alt: cut from it)"
+msgstr "Monikulmio (Shift: lisää valintaan, Alt: leikkaa siitä)"
+
+#: src/tools.rs:67
+msgid "Freehand outline (Shift: add, Alt: cut)"
+msgstr "Ääriviiva vapaalla kädellä (Shift: lisää, Alt: leikkaa)"
+
+#: src/tools.rs:68
+msgid "Rectangle"
+msgstr "Suorakulmio"
+
+#: src/tools.rs:69
+msgid "Ellipse"
+msgstr "Ellipsi"
+
+#: src/tools.rs:70
+msgid "Line / path"
+msgstr "Viiva / polku"
+
+#: src/tools.rs:72
+msgid ""
+"Brush (paint a region, over a selected region to extend it; Alt or the "
+"eraser erases; [ and ] change the size)"
+msgstr ""
+"Sivellin (maalaa alue; valitun alueen päälle maalaamalla laajennat sitä; Alt "
+"tai pyyhekumi pyyhkii; [ ja ] muuttavat kokoa)"
+
+#: src/tools.rs:74
+msgid "Arrow (click the tail, double-click the tip; more clicks bend it)"
+msgstr ""
+"Nuoli (napsauta hännän kohtaa, kaksoisnapsauta kärjen kohtaa; "
+"lisänapsautukset taivuttavat nuolta)"
+
+#: src/tools.rs:75
+msgid "Text label"
+msgstr "Tekstiselite"
+
+#: src/tools.rs:77
+msgid ""
+"HPF field (a field of the configured size follows the pointer; click to "
+"place it, drag to pan)"
+msgstr ""
+"HPF-kenttä (asetetun kokoinen kenttä seuraa osoitinta; sijoita se "
+"napsauttamalla, siirrä näkymää vetämällä)"
+
+#: src/tools.rs:225
+msgid "Annotation class: {}"
+msgstr "Annotaatioluokka: {}"
+
+#. Translators: {} lists what was skipped, as "2 × reason; 1 × other reason".
+#: src/transfer.rs:249
+msgid "Skipped: {}."
+msgstr "Ohitettiin: {}."
+
+#: src/transfer.rs:253
+msgid "{n} outline crossed itself and was repaired with the even-odd rule."
+msgid_plural ""
+"{n} outlines crossed themselves and were repaired with the even-odd rule."
+msgstr[0] ""
+"{n} ääriviiva leikkasi itseään, ja se korjattiin parillisuussäännöllä (even-"
+"odd)."
+msgstr[1] ""
+"{n} ääriviivaa leikkasi itseään, ja ne korjattiin parillisuussäännöllä (even-"
+"odd)."
+
+#: src/transfer.rs:260
+msgid "{n} shape extended past the slide and was cut at its edge."
+msgid_plural "{n} shapes extended past the slide and were cut at its edge."
+msgstr[0] ""
+"{n} muoto ulottui näytelasin ulkopuolelle, ja se rajattiin näytelasin "
+"reunaan."
+msgstr[1] ""
+"{n} muotoa ulottui näytelasin ulkopuolelle, ja ne rajattiin näytelasin "
+"reunaan."
+
+#: src/transfer.rs:265
+msgid "{n} over-long name or text was shortened."
+msgid_plural "{n} over-long names or texts were shortened."
+msgstr[0] "{n} liian pitkä nimi tai teksti lyhennettiin."
+msgstr[1] "{n} liian pitkää nimeä tai tekstiä lyhennettiin."
+
+#: src/transfer.rs:270
+msgid "The file contains no annotations."
+msgstr "Tiedostossa ei ole annotaatioita."
+
+#: src/transfer.rs:272
+msgid "Nothing could be imported. {}"
+msgstr "Mitään ei voitu tuoda. {}"
+
+#: src/transfer.rs:339
+msgid "Made for this slide."
+msgstr "Tehty tälle näytelasille."
+
+#: src/transfer.rs:342
+msgid "Made for a different slide (its identity does not match)."
+msgstr "Tehty eri näytelasille (tunniste ei täsmää)."
+
+#: src/transfer.rs:352
+msgid "Made for a slide of {theirs}; this one is {ours}."
+msgstr ""
+"Tehty näytelasille, jonka koko on {theirs}; tämän näytelasin koko on {ours}."
+
+#: src/transfer.rs:360
+msgid "Made for a slide of the same size."
+msgstr "Tehty samankokoiselle näytelasille."
+
+#: src/transfer.rs:364
+msgid ""
+"The file does not say which slide it belongs to; coordinates are taken as "
+"level-0 pixels of this slide."
+msgstr ""
+"Tiedosto ei kerro, mihin näytelasiin se kuuluu; koordinaatit tulkitaan tämän "
+"näytelasin tason 0 pikseleiksi."
+
+#: src/transfer.rs:376
+msgid "Annotations (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "Annotaatiot (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:386
+msgid "All files"
+msgstr "Kaikki tiedostot"
+
+#: src/transfer.rs:398 src/transfer.rs:853 src/transfer.rs:1007
+msgid "Cannot show the file dialog"
+msgstr "Tiedostovalintaikkunaa ei voi näyttää"
+
+#: src/transfer.rs:413
+msgid "The annotations of this slide are still loading."
+msgstr "Tämän näytelasin annotaatioita ladataan vielä."
+
+#: src/transfer.rs:434
+msgid "Importing {}"
+msgstr "Tuodaan: {}"
+
+#. Translators: the step of an import that reads the file.
+#: src/transfer.rs:447
+msgid "Reading"
+msgstr "Luetaan"
+
+#: src/transfer.rs:474
+msgid ""
+"NDP.view annotations, placed with this slide's offsets from the slide centre "
+"and its pixel size."
+msgstr ""
+"NDP.view-annotaatiot, sijoitettu tämän näytelasin keskipistesiirtymien ja "
+"pikselikoon mukaan."
+
+#: src/transfer.rs:486
+msgid "Checking the slide"
+msgstr "Tarkistetaan näytelasia"
+
+#: src/transfer.rs:489
+msgid "cannot read the slide to check the import: {}"
+msgstr "näytelasia ei voi lukea tuonnin tarkistamiseksi: {}"
+
+#: src/transfer.rs:494
+msgid "Made for this slide (checked by content)."
+msgstr "Tehty tälle näytelasille (tarkistettu sisällön perusteella)."
+
+#: src/transfer.rs:497
+msgid "Made for a different slide (its checksum does not match)."
+msgstr "Tehty eri näytelasille (tarkistussumma ei täsmää)."
+
+#: src/transfer.rs:521
+msgid "Import cancelled."
+msgstr "Tuonti peruutettiin."
+
+#: src/transfer.rs:522
+msgid "Could not import {}"
+msgstr "Tuonti epäonnistui: {}"
+
+#. Translators: "Merge a database…" is the item of the Import and export
+#. menu: quote it as it is translated there.
+#: src/transfer.rs:560
+msgid ""
+"This archive has no annotations for the current slide. Restore whole backups "
+"with \"Merge a database…\"."
+msgstr ""
+"Tässä arkistossa ei ole annotaatioita nykyiselle näytelasille. Palauta "
+"kokonaiset varmuuskopiot toiminnolla ”Yhdistä tietokanta…”."
+
+#: src/transfer.rs:574
+msgid "Import {n} annotation"
+msgid_plural "Import {n} annotations"
+msgstr[0] "Tuo {n} annotaatio"
+msgstr[1] "Tuo {n} annotaatiota"
+
+#: src/transfer.rs:581
+msgid "The slide this import was started on is not open any more."
+msgstr "Näytelasi, jolle tuonti aloitettiin, ei ole enää auki."
+
+#: src/transfer.rs:737
+msgid "Imported {n} annotation from {file}."
+msgid_plural "Imported {n} annotations from {file}."
+msgstr[0] "Tuotiin {n} annotaatio tiedostosta {file}."
+msgstr[1] "Tuotiin {n} annotaatiota tiedostosta {file}."
+
+#: src/transfer.rs:783 src/transfer.rs:818
+msgid "eov annotations"
+msgstr "eov-annotaatiot"
+
+#: src/transfer.rs:811
+msgid "DICOM bulk annotations"
+msgstr "DICOM-joukkoannotaatiot"
+
+#: src/transfer.rs:824
+msgid "Export a blinded copy for another reader"
+msgstr "Vie sokkoutettu kopio toiselle arvioijalle"
+
+#: src/transfer.rs:825
+msgid "Export annotations"
+msgstr "Vie annotaatiot"
+
+#: src/transfer.rs:942
+msgid "Exported {n} annotation to {file}."
+msgid_plural "Exported {n} annotations to {file}."
+msgstr[0] "Vietiin {n} annotaatio tiedostoon {file}."
+msgstr[1] "Vietiin {n} annotaatiota tiedostoon {file}."
+
+#: src/transfer.rs:948
+msgid "Could not export to {}"
+msgstr "Vienti epäonnistui: {}"
+
+#: src/transfer.rs:988
+msgid "Compare with another reader's annotations"
+msgstr "Vertaa toisen arvioijan annotaatioihin"
+
+#: src/transfer.rs:990
+msgid "Annotations (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "Annotaatiot (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:1114
+msgid "Could not compare with {}"
+msgstr "Vertailu epäonnistui: {}"
+
+#: src/transfer.rs:1123
+msgid "Exporting all annotations"
+msgstr "Viedään kaikkia annotaatioita"
+
+#: src/transfer.rs:1176
+msgid "Exported the annotations of {n} slide."
+msgid_plural "Exported the annotations of {n} slides."
+msgstr[0] "Vietiin {n} näytelasin annotaatiot."
+msgstr[1] "Vietiin {n} näytelasin annotaatiot."
+
+#: src/transfer.rs:1184
+msgid "Could not export all annotations"
+msgstr "Kaikkia annotaatioita ei voitu viedä"
+
+#: src/transfer.rs:1201
+msgid "Annotation database backed up."
+msgstr "Annotaatiotietokanta varmuuskopioitiin."
+
+#: src/transfer.rs:1203
+msgid "Could not back up the annotation database"
+msgstr "Annotaatiotietokantaa ei voitu varmuuskopioida"
+
+#: src/transfer.rs:1217
+msgid "Merging annotation database"
+msgstr "Yhdistetään annotaatiotietokantaa"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers", {slides}
+#. is "1 new slide" or "3 new slides" (each translated on its own).
+#: src/transfer.rs:1232
+msgid "Merged {n} annotation {layers} ({slides})."
+msgid_plural "Merged {n} annotations {layers} ({slides})."
+msgstr[0] "Yhdistettiin {n} annotaatio {layers} ({slides})."
+msgstr[1] "Yhdistettiin {n} annotaatiota {layers} ({slides})."
+
+#. Translators: {slides} in "Merged {n} annotations {layers} ({slides})."
+#: src/transfer.rs:1237
+msgid "{n} new slide"
+msgid_plural "{n} new slides"
+msgstr[0] "{n} uusi näytelasi"
+msgstr[1] "{n} uutta näytelasia"
+
+#: src/transfer.rs:1249
+msgid "Could not merge the database"
+msgstr "Tietokantaa ei voitu yhdistää"
+
+#. Translators: read out for the layer new annotations go into; {} is its
+#. number of annotations.
+#: ui/annotations-sidebar.slint:115
+msgctxt "TreeItem"
+msgid "{} · new annotations go here"
+msgstr "{} · uudet annotaatiot tulevat tähän"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Collapse layer"
+msgstr "Kutista kerros"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Expand layer"
+msgstr "Laajenna kerros"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Hide layer"
+msgstr "Piilota kerros"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Show layer"
+msgstr "Näytä kerros"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Lock layer"
+msgstr "Lukitse kerros"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Unlock layer"
+msgstr "Avaa kerroksen lukitus"
+
+#: ui/annotations-sidebar.slint:222
+msgctxt "TreeItem"
+msgid "Layer settings"
+msgstr "Kerroksen asetukset"
+
+#: ui/annotations-sidebar.slint:292
+msgctxt "TreeItem"
+msgid "Locked"
+msgstr "Lukittu"
+
+#: ui/annotations-sidebar.slint:314
+msgctxt "AnnotationsSidebar"
+msgid "No slide open"
+msgstr "Ei avointa näytelasia"
+
+#: ui/annotations-sidebar.slint:321
+msgctxt "AnnotationsSidebar"
+msgid "Unclassified"
+msgstr "Luokittelematon"
+
+#: ui/annotations-sidebar.slint:488
+msgctxt "AnnotationsSidebar"
+msgid "Import annotations…"
+msgstr "Tuo annotaatioita…"
+
+#: ui/annotations-sidebar.slint:489
+msgctxt "AnnotationsSidebar"
+msgid "Export as GeoJSON (QuPath)…"
+msgstr "Vie GeoJSON-muodossa (QuPath)…"
+
+#: ui/annotations-sidebar.slint:490
+msgctxt "AnnotationsSidebar"
+msgid "Export as eov JSON…"
+msgstr "Vie eov JSON -muodossa…"
+
+#: ui/annotations-sidebar.slint:491
+msgctxt "AnnotationsSidebar"
+msgid "Export as ASAP XML…"
+msgstr "Vie ASAP XML -muodossa…"
+
+#: ui/annotations-sidebar.slint:492
+msgctxt "AnnotationsSidebar"
+msgid "Export as ImageScope XML…"
+msgstr "Vie ImageScope XML -muodossa…"
+
+#: ui/annotations-sidebar.slint:493
+msgctxt "AnnotationsSidebar"
+msgid "Export as DICOM annotations…"
+msgstr "Vie DICOM-annotaatioina…"
+
+#: ui/annotations-sidebar.slint:494
+msgctxt "AnnotationsSidebar"
+msgid "Export measurements (CSV)…"
+msgstr "Vie mittaukset (CSV)…"
+
+#: ui/annotations-sidebar.slint:495
+msgctxt "AnnotationsSidebar"
+msgid "Export a blinded copy…"
+msgstr "Vie sokkoutettu kopio…"
+
+#: ui/annotations-sidebar.slint:496
+msgctxt "AnnotationsSidebar"
+msgid "Compare with another reader…"
+msgstr "Vertaa toiseen arvioijaan…"
+
+#. Translators: exports the annotations of every slide in the database to one
+#. annotation archive (a JSON file), not the slide images.
+#: ui/annotations-sidebar.slint:497 ui/annotations-sidebar.slint:1986
+msgctxt "AnnotationsSidebar"
+msgid "Export all slides…"
+msgstr "Vie kaikki näytelasit…"
+
+#: ui/annotations-sidebar.slint:498
+msgctxt "AnnotationsSidebar"
+msgid "Back up the database…"
+msgstr "Varmuuskopioi tietokanta…"
+
+#: ui/annotations-sidebar.slint:499
+msgctxt "AnnotationsSidebar"
+msgid "Merge a database…"
+msgstr "Yhdistä tietokanta…"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field area"
+msgstr "Kentän pinta-ala"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field number and objective"
+msgstr "Kenttäluku ja objektiivi"
+
+#: ui/annotations-sidebar.slint:600
+msgctxt "AnnotationsSidebar"
+msgid "Annotations"
+msgstr "Annotaatiot"
+
+#: ui/annotations-sidebar.slint:635
+msgctxt "AnnotationsSidebar"
+msgid "Import and export"
+msgstr "Tuonti ja vienti"
+
+#: ui/annotations-sidebar.slint:668
+msgctxt "AnnotationsSidebar"
+msgid "Retry"
+msgstr "Yritä uudelleen"
+
+#: ui/annotations-sidebar.slint:683
+msgctxt "AnnotationsSidebar"
+msgid "Layers"
+msgstr "Kerrokset"
+
+#: ui/annotations-sidebar.slint:691
+msgctxt "AnnotationsSidebar"
+msgid "Classes"
+msgstr "Luokat"
+
+#. Translators: the tab for counting cells.
+#: ui/annotations-sidebar.slint:700
+msgctxt "AnnotationsSidebar"
+msgid "Count"
+msgstr "Laskenta"
+
+#: ui/annotations-sidebar.slint:708
+msgctxt "AnnotationsSidebar"
+msgid "Data"
+msgstr "Tiedot"
+
+#: ui/annotations-sidebar.slint:747
+msgctxt "AnnotationsSidebar"
+msgid "Filter by name, class, kind or status"
+msgstr "Suodata nimen, luokan, tyypin tai tilan mukaan"
+
+#: ui/annotations-sidebar.slint:769
+msgctxt "AnnotationsSidebar"
+msgid "Filter annotations"
+msgstr "Suodata annotaatioita"
+
+#: ui/annotations-sidebar.slint:786
+msgctxt "AnnotationsSidebar"
+msgid "New layer"
+msgstr "Uusi kerros"
+
+#: ui/annotations-sidebar.slint:870 ui/annotations-sidebar.slint:1079
+#: ui/annotations-sidebar.slint:1500
+msgctxt "AnnotationsSidebar"
+msgid "Name"
+msgstr "Nimi"
+
+#: ui/annotations-sidebar.slint:876 ui/annotations-sidebar.slint:878
+msgctxt "AnnotationsSidebar"
+msgid "Layer name"
+msgstr "Kerroksen nimi"
+
+#: ui/annotations-sidebar.slint:889
+msgctxt "AnnotationsSidebar"
+msgid "Colour"
+msgstr "Väri"
+
+#: ui/annotations-sidebar.slint:898
+msgctxt "AnnotationsSidebar"
+msgid "Layer colour"
+msgstr "Kerroksen väri"
+
+#: ui/annotations-sidebar.slint:906 ui/annotations-sidebar.slint:1518
+msgctxt "AnnotationsSidebar"
+msgid "Opacity"
+msgstr "Peittävyys"
+
+#: ui/annotations-sidebar.slint:912
+msgctxt "AnnotationsSidebar"
+msgid "Layer opacity"
+msgstr "Kerroksen peittävyys"
+
+#: ui/annotations-sidebar.slint:923 ui/annotations-sidebar.slint:1162
+msgctxt "AnnotationsSidebar"
+msgid "Notes"
+msgstr "Muistiinpanot"
+
+#: ui/annotations-sidebar.slint:931
+msgctxt "AnnotationsSidebar"
+msgid "Notes about this layer"
+msgstr "Muistiinpanot tästä kerroksesta"
+
+#: ui/annotations-sidebar.slint:933
+msgctxt "AnnotationsSidebar"
+msgid "Layer notes"
+msgstr "Kerroksen muistiinpanot"
+
+#: ui/annotations-sidebar.slint:941
+msgctxt "AnnotationsSidebar"
+msgid "Draw into this layer"
+msgstr "Piirrä tähän kerrokseen"
+
+#: ui/annotations-sidebar.slint:942
+msgctxt "AnnotationsSidebar"
+msgid "Delete layer…"
+msgstr "Poista kerros…"
+
+#: ui/annotations-sidebar.slint:1020
+msgctxt "AnnotationsSidebar"
+msgid "Zoom to the annotation"
+msgstr "Zoomaa annotaatioon"
+
+#: ui/annotations-sidebar.slint:1028
+msgctxt "AnnotationsSidebar"
+msgid "Copy measurements"
+msgstr "Kopioi mittaukset"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the annotation"
+msgstr "Poista annotaatio"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the selected annotations"
+msgstr "Poista valitut annotaatiot"
+
+#: ui/annotations-sidebar.slint:1065
+msgctxt "AnnotationsSidebar"
+msgid "Repair"
+msgstr "Korjaa"
+
+#: ui/annotations-sidebar.slint:1085
+msgctxt "AnnotationsSidebar"
+msgid "Unnamed"
+msgstr "Nimetön"
+
+#: ui/annotations-sidebar.slint:1087
+msgctxt "AnnotationsSidebar"
+msgid "Annotation name"
+msgstr "Annotaation nimi"
+
+#: ui/annotations-sidebar.slint:1098
+msgctxt "AnnotationsSidebar"
+msgid "Class"
+msgstr "Luokka"
+
+#: ui/annotations-sidebar.slint:1104
+msgctxt "AnnotationsSidebar"
+msgid "Annotation class"
+msgstr "Annotaatioluokka"
+
+#: ui/annotations-sidebar.slint:1115
+msgctxt "AnnotationsSidebar"
+msgid "Status"
+msgstr "Tila"
+
+#: ui/annotations-sidebar.slint:1121
+msgctxt "AnnotationsSidebar"
+msgid "Review status"
+msgstr "Tarkastustila"
+
+#: ui/annotations-sidebar.slint:1132
+msgctxt "AnnotationsSidebar"
+msgid "Layer"
+msgstr "Kerros"
+
+#: ui/annotations-sidebar.slint:1138
+msgctxt "AnnotationsSidebar"
+msgid "Annotation layer"
+msgstr "Annotaatiokerros"
+
+#: ui/annotations-sidebar.slint:1149
+msgctxt "AnnotationsSidebar"
+msgid "Locked"
+msgstr "Lukittu"
+
+#: ui/annotations-sidebar.slint:1170 ui/annotations-sidebar.slint:1172
+msgctxt "AnnotationsSidebar"
+msgid "Description"
+msgstr "Kuvaus"
+
+#: ui/annotations-sidebar.slint:1183
+msgctxt "AnnotationsSidebar"
+msgid "MEASUREMENTS"
+msgstr "MITTAUKSET"
+
+#: ui/annotations-sidebar.slint:1213
+msgctxt "AnnotationsSidebar"
+msgid "PROPERTIES"
+msgstr "OMINAISUUDET"
+
+#: ui/annotations-sidebar.slint:1224
+msgctxt "AnnotationsSidebar"
+msgid "Property name"
+msgstr "Ominaisuuden nimi"
+
+#: ui/annotations-sidebar.slint:1233
+msgctxt "AnnotationsSidebar"
+msgid "Value"
+msgstr "Arvo"
+
+#: ui/annotations-sidebar.slint:1235
+msgctxt "AnnotationsSidebar"
+msgid "Property value"
+msgstr "Ominaisuuden arvo"
+
+#: ui/annotations-sidebar.slint:1243
+msgctxt "AnnotationsSidebar"
+msgid "Remove property"
+msgstr "Poista ominaisuus"
+
+#: ui/annotations-sidebar.slint:1255
+msgctxt "AnnotationsSidebar"
+msgid "Add property"
+msgstr "Lisää ominaisuus"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS"
+msgstr "KOMMENTIT"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS ({})"
+msgstr "KOMMENTIT ({})"
+
+#: ui/annotations-sidebar.slint:1294
+msgctxt "AnnotationsSidebar"
+msgid "Delete comment"
+msgstr "Poista kommentti"
+
+#: ui/annotations-sidebar.slint:1314
+msgctxt "AnnotationsSidebar"
+msgid "Add a comment"
+msgstr "Lisää kommentti"
+
+#: ui/annotations-sidebar.slint:1316
+msgctxt "AnnotationsSidebar"
+msgid "New comment"
+msgstr "Uusi kommentti"
+
+#. Translators: a button that adds the comment typed above.
+#: ui/annotations-sidebar.slint:1324
+msgctxt "AnnotationsSidebar"
+msgid "Comment"
+msgstr "Kommentoi"
+
+#: ui/annotations-sidebar.slint:1358
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Select an annotation on the slide or in the list to see its details. Double-"
+"click a row to zoom to it; Ctrl+click selects several."
+msgstr ""
+"Valitse annotaatio näytelasilta tai luettelosta nähdäksesi sen tiedot. "
+"Zoomaa annotaatioon kaksoisnapsauttamalla riviä; Ctrl+napsautus valitsee "
+"useita."
+
+#: ui/annotations-sidebar.slint:1379
+msgctxt "AnnotationsSidebar"
+msgid ""
+"New annotations get the active class (●), and the Count tool counts it; "
+"Shift+click counts the second class (◐). Pressing a class's hotkey makes it "
+"active."
+msgstr ""
+"Uudet annotaatiot saavat aktiivisen luokan (●), ja laskentatyökalu laskee "
+"sitä; Shift+napsautus laskee toista luokkaa (◐). Luokan pikanäppäimen "
+"painaminen tekee siitä aktiivisen."
+
+#: ui/annotations-sidebar.slint:1418
+msgctxt "AnnotationsSidebar"
+msgid "Colour of {}"
+msgstr "Luokan {} väri"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Hide {}"
+msgstr "Piilota {}"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Show {}"
+msgstr "Näytä {}"
+
+#: ui/annotations-sidebar.slint:1466
+msgctxt "AnnotationsSidebar"
+msgid "Class settings"
+msgstr "Luokan asetukset"
+
+#: ui/annotations-sidebar.slint:1506 ui/annotations-sidebar.slint:1507
+msgctxt "AnnotationsSidebar"
+msgid "Class name"
+msgstr "Luokan nimi"
+
+#: ui/annotations-sidebar.slint:1523
+msgctxt "AnnotationsSidebar"
+msgid "Class opacity"
+msgstr "Luokan peittävyys"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Count with Shift+click"
+msgstr "Laske Shift+napsautuksella"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Stop counting with Shift+click"
+msgstr "Lopeta Shift+napsautuksella laskeminen"
+
+#: ui/annotations-sidebar.slint:1539
+msgctxt "AnnotationsSidebar"
+msgid "Delete…"
+msgstr "Poista…"
+
+#: ui/annotations-sidebar.slint:1558
+msgctxt "AnnotationsSidebar"
+msgid "New class"
+msgstr "Uusi luokka"
+
+#: ui/annotations-sidebar.slint:1596
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Pick the Count tool (C) and click cells; Shift+click and Alt+click count the "
+"second and third class. Select regions or HPF fields to count inside them."
+msgstr ""
+"Valitse laskentatyökalu (C) ja napsauta soluja; Shift+napsautus ja "
+"Alt+napsautus laskevat toista ja kolmatta luokkaa. Valitse alueita tai HPF-"
+"kenttiä, jos haluat laskea niiden sisältä."
+
+#: ui/annotations-sidebar.slint:1601
+msgctxt "AnnotationsSidebar"
+msgid "Count tool (C)"
+msgstr "Laskentatyökalu (C)"
+
+#: ui/annotations-sidebar.slint:1602
+msgctxt "AnnotationsSidebar"
+msgid "HPF field (H)"
+msgstr "HPF-kenttä (H)"
+
+#. Translators: the class a click with the Count tool counts.
+#: ui/annotations-sidebar.slint:1614
+msgctxt "AnnotationsSidebar"
+msgid "Click"
+msgstr "Napsautus"
+
+#: ui/annotations-sidebar.slint:1620
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by a click"
+msgstr "Napsautuksella laskettava luokka"
+
+#: ui/annotations-sidebar.slint:1631
+msgctxt "AnnotationsSidebar"
+msgid "Shift+click"
+msgstr "Shift+napsautus"
+
+#: ui/annotations-sidebar.slint:1636
+msgctxt "AnnotationsSidebar"
+msgid "(same as click)"
+msgstr "(sama kuin napsautus)"
+
+#: ui/annotations-sidebar.slint:1637
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by Shift+click"
+msgstr "Shift+napsautuksella laskettava luokka"
+
+#: ui/annotations-sidebar.slint:1648
+msgctxt "AnnotationsSidebar"
+msgid "Alt+click"
+msgstr "Alt+napsautus"
+
+#: ui/annotations-sidebar.slint:1653
+msgctxt "AnnotationsSidebar"
+msgid "(none)"
+msgstr "(ei mitään)"
+
+#: ui/annotations-sidebar.slint:1654
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Class counted by Alt+click: PD-L1-positive immune cells for the combined "
+"positive score"
+msgstr ""
+"Alt+napsautuksella laskettava luokka: PD-L1-positiiviset immuunisolut "
+"yhdistettyä positiivisuuspistemäärää (CPS) varten"
+
+#: ui/annotations-sidebar.slint:1662
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Combined positive score: the click and Alt+click classes (PD-L1-positive "
+"tumour cells and PD-L1-positive immune cells) per 100 tumour cells (the "
+"click and Shift+click classes)."
+msgstr ""
+"Yhdistetty positiivisuuspistemäärä (CPS): napsautus- ja Alt+napsautusluokat "
+"(PD-L1-positiiviset kasvainsolut ja PD-L1-positiiviset immuunisolut) 100 "
+"kasvainsolua kohden (napsautus- ja Shift+napsautusluokat)."
+
+#: ui/annotations-sidebar.slint:1677
+msgctxt "AnnotationsSidebar"
+msgid "Nothing counted here yet."
+msgstr "Täällä ei ole vielä laskettu mitään."
+
+#: ui/annotations-sidebar.slint:1748
+msgctxt "AnnotationsSidebar"
+msgid "Count points in hidden layers"
+msgstr "Laske mukaan piilotettujen kerrosten pisteet"
+
+#: ui/annotations-sidebar.slint:1759
+msgctxt "AnnotationsSidebar"
+msgid "Clear counts…"
+msgstr "Tyhjennä laskenta…"
+
+#: ui/annotations-sidebar.slint:1771
+msgctxt "AnnotationsSidebar"
+msgid "HIGH-POWER FIELDS"
+msgstr "SUURENNOSKENTÄT"
+
+#: ui/annotations-sidebar.slint:1785
+msgctxt "AnnotationsSidebar"
+msgid "How the field size is given"
+msgstr "Kentän koon määritystapa"
+
+#. Translators: FN is the eyepiece's field number, the diameter of the field
+#. of view.
+#: ui/annotations-sidebar.slint:1796
+msgctxt "AnnotationsSidebar"
+msgid "FN (mm)"
+msgstr "FN (mm)"
+
+#: ui/annotations-sidebar.slint:1803
+msgctxt "AnnotationsSidebar"
+msgid "Field number in mm"
+msgstr "Kenttäluku millimetreinä"
+
+#. Translators: the magnification of the objective, as in 40×.
+#: ui/annotations-sidebar.slint:1811
+msgctxt "AnnotationsSidebar"
+msgid "Objective ×"
+msgstr "Objektiivi ×"
+
+#: ui/annotations-sidebar.slint:1821
+msgctxt "AnnotationsSidebar"
+msgid "Objective magnification"
+msgstr "Objektiivin suurennos"
+
+#: ui/annotations-sidebar.slint:1828 ui/annotations-sidebar.slint:1853
+msgctxt "AnnotationsSidebar"
+msgid "Apply"
+msgstr "Käytä"
+
+#: ui/annotations-sidebar.slint:1839
+msgctxt "AnnotationsSidebar"
+msgid "Area (mm²)"
+msgstr "Pinta-ala (mm²)"
+
+#: ui/annotations-sidebar.slint:1846
+msgctxt "AnnotationsSidebar"
+msgid "Field area in square millimetres"
+msgstr "Kentän pinta-ala neliömillimetreinä"
+
+#: ui/annotations-sidebar.slint:1873
+msgctxt "AnnotationsSidebar"
+msgid "{n} field placed on this slide."
+msgid_plural "{n} fields placed on this slide."
+msgstr[0] "Tälle näytelasille on sijoitettu {n} kenttä."
+msgstr[1] "Tälle näytelasille on sijoitettu {n} kenttää."
+
+#: ui/annotations-sidebar.slint:1885
+msgctxt "AnnotationsSidebar"
+msgid "Select all fields"
+msgstr "Valitse kaikki kentät"
+
+#: ui/annotations-sidebar.slint:1924
+msgctxt "AnnotationsSidebar"
+msgid "IMPORT AND EXPORT"
+msgstr "TUONTI JA VIENTI"
+
+#: ui/annotations-sidebar.slint:1928
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Imports: GeoJSON (QuPath and others), eov JSON, ASAP XML, Aperio ImageScope "
+"XML, Hamamatsu NDPA and DICOM bulk annotations. Coordinates are level-0 "
+"pixels with y pointing down."
+msgstr ""
+"Tuetut tuontimuodot: GeoJSON (QuPath ym.), eov JSON, ASAP XML, Aperio "
+"ImageScope XML, Hamamatsu NDPA ja DICOM-joukkoannotaatiot. Koordinaatit ovat "
+"tason 0 pikseleitä, ja y-akseli osoittaa alaspäin."
+
+#: ui/annotations-sidebar.slint:1935
+msgctxt "AnnotationsSidebar"
+msgid "Import…"
+msgstr "Tuo…"
+
+#: ui/annotations-sidebar.slint:1991
+msgctxt "AnnotationsSidebar"
+msgid "Back up…"
+msgstr "Varmuuskopioi…"
+
+#: ui/annotations-sidebar.slint:1992
+msgctxt "AnnotationsSidebar"
+msgid "Merge…"
+msgstr "Yhdistä…"
+
+#. Translators: a reader is a person who annotates slides; a second reader
+#. annotates a blinded copy independently so two readers can be compared (as
+#. in a reader study); use the word for an observer or annotator, not the
+#. clinical term for a second diagnostic opinion.
+#: ui/annotations-sidebar.slint:2009
+msgctxt "AnnotationsSidebar"
+msgid "SECOND READER"
+msgstr "TOINEN ARVIOIJA"
+
+#: ui/annotations-sidebar.slint:2013
+msgctxt "AnnotationsSidebar"
+msgid ""
+"A blinded copy holds the visible layers' shapes, classes and names, without "
+"authors, comments, statuses, descriptions or properties. Compare reads "
+"another reader's export and compares it with the visible layers: counts per "
+"class, matched points and overlapping regions."
+msgstr ""
+"Sokkoutettu kopio sisältää näkyvien kerrosten muodot, luokat ja nimet ilman "
+"tekijöitä, kommentteja, tiloja, kuvauksia tai ominaisuuksia. Vertaa lukee "
+"toisen arvioijan viennin ja vertaa sitä näkyviin kerroksiin: luokkakohtaiset "
+"määrät, täsmäävät pisteet ja päällekkäiset alueet."
+
+#: ui/annotations-sidebar.slint:2018
+msgctxt "AnnotationsSidebar"
+msgid "Blinded copy…"
+msgstr "Sokkoutettu kopio…"
+
+#: ui/annotations-sidebar.slint:2019
+msgctxt "AnnotationsSidebar"
+msgid "Compare…"
+msgstr "Vertaa…"
+
+#. Translators: a button: compare with the same file again.
+#: ui/annotations-sidebar.slint:2022
+msgctxt "AnnotationsSidebar"
+msgid "Again"
+msgstr "Uudelleen"
+
+#. Translators: a button: remove the comparison.
+#: ui/annotations-sidebar.slint:2029
+msgctxt "AnnotationsSidebar"
+msgid "Clear"
+msgstr "Tyhjennä"
+
+#: ui/annotations-sidebar.slint:2066
+msgctxt "AnnotationsSidebar"
+msgid "Neither reader has points or regions in the compared layers."
+msgstr ""
+"Kummallakaan arvioijalla ei ole pisteitä tai alueita verratuissa kerroksissa."
+
+#: ui/annotations-sidebar.slint:2126
+msgctxt "AnnotationsSidebar"
+msgid "DATABASE"
+msgstr "TIETOKANTA"
+
+#: ui/annotations-sidebar.slint:2150
+msgctxt "AnnotationsSidebar"
+msgid "Database file"
+msgstr "Tietokantatiedosto"
+
+#. Translators: {} is the path of the old database file.
+#: ui/annotations-sidebar.slint:2167
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Annotations made with eov before 1.0 are in {}. Bring them into this "
+"database (the old file is not changed):"
+msgstr ""
+"eov:n alle 1.0 -versioilla tehdyt annotaatiot ovat sijainnissa {}. Tuo ne "
+"tähän tietokantaan (vanhaa tiedostoa ei muuteta):"
+
+#: ui/annotations-sidebar.slint:2179
+msgctxt "AnnotationsSidebar"
+msgid "Bring them in"
+msgstr "Tuo ne"
+
+#: ui/annotations-sidebar.slint:2195
+msgctxt "AnnotationsSidebar"
+msgid "OTHER SLIDES"
+msgstr "MUUT NÄYTELASIT"
+
+#. Translators: a button that lists the other slides in the database.
+#: ui/annotations-sidebar.slint:2202
+msgctxt "AnnotationsSidebar"
+msgid "List"
+msgstr "Luettele"
+
+#. Translators: a button: attach the annotations of this slide to the open
+#. slide.
+#: ui/annotations-sidebar.slint:2236
+msgctxt "AnnotationsSidebar"
+msgid "Attach"
+msgstr "Liitä"
+
+#: ui/annotations-sidebar.slint:2258
+msgctxt "AnnotationsSidebar"
+msgid "AUTHOR AND EXPORTS"
+msgstr "TEKIJÄ JA VIENNIT"
+
+#: ui/annotations-sidebar.slint:2265 ui/annotations-sidebar.slint:2273
+msgctxt "AnnotationsSidebar"
+msgid "Author"
+msgstr "Tekijä"
+
+#: ui/annotations-sidebar.slint:2272
+msgctxt "AnnotationsSidebar"
+msgid "Your name or initials"
+msgstr "Nimesi tai nimikirjaimesi"
+
+#: ui/annotations-sidebar.slint:2284 ui/annotations-sidebar.slint:2291
+msgctxt "AnnotationsSidebar"
+msgid "Organization"
+msgstr "Organisaatio"
+
+#: ui/annotations-sidebar.slint:2302 ui/annotations-sidebar.slint:2309
+msgctxt "AnnotationsSidebar"
+msgid "Project"
+msgstr "Projekti"
+
+#: ui/annotations-sidebar.slint:2320 ui/annotations-sidebar.slint:2328
+msgctxt "AnnotationsSidebar"
+msgid "License"
+msgstr "Lisenssi"
+
+#: ui/annotations-sidebar.slint:2327
+msgctxt "AnnotationsSidebar"
+msgid "e.g. CC-BY-4.0"
+msgstr "esim. CC-BY-4.0"
+
+#: ui/annotations-sidebar.slint:2336
+msgctxt "AnnotationsSidebar"
+msgid "Include the slide's file name in exports"
+msgstr "Sisällytä näytelasin tiedostonimi vienteihin"
+
+#: ui/annotations-sidebar.slint:2346
+msgctxt "AnnotationsSidebar"
+msgid "DISPLAY"
+msgstr "ULKOASU"
+
+#: ui/annotations-sidebar.slint:2350
+msgctxt "AnnotationsSidebar"
+msgid "Show names on the slide"
+msgstr "Näytä nimet näytelasilla"
+
+#: ui/annotations-sidebar.slint:2361 ui/annotations-sidebar.slint:2369
+msgctxt "AnnotationsSidebar"
+msgid "Point size"
+msgstr "Pisteen koko"
+
+#: ui/annotations-sidebar.slint:2380 ui/annotations-sidebar.slint:2386
+msgctxt "AnnotationsSidebar"
+msgid "Fill opacity"
+msgstr "Täytön peittävyys"
+
+#. Translators: S is the brush tool's key.
+#: ui/annotations-sidebar.slint:2397
+msgctxt "AnnotationsSidebar"
+msgid "BRUSH (S)"
+msgstr "SIVELLIN (S)"
+
+#. Translators: the size of the brush.
+#: ui/annotations-sidebar.slint:2405
+msgctxt "AnnotationsSidebar"
+msgid "Size"
+msgstr "Koko"
+
+#: ui/annotations-sidebar.slint:2413
+msgctxt "AnnotationsSidebar"
+msgid "Brush size"
+msgstr "Siveltimen koko"
+
+#: ui/annotations-sidebar.slint:2429
+msgctxt "AnnotationsSidebar"
+msgid "Erase from the selected region"
+msgstr "Pyyhi valitusta alueesta"
+
+#: ui/annotations-sidebar.slint:2437
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Paint over a selected region to extend it, elsewhere to make a new one. Hold "
+"Alt to erase; [ and ] change the size."
+msgstr ""
+"Maalaa valitun alueen päälle laajentaaksesi sitä tai muualle luodaksesi "
+"uuden alueen. Pyyhi pitämällä Alt-näppäintä pohjassa; [ ja ] muuttavat kokoa."
+
+#: ui/annotations-sidebar.slint:2557
+msgctxt "AnnotationsSidebar"
+msgid "Colours"
+msgstr "Värit"
+
+#: ui/import-dialog.slint:117 ui/import-dialog.slint:124
+msgctxt "ImportDialog"
+msgid "Import annotations"
+msgstr "Tuo annotaatioita"
+
+#: ui/import-dialog.slint:186
+msgctxt "ImportDialog"
+msgid "NOTES"
+msgstr "HUOMAUTUKSET"
+
+#: ui/import-dialog.slint:214
+msgctxt "ImportDialog"
+msgid "Add to the existing layers"
+msgstr "Lisää olemassa oleviin kerroksiin"
+
+#: ui/import-dialog.slint:215
+msgctxt "ImportDialog"
+msgid "Imported annotations join the layer with the same name."
+msgstr "Tuodut annotaatiot lisätään samannimiseen kerrokseen."
+
+#: ui/import-dialog.slint:223
+msgctxt "ImportDialog"
+msgid "Replace the existing layers"
+msgstr "Korvaa olemassa olevat kerrokset"
+
+#: ui/import-dialog.slint:224
+msgctxt "ImportDialog"
+msgid "The existing layers are deleted (this can be undone)."
+msgstr "Olemassa olevat kerrokset poistetaan (tämän voi kumota)."
+
+#: ui/import-dialog.slint:232
+msgctxt "ImportDialog"
+msgid "Keep both"
+msgstr "Säilytä molemmat"
+
+#. Translators: "Tumour" is only an example of a layer name from the imported
+#. file: translate it, and keep the " (2)" that eov adds.
+#: ui/import-dialog.slint:234
+msgctxt "ImportDialog"
+msgid "Imported layers get a new name, such as \"Tumour (2)\"."
+msgstr "Tuodut kerrokset saavat uuden nimen, kuten ”Kasvain (2)”."
+
+#: ui/import-dialog.slint:243
+msgctxt "ImportDialog"
+msgid "The import is one step: Ctrl+Z (⌘Z) removes everything it added."
+msgstr ""
+"Tuonti kumotaan yhtenä vaiheena: Ctrl+Z (⌘Z) poistaa kaiken, mitä se lisäsi."
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Cancel"
+msgstr "Peruuta"
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Close"
+msgstr "Sulje"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import"
+msgstr "Tuo"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import anyway"
+msgstr "Tuo silti"
+
+#: ui/widgets.slint:655
+msgctxt "Swatch"
+msgid "Change colour"
+msgstr "Vaihda väri"
+
+#: ui/widgets.slint:694
+msgctxt "KeyField"
+msgid "Hotkey"
+msgstr "Pikanäppäin"
+
+#: ui/widgets.slint:696
+msgctxt "KeyField"
+msgid "Click, then press a key. Backspace removes the hotkey."
+msgstr "Napsauta ja paina sitten näppäintä. Backspace poistaa pikanäppäimen."

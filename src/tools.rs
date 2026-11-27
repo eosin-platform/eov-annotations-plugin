@@ -51,72 +51,86 @@ pub fn hidden_icon() -> String {
 
 struct Def {
     id: &'static str,
-    label: &'static str,
     key: &'static str,
     kind: ToolKind,
     icon: &'static str,
 }
 
+/// A tool's name as the toolbar shows it (in the language of the
+/// interface: the tools are registered again when it changes).
+fn label(id: &str) -> String {
+    match id {
+        SELECT => tr!("Select and edit annotations"),
+        POINT => tr!("Point annotation"),
+        COUNT => tr!("Count cells (Shift+click: second class)"),
+        POLYGON => tr!("Polygon (Shift: add to selection, Alt: cut from it)"),
+        FREEHAND => tr!("Freehand outline (Shift: add, Alt: cut)"),
+        RECTANGLE => tr!("Rectangle"),
+        ELLIPSE => tr!("Ellipse"),
+        POLYLINE => tr!("Line / path"),
+        BRUSH => tr!(
+            "Brush (paint a region, over a selected region to extend it; Alt or the eraser erases; [ and ] change the size)"
+        ),
+        ARROW => tr!("Arrow (click the tail, double-click the tip; more clicks bend it)"),
+        TEXT => tr!("Text label"),
+        FIELD => tr!(
+            "HPF field (a field of the configured size follows the pointer; click to place it, drag to pan)"
+        ),
+        other => other.to_string(),
+    }
+}
+
 const TOOLS: &[Def] = &[
     Def {
         id: SELECT,
-        label: "Select and edit annotations",
         key: "v",
         kind: ToolKind::Select,
         icon: "<path d='M5 3l12 8-5 1 3 6-2 1-3-6-4 4z'/>",
     },
     Def {
         id: POINT,
-        label: "Point annotation",
         key: ".",
         kind: ToolKind::Point,
         icon: "<circle cx='12' cy='12' r='3.5' fill='white'/>",
     },
     Def {
         id: COUNT,
-        label: "Count cells (Shift+click: second class)",
         key: "c",
         kind: ToolKind::Point,
         icon: "<circle cx='7' cy='8' r='2' fill='white'/><circle cx='16' cy='7' r='2' fill='white'/><circle cx='11' cy='16' r='2' fill='white'/><path d='M17 14v6M14 17h6'/>",
     },
     Def {
         id: POLYGON,
-        label: "Polygon (Shift: add to selection, Alt: cut from it)",
         key: "p",
         kind: ToolKind::Polygon,
         icon: "<path d='M5 7l7-4 7 5-2 10H7z'/>",
     },
     Def {
         id: FREEHAND,
-        label: "Freehand outline (Shift: add, Alt: cut)",
         key: "g",
         kind: ToolKind::Freehand,
         icon: "<path d='M4 15c2-6 6-9 9-7s-3 6 0 8 6-2 7-5'/>",
     },
     Def {
         id: RECTANGLE,
-        label: "Rectangle",
         key: "b",
         kind: ToolKind::Rectangle,
         icon: "<rect x='4' y='6' width='16' height='12' rx='1'/>",
     },
     Def {
         id: ELLIPSE,
-        label: "Ellipse",
         key: "o",
         kind: ToolKind::Ellipse,
         icon: "<ellipse cx='12' cy='12' rx='8' ry='6'/>",
     },
     Def {
         id: POLYLINE,
-        label: "Line / path",
         key: "l",
         kind: ToolKind::Polyline,
         icon: "<path d='M4 18l5-8 5 4 6-9'/>",
     },
     Def {
         id: BRUSH,
-        label: "Brush (paint a region, over a selected region to extend it; Alt or the eraser erases; [ and ] change the size)",
         key: "s",
         // Custom: the plugin paints the stroke from the pointer.
         kind: ToolKind::Custom,
@@ -124,21 +138,18 @@ const TOOLS: &[Def] = &[
     },
     Def {
         id: ARROW,
-        label: "Arrow (click the tail, double-click the tip; more clicks bend it)",
         key: "a",
         kind: ToolKind::Polyline,
         icon: "<path d='M4 20 19 5'/><path d='M10 5h9v9'/>",
     },
     Def {
         id: TEXT,
-        label: "Text label",
         key: "t",
         kind: ToolKind::Point,
         icon: "<path d='M6 6h12M12 6v13'/>",
     },
     Def {
         id: FIELD,
-        label: "HPF field (a field of the configured size follows the pointer; click to place it, drag to pan)",
         key: "h",
         // Custom, so that the reticle can follow the pointer.
         kind: ToolKind::Custom,
@@ -168,7 +179,7 @@ pub fn tool_specs() -> Vec<ToolSpec> {
         .iter()
         .enumerate()
         .map(|(order, def)| {
-            let mut spec = ToolSpec::new(def.id, def.label, svg(def.icon), def.kind)
+            let mut spec = ToolSpec::new(def.id, label(def.id), svg(def.icon), def.kind)
                 .with_hotkey(Hotkey::key(def.key));
             spec.order = order as i32;
             spec.cursor = match def.kind {
@@ -210,7 +221,10 @@ pub fn class_hotkey(class: &Class) -> Option<HotkeySpec> {
     Some(HotkeySpec {
         hotkey_id: format!("{CLASS_HOTKEY_PREFIX}{}", class.id),
         hotkey: Hotkey::key(key),
-        description: format!("Annotation class: {}", class.name),
+        description: tr!(
+            "Annotation class: {}",
+            eov_plugin_api::i18n::isolate(&class.name)
+        ),
     })
 }
 

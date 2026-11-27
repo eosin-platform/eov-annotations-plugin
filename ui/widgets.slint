@@ -2,6 +2,7 @@
 // panel looks the same whatever widget style the host was built with.
 
 import { Theme } from "theme.slint";
+import { Locale } from "locale.slint";
 
 // A 22 px icon button; it fills the height of its row and centres itself.
 export component IconButton inherits Rectangle {
@@ -86,6 +87,109 @@ export component TextButton inherits Rectangle {
     }
 }
 
+// One button of a ButtonFlow.
+export struct FlowButton {
+    text: string,
+    enabled: bool,
+    primary: bool,
+    danger: bool,
+}
+
+// Up to four buttons, each as wide as its text, side by side; a button that
+// does not fit on the line any more starts the next one (Slint has no flow
+// layout). Lines start at the left, or end at the right with `align-end`,
+// in right-to-left languages too.
+export component ButtonFlow inherits Rectangle {
+    in property <[FlowButton]> buttons;
+    in property <bool> align-end: false;
+    callback clicked(int /* index in buttons */);
+
+    property <length> gap: 6px;
+    property <length> line-height: 24px;
+    property <int> count: min(root.buttons.length, 4);
+    // Widths: the text's, at most the row's.
+    property <length> w0: root.count > 0 ? min(b0.min-width, root.width) : 0px;
+    property <length> w1: root.count > 1 ? min(b1.min-width, root.width) : 0px;
+    property <length> w2: root.count > 2 ? min(b2.min-width, root.width) : 0px;
+    property <length> w3: root.count > 3 ? min(b3.min-width, root.width) : 0px;
+    // Each button's line, and its place from the start of the line.
+    property <int> l0: 0;
+    property <length> x0: 0px;
+    property <bool> wrap1: root.x0 + root.w0 + root.gap + root.w1 > root.width;
+    property <int> l1: root.wrap1 ? root.l0 + 1 : root.l0;
+    property <length> x1: root.wrap1 ? 0px : root.x0 + root.w0 + root.gap;
+    property <bool> wrap2: root.x1 + root.w1 + root.gap + root.w2 > root.width;
+    property <int> l2: root.wrap2 ? root.l1 + 1 : root.l1;
+    property <length> x2: root.wrap2 ? 0px : root.x1 + root.w1 + root.gap;
+    property <bool> wrap3: root.x2 + root.w2 + root.gap + root.w3 > root.width;
+    property <int> l3: root.wrap3 ? root.l2 + 1 : root.l2;
+    property <length> x3: root.wrap3 ? 0px : root.x2 + root.w2 + root.gap;
+    // The width of each button's line (for `align-end`).
+    property <length> e3: root.x3 + root.w3;
+    property <length> e2: root.count > 3 && root.l3 == root.l2 ? root.e3 : root.x2 + root.w2;
+    property <length> e1: root.count > 2 && root.l2 == root.l1 ? root.e2 : root.x1 + root.w1;
+    property <length> e0: root.count > 1 && root.l1 == root.l0 ? root.e1 : root.x0 + root.w0;
+    property <int> lines: root.count == 0 ? 0 : 1 + (root.count == 1 ? root.l0 : root.count == 2 ? root.l1 : root.count == 3 ? root.l2 : root.l3);
+
+    height: root.lines * root.line-height + max(0, root.lines - 1) * root.gap;
+
+    b0 := TextButton {
+        x: root.align-end ? root.width - root.e0 + root.x0 : root.x0;
+        y: root.l0 * (root.line-height + root.gap);
+        width: root.w0;
+        visible: root.count > 0;
+        text: root.buttons[0].text;
+        enabled: root.buttons[0].enabled;
+        primary: root.buttons[0].primary;
+        danger: root.buttons[0].danger;
+        clicked => {
+            root.clicked(0);
+        }
+    }
+
+    b1 := TextButton {
+        x: root.align-end ? root.width - root.e1 + root.x1 : root.x1;
+        y: root.l1 * (root.line-height + root.gap);
+        width: root.w1;
+        visible: root.count > 1;
+        text: root.buttons[1].text;
+        enabled: root.buttons[1].enabled;
+        primary: root.buttons[1].primary;
+        danger: root.buttons[1].danger;
+        clicked => {
+            root.clicked(1);
+        }
+    }
+
+    b2 := TextButton {
+        x: root.align-end ? root.width - root.e2 + root.x2 : root.x2;
+        y: root.l2 * (root.line-height + root.gap);
+        width: root.w2;
+        visible: root.count > 2;
+        text: root.buttons[2].text;
+        enabled: root.buttons[2].enabled;
+        primary: root.buttons[2].primary;
+        danger: root.buttons[2].danger;
+        clicked => {
+            root.clicked(2);
+        }
+    }
+
+    b3 := TextButton {
+        x: root.align-end ? root.width - root.e3 + root.x3 : root.x3;
+        y: root.l3 * (root.line-height + root.gap);
+        width: root.w3;
+        visible: root.count > 3;
+        text: root.buttons[3].text;
+        enabled: root.buttons[3].enabled;
+        primary: root.buttons[3].primary;
+        danger: root.buttons[3].danger;
+        clicked => {
+            root.clicked(3);
+        }
+    }
+}
+
 export component Check inherits Rectangle {
     in property <bool> checked;
     in property <string> text;
@@ -105,7 +209,7 @@ export component Check inherits Rectangle {
     }
 
     Rectangle {
-        x: 0px;
+        x: Locale.rtl ? parent.width - self.width : 0px;
         y: (parent.height - self.height) / 2;
         width: 14px;
         height: 14px;
@@ -119,19 +223,20 @@ export component Check inherits Rectangle {
             height: parent.height;
             text: root.checked ? "✓" : "";
             color: #ffffff;
-            font-size: 10px;
+            font-size: Locale.text-size(10px);
             horizontal-alignment: center;
             vertical-alignment: center;
         }
     }
 
     label := Text {
-        x: 22px;
-        width: parent.width - self.x;
+        x: Locale.rtl ? 0px : 22px;
+        width: parent.width - 22px;
         height: parent.height;
         text: root.text;
         font-size: Theme.font-size;
         color: root.enabled ? Theme.text-primary : Theme.text-disabled;
+        horizontal-alignment: Locale.start;
         vertical-alignment: center;
         overflow: elide;
     }
@@ -234,6 +339,7 @@ export component CommitField inherits Rectangle {
         text: root.placeholder;
         color: Theme.text-disabled;
         font-size: Theme.font-size;
+        horizontal-alignment: Locale.start;
         vertical-alignment: center;
         overflow: elide;
         accessible-role: none;
@@ -249,6 +355,7 @@ export component CommitField inherits Rectangle {
         read-only: !root.enabled;
         single-line: !root.multiline;
         wrap: root.multiline ? word-wrap : no-wrap;
+        horizontal-alignment: Locale.start;
         vertical-alignment: root.multiline ? top : center;
         font-size: Theme.font-size;
         color: root.enabled ? Theme.text-primary : Theme.text-secondary;
@@ -320,6 +427,7 @@ export component PlainField inherits Rectangle {
         text: root.placeholder;
         color: Theme.text-disabled;
         font-size: Theme.font-size;
+        horizontal-alignment: Locale.start;
         vertical-alignment: center;
         overflow: elide;
         accessible-role: none;
@@ -332,6 +440,7 @@ export component PlainField inherits Rectangle {
         text <=> root.text;
         enabled: root.enabled;
         single-line: true;
+        horizontal-alignment: Locale.start;
         vertical-alignment: center;
         font-size: Theme.font-size;
         color: Theme.text-primary;
@@ -381,6 +490,7 @@ export component TextArea inherits Rectangle {
         text: root.placeholder;
         color: Theme.text-disabled;
         font-size: Theme.font-size;
+        horizontal-alignment: Locale.start;
         vertical-alignment: center;
         overflow: elide;
         accessible-role: none;
@@ -396,6 +506,7 @@ export component TextArea inherits Rectangle {
         read-only: !root.enabled;
         single-line: false;
         wrap: word-wrap;
+        horizontal-alignment: Locale.start;
         vertical-alignment: top;
         font-size: Theme.font-size;
         color: Theme.text-primary;
@@ -432,6 +543,7 @@ export component ChoiceButton inherits Rectangle {
         text: root.text;
         color: root.enabled ? Theme.text-primary : Theme.text-secondary;
         font-size: Theme.font-size;
+        horizontal-alignment: Locale.start;
         vertical-alignment: center;
         overflow: elide;
     }
@@ -540,7 +652,7 @@ export component Slider inherits Rectangle {
 export component Swatch inherits Rectangle {
     in property <color> fill;
     in property <bool> enabled: true;
-    in property <string> label: "Change colour";
+    in property <string> label: @tr("Change colour");
     callback clicked(length /* window x */, length /* window y */);
 
     width: 16px;
@@ -579,9 +691,9 @@ export component KeyField inherits Rectangle {
     border-color: scope.has-focus ? Theme.accent : root.refused ? Theme.warning : Theme.border;
     background: root.enabled ? Theme.input : #ffffff06;
     accessible-role: button;
-    accessible-label: "Hotkey";
+    accessible-label: @tr("Hotkey");
     accessible-value: root.value;
-    accessible-description: "Click, then press a key. Backspace removes the hotkey.";
+    accessible-description: @tr("Click, then press a key. Backspace removes the hotkey.");
     accessible-action-default => {
         scope.focus();
     }
@@ -629,6 +741,7 @@ export component KeyField inherits Rectangle {
 }
 
 export component SectionTitle inherits Text {
+    horizontal-alignment: Locale.start;
     font-size: Theme.small-font-size;
     font-weight: 700;
     color: Theme.text-secondary;
@@ -636,6 +749,7 @@ export component SectionTitle inherits Text {
 }
 
 export component Hint inherits Text {
+    horizontal-alignment: Locale.start;
     font-size: Theme.small-font-size;
     color: Theme.text-secondary;
     wrap: word-wrap;

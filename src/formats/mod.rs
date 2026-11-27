@@ -29,6 +29,7 @@ pub mod ndpa;
 pub mod xml;
 
 use crate::model::{Color, Comment, Geometry, LayerRole, Status};
+use eov_plugin_api::i18n::tr;
 use std::collections::BTreeMap;
 
 /// The coordinates of a parsed document.
@@ -52,7 +53,8 @@ pub struct ImportDoc {
     pub classes: Vec<ImportClass>,
     pub slide: SlideHint,
     pub warnings: Vec<String>,
-    /// Reason → count of skipped elements.
+    /// Reason (in the interface's language: the import preview lists
+    /// them) → count of skipped elements.
     pub skipped: BTreeMap<String, usize>,
     /// The slides of an archive (each a complete document).
     pub entries: Vec<ImportDoc>,
@@ -222,6 +224,7 @@ pub struct SlideHint {
 /// Reads any supported format, recognised by content.
 pub fn parse(bytes: &[u8], file_name: &str) -> Result<ImportDoc, String> {
     let path = std::path::Path::new(file_name);
+    // Names layers: data, in English like other default names.
     let stem = path
         .file_stem()
         .map(|s| s.to_string_lossy().into_owned())
@@ -234,31 +237,31 @@ pub fn parse(bytes: &[u8], file_name: &str) -> Result<ImportDoc, String> {
             .extension()
             .is_some_and(|e| e.eq_ignore_ascii_case("dcm"))
         {
-            "This .dcm file is not a DICOM file (\"DICM\" is missing at byte 128).".to_string()
+            tr!("This .dcm file is not a DICOM file (\"DICM\" is missing at byte 128).")
         } else {
-            "The file is not UTF-8 text or DICOM, so it is not a supported annotation file."
-                .to_string()
+            tr!("The file is not UTF-8 text or DICOM, so it is not a supported annotation file.")
         }
     })?;
     let text = text.trim_start_matches('\u{feff}');
     let first = text.trim_start().chars().next();
     match first {
         Some('{') | Some('[') => {
-            let value: serde_json::Value = serde_json::from_str(text)
-                .map_err(|e| format!("The file is not valid JSON: {e}"))?;
+            let value: serde_json::Value =
+                serde_json::from_str(text).map_err(|e| tr!("The file is not valid JSON: {}", e))?;
             if eov::is_eov(&value) {
                 eov::parse(&value)
             } else if geojson::is_geojson(&value) {
                 geojson::parse(&value, &stem)
             } else {
-                Err("This JSON file is neither GeoJSON nor an eov annotation export.".to_string())
+                Err(tr!(
+                    "This JSON file is neither GeoJSON nor an eov annotation export."
+                ))
             }
         }
         Some('<') => xml::parse(text, &stem),
-        _ => Err(
+        _ => Err(tr!(
             "Unsupported file: expected GeoJSON, eov JSON, ASAP XML, ImageScope XML, NDPA or DICOM bulk annotations."
-                .to_string(),
-        ),
+        )),
     }
 }
 

@@ -7,6 +7,7 @@
 //! polygons are simple rings whose shoelace area equals their filled area.
 
 use crate::model::{Bounds, Geometry, GeometryKind, MAX_VERTICES};
+use eov_plugin_api::i18n::tr;
 use i_overlay::core::fill_rule::FillRule;
 use i_overlay::core::overlay_rule::OverlayRule;
 use i_overlay::float::simplify::SimplifyShape;
@@ -248,12 +249,13 @@ pub struct Normalized {
 ///   parts) and clipped to the slide.
 pub fn normalize(geometry: Geometry, image: Option<Bounds>) -> Result<Normalized, String> {
     if !geometry.is_finite() {
-        return Err("The shape has invalid (non-finite) coordinates.".to_string());
+        return Err(tr!("The shape has invalid (non-finite) coordinates."));
     }
     if geometry.vertex_count() > MAX_VERTICES {
-        return Err(format!(
-            "The shape has {} vertices; the limit is {MAX_VERTICES}.",
-            geometry.vertex_count()
+        return Err(tr!(
+            "The shape has {n} vertices; the limit is {limit}."
+                | "The shape has {n} vertices; the limit is {limit}." % geometry.vertex_count(),
+            limit = MAX_VERTICES
         ));
     }
     let on_slide = |x: f64, y: f64| image.is_none_or(|b| b.contains(x, y));
@@ -261,7 +263,7 @@ pub fn normalize(geometry: Geometry, image: Option<Bounds>) -> Result<Normalized
     match geometry {
         Geometry::Point { x, y } | Geometry::Text { x, y } => {
             if !on_slide(x, y) {
-                return Err("The point is outside the slide.".to_string());
+                return Err(tr!("The point is outside the slide."));
             }
             out.parts.push(geometry);
         }
@@ -283,9 +285,9 @@ pub fn normalize(geometry: Geometry, image: Option<Bounds>) -> Result<Normalized
             }
             if points.len() < 2 {
                 return Err(if arrow {
-                    "An arrow needs two distinct points.".to_string()
+                    tr!("An arrow needs two distinct points.")
                 } else {
-                    "A line needs at least two distinct points.".to_string()
+                    tr!("A line needs at least two distinct points.")
                 });
             }
             out.parts.push(if arrow {
@@ -312,7 +314,7 @@ pub fn normalize(geometry: Geometry, image: Option<Bounds>) -> Result<Normalized
                 let (x0, y0) = (x.max(b.min_x), y.max(b.min_y));
                 let (x1, y1) = ((x + width).min(b.max_x), (y + height).min(b.max_y));
                 if x1 <= x0 || y1 <= y0 {
-                    return Err("The rectangle is outside the slide.".to_string());
+                    return Err(tr!("The rectangle is outside the slide."));
                 }
                 if (x0, y0, x1, y1) != (x, y, x + width, y + height) {
                     out.clipped = true;
@@ -320,7 +322,7 @@ pub fn normalize(geometry: Geometry, image: Option<Bounds>) -> Result<Normalized
                 (x, y, width, height) = (x0, y0, x1 - x0, y1 - y0);
             }
             if width <= 1e-9 || height <= 1e-9 {
-                return Err("The rectangle has no area.".to_string());
+                return Err(tr!("The rectangle has no area."));
             }
             out.parts.push(Geometry::Rectangle {
                 x,
@@ -332,10 +334,10 @@ pub fn normalize(geometry: Geometry, image: Option<Bounds>) -> Result<Normalized
         Geometry::Ellipse { cx, cy, rx, ry } => {
             let (rx, ry) = (rx.abs(), ry.abs());
             if rx <= 1e-9 || ry <= 1e-9 {
-                return Err("The ellipse has no area.".to_string());
+                return Err(tr!("The ellipse has no area."));
             }
             if !on_slide(cx, cy) {
-                return Err("The ellipse is centred outside the slide.".to_string());
+                return Err(tr!("The ellipse is centred outside the slide."));
             }
             out.parts.push(Geometry::Ellipse { cx, cy, rx, ry });
         }
@@ -347,10 +349,10 @@ pub fn normalize(geometry: Geometry, image: Option<Bounds>) -> Result<Normalized
                 .filter(|h| h.len() >= 3 && ring_area(h) > 0.0)
                 .collect();
             if exterior.len() < 3 {
-                return Err("A polygon needs at least three distinct corners.".to_string());
+                return Err(tr!("A polygon needs at least three distinct corners."));
             }
             let mut parts: Vec<Rings> = match polygon_validity(&exterior, &holes) {
-                Validity::Empty => return Err("The polygon encloses no area.".to_string()),
+                Validity::Empty => return Err(tr!("The polygon encloses no area.")),
                 Validity::Valid => {
                     let mut rings = vec![exterior];
                     rings.extend(holes);
@@ -386,9 +388,9 @@ pub fn normalize(geometry: Geometry, image: Option<Bounds>) -> Result<Normalized
             }
             if parts.is_empty() {
                 return Err(if out.clipped {
-                    "The polygon is outside the slide.".to_string()
+                    tr!("The polygon is outside the slide.")
                 } else {
-                    "The polygon encloses no area.".to_string()
+                    tr!("The polygon encloses no area.")
                 });
             }
             for mut rings in parts {

@@ -1,0 +1,3317 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: annotations\n"
+"Report-Msgid-Bugs-To: https://github.com/eosin-platform/eov-annotations-"
+"plugin/issues\n"
+"Language-Team: Turkish\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Review-Status: machine-translated; not yet reviewed by a native speaker\n"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid "Annotations"
+msgstr "Anotasyonlar"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid ""
+"Point, region, line and text annotations with reusable classes, cell "
+"counting, HPF fields and measurements; GeoJSON (QuPath) import and export, "
+"ASAP and Aperio ImageScope XML import."
+msgstr ""
+"Yeniden kullanılabilir sınıflarla nokta, bölge, çizgi ve metin "
+"anotasyonları, hücre sayımı, HPF alanları ve ölçümler; GeoJSON (QuPath) içe "
+"ve dışa aktarma, ASAP ve Aperio ImageScope XML içe aktarma."
+
+#: src/actions.rs:23
+msgid "The annotations of this slide are still loading; try again in a moment."
+msgstr ""
+"Bu preparatın anotasyonları hâlâ yükleniyor; biraz sonra yeniden deneyin."
+
+#: src/actions.rs:27 src/sidebar.rs:1390 src/sidebar.rs:1474
+msgid "That layer no longer exists."
+msgstr "Bu katman artık mevcut değil."
+
+#: src/actions.rs:31
+msgid "That annotation no longer exists."
+msgstr "Bu anotasyon artık mevcut değil."
+
+#: src/actions.rs:35 src/sidebar.rs:1605
+msgid "That class no longer exists."
+msgstr "Bu sınıf artık mevcut değil."
+
+#: src/actions.rs:39 src/transfer.rs:648 src/transfer.rs:658
+msgid "Layer \"{}\" is locked."
+msgstr "“{}” katmanı kilitli."
+
+#: src/actions.rs:43
+msgid "Parts outside the slide were cut off."
+msgstr "Preparatın dışında kalan kısımlar kesildi."
+
+#: src/actions.rs:62
+msgid "The slide is not open any more."
+msgstr "Preparat artık açık değil."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:136
+msgid "The outline crossed itself and was split into {n} parts."
+msgid_plural "The outline crossed itself and was split into {n} parts."
+msgstr[0] "Sınır çizgisi kendisiyle kesişti ve {n} parçaya ayrıldı."
+msgstr[1] "Sınır çizgisi kendisiyle kesişti ve {n} parçaya ayrıldı."
+
+#: src/actions.rs:140
+msgid "The outline crossed itself and was repaired."
+msgstr "Sınır çizgisi kendisiyle kesişti ve onarıldı."
+
+#: src/actions.rs:156
+msgid "The HPF size is not valid; check it in the Count tab."
+msgstr "HPF boyutu geçerli değil; Sayım sekmesinde denetleyin."
+
+#: src/actions.rs:160
+msgid "This slide has no pixel size, so HPF fields cannot be sized."
+msgstr ""
+"Bu preparatın piksel boyutu yok; bu nedenle HPF alanlarının boyutu "
+"belirlenemiyor."
+
+#: src/actions.rs:207
+msgid "Count cell"
+msgstr "Hücre sayma"
+
+#: src/actions.rs:218 src/lib.rs:613
+msgid "Add point"
+msgstr "Nokta ekleme"
+
+#: src/actions.rs:228
+msgid "Add line"
+msgstr "Çizgi ekleme"
+
+#: src/actions.rs:242
+msgid "Add arrow"
+msgstr "Ok ekleme"
+
+#: src/actions.rs:258
+msgid "Add text"
+msgstr "Metin ekleme"
+
+#: src/actions.rs:303
+msgid ""
+"To add the shape to a region (Shift) or cut it from a region (Alt), select "
+"exactly one region first. The shape was added as a new annotation."
+msgstr ""
+"Şekli bir bölgeye eklemek (Shift) veya bir bölgeden çıkarmak (Alt) için önce "
+"tam olarak bir bölge seçin. Şekil yeni bir anotasyon olarak eklendi."
+
+#: src/actions.rs:314 src/actions.rs:325
+msgid "Add region"
+msgstr "Bölge ekleme"
+
+#: src/actions.rs:378
+msgid "Place HPF field"
+msgstr "HPF alanı yerleştirme"
+
+#: src/actions.rs:399
+msgid "This field extends past the slide edge; its area includes empty canvas."
+msgstr ""
+"Bu alan preparatın kenarından taşıyor; alan büyüklüğü boş tuvali de kapsıyor."
+
+#: src/actions.rs:429
+msgid "Add to region"
+msgstr "Bölgeye ekleme"
+
+#: src/actions.rs:431
+msgid "Cut from region"
+msgstr "Bölgeden çıkarma"
+
+#: src/actions.rs:439
+msgid "The selected region no longer exists."
+msgstr "Seçili bölge artık mevcut değil."
+
+#: src/actions.rs:441
+msgid "The selected region is locked."
+msgstr "Seçili bölge kilitli."
+
+#: src/actions.rs:452
+msgid "Only regions can be combined."
+msgstr "Yalnızca bölgeler birleştirilebilir."
+
+#: src/actions.rs:460
+msgid "The cut removed the whole region."
+msgstr "Çıkarma işlemi bölgenin tamamını kaldırdı."
+
+#: src/actions.rs:483
+msgid ""
+"The shapes do not touch; the new shape was added as a separate annotation."
+msgstr ""
+"Şekiller birbirine değmiyor; yeni şekil ayrı bir anotasyon olarak eklendi."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:488
+msgid "The cut split the region into {n} parts."
+msgid_plural "The cut split the region into {n} parts."
+msgstr[0] "Çıkarma işlemi bölgeyi {n} parçaya ayırdı."
+msgstr[1] "Çıkarma işlemi bölgeyi {n} parçaya ayırdı."
+
+#: src/actions.rs:522
+msgid "Edit shape"
+msgstr "Şekli düzenleme"
+
+#: src/actions.rs:544
+msgid "The annotation is locked."
+msgstr "Anotasyon kilitli."
+
+#: src/actions.rs:560
+msgid "That edit would turn the arrow into another shape, so it was undone."
+msgstr "Bu düzenleme oku başka bir şekle dönüştüreceğinden geri alındı."
+
+#: src/actions.rs:564
+msgid "That edit was undone."
+msgstr "Bu düzenleme geri alındı."
+
+#: src/actions.rs:591
+msgid "The edit was undone: {}"
+msgstr "Düzenleme geri alındı: {}"
+
+#: src/actions.rs:596
+msgid "That edit would make the outline cross itself, so it was undone."
+msgstr ""
+"Bu düzenleme sınır çizgisinin kendisiyle kesişmesine yol açacağından geri "
+"alındı."
+
+#: src/actions.rs:629
+msgid "Delete annotation"
+msgid_plural "Delete {n} annotations"
+msgstr[0] "Anotasyonu silme"
+msgstr[1] "{n} anotasyonu silme"
+
+#: src/actions.rs:649
+msgid "{n} locked annotation was kept."
+msgid_plural "{n} locked annotations were kept."
+msgstr[0] "Kilitli {n} anotasyon korundu."
+msgstr[1] "Kilitli {n} anotasyon korundu."
+
+#: src/actions.rs:703
+msgid "The target layer is locked or gone."
+msgstr "Hedef katman kilitli veya artık mevcut değil."
+
+#: src/actions.rs:712
+msgid "{n} locked annotation was not changed."
+msgid_plural "{n} locked annotations were not changed."
+msgstr[0] "Kilitli {n} anotasyon değiştirilmedi."
+msgstr[1] "Kilitli {n} anotasyon değiştirilmedi."
+
+#: src/actions.rs:777
+msgid "Could not zoom to the annotation"
+msgstr "Anotasyona yakınlaştırılamadı"
+
+#: src/actions.rs:790
+msgid "New layer"
+msgstr "Yeni katman oluşturma"
+
+#: src/actions.rs:865
+msgid "Rename layer"
+msgstr "Katmanı yeniden adlandırma"
+
+#: src/actions.rs:877
+msgid "Delete layer"
+msgstr "Katmanı silme"
+
+#: src/actions.rs:887
+msgid "Delete layer \"{}\""
+msgstr "“{}” katmanını silme"
+
+#: src/actions.rs:897
+msgid "Choose layer"
+msgstr "Katman seçme"
+
+#: src/actions.rs:902
+msgid ""
+"New annotations go to a regular layer; count points and HPF fields have "
+"their own."
+msgstr ""
+"Yeni anotasyonlar normal bir katmana eklenir; sayım noktalarının ve HPF "
+"alanlarının kendi katmanları vardır."
+
+#. Translators: an undo step, shown by eov as "Undo {}".
+#: src/actions.rs:918
+msgid "Clear counts"
+msgstr "Sayımları temizleme"
+
+#: src/actions.rs:950
+msgid ""
+"There are no HPF fields on this slide yet. Use the HPF field tool (H) to "
+"place them."
+msgstr ""
+"Bu preparatta henüz HPF alanı yok. Yerleştirmek için HPF alanı aracını (H) "
+"kullanın."
+
+#: src/actions.rs:960
+msgid "Repair outline"
+msgstr "Sınır çizgisini onarma"
+
+#: src/actions.rs:975
+msgid "Nothing is left of the outline."
+msgstr "Sınır çizgisinden geriye bir şey kalmadı."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:997
+msgid "The outline was split into {n} parts."
+msgid_plural "The outline was split into {n} parts."
+msgstr[0] "Sınır çizgisi {n} parçaya ayrıldı."
+msgstr[1] "Sınır çizgisi {n} parçaya ayrıldı."
+
+#: src/actions.rs:1012
+msgid "Could not attach the annotations"
+msgstr "Anotasyonlar ilişkilendirilemedi"
+
+#: src/actions.rs:1018
+msgid "Attach annotations of another slide"
+msgstr "Başka bir preparatın anotasyonlarını ilişkilendirme"
+
+#: src/actions.rs:1024
+msgid "Those annotations already belong to this slide."
+msgstr "Bu anotasyonlar zaten bu preparata ait."
+
+#: src/actions.rs:1027
+msgid "That slide has no annotations left."
+msgstr "O preparatta hiç anotasyon kalmadı."
+
+#: src/actions.rs:1035
+msgid "Attached {n} layer to this slide."
+msgid_plural "Attached {n} layers to this slide."
+msgstr[0] "{n} katman bu preparatla ilişkilendirildi."
+msgstr[1] "{n} katman bu preparatla ilişkilendirildi."
+
+#: src/actions.rs:1076
+msgid "New class"
+msgstr "Yeni sınıf oluşturma"
+
+#: src/actions.rs:1138
+msgid "Rename class"
+msgstr "Sınıfı yeniden adlandırma"
+
+#: src/actions.rs:1147
+msgid "A class named \"{}\" already exists."
+msgstr "“{}” adlı bir sınıf zaten var."
+
+#: src/actions.rs:1161
+msgid "Set class hotkey"
+msgstr "Sınıf kısayol tuşunu ayarlama"
+
+#: src/actions.rs:1186
+msgid "Change class colour"
+msgstr "Sınıf rengini değiştirme"
+
+#: src/actions.rs:1190 src/sidebar.rs:1358
+msgid "\"{}\" is not a colour."
+msgstr "“{}” bir renk değil."
+
+#: src/actions.rs:1197
+msgid "Delete class"
+msgstr "Sınıfı silme"
+
+#: src/actions.rs:1201
+msgid "Delete class \"{}\""
+msgstr "“{}” sınıfını silme"
+
+#: src/actions.rs:1243 src/lib.rs:96 src/overlay.rs:164 src/sidebar.rs:151
+#: src/sidebar.rs:384
+msgid "Unclassified"
+msgstr "Sınıflandırılmamış"
+
+#: src/actions.rs:1244
+msgid "Class: {}"
+msgstr "Sınıf: {}"
+
+#. Translators: on the slide, beside the HPF field that follows the
+#. pointer: its area and how many points (such as counted cells) lie in it.
+#: src/actions.rs:1274
+msgid "1 HPF · {area} mm² · {n} point"
+msgid_plural "1 HPF · {area} mm² · {n} points"
+msgstr[0] "1 HPF · {area} mm² · {n} nokta"
+msgstr[1] "1 HPF · {area} mm² · {n} nokta"
+
+#: src/actions.rs:1466
+msgid "Add comment"
+msgstr "Yorum ekleme"
+
+#: src/actions.rs:1472
+msgid "Write the comment first."
+msgstr "Önce yorumu yazın."
+
+#: src/actions.rs:1481
+msgid "An annotation can have at most {n} comments."
+msgid_plural "An annotation can have at most {n} comments."
+msgstr[0] "Bir anotasyonun en fazla {n} yorumu olabilir."
+msgstr[1] "Bir anotasyonun en fazla {n} yorumu olabilir."
+
+#: src/actions.rs:1511
+msgid "Delete comment"
+msgstr "Yorumu silme"
+
+#: src/actions.rs:1524
+msgid "That comment no longer exists."
+msgstr "Bu yorum artık mevcut değil."
+
+#: src/actions.rs:1723
+msgid ""
+"Brush {} px, eraser: paint over a selected region to erase from it; [ and ] "
+"change the size"
+msgstr ""
+"Fırça {} px, silgi: silmek için seçili bir bölgenin üzerine boyayın; [ ve ] "
+"boyutu değiştirir"
+
+#: src/actions.rs:1728
+msgid ""
+"Brush {} px: paint a region (over a selected region to extend it); Alt "
+"erases; [ and ] change the size"
+msgstr ""
+"Fırça {} px: bir bölge boyayın (genişletmek için seçili bir bölgenin "
+"üzerine); Alt siler; [ ve ] boyutu değiştirir"
+
+#: src/actions.rs:1742
+msgid "Erase"
+msgstr "Silgiyle silme"
+
+#: src/actions.rs:1744
+msgid "Brush stroke"
+msgstr "Fırça darbesi"
+
+#: src/actions.rs:1768
+msgid "The stroke is outside the slide."
+msgstr "Fırça darbesi preparatın dışında."
+
+#: src/actions.rs:1818
+msgid "Select the region to erase from."
+msgstr "Silme yapılacak bölgeyi seçin."
+
+#: src/actions.rs:1843
+msgid "The eraser did not touch the selected region."
+msgstr "Silgi seçili bölgeye değmedi."
+
+#. Translators: a part of the plugin that works in the background.
+#: src/core.rs:228
+msgid "Could not start a worker thread"
+msgstr "Bir iş parçacığı başlatılamadı"
+
+#: src/core.rs:385
+msgid "Internal error while opening the database"
+msgstr "Veritabanı açılırken iç hata oluştu"
+
+#: src/core.rs:393
+msgid "Internal error while loading annotations"
+msgstr "Anotasyonlar yüklenirken iç hata oluştu"
+
+#: src/core.rs:398
+msgid "Internal error while saving annotations"
+msgstr "Anotasyonlar kaydedilirken iç hata oluştu"
+
+#: src/core.rs:403
+msgid "Internal error while undoing"
+msgstr "Geri alma sırasında iç hata oluştu"
+
+#: src/core.rs:408
+msgid "Internal error while working on the database"
+msgstr "Veritabanı üzerinde çalışılırken iç hata oluştu"
+
+#: src/core.rs:427
+msgid "Internal error while reading or writing a file"
+msgstr "Bir dosya okunurken veya yazılırken iç hata oluştu"
+
+#: src/core.rs:561
+msgid "The annotation database could not be opened"
+msgstr "Anotasyon veritabanı açılamadı"
+
+#: src/core.rs:590
+msgid "Annotations from eov before 1.0"
+msgstr "eov 1.0 öncesinden kalan anotasyonlar"
+
+#: src/core.rs:592
+msgid ""
+"The annotations plugin of eov before 1.0 left a database at {}. Bring its "
+"annotations into the current database? The old file is not changed. You can "
+"also do this later in the Data tab of the annotations panel."
+msgstr ""
+"eov 1.0 öncesinin anotasyon eklentisi şu konumda bir veritabanı bıraktı: {}. "
+"Bu veritabanındaki anotasyonlar geçerli veritabanına aktarılsın mı? Eski "
+"dosya değiştirilmez. Bunu daha sonra anotasyon panelinin Veri sekmesinde de "
+"yapabilirsiniz."
+
+#: src/core.rs:597
+msgid "Bring them in"
+msgstr "Aktar"
+
+#: src/core.rs:598
+msgid "Not now"
+msgstr "Şimdi değil"
+
+#. Translators: the plugin could not ask whether to bring in the annotations made
+#. with eov before 1.0 (the title of that question is "Annotations from eov before 1.0").
+#: src/core.rs:612
+msgid "Could not offer the annotations from eov before 1.0"
+msgstr "eov 1.0 öncesinden kalan anotasyonların içe aktarılması önerilemedi"
+
+#: src/core.rs:657 src/sidebar.rs:457
+msgid "Could not load this slide's annotations: {}"
+msgstr "Bu preparatın anotasyonları yüklenemedi: {}"
+
+#. Translators: a second read is an independent annotation of the slide by another person
+#. (as in a reader study), not a clinical second opinion. Data, Second reader and Blinded
+#. copy are the tab, section and button of the annotations panel: use their translations.
+#: src/core.rs:670
+msgid ""
+"{opened} has the same content as {annotated}, so it shows and edits the same "
+"annotations. For an independent second read, use Data → Second reader → "
+"Blinded copy."
+msgstr ""
+"{opened} ile {annotated} aynı içeriğe sahip; bu nedenle aynı anotasyonlar "
+"gösterilir ve düzenlenir. Bağımsız ikinci bir değerlendirme için Veri → "
+"İkinci değerlendirici → Körleştirilmiş kopya seçeneğini kullanın."
+
+#: src/core.rs:721 src/core.rs:1019 src/core.rs:1156
+msgid "the database is not open"
+msgstr "veritabanı açık değil"
+
+#: src/core.rs:809
+msgid "{n} annotation of {file} could not be read and was skipped."
+msgid_plural "{n} annotations of {file} could not be read and were skipped."
+msgstr[0] "{file} dosyasındaki {n} anotasyon okunamadı ve atlandı."
+msgstr[1] "{file} dosyasındaki {n} anotasyon okunamadı ve atlandı."
+
+#: src/core.rs:900
+msgid "Could not reload annotations"
+msgstr "Anotasyonlar yeniden yüklenemedi"
+
+#: src/core.rs:931
+msgid "Annotations were changed by another eov window and have been reloaded."
+msgstr ""
+"Anotasyonlar başka bir eov penceresinde değiştirildi ve yeniden yüklendi."
+
+#: src/core.rs:957
+msgid "the database stayed locked"
+msgstr "veritabanı kilitli kaldı"
+
+#: src/core.rs:964
+msgid "a class with that name already exists"
+msgstr "bu adda bir sınıf zaten var"
+
+#: src/core.rs:966
+msgid "the annotation database is read-only"
+msgstr "anotasyon veritabanı salt okunur"
+
+#: src/core.rs:969
+msgid "the annotation was changed elsewhere in the meantime"
+msgstr "anotasyon bu arada başka bir yerde değiştirildi"
+
+#: src/core.rs:971
+msgid "the layer was changed elsewhere in the meantime"
+msgstr "katman bu arada başka bir yerde değiştirildi"
+
+#: src/core.rs:972
+msgid "the class was changed elsewhere in the meantime"
+msgstr "sınıf bu arada başka bir yerde değiştirildi"
+
+#: src/core.rs:973
+msgid "a layer being moved was changed elsewhere in the meantime"
+msgstr "taşınan bir katman bu arada başka bir yerde değiştirildi"
+
+#: src/core.rs:1053
+msgid "Could not save \"{}\""
+msgstr "“{}” kaydedilemedi"
+
+#: src/core.rs:1123
+msgid "This annotation change can no longer be undone."
+msgstr "Bu anotasyon değişikliği artık geri alınamaz."
+
+#: src/core.rs:1137
+msgid "The slide of this change is not open any more."
+msgstr "Bu değişikliğin ait olduğu preparat artık açık değil."
+
+#: src/core.rs:1176
+msgid "Could not redo \"{}\""
+msgstr "“{}” yinelenemedi"
+
+#: src/core.rs:1178
+msgid "Could not undo \"{}\""
+msgstr "“{}” geri alınamadı"
+
+#. Translators: cells per square millimetre, with the 95% confidence interval.
+#: src/counting.rs:185
+msgid "{density} /mm² (95% {low}–{high})"
+msgstr "{density} /mm² (%95 GA {low}–{high})"
+
+#. Translators: cells per 10 high-power fields.
+#: src/counting.rs:194
+msgid "{} /10 HPF"
+msgstr "{} /10 HPF"
+
+#: src/counting.rs:222
+msgid "100 (capped; the ratio is higher)"
+msgstr "100 (üst sınır; oran daha yüksek)"
+
+#. Translators: CPS is the PD-L1 combined positive score; {positive},
+#. {negative} and {immune} are names of classes of cells.
+#: src/counting.rs:234
+msgid ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cell "
+"({positive} + {negative}) × 100."
+msgid_plural ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cells "
+"({positive} + {negative}) × 100."
+msgstr[0] ""
+"CPS {score} — ({a} {positive} + {c} {immune}) / {n} tümör hücresi "
+"({positive} + {negative}) × 100."
+msgstr[1] ""
+"CPS {score} — ({a} {positive} + {c} {immune}) / {n} tümör hücresi "
+"({positive} + {negative}) × 100."
+
+#: src/counting.rs:248
+msgid "Fewer than {n} tumour cells: below the minimum for a valid score."
+msgid_plural ""
+"Fewer than {n} tumour cells: below the minimum for a valid score."
+msgstr[0] ""
+"{n} tümör hücresinden az: geçerli bir skor için gereken en düşük sayının "
+"altında."
+msgstr[1] ""
+"{n} tümör hücresinden az: geçerli bir skor için gereken en düşük sayının "
+"altında."
+
+#. Translators: e.g. "Ki-67+ index: 25.0 % (95% 20.1–30.4 %) — 25 of 100 (Ki-67+ + Ki-67-)";
+#. {class} and {other} are names of classes of cells.
+#: src/counting.rs:263
+msgid ""
+"{class} index: {value} % (95% {low}–{high} %) — {k} of {total} ({class} + "
+"{other})"
+msgstr ""
+"{class} indeksi: %{value} (%95 GA %{low}–%{high}) — {k}/{total} ({class} + "
+"{other})"
+
+#: src/db/mod.rs:116
+msgid "The annotation database is read-only; editing is disabled."
+msgstr "Anotasyon veritabanı salt okunur; düzenleme devre dışı."
+
+#: src/db/mod.rs:119
+msgid "{n} layer colour was unreadable and was replaced."
+msgid_plural "{n} layer colours were unreadable and were replaced."
+msgstr[0] "{n} katman rengi okunamadı ve değiştirildi."
+msgstr[1] "{n} katman rengi okunamadı ve değiştirildi."
+
+#. Translators: {slides} in "Upgraded the annotation database from the pre-1.0 format: {slides}, …".
+#: src/db/mod.rs:131
+msgid "{n} slide"
+msgid_plural "{n} slides"
+msgstr[0] "{n} preparat"
+msgstr[1] "{n} preparat"
+
+#. Translators: {slides} is "1 slide" or "3 slides" (translated on its own).
+#: src/db/mod.rs:136
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotation."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotations."
+msgstr[0] ""
+"Anotasyon veritabanı 1.0 öncesi biçimden yükseltildi: {slides}, {n} "
+"anotasyon."
+msgstr[1] ""
+"Anotasyon veritabanı 1.0 öncesi biçimden yükseltildi: {slides}, {n} "
+"anotasyon."
+
+#. Translators: {slides} is "1 slide" or "3 slides", {annotations} is
+#. "1 annotation" or "5 annotations" (each translated on its own).
+#: src/db/mod.rs:145
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotation skipped."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotations skipped."
+msgstr[0] ""
+"Anotasyon veritabanı 1.0 öncesi biçimden yükseltildi: {slides}, "
+"{annotations}, okunamayan {n} anotasyon atlandı."
+msgstr[1] ""
+"Anotasyon veritabanı 1.0 öncesi biçimden yükseltildi: {slides}, "
+"{annotations}, okunamayan {n} anotasyon atlandı."
+
+#. Translators: a number of annotations on its own, in two texts: {annotations} in
+#. "Upgraded the annotation database from the pre-1.0 format: {slides}, {annotations}, …"
+#. and {ours} in "This slide's visible layers ({ours}) against the {n} annotations in {name}, …".
+#: src/db/mod.rs:153 src/state.rs:516
+msgid "{n} annotation"
+msgid_plural "{n} annotations"
+msgstr[0] "{n} anotasyon"
+msgstr[1] "{n} anotasyon"
+
+#: src/db/mod.rs:159
+msgid ""
+"New database. If you annotated with eov before 1.0, those annotations are in "
+"annotations.db in eov's old settings folder (~/.config/eov on Linux, ~/"
+"Library/Application Support/eov on macOS, %APPDATA%\\eov on Windows): bring "
+"them in with Merge… above."
+msgstr ""
+"Yeni veritabanı. eov 1.0 öncesinde anotasyon yaptıysanız bu anotasyonlar "
+"eov'un eski ayarlar klasöründeki annotations.db dosyasındadır (Linux'ta ~/."
+"config/eov, macOS'te ~/Library/Application Support/eov, Windows'ta %APPDATA%"
+"\\eov): yukarıdaki Birleştir… düğmesiyle aktarın."
+
+#: src/fileio.rs:105 src/fileio.rs:115
+msgid "cannot read {file}: {error}"
+msgstr "{file} okunamıyor: {error}"
+
+#: src/fileio.rs:109
+msgid "{file} is {size} MB; imports are limited to {limit} MB"
+msgstr "{file} dosyası {size} MB; içe aktarma sınırı {limit} MB"
+
+#: src/formats/dicom/mod.rs:605
+msgid "There are too many coordinates for one DICOM annotation group."
+msgstr "Tek bir DICOM anotasyon grubu için çok fazla koordinat var."
+
+#: src/formats/dicom/mod.rs:674
+msgid "There are too many annotation groups."
+msgstr "Çok fazla anotasyon grubu var."
+
+#: src/formats/dicom/mod.rs:695
+msgid "There are too many annotations in one group."
+msgstr "Bir grupta çok fazla anotasyon var."
+
+#: src/formats/dicom/mod.rs:736
+msgid "The slide has no annotations to export."
+msgstr "Preparatta dışa aktarılacak anotasyon yok."
+
+#: src/formats/dicom/mod.rs:872
+msgid ""
+"It refers to this slide's DICOM image (series {}) and joins its study; the "
+"patient and study attributes are the slide's."
+msgstr ""
+"Dosya bu preparatın DICOM görüntüsüne (seri: {}) başvurur ve aynı çalışmaya "
+"dahil olur; hasta ve çalışma öznitelikleri preparattan alınır."
+
+#: src/formats/dicom/mod.rs:876
+msgid ""
+"This slide is not a DICOM image, so the file refers to no image: it is a "
+"study of its own with empty patient attributes, and DICOM viewers cannot "
+"attach it to a slide by themselves."
+msgstr ""
+"Bu preparat bir DICOM görüntüsü olmadığından dosya hiçbir görüntüye "
+"başvurmaz: hasta öznitelikleri boş, bağımsız bir çalışmadır ve DICOM "
+"görüntüleyicileri onu kendiliğinden bir preparatla ilişkilendiremez."
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot
+#. hold {}: …"; {regions} is "in 1 region" or "in 2 regions"; "drawn
+#. without it/them": other viewers draw these regions without their holes.
+#: src/formats/dicom/mod.rs:886
+msgid "{n} hole {regions} (drawn without it)"
+msgid_plural "{n} holes {regions} (drawn without them)"
+msgstr[0] "{regions} {n} delik (deliksiz çizilir)"
+msgstr[1] "{regions} {n} delik (deliksiz çizilir)"
+
+#. Translators: in "{n} holes {regions} (drawn without them)".
+#: src/formats/dicom/mod.rs:890
+msgid "in {n} region"
+msgid_plural "in {n} regions"
+msgstr[0] "{n} bölgede"
+msgstr[1] "{n} bölgede"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:897
+msgid "the text of {n} text label (written as points)"
+msgid_plural "the text of {n} text labels (written as points)"
+msgstr[0] "{n} metin etiketinin metni (nokta olarak yazıldı)"
+msgstr[1] "{n} metin etiketinin metni (nokta olarak yazıldı)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:904
+msgid "the heads of {n} arrow (written as lines)"
+msgid_plural "the heads of {n} arrows (written as lines)"
+msgstr[0] "{n} okun uçları (çizgi olarak yazıldı)"
+msgstr[1] "{n} okun uçları (çizgi olarak yazıldı)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:911
+msgid "the names, descriptions and statuses of {n} annotation"
+msgid_plural "the names, descriptions and statuses of {n} annotations"
+msgstr[0] "{n} anotasyonun adları, açıklamaları ve durumları"
+msgstr[1] "{n} anotasyonun adları, açıklamaları ve durumları"
+
+#. Translators: {} lists what is lost, such as "the heads of 2 arrows (written
+#. as lines) and the text of 1 text label (written as points)".
+#: src/formats/dicom/mod.rs:919
+msgid ""
+"DICOM bulk annotations cannot hold {}: other viewers do not see them, but "
+"eov reads them back from its private attributes."
+msgstr ""
+"DICOM toplu anotasyonları şunları tutamaz: {}. Diğer görüntüleyiciler "
+"bunları görmez, ancak eov bunları kendi özel özniteliklerinden geri okur."
+
+#: src/formats/dicom/mod.rs:924
+msgid ""
+"Each layer, class and kind of shape is a group labelled with its class (or "
+"its layer). Authors, comments, properties and times are not exported (eov "
+"JSON keeps everything)."
+msgstr ""
+"Her katman, sınıf ve şekil türü, sınıfıyla (veya katmanıyla) etiketlenen bir "
+"gruptur. Yazarlar, yorumlar, özellikler ve zaman damgaları dışa aktarılmaz "
+"(eov JSON her şeyi korur)."
+
+#: src/formats/dicom/mod.rs:928
+msgid ""
+"{n} annotation with too few points or unusable coordinates was left out."
+msgid_plural ""
+"{n} annotations with too few points or unusable coordinates were left out."
+msgstr[0] ""
+"Çok az noktası veya kullanılamayan koordinatları olan {n} anotasyon dışarıda "
+"bırakıldı."
+msgstr[1] ""
+"Çok az noktası veya kullanılamayan koordinatları olan {n} anotasyon dışarıda "
+"bırakıldı."
+
+#. Translators: the end of a list, "a, b and c": {first} is "a, b".
+#: src/formats/dicom/mod.rs:943
+msgid "{first} and {last}"
+msgstr "{first} ve {last}"
+
+#. Translators: between the items of a list ("a, b and c").
+#: src/formats/dicom/mod.rs:946
+msgid ", "
+msgstr ", "
+
+#: src/formats/dicom/mod.rs:978
+msgid ""
+"Made for a DICOM slide; this one is not a DICOM image, so whether the "
+"annotations belong to it cannot be checked. Coordinates are taken as level-0 "
+"pixels of this slide."
+msgstr ""
+"Bir DICOM preparatı için hazırlanmış; bu preparat bir DICOM görüntüsü "
+"olmadığından anotasyonların ona ait olup olmadığı denetlenemiyor. "
+"Koordinatlar bu preparatın düzey 0 pikselleri olarak alınır."
+
+#: src/formats/dicom/mod.rs:987
+msgid "Made for this slide (its DICOM image)."
+msgstr "Bu preparat için hazırlanmış (DICOM görüntüsü)."
+
+#: src/formats/dicom/mod.rs:994
+msgid "Made for this slide (its DICOM series)."
+msgstr "Bu preparat için hazırlanmış (DICOM serisi)."
+
+#: src/formats/dicom/mod.rs:998
+msgid ""
+"Made for another image of this slide's DICOM series (another resolution "
+"level?), whose pixels may not be level-0 pixels."
+msgstr ""
+"Bu preparatın DICOM serisindeki başka bir görüntü için hazırlanmış (başka "
+"bir çözünürlük düzeyi?); bu görüntünün pikselleri düzey 0 pikselleri "
+"olmayabilir."
+
+#: src/formats/dicom/mod.rs:1005
+msgid "Made for a different DICOM slide (it refers to other images)."
+msgstr ""
+"Farklı bir DICOM preparatı için hazırlanmış (başka görüntülere başvuruyor)."
+
+#: src/formats/dicom/mod.rs:1014
+msgid ""
+"This DICOM file is a slide image (VL Whole Slide Microscopy), not "
+"annotations: open it as a slide. Annotations are read from Microscopy Bulk "
+"Simple Annotations objects (modality ANN)."
+msgstr ""
+"Bu DICOM dosyası anotasyon değil, bir preparat görüntüsüdür (VL Whole Slide "
+"Microscopy): preparat olarak açın. Anotasyonlar Microscopy Bulk Simple "
+"Annotations nesnelerinden (ANN modalitesi) okunur."
+
+#: src/formats/dicom/mod.rs:1018
+msgid ""
+"This DICOM file is a structured report (SR). eov reads DICOM annotations "
+"from Microscopy Bulk Simple Annotations objects (modality ANN), not from "
+"structured reports."
+msgstr ""
+"Bu DICOM dosyası yapılandırılmış bir rapordur (SR). eov, DICOM "
+"anotasyonlarını yapılandırılmış raporlardan değil, Microscopy Bulk Simple "
+"Annotations nesnelerinden (ANN modalitesi) okur."
+
+#: src/formats/dicom/mod.rs:1021
+msgid "This DICOM file does not say what it holds (it has no SOP Class UID)."
+msgstr "Bu DICOM dosyası ne içerdiğini belirtmiyor (SOP Class UID yok)."
+
+#: src/formats/dicom/mod.rs:1024
+msgid ""
+"This DICOM file is not an annotation object (SOP class {}); eov reads "
+"Microscopy Bulk Simple Annotations (modality ANN)."
+msgstr ""
+"Bu DICOM dosyası bir anotasyon nesnesi değil (SOP sınıfı: {}); eov, "
+"Microscopy Bulk Simple Annotations nesnelerini (ANN modalitesi) okur."
+
+#: src/formats/dicom/mod.rs:1047
+msgid "eov's private description of the slide is unreadable and was ignored."
+msgstr "eov'un preparata ilişkin özel açıklaması okunamıyor ve yok sayıldı."
+
+#. Translators: {} says what is wrong with the file, in English.
+#: src/formats/dicom/mod.rs:1080
+msgid "The DICOM file cannot be read: {}."
+msgstr "DICOM dosyası okunamıyor: {}."
+
+#: src/formats/dicom/mod.rs:1099
+msgid ""
+"This file holds 3D annotations: their coordinates are millimetres in the "
+"slide's frame of reference (DICOM SCOORD3D), and eov places annotations by "
+"level-0 pixels. Only 2D (pixel) annotations can be imported."
+msgstr ""
+"Bu dosya 3B anotasyonlar içeriyor: koordinatları preparatın referans "
+"çerçevesinde milimetre cinsindendir (DICOM SCOORD3D); eov ise anotasyonları "
+"düzey 0 piksellerine göre yerleştirir. Yalnızca 2B (piksel) anotasyonlar içe "
+"aktarılabilir."
+
+#: src/formats/dicom/mod.rs:1104
+msgid ""
+"The file does not say whether its coordinates are 2D or 3D (Annotation "
+"Coordinate Type is missing)."
+msgstr ""
+"Dosya, koordinatlarının 2B mi 3B mi olduğunu belirtmiyor (Annotation "
+"Coordinate Type eksik)."
+
+#: src/formats/dicom/mod.rs:1109
+msgid ""
+"The file's coordinates are of an unknown type (\"{}\"); 2D annotations can "
+"be imported."
+msgstr ""
+"Dosyanın koordinatları bilinmeyen bir türde (“{}”); 2B anotasyonlar içe "
+"aktarılabilir."
+
+#: src/formats/dicom/mod.rs:1126
+msgid ""
+"The annotations' pixel coordinates are relative to single frames (tiles) of "
+"the image (Pixel Origin Interpretation FRAME), which eov cannot place; "
+"coordinates relative to the whole image (VOLUME) can be imported."
+msgstr ""
+"Anotasyonların piksel koordinatları görüntünün tek tek çerçevelerine "
+"(karolarına) görelidir (Pixel Origin Interpretation FRAME) ve eov bunları "
+"yerleştiremez; tüm görüntüye göreli koordinatlar (VOLUME) içe aktarılabilir."
+
+#: src/formats/dicom/mod.rs:1130
+msgid ""
+"Unknown pixel origin interpretation \"{}\"; coordinates are taken relative "
+"to the whole image."
+msgstr ""
+"Bilinmeyen piksel orijini yorumu (“{}”); koordinatlar tüm görüntüye göreli "
+"olarak alınır."
+
+#: src/formats/dicom/mod.rs:1136
+msgid "The DICOM file has no annotation groups."
+msgstr "DICOM dosyasında hiç anotasyon grubu yok."
+
+#: src/formats/dicom/mod.rs:1146
+msgid ""
+"{n} rectangle or ellipse not aligned with the image axes became a polygon."
+msgid_plural ""
+"{n} rectangles and ellipses not aligned with the image axes became polygons."
+msgstr[0] ""
+"Görüntü eksenleriyle hizalı olmayan {n} dikdörtgen veya elips çokgene "
+"dönüştürüldü."
+msgstr[1] ""
+"Görüntü eksenleriyle hizalı olmayan {n} dikdörtgen ve elips çokgenlere "
+"dönüştürüldü."
+
+#: src/formats/dicom/mod.rs:1178
+msgid "annotation group with lines or polygons without a point index list"
+msgstr "nokta indeksi listesi olmadan çizgi veya çokgen içeren anotasyon grubu"
+
+#: src/formats/dicom/mod.rs:1182
+msgid "annotation group with an unreadable point index list"
+msgstr "nokta indeksi listesi okunamayan anotasyon grubu"
+
+#: src/formats/dicom/mod.rs:1197
+msgid "annotation group with lines or polygons with an empty point index list"
+msgstr ""
+"nokta indeksi listesi boş olan, çizgi veya çokgen içeren anotasyon grubu"
+
+#: src/formats/dicom/mod.rs:1211
+msgid ""
+"The point index list of \"{}\" counts points rather than coordinate values; "
+"it was read that way."
+msgstr ""
+"“{}” grubunun nokta indeksi listesi koordinat değerlerini değil noktaları "
+"sayıyor; liste bu şekilde okundu."
+
+#: src/formats/dicom/mod.rs:1217
+msgid ""
+"annotation group with a point index list that does not fit its coordinates"
+msgstr "nokta indeksi listesi koordinatlarıyla uyuşmayan anotasyon grubu"
+
+#. Translators: a reason why a measurement of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1333
+msgid "measurement without values"
+msgstr "değeri olmayan ölçüm"
+
+#: src/formats/dicom/mod.rs:1340
+msgid "measurement with unreadable values"
+msgstr "değerleri okunamayan ölçüm"
+
+#: src/formats/dicom/mod.rs:1352
+msgid "measurement that does not match its annotations"
+msgstr "anotasyonlarıyla uyuşmayan ölçüm"
+
+#. Translators: a reason why a group of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1398
+msgid "annotation group without coordinates"
+msgstr "koordinatı olmayan anotasyon grubu"
+
+#: src/formats/dicom/mod.rs:1402
+msgid "annotation group with unreadable coordinates"
+msgstr "koordinatları okunamayan anotasyon grubu"
+
+#: src/formats/dicom/mod.rs:1408
+msgid "annotation group whose coordinates are not (column, row) pairs"
+msgstr "koordinatları (sütun, satır) çiftleri olmayan anotasyon grubu"
+
+#: src/formats/dicom/mod.rs:1426
+msgid "rectangles or ellipses without four points each"
+msgstr "her biri dört noktadan oluşmayan dikdörtgenler veya elipsler"
+
+#: src/formats/dicom/mod.rs:1439
+msgid "annotation group without a graphic type"
+msgstr "grafik türü olmayan anotasyon grubu"
+
+#: src/formats/dicom/mod.rs:1443
+msgid "annotation group of graphic type {}"
+msgstr "grafik türü {} olan anotasyon grubu"
+
+#: src/formats/dicom/mod.rs:1451
+msgid ""
+"\"{name}\" says it has {n} annotation, but its coordinates hold {held}; the "
+"coordinates were read."
+msgid_plural ""
+"\"{name}\" says it has {n} annotations, but its coordinates hold {held}; the "
+"coordinates were read."
+msgstr[0] ""
+"“{name}” grubu {n} anotasyon içerdiğini belirtiyor, ancak koordinatlarında "
+"{held} anotasyon var; koordinatlar esas alınarak okundu."
+msgstr[1] ""
+"“{name}” grubu {n} anotasyon içerdiğini belirtiyor, ancak koordinatlarında "
+"{held} anotasyon var; koordinatlar esas alınarak okundu."
+
+#: src/formats/dicom/mod.rs:1463
+msgid ""
+"eov's private attributes of \"{}\" are unreadable; the group was read from "
+"its DICOM attributes alone."
+msgstr ""
+"“{}” grubunun eov'a özgü özel öznitelikleri okunamıyor; grup yalnızca DICOM "
+"özniteliklerinden okundu."
+
+#: src/formats/dicom/mod.rs:1529
+msgid "annotations beyond the limit of {} per file"
+msgstr "dosya başına {} sınırını aşan anotasyonlar"
+
+#: src/formats/dicom/mod.rs:1537
+msgid "annotation with non-finite coordinates"
+msgstr "sonlu olmayan koordinatlara sahip anotasyon"
+
+#: src/formats/eov.rs:209
+msgid ""
+"This file uses eov annotation format {version}; this plugin reads up to "
+"{supported}. Update the plugin."
+msgstr ""
+"Bu dosya eov anotasyon biçiminin {version} sürümünü kullanıyor; bu eklenti "
+"en fazla {supported} sürümünü okuyabilir. Eklentiyi güncelleyin."
+
+#: src/formats/eov.rs:261
+msgid "The file has no \"layers\"."
+msgstr "Dosyada “layers” alanı yok."
+
+#: src/formats/eov.rs:277
+msgid "Layer \"{}\" has an unreadable colour; a palette colour is used."
+msgstr "“{}” katmanının rengi okunamıyor; paletten bir renk kullanılıyor."
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/eov.rs:292
+msgid "unreadable geometry"
+msgstr "okunamayan geometri"
+
+#: src/formats/eov.rs:332
+msgid "The file has no \"annotation_layers\"."
+msgstr "Dosyada “annotation_layers” alanı yok."
+
+#: src/formats/eov.rs:359
+msgid "point without coordinates"
+msgstr "koordinatı olmayan nokta"
+
+#: src/formats/eov.rs:384
+msgid "polygon with unreadable vertices"
+msgstr "köşeleri okunamayan çokgen"
+
+#: src/formats/eov.rs:390
+msgid "unknown annotation type"
+msgstr "bilinmeyen anotasyon türü"
+
+#: src/formats/eov.rs:426
+msgid "The archive has no \"slides\"."
+msgstr "Arşivde “slides” alanı yok."
+
+#: src/formats/eov.rs:432
+msgid "An archive entry was skipped: {}"
+msgstr "Bir arşiv girdisi atlandı: {}"
+
+#. Translators: reasons why a shape of an imported file was skipped,
+#. listed as "2 × unreadable point".
+#: src/formats/geojson.rs:68
+msgid "unreadable point"
+msgstr "okunamayan nokta"
+
+#: src/formats/geojson.rs:69
+msgid "unreadable line"
+msgstr "okunamayan çizgi"
+
+#: src/formats/geojson.rs:70
+msgid "unreadable polygon"
+msgstr "okunamayan çokgen"
+
+#: src/formats/geojson.rs:74
+msgid "geometry without a type"
+msgstr "türü olmayan geometri"
+
+#: src/formats/geojson.rs:84
+msgid "unreadable points"
+msgstr "okunamayan noktalar"
+
+#: src/formats/geojson.rs:103
+msgid "unreadable lines"
+msgstr "okunamayan çizgiler"
+
+#: src/formats/geojson.rs:119
+msgid "unreadable polygons"
+msgstr "okunamayan çokgenler"
+
+#: src/formats/geojson.rs:128
+msgid "unreadable geometry collection"
+msgstr "okunamayan geometri koleksiyonu"
+
+#: src/formats/geojson.rs:133
+msgid "unsupported geometry type"
+msgstr "desteklenmeyen geometri türü"
+
+#: src/formats/geojson.rs:221
+msgid "The FeatureCollection has no features."
+msgstr "FeatureCollection hiç öğe (feature) içermiyor."
+
+#: src/formats/geojson.rs:224 src/formats/geojson.rs:226
+msgid "Not GeoJSON."
+msgstr "GeoJSON değil."
+
+#. Translators: a reason why an element of an imported file was skipped.
+#: src/formats/geojson.rs:242
+msgid "not a GeoJSON feature"
+msgstr "GeoJSON öğesi (feature) değil"
+
+#: src/formats/geojson.rs:259
+msgid "feature without geometry"
+msgstr "geometrisi olmayan öğe"
+
+#: src/formats/geojson.rs:318
+msgid "properties beyond the limit of {} per annotation"
+msgstr "anotasyon başına {} sınırını aşan özellikler"
+
+#: src/formats/geojson.rs:351
+msgid "The GeoJSON file contains no features."
+msgstr "GeoJSON dosyası hiç öğe (feature) içermiyor."
+
+#: src/formats/mod.rs:240
+msgid "This .dcm file is not a DICOM file (\"DICM\" is missing at byte 128)."
+msgstr "Bu .dcm dosyası bir DICOM dosyası değil (128. baytta “DICM” yok)."
+
+#: src/formats/mod.rs:242
+msgid ""
+"The file is not UTF-8 text or DICOM, so it is not a supported annotation "
+"file."
+msgstr ""
+"Dosya UTF-8 metin veya DICOM olmadığından desteklenen bir anotasyon dosyası "
+"değil."
+
+#: src/formats/mod.rs:250
+msgid "The file is not valid JSON: {}"
+msgstr "Dosya geçerli bir JSON değil: {}"
+
+#: src/formats/mod.rs:257
+msgid "This JSON file is neither GeoJSON nor an eov annotation export."
+msgstr "Bu JSON dosyası ne GeoJSON ne de eov anotasyon dışa aktarımı."
+
+#: src/formats/mod.rs:263
+msgid ""
+"Unsupported file: expected GeoJSON, eov JSON, ASAP XML, ImageScope XML, NDPA "
+"or DICOM bulk annotations."
+msgstr ""
+"Desteklenmeyen dosya: GeoJSON, eov JSON, ASAP XML, ImageScope XML, NDPA veya "
+"DICOM toplu anotasyonları bekleniyordu."
+
+#: src/formats/ndpa.rs:62
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide is not one, so they cannot be placed on it."
+msgstr ""
+"NDPA koordinatları bir Hamamatsu preparatının (NDPI) merkezinden ölçülür; "
+"ancak bu preparat böyle bir preparat olmadığından koordinatlar üzerine "
+"yerleştirilemez."
+
+#. Translators: {} is the vendor of the slide's format ("aperio").
+#: src/formats/ndpa.rs:68
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide ({}) is not one, so they cannot be placed on it."
+msgstr ""
+"NDPA koordinatları bir Hamamatsu preparatının (NDPI) merkezinden ölçülür; "
+"ancak bu preparat ({}) böyle bir preparat olmadığından koordinatlar üzerine "
+"yerleştirilemez."
+
+#: src/formats/ndpa.rs:79
+msgid ""
+"This NDPI does not give its offsets from the slide centre (hamamatsu."
+"XOffsetFromSlideCentre and YOffsetFromSlideCentre), so the NDPA coordinates "
+"cannot be placed on it."
+msgstr ""
+"Bu NDPI dosyası preparat merkezine göre kaymalarını (hamamatsu."
+"XOffsetFromSlideCentre ve YOffsetFromSlideCentre) belirtmiyor; bu nedenle "
+"NDPA koordinatları üzerine yerleştirilemez."
+
+#: src/formats/ndpa.rs:88
+msgid ""
+"This slide has no pixel size, so the NDPA's nanometre coordinates cannot be "
+"converted to pixels."
+msgstr ""
+"Bu preparatın piksel boyutu yok; bu nedenle NDPA'nın nanometre cinsinden "
+"koordinatları piksele dönüştürülemez."
+
+#: src/formats/ndpa.rs:92
+msgid "The slide's size is unknown."
+msgstr "Preparatın boyutu bilinmiyor."
+
+#. Translators: a reason why an annotation of an imported file was skipped; {} is
+#. its type in the file ("freehand", "circle", "pin", …).
+#: src/formats/ndpa.rs:211
+msgid "{} annotation with unreadable coordinates"
+msgstr "koordinatları okunamayan {} anotasyonu"
+
+#: src/formats/ndpa.rs:267
+msgid "unsupported NDPA annotation type '{}'"
+msgstr "desteklenmeyen NDPA anotasyon türü '{}'"
+
+#: src/formats/ndpa.rs:296
+msgid "annotation in unsupported coordinates ({})"
+msgstr "desteklenmeyen koordinatlarda anotasyon ({})"
+
+#: src/formats/ndpa.rs:300
+msgid "view state without an annotation"
+msgstr "anotasyonu olmayan görünüm durumu"
+
+#: src/formats/xml.rs:28
+msgid "The XML is not well-formed: {}"
+msgstr "XML iyi biçimlendirilmemiş: {}"
+
+#: src/formats/xml.rs:37
+msgid ""
+"Unsupported XML annotations (root element <{}>); ASAP, Aperio ImageScope and "
+"Hamamatsu NDPA files are supported."
+msgstr ""
+"Desteklenmeyen XML anotasyonları (kök öğe <{}>); ASAP, Aperio ImageScope ve "
+"Hamamatsu NDPA dosyaları desteklenir."
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/xml.rs:96
+msgid "annotation with unreadable coordinates"
+msgstr "koordinatları okunamayan anotasyon"
+
+#: src/formats/xml.rs:158
+msgid "unsupported ASAP annotation type"
+msgstr "desteklenmeyen ASAP anotasyon türü"
+
+#: src/formats/xml.rs:198
+msgid "hole of a shape that is not a polygon"
+msgstr "çokgen olmayan bir şeklin deliği"
+
+#: src/formats/xml.rs:200
+msgid "hole of a missing polygon"
+msgstr "eksik bir çokgenin deliği"
+
+#: src/formats/xml.rs:275
+msgid "region with unreadable vertices"
+msgstr "köşeleri okunamayan bölge"
+
+#: src/formats/xml.rs:357
+msgid "negative region outside every region"
+msgstr "hiçbir bölgenin içinde olmayan negatif bölge"
+
+#: src/geometry.rs:252
+msgid "The shape has invalid (non-finite) coordinates."
+msgstr "Şeklin koordinatları geçersiz (sonlu değil)."
+
+#: src/geometry.rs:256
+msgid "The shape has {n} vertices; the limit is {limit}."
+msgid_plural "The shape has {n} vertices; the limit is {limit}."
+msgstr[0] "Şeklin {n} köşesi var; sınır {limit}."
+msgstr[1] "Şeklin {n} köşesi var; sınır {limit}."
+
+#: src/geometry.rs:266
+msgid "The point is outside the slide."
+msgstr "Nokta preparatın dışında."
+
+#: src/geometry.rs:288
+msgid "An arrow needs two distinct points."
+msgstr "Bir ok için iki farklı nokta gerekir."
+
+#: src/geometry.rs:290
+msgid "A line needs at least two distinct points."
+msgstr "Bir çizgi için en az iki farklı nokta gerekir."
+
+#: src/geometry.rs:317
+msgid "The rectangle is outside the slide."
+msgstr "Dikdörtgen preparatın dışında."
+
+#: src/geometry.rs:325
+msgid "The rectangle has no area."
+msgstr "Dikdörtgenin alanı yok."
+
+#: src/geometry.rs:337
+msgid "The ellipse has no area."
+msgstr "Elipsin alanı yok."
+
+#: src/geometry.rs:340
+msgid "The ellipse is centred outside the slide."
+msgstr "Elipsin merkezi preparatın dışında."
+
+#: src/geometry.rs:352
+msgid "A polygon needs at least three distinct corners."
+msgstr "Bir çokgen için en az üç farklı köşe gerekir."
+
+#: src/geometry.rs:355 src/geometry.rs:393
+msgid "The polygon encloses no area."
+msgstr "Çokgen hiçbir alanı çevrelemiyor."
+
+#: src/geometry.rs:391
+msgid "The polygon is outside the slide."
+msgstr "Çokgen preparatın dışında."
+
+#: src/lib.rs:80 src/lib.rs:202
+msgid "Annotations"
+msgstr "Anotasyonlar"
+
+#: src/lib.rs:85
+msgid "Show or hide annotations on this slide"
+msgstr "Bu preparattaki anotasyonları göster veya gizle"
+
+#: src/lib.rs:102
+msgid "Counting {}"
+msgstr "Sayım: {}"
+
+#: src/lib.rs:104
+msgid "Counting {class}, Shift+click: {alternate}"
+msgstr "Sayım: {class}, Shift+tıklama: {alternate}"
+
+#: src/lib.rs:109
+msgid "Counting {class}, Alt+click: {immune}"
+msgstr "Sayım: {class}, Alt+tıklama: {immune}"
+
+#: src/lib.rs:114
+msgid "Counting {class}, Shift+click: {alternate}, Alt+click: {immune}"
+msgstr "Sayım: {class}, Shift+tıklama: {alternate}, Alt+tıklama: {immune}"
+
+#. Translators: HPF is a high-power field.
+#: src/lib.rs:123
+msgid ""
+"The dashed circle is one HPF: click to place a field, drag to pan, Esc to "
+"leave"
+msgstr ""
+"Kesikli daire bir HPF alanını gösterir: alan yerleştirmek için tıklayın, "
+"kaydırmak için sürükleyin, çıkmak için Esc tuşuna basın"
+
+#: src/lib.rs:125
+msgid "Click to select, drag to select several; drag handles to edit"
+msgstr ""
+"Seçmek için tıklayın, birden fazla seçmek için sürükleyin; düzenlemek için "
+"tutamaçları sürükleyin"
+
+#: src/lib.rs:127
+msgid "Drawing {}"
+msgstr "Çizim: {}"
+
+#. Translators: {} is the name of a file format ("GeoJSON").
+#: src/lib.rs:441
+msgid "{} · cannot be placed on this slide"
+msgstr "{} · bu preparata yerleştirilemez"
+
+#. Translators: {format} is the name of a file format ("GeoJSON");
+#. {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/lib.rs:448
+msgid "{format} · {n} annotation {layers}"
+msgid_plural "{format} · {n} annotations {layers}"
+msgstr[0] "{format} · {layers} {n} anotasyon"
+msgstr[1] "{format} · {layers} {n} anotasyon"
+
+#: src/lib.rs:455
+msgid "{n} class"
+msgid_plural "{n} classes"
+msgstr[0] "{n} sınıf"
+msgstr[1] "{n} sınıf"
+
+#: src/lib.rs:465
+msgid "Layers with the same name already exist: {}"
+msgstr "Aynı ada sahip katmanlar zaten var: {}"
+
+#: src/lib.rs:497 src/transfer.rs:373
+msgid "Import annotations"
+msgstr "Anotasyonları içe aktar"
+
+#: src/lib.rs:507
+msgid "Cannot show the import dialog"
+msgstr "İçe aktarma iletişim kutusu gösterilemiyor"
+
+#: src/lib.rs:641 src/sidebar.rs:1490
+msgid "Lock"
+msgstr "Kilitleme"
+
+#: src/lib.rs:643 src/sidebar.rs:1492
+msgid "Unlock"
+msgstr "Kilidi açma"
+
+#: src/lib.rs:789
+msgid "Could not save the annotation settings"
+msgstr "Anotasyon ayarları kaydedilemedi"
+
+#: src/lib.rs:1063
+msgid "Show in annotations panel"
+msgstr "Anotasyon panelinde göster"
+
+#: src/lib.rs:1064
+msgid "Copy measurements"
+msgstr "Ölçümleri kopyala"
+
+#: src/lib.rs:1066
+msgid "Unlock annotation"
+msgstr "Anotasyonun kilidini aç"
+
+#: src/lib.rs:1068
+msgid "Lock annotation"
+msgstr "Anotasyonu kilitle"
+
+#: src/lib.rs:1077
+msgctxt "Context menu"
+msgid "Delete annotation"
+msgstr "Anotasyonu sil"
+
+#: src/lib.rs:1083
+msgid "Add point here"
+msgstr "Buraya nokta ekle"
+
+#: src/lib.rs:1084
+msgid "Place HPF field here"
+msgstr "Buraya HPF alanı yerleştir"
+
+#: src/lib.rs:1085
+msgid "Annotations panel"
+msgstr "Anotasyon paneli"
+
+#: src/measure.rs:276
+msgid "Area"
+msgstr "Alan"
+
+#: src/measure.rs:281
+msgid "Length"
+msgstr "Uzunluk"
+
+#: src/measure.rs:283
+msgid "Perimeter"
+msgstr "Çevre"
+
+#: src/measure.rs:289
+msgid "Max diameter (Feret)"
+msgstr "En büyük çap (Feret)"
+
+#: src/measure.rs:292
+msgid "Min diameter (Feret)"
+msgstr "En küçük çap (Feret)"
+
+#: src/measure.rs:297
+msgid "Centre (px)"
+msgstr "Merkez (px)"
+
+#: src/measure.rs:302 src/measure.rs:307
+msgid "Calibration"
+msgstr "Kalibrasyon"
+
+#: src/measure.rs:303
+msgid "No pixel size: values in level-0 pixels"
+msgstr "Piksel boyutu yok: değerler düzey 0 pikseli cinsinden"
+
+#: src/measure.rs:308
+msgid "One pixel axis missing; assumed square pixels"
+msgstr "Bir piksel ekseni eksik; kare pikseller varsayıldı"
+
+#: src/model.rs:49 ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Draft"
+msgstr "Taslak"
+
+#: src/model.rs:50 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Verified"
+msgstr "Doğrulandı"
+
+#: src/model.rs:51 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Rejected"
+msgstr "Reddedildi"
+
+#: src/model.rs:118
+msgctxt "Annotation kind"
+msgid "Point"
+msgstr "Nokta"
+
+#: src/model.rs:119
+msgctxt "Annotation kind"
+msgid "Line"
+msgstr "Çizgi"
+
+#: src/model.rs:120
+msgctxt "Annotation kind"
+msgid "Arrow"
+msgstr "Ok"
+
+#: src/model.rs:121
+msgctxt "Annotation kind"
+msgid "Polygon"
+msgstr "Çokgen"
+
+#: src/model.rs:122
+msgctxt "Annotation kind"
+msgid "Rectangle"
+msgstr "Dikdörtgen"
+
+#: src/model.rs:123
+msgctxt "Annotation kind"
+msgid "Ellipse"
+msgstr "Elips"
+
+#: src/model.rs:124
+msgctxt "Annotation kind"
+msgid "Text"
+msgstr "Metin"
+
+#: src/model.rs:750
+msgid "The layer name cannot be empty."
+msgstr "Katman adı boş olamaz."
+
+#: src/model.rs:751
+msgid "The class name cannot be empty."
+msgstr "Sınıf adı boş olamaz."
+
+#: src/model.rs:752
+msgid "The name cannot be empty."
+msgstr "Ad boş olamaz."
+
+#: src/model.rs:759
+msgid "The name is {n} characters long; the limit is {limit}."
+msgid_plural "The name is {n} characters long; the limit is {limit}."
+msgstr[0] "Ad {n} karakter uzunluğunda; sınır {limit}."
+msgstr[1] "Ad {n} karakter uzunluğunda; sınır {limit}."
+
+#: src/model.rs:764
+msgid "The layer name is {n} characters long; the limit is {limit}."
+msgid_plural "The layer name is {n} characters long; the limit is {limit}."
+msgstr[0] "Katman adı {n} karakter uzunluğunda; sınır {limit}."
+msgstr[1] "Katman adı {n} karakter uzunluğunda; sınır {limit}."
+
+#: src/model.rs:769
+msgid "The class name is {n} characters long; the limit is {limit}."
+msgid_plural "The class name is {n} characters long; the limit is {limit}."
+msgstr[0] "Sınıf adı {n} karakter uzunluğunda; sınır {limit}."
+msgstr[1] "Sınıf adı {n} karakter uzunluğunda; sınır {limit}."
+
+#: src/model.rs:774
+msgid "The author is {n} characters long; the limit is {limit}."
+msgid_plural "The author is {n} characters long; the limit is {limit}."
+msgstr[0] "Yazar adı {n} karakter uzunluğunda; sınır {limit}."
+msgstr[1] "Yazar adı {n} karakter uzunluğunda; sınır {limit}."
+
+#: src/model.rs:779
+msgid "The setting is {n} characters long; the limit is {limit}."
+msgid_plural "The setting is {n} characters long; the limit is {limit}."
+msgstr[0] "Ayar {n} karakter uzunluğunda; sınır {limit}."
+msgstr[1] "Ayar {n} karakter uzunluğunda; sınır {limit}."
+
+#: src/model.rs:784
+msgid "The notes are {n} characters long; the limit is {limit}."
+msgid_plural "The notes are {n} characters long; the limit is {limit}."
+msgstr[0] "Notlar {n} karakter uzunluğunda; sınır {limit}."
+msgstr[1] "Notlar {n} karakter uzunluğunda; sınır {limit}."
+
+#: src/model.rs:789
+msgid "The description is {n} characters long; the limit is {limit}."
+msgid_plural "The description is {n} characters long; the limit is {limit}."
+msgstr[0] "Açıklama {n} karakter uzunluğunda; sınır {limit}."
+msgstr[1] "Açıklama {n} karakter uzunluğunda; sınır {limit}."
+
+#: src/model.rs:794
+msgid "The comment is {n} characters long; the limit is {limit}."
+msgid_plural "The comment is {n} characters long; the limit is {limit}."
+msgstr[0] "Yorum {n} karakter uzunluğunda; sınır {limit}."
+msgstr[1] "Yorum {n} karakter uzunluğunda; sınır {limit}."
+
+#: src/model.rs:837
+msgid "An annotation can have at most {n} properties."
+msgid_plural "An annotation can have at most {n} properties."
+msgstr[0] "Bir anotasyonun en fazla {n} özelliği olabilir."
+msgstr[1] "Bir anotasyonun en fazla {n} özelliği olabilir."
+
+#: src/model.rs:851
+msgid "Property names are limited to {n} characters."
+msgid_plural "Property names are limited to {n} characters."
+msgstr[0] "Özellik adları en fazla {n} karakter olabilir."
+msgstr[1] "Özellik adları en fazla {n} karakter olabilir."
+
+#: src/model.rs:856
+msgid "Property values are limited to {n} characters."
+msgid_plural "Property values are limited to {n} characters."
+msgstr[0] "Özellik değerleri en fazla {n} karakter olabilir."
+msgstr[1] "Özellik değerleri en fazla {n} karakter olabilir."
+
+#: src/model.rs:884
+msgid "A hotkey is a single character (a letter or a symbol), not {}."
+msgstr "Kısayol tuşu tek bir karakterdir (harf veya simge); {} olamaz."
+
+#: src/model.rs:889
+msgid "A hotkey must be a visible character."
+msgstr "Kısayol tuşu görünür bir karakter olmalıdır."
+
+#: src/model.rs:892
+msgid "eov already uses the '{}' key."
+msgstr "eov '{}' tuşunu zaten kullanıyor."
+
+#: src/model.rs:896
+msgid "'{}' is already used by an annotation tool or class."
+msgstr "'{}' zaten bir anotasyon aracı veya sınıfı tarafından kullanılıyor."
+
+#. Translators: in the tooltip of a locked annotation, after its class and name.
+#: src/overlay.rs:171
+msgid "locked"
+msgstr "kilitli"
+
+#. Translators: this slide's points against the other reader's; F1 is the F1 score.
+#: src/sidebar.rs:360
+msgid "Points {ours} vs {theirs} · {matched} matched · F1 {f1}"
+msgstr "Noktalar: bu {ours}, diğer {theirs} · {matched} eşleşme · F1 {f1}"
+
+#. Translators: this slide's regions and their area against the other reader's;
+#. Dice is the Dice coefficient of the areas.
+#: src/sidebar.rs:373
+msgid "Regions {ours} vs {theirs} · {our_area} vs {their_area} · Dice {dice}"
+msgstr ""
+"Bölgeler: bu {ours} ({our_area}), diğer {theirs} ({their_area}) · Dice {dice}"
+
+#: src/sidebar.rs:385
+msgid "All regions"
+msgstr "Tüm bölgeler"
+
+#. Translators: {layers} in texts such as "{n} annotations {layers}" ("12 annotations in 3 layers").
+#: src/sidebar.rs:431
+msgid "in {n} layer"
+msgid_plural "in {n} layers"
+msgstr[0] "{n} katmanda"
+msgstr[1] "{n} katmanda"
+
+#: src/sidebar.rs:447
+msgid "No slide open"
+msgstr "Açık preparat yok"
+
+#: src/sidebar.rs:453
+msgid "Annotation database unavailable: {}"
+msgstr "Anotasyon veritabanı kullanılamıyor: {}"
+
+#: src/sidebar.rs:455
+msgid "Opening the annotation database…"
+msgstr "Anotasyon veritabanı açılıyor…"
+
+#: src/sidebar.rs:461
+msgid "Loading annotations…"
+msgstr "Anotasyonlar yükleniyor…"
+
+#: src/sidebar.rs:469
+msgid ""
+"The annotation database is read-only: annotations can be viewed and "
+"exported, not edited."
+msgstr ""
+"Anotasyon veritabanı salt okunur: anotasyonlar görüntülenebilir ve dışa "
+"aktarılabilir, ancak düzenlenemez."
+
+#: src/sidebar.rs:477
+msgid ""
+"This slide has no stable identity; its annotations are keyed by file name "
+"and size."
+msgstr ""
+"Bu preparatın kalıcı bir kimliği yok; anotasyonları dosya adı ve boyutuyla "
+"eşleştirilir."
+
+#. Translators: beside a layer of count points: the number of points.
+#: src/sidebar.rs:526
+msgid "{} · counts"
+msgstr "{} · sayım"
+
+#. Translators: beside the layer of HPF fields: the number of fields.
+#: src/sidebar.rs:528
+msgid "{} · HPF fields"
+msgstr "{} · HPF alanı"
+
+#: src/sidebar.rs:615
+msgid "{n} comment"
+msgid_plural "{n} comments"
+msgstr[0] "{n} yorum"
+msgstr[1] "{n} yorum"
+
+#: src/sidebar.rs:649
+msgid "Show more ({n} not shown)"
+msgid_plural "Show more ({n} not shown)"
+msgstr[0] "Daha fazla göster ({n} gösterilmiyor)"
+msgstr[1] "Daha fazla göster ({n} gösterilmiyor)"
+
+#: src/sidebar.rs:667
+msgid "{n} match"
+msgid_plural "{n} matches"
+msgstr[0] "{n} eşleşme"
+msgstr[1] "{n} eşleşme"
+
+#: src/sidebar.rs:670
+msgid ""
+"No annotations yet. Pick a tool in the toolbar (P polygon, . point, C count) "
+"and draw on the slide."
+msgstr ""
+"Henüz anotasyon yok. Araç çubuğundan bir araç seçin (P çokgen, . nokta, C "
+"sayım) ve preparat üzerine çizin."
+
+#: src/sidebar.rs:674
+msgid "Open a slide to see and draw its annotations."
+msgstr "Anotasyonlarını görmek ve çizmek için bir preparat açın."
+
+#: src/sidebar.rs:724
+msgid "created {created} · edited {edited}"
+msgstr "oluşturuldu: {created} · düzenlendi: {edited}"
+
+#: src/sidebar.rs:730
+msgid "By {author} · created {created} · edited {edited}"
+msgstr "Yazar: {author} · oluşturuldu: {created} · düzenlendi: {edited}"
+
+#: src/sidebar.rs:750
+msgid "Unknown author"
+msgstr "Bilinmeyen yazar"
+
+#: src/sidebar.rs:769
+msgid ""
+"This outline crosses itself (it was drawn with an older version). Its area "
+"uses the even-odd rule, like the display; Repair turns it into simple parts."
+msgstr ""
+"Bu sınır çizgisi kendisiyle kesişiyor (eski bir sürümle çizilmiş). Alanı, "
+"ekrandaki gösterimde olduğu gibi çift-tek kuralıyla hesaplanır; Onar düğmesi "
+"onu basit parçalara dönüştürür."
+
+#: src/sidebar.rs:775
+msgid "{n} annotation selected"
+msgid_plural "{n} annotations selected"
+msgstr[0] "{n} anotasyon seçili"
+msgstr[1] "{n} anotasyon seçili"
+
+#: src/sidebar.rs:778
+msgid "Mixed classes; changes apply to all selected."
+msgstr "Karışık sınıflar; değişiklikler seçilenlerin tümüne uygulanır."
+
+#: src/sidebar.rs:780
+msgid "Changes apply to all selected."
+msgstr "Değişiklikler seçilenlerin tümüne uygulanır."
+
+#. Translators: under a class whose key does nothing; {} is
+#. eov's reason, a whole sentence such as "Hotkey 'q' of …
+#. was ignored: it is a key eov already uses."
+#: src/sidebar.rs:828
+msgid "eov refused the hotkey: {}"
+msgstr "eov kısayol tuşunu reddetti: {}"
+
+#: src/sidebar.rs:861
+msgid ""
+"Whole slide. Select regions or HPF fields to count inside them and get "
+"densities."
+msgstr ""
+"Tüm preparat. İçlerinde sayım yapmak ve yoğunlukları görmek için bölgeleri "
+"veya HPF alanlarını seçin."
+
+#. Translators: {fields} is "1 HPF field" or "3 HPF fields"
+#. (translated on its own; HPF is a high-power field).
+#: src/sidebar.rs:873
+msgid "Inside {n} selected region ({fields}): {area}"
+msgid_plural "Inside {n} selected regions ({fields}): {area}"
+msgstr[0] "Seçili {n} bölgenin içinde ({fields}): {area}"
+msgstr[1] "Seçili {n} bölgenin içinde ({fields}): {area}"
+
+#. Translators: {fields} in "Inside {n} selected regions ({fields}): {area}".
+#: src/sidebar.rs:877
+msgid "{n} HPF field"
+msgid_plural "{n} HPF fields"
+msgstr[0] "{n} HPF alanı"
+msgstr[1] "{n} HPF alanı"
+
+#: src/sidebar.rs:883
+msgid "Inside {n} selected region: {area}"
+msgid_plural "Inside {n} selected regions: {area}"
+msgstr[0] "Seçili {n} bölgenin içinde: {area}"
+msgstr[1] "Seçili {n} bölgenin içinde: {area}"
+
+#: src/sidebar.rs:890
+msgid "Inside {n} selected region: {area} (no pixel size, so no density)"
+msgid_plural ""
+"Inside {n} selected regions: {area} (no pixel size, so no density)"
+msgstr[0] ""
+"Seçili {n} bölgenin içinde: {area} (piksel boyutu olmadığından yoğunluk yok)"
+msgstr[1] ""
+"Seçili {n} bölgenin içinde: {area} (piksel boyutu olmadığından yoğunluk yok)"
+
+#. Translators: cells per high-power field.
+#: src/sidebar.rs:905
+msgid "{} /HPF field"
+msgstr "{} /HPF alanı"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1000
+msgid "Read-only"
+msgstr "Salt okunur"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1003
+msgid "Ready"
+msgstr "Hazır"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1007
+msgid "Opening…"
+msgstr "Açılıyor…"
+
+#: src/sidebar.rs:1008
+msgid "Unavailable: {}"
+msgstr "Kullanılamıyor: {}"
+
+#. Translators: a slide whose file name an older eov did not record; {} is its number in the annotation database.
+#: src/sidebar.rs:1068
+msgid "Slide #{} (from an older version)"
+msgstr "Preparat #{} (eski bir sürümden)"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/sidebar.rs:1075
+msgid "{n} annotation {layers} · last opened {date}"
+msgid_plural "{n} annotations {layers} · last opened {date}"
+msgstr[0] "{layers} {n} anotasyon · son açılma: {date}"
+msgstr[1] "{layers} {n} anotasyon · son açılma: {date}"
+
+#. Translators: "List" is the label of the button beside this text.
+#: src/sidebar.rs:1093
+msgid "Press \"List\" to see the other slides in the database."
+msgstr ""
+"Veritabanındaki diğer preparatları görmek için “Listele” düğmesine basın."
+
+#: src/sidebar.rs:1094
+msgid "No other slides have annotations."
+msgstr "Anotasyonu olan başka preparat yok."
+
+#: src/sidebar.rs:1096
+msgid ""
+"If a slide was re-saved or de-identified, its annotations stay with the old "
+"file. Attach them to the open slide here."
+msgstr ""
+"Bir preparat yeniden kaydedildiyse veya kimliksizleştirildiyse anotasyonları "
+"eski dosyada kalır. Bunları buradan açık preparatla ilişkilendirin."
+
+#: src/sidebar.rs:1161
+msgid "Cannot ask for confirmation"
+msgstr "Onay istenemiyor"
+
+#: src/sidebar.rs:1173
+msgid "Open a slide first."
+msgstr "Önce bir preparat açın."
+
+#: src/sidebar.rs:1213
+msgid "Compare with another reader's file first."
+msgstr "Önce başka bir değerlendiricinin dosyasıyla karşılaştırın."
+
+#: src/sidebar.rs:1219
+msgid "Export all annotations"
+msgstr "Tüm anotasyonları dışa aktar"
+
+#: src/sidebar.rs:1222
+msgid "eov annotation archive"
+msgstr "eov anotasyon arşivi"
+
+#: src/sidebar.rs:1229
+msgid "Back up the annotation database"
+msgstr "Anotasyon veritabanını yedekle"
+
+#: src/sidebar.rs:1232 src/sidebar.rs:1242
+msgid "SQLite database"
+msgstr "SQLite veritabanı"
+
+#: src/sidebar.rs:1239
+msgid ""
+"Merge an annotation database (a backup, or annotations.db of eov before 1.0)"
+msgstr ""
+"Bir anotasyon veritabanını birleştir (bir yedek veya eov 1.0 öncesinin "
+"annotations.db dosyası)"
+
+#: src/sidebar.rs:1308
+msgid "Show or hide layer"
+msgstr "Katmanı gösterme veya gizleme"
+
+#: src/sidebar.rs:1322
+msgid "Layer opacity"
+msgstr "Katman opaklığı"
+
+#: src/sidebar.rs:1337
+msgid "Lock layer"
+msgstr "Katmanı kilitleme"
+
+#: src/sidebar.rs:1339
+msgid "Unlock layer"
+msgstr "Katmanın kilidini açma"
+
+#: src/sidebar.rs:1354
+msgid "Change layer colour"
+msgstr "Katman rengini değiştirme"
+
+#: src/sidebar.rs:1370
+msgid "Edit layer notes"
+msgstr "Katman notlarını düzenleme"
+
+#: src/sidebar.rs:1387
+msgid "The slide is still loading."
+msgstr "Preparat hâlâ yükleniyor."
+
+#: src/sidebar.rs:1396
+msgctxt "Dialog title"
+msgid "Delete layer"
+msgstr "Katmanı sil"
+
+#: src/sidebar.rs:1398
+msgid ""
+"Delete layer \"{name}\" and its {n} annotation? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgid_plural ""
+"Delete layer \"{name}\" and its {n} annotations? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgstr[0] ""
+"“{name}” katmanı ve içindeki {n} anotasyon silinsin mi? Bunu Ctrl+Z (⌘Z) ile "
+"geri alabilirsiniz."
+msgstr[1] ""
+"“{name}” katmanı ve içindeki {n} anotasyon silinsin mi? Bunu Ctrl+Z (⌘Z) ile "
+"geri alabilirsiniz."
+
+#: src/sidebar.rs:1403 src/sidebar.rs:1620
+msgid "Delete"
+msgstr "Sil"
+
+#: src/sidebar.rs:1404 src/sidebar.rs:1621 src/sidebar.rs:1679
+#: src/sidebar.rs:1772
+msgid "Cancel"
+msgstr "İptal"
+
+#: src/sidebar.rs:1420
+msgid "Rename annotation"
+msgstr "Anotasyonu yeniden adlandırma"
+
+#: src/sidebar.rs:1432
+msgid "Edit description"
+msgstr "Açıklamayı düzenleme"
+
+#: src/sidebar.rs:1444
+msgid "Set class"
+msgstr "Sınıf atama"
+
+#: src/sidebar.rs:1458
+msgid "Mark draft"
+msgstr "Taslak olarak işaretleme"
+
+#: src/sidebar.rs:1459
+msgid "Mark verified"
+msgstr "Doğrulandı olarak işaretleme"
+
+#: src/sidebar.rs:1460
+msgid "Mark rejected"
+msgstr "Reddedildi olarak işaretleme"
+
+#: src/sidebar.rs:1476
+msgid "Move to layer"
+msgstr "Katmana taşıma"
+
+#: src/sidebar.rs:1529
+msgid "Edit properties"
+msgstr "Özellikleri düzenleme"
+
+#: src/sidebar.rs:1553
+msgid "Select one annotation to comment on."
+msgstr "Yorum yapmak için tek bir anotasyon seçin."
+
+#: src/sidebar.rs:1566
+msgid "Measurements copied."
+msgstr "Ölçümler kopyalandı."
+
+#: src/sidebar.rs:1578
+msgid "Show or hide class"
+msgstr "Sınıfı gösterme veya gizleme"
+
+#: src/sidebar.rs:1591
+msgid "Class opacity"
+msgstr "Sınıf opaklığı"
+
+#: src/sidebar.rs:1611
+msgctxt "Dialog title"
+msgid "Delete class"
+msgstr "Sınıfı sil"
+
+#: src/sidebar.rs:1613
+msgid ""
+"Delete class \"{name}\"? {n} annotation on open slides uses it; it will show "
+"as unclassified. You can undo this."
+msgid_plural ""
+"Delete class \"{name}\"? {n} annotations on open slides use it; they will "
+"show as unclassified. You can undo this."
+msgstr[0] ""
+"“{name}” sınıfı silinsin mi? Açık preparatlardaki {n} anotasyon bu sınıfı "
+"kullanıyor; bu anotasyon sınıflandırılmamış olarak gösterilecek. Bu işlemi "
+"geri alabilirsiniz."
+msgstr[1] ""
+"“{name}” sınıfı silinsin mi? Açık preparatlardaki {n} anotasyon bu sınıfı "
+"kullanıyor; bunlar sınıflandırılmamış olarak gösterilecek. Bu işlemi geri "
+"alabilirsiniz."
+
+#: src/sidebar.rs:1668
+msgctxt "Dialog title"
+msgid "Clear counts"
+msgstr "Sayımları temizle"
+
+#. Translators: the question of the "Clear counts" dialog, whose
+#. button is "Clear": use the same verb.
+#: src/sidebar.rs:1672
+msgid "Clear the {n} count point of this slide? You can undo this."
+msgid_plural "Clear all {n} count points of this slide? You can undo this."
+msgstr[0] ""
+"Bu preparattaki {n} sayım noktası temizlensin mi? Bu işlemi geri "
+"alabilirsiniz."
+msgstr[1] ""
+"Bu preparattaki {n} sayım noktasının tümü temizlensin mi? Bu işlemi geri "
+"alabilirsiniz."
+
+#. Translators: the button that removes the count points, in the
+#. "Clear counts" dialog.
+#: src/sidebar.rs:1678
+msgid "Clear"
+msgstr "Temizle"
+
+#: src/sidebar.rs:1694
+msgid "Enter the field area in mm², e.g. {}."
+msgstr "Alan büyüklüğünü mm² cinsinden girin, örneğin {}."
+
+#: src/sidebar.rs:1702
+msgid "Enter the field number in mm, e.g. 22."
+msgstr "Alan numarasını mm cinsinden girin, örneğin 22."
+
+#: src/sidebar.rs:1704
+msgid "Enter the objective magnification, e.g. 40."
+msgstr "Objektif büyütmesini girin, örneğin 40."
+
+#: src/sidebar.rs:1708
+msgid "That field size is not usable."
+msgstr "Bu alan boyutu kullanılamaz."
+
+#: src/sidebar.rs:1720
+msgid "There is no database from before eov 1.0 to merge."
+msgstr "eov 1.0 öncesine ait birleştirilecek bir veritabanı yok."
+
+#: src/sidebar.rs:1737
+msgid "That slide is not listed any more."
+msgstr "Bu preparat artık listede yok."
+
+#: src/sidebar.rs:1748
+msgid ""
+"Attach the annotations of an older slide to the open slide? Use this when "
+"the slide file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"Eski bir preparatın anotasyonları açık preparatla ilişkilendirilsin mi? "
+"Bunu, preparat dosyası yeniden kaydedildiğinde, dönüştürüldüğünde veya "
+"kimliksizleştirildiğinde kullanın. Bu işlemi geri alabilirsiniz."
+
+#: src/sidebar.rs:1753
+msgid ""
+"Attach the annotations of \"{}\" to the open slide? Use this when the slide "
+"file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"“{}” preparatının anotasyonları açık preparatla ilişkilendirilsin mi? Bunu, "
+"preparat dosyası yeniden kaydedildiğinde, dönüştürüldüğünde veya "
+"kimliksizleştirildiğinde kullanın. Bu işlemi geri alabilirsiniz."
+
+#: src/sidebar.rs:1762
+msgid ""
+"Warning: the two slides have different sizes, so the annotations may not "
+"line up."
+msgstr ""
+"Uyarı: iki preparatın boyutları farklı; bu nedenle anotasyonlar tam "
+"örtüşmeyebilir."
+
+#: src/sidebar.rs:1769
+msgid "Attach annotations"
+msgstr "Anotasyonları ilişkilendir"
+
+#: src/sidebar.rs:1771
+msgid "Attach"
+msgstr "İlişkilendir"
+
+#: src/state.rs:501
+msgid "Compared with {}"
+msgstr "Karşılaştırılan: {}"
+
+#. Translators: {ours} is "1 annotation" or "5 annotations" (translated on its own).
+#: src/state.rs:509
+msgid ""
+"This slide's visible layers ({ours}) against the {n} annotation in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgid_plural ""
+"This slide's visible layers ({ours}) against the {n} annotations in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgstr[0] ""
+"Bu preparatın görünür katmanları ({ours}), {name} dosyasındaki {n} "
+"anotasyonla karşılaştırılır (HPF alanları hariç); sayılar önce bu "
+"preparatın, sonra diğer değerlendiricinindir. Bir sınıfın noktaları {radius} "
+"uzaklık içinde birebir eşleşir (F1 = 2 · eşleşen / iki sayının toplamı); "
+"bölgeler örtüşmelerine göre eşleşir (Dice = 2 · ortak alan / iki alanın "
+"toplamı)."
+msgstr[1] ""
+"Bu preparatın görünür katmanları ({ours}), {name} dosyasındaki {n} "
+"anotasyonla karşılaştırılır (HPF alanları hariç); sayılar önce bu "
+"preparatın, sonra diğer değerlendiricinindir. Bir sınıfın noktaları {radius} "
+"uzaklık içinde birebir eşleşir (F1 = 2 · eşleşen / iki sayının toplamı); "
+"bölgeler örtüşmelerine göre eşleşir (Dice = 2 · ortak alan / iki alanın "
+"toplamı)."
+
+#: src/state.rs:522
+msgid "Check the file: {}"
+msgstr "Dosyayı denetleyin: {}"
+
+#: src/state.rs:664
+msgid "The annotation database is read-only."
+msgstr "Anotasyon veritabanı salt okunur."
+
+#: src/state.rs:665
+msgid "The annotation database is still opening."
+msgstr "Anotasyon veritabanı hâlâ açılıyor."
+
+#: src/state.rs:667
+msgid "The annotation database is unavailable: {}"
+msgstr "Anotasyon veritabanı kullanılamıyor: {}"
+
+#: src/stats.rs:97
+msgid "Invalid field size"
+msgstr "Geçersiz alan boyutu"
+
+#. Translators: HPF is a high-power field; ⌀ its diameter.
+#: src/stats.rs:110
+msgid "1 HPF = {area} mm² (field number {number} at {objective}×, ⌀ {d} mm)"
+msgstr ""
+"1 HPF = {area} mm² (alan numarası {number}, {objective}× objektif, ⌀ {d} mm)"
+
+#: src/stats.rs:116
+msgid "1 HPF = {area} mm² (⌀ {d} mm)"
+msgstr "1 HPF = {area} mm² (⌀ {d} mm)"
+
+#: src/tools.rs:63
+msgid "Select and edit annotations"
+msgstr "Anotasyonları seç ve düzenle"
+
+#: src/tools.rs:64
+msgid "Point annotation"
+msgstr "Nokta anotasyonu"
+
+#: src/tools.rs:65
+msgid "Count cells (Shift+click: second class)"
+msgstr "Hücre say (Shift+tıklama: ikinci sınıf)"
+
+#: src/tools.rs:66
+msgid "Polygon (Shift: add to selection, Alt: cut from it)"
+msgstr "Çokgen (Shift: seçime ekle, Alt: seçimden çıkar)"
+
+#: src/tools.rs:67
+msgid "Freehand outline (Shift: add, Alt: cut)"
+msgstr "Serbest el sınır çizgisi (Shift: ekle, Alt: çıkar)"
+
+#: src/tools.rs:68
+msgid "Rectangle"
+msgstr "Dikdörtgen"
+
+#: src/tools.rs:69
+msgid "Ellipse"
+msgstr "Elips"
+
+#: src/tools.rs:70
+msgid "Line / path"
+msgstr "Çizgi / yol"
+
+#: src/tools.rs:72
+msgid ""
+"Brush (paint a region, over a selected region to extend it; Alt or the "
+"eraser erases; [ and ] change the size)"
+msgstr ""
+"Fırça (bir bölge boyayın, genişletmek için seçili bir bölgenin üzerine "
+"boyayın; Alt veya silgi siler; [ ve ] boyutu değiştirir)"
+
+#: src/tools.rs:74
+msgid "Arrow (click the tail, double-click the tip; more clicks bend it)"
+msgstr ""
+"Ok (kuyruk için tıklayın, uç için çift tıklayın; ara tıklamalar oku büker)"
+
+#: src/tools.rs:75
+msgid "Text label"
+msgstr "Metin etiketi"
+
+#: src/tools.rs:77
+msgid ""
+"HPF field (a field of the configured size follows the pointer; click to "
+"place it, drag to pan)"
+msgstr ""
+"HPF alanı (ayarlanan boyuttaki alan işaretçiyi izler; yerleştirmek için "
+"tıklayın, kaydırmak için sürükleyin)"
+
+#: src/tools.rs:225
+msgid "Annotation class: {}"
+msgstr "Anotasyon sınıfı: {}"
+
+#. Translators: {} lists what was skipped, as "2 × reason; 1 × other reason".
+#: src/transfer.rs:249
+msgid "Skipped: {}."
+msgstr "Atlananlar: {}."
+
+#: src/transfer.rs:253
+msgid "{n} outline crossed itself and was repaired with the even-odd rule."
+msgid_plural ""
+"{n} outlines crossed themselves and were repaired with the even-odd rule."
+msgstr[0] "Kendisiyle kesişen {n} sınır çizgisi çift-tek kuralıyla onarıldı."
+msgstr[1] "Kendisiyle kesişen {n} sınır çizgisi çift-tek kuralıyla onarıldı."
+
+#: src/transfer.rs:260
+msgid "{n} shape extended past the slide and was cut at its edge."
+msgid_plural "{n} shapes extended past the slide and were cut at its edge."
+msgstr[0] "Preparatın dışına taşan {n} şekil, preparatın kenarından kesildi."
+msgstr[1] "Preparatın dışına taşan {n} şekil, preparatın kenarından kesildi."
+
+#: src/transfer.rs:265
+msgid "{n} over-long name or text was shortened."
+msgid_plural "{n} over-long names or texts were shortened."
+msgstr[0] "Fazla uzun {n} ad veya metin kısaltıldı."
+msgstr[1] "Fazla uzun {n} ad veya metin kısaltıldı."
+
+#: src/transfer.rs:270
+msgid "The file contains no annotations."
+msgstr "Dosyada hiç anotasyon yok."
+
+#: src/transfer.rs:272
+msgid "Nothing could be imported. {}"
+msgstr "Hiçbir şey içe aktarılamadı. {}"
+
+#: src/transfer.rs:339
+msgid "Made for this slide."
+msgstr "Bu preparat için hazırlanmış."
+
+#: src/transfer.rs:342
+msgid "Made for a different slide (its identity does not match)."
+msgstr "Farklı bir preparat için hazırlanmış (kimliği eşleşmiyor)."
+
+#: src/transfer.rs:352
+msgid "Made for a slide of {theirs}; this one is {ours}."
+msgstr ""
+"{theirs} boyutlarında bir preparat için hazırlanmış; bu preparatın boyutları "
+"{ours}."
+
+#: src/transfer.rs:360
+msgid "Made for a slide of the same size."
+msgstr "Aynı boyutlarda bir preparat için hazırlanmış."
+
+#: src/transfer.rs:364
+msgid ""
+"The file does not say which slide it belongs to; coordinates are taken as "
+"level-0 pixels of this slide."
+msgstr ""
+"Dosya hangi preparata ait olduğunu belirtmiyor; koordinatlar bu preparatın "
+"düzey 0 pikselleri olarak alınır."
+
+#: src/transfer.rs:376
+msgid "Annotations (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "Anotasyonlar (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:386
+msgid "All files"
+msgstr "Tüm dosyalar"
+
+#: src/transfer.rs:398 src/transfer.rs:853 src/transfer.rs:1007
+msgid "Cannot show the file dialog"
+msgstr "Dosya iletişim kutusu gösterilemiyor"
+
+#: src/transfer.rs:413
+msgid "The annotations of this slide are still loading."
+msgstr "Bu preparatın anotasyonları hâlâ yükleniyor."
+
+#: src/transfer.rs:434
+msgid "Importing {}"
+msgstr "{} içe aktarılıyor"
+
+#. Translators: the step of an import that reads the file.
+#: src/transfer.rs:447
+msgid "Reading"
+msgstr "Okunuyor"
+
+#: src/transfer.rs:474
+msgid ""
+"NDP.view annotations, placed with this slide's offsets from the slide centre "
+"and its pixel size."
+msgstr ""
+"NDP.view anotasyonları; bu preparatın merkeze göre kaymaları ve piksel "
+"boyutu kullanılarak yerleştirildi."
+
+#: src/transfer.rs:486
+msgid "Checking the slide"
+msgstr "Preparat denetleniyor"
+
+#: src/transfer.rs:489
+msgid "cannot read the slide to check the import: {}"
+msgstr "içe aktarmayı denetlemek için preparat okunamıyor: {}"
+
+#: src/transfer.rs:494
+msgid "Made for this slide (checked by content)."
+msgstr "Bu preparat için hazırlanmış (içeriğe göre denetlendi)."
+
+#: src/transfer.rs:497
+msgid "Made for a different slide (its checksum does not match)."
+msgstr "Farklı bir preparat için hazırlanmış (sağlama toplamı eşleşmiyor)."
+
+#: src/transfer.rs:521
+msgid "Import cancelled."
+msgstr "İçe aktarma iptal edildi."
+
+#: src/transfer.rs:522
+msgid "Could not import {}"
+msgstr "{} içe aktarılamadı"
+
+#. Translators: "Merge a database…" is the item of the Import and export
+#. menu: quote it as it is translated there.
+#: src/transfer.rs:560
+msgid ""
+"This archive has no annotations for the current slide. Restore whole backups "
+"with \"Merge a database…\"."
+msgstr ""
+"Bu arşivde geçerli preparata ait anotasyon yok. Tam yedekleri “Veritabanını "
+"birleştir…” ile geri yükleyin."
+
+#: src/transfer.rs:574
+msgid "Import {n} annotation"
+msgid_plural "Import {n} annotations"
+msgstr[0] "{n} anotasyonu içe aktarma"
+msgstr[1] "{n} anotasyonu içe aktarma"
+
+#: src/transfer.rs:581
+msgid "The slide this import was started on is not open any more."
+msgstr "Bu içe aktarmanın başlatıldığı preparat artık açık değil."
+
+#: src/transfer.rs:737
+msgid "Imported {n} annotation from {file}."
+msgid_plural "Imported {n} annotations from {file}."
+msgstr[0] "{file} dosyasından {n} anotasyon içe aktarıldı."
+msgstr[1] "{file} dosyasından {n} anotasyon içe aktarıldı."
+
+#: src/transfer.rs:783 src/transfer.rs:818
+msgid "eov annotations"
+msgstr "eov anotasyonları"
+
+#: src/transfer.rs:811
+msgid "DICOM bulk annotations"
+msgstr "DICOM toplu anotasyonları"
+
+#: src/transfer.rs:824
+msgid "Export a blinded copy for another reader"
+msgstr "Başka bir değerlendirici için körleştirilmiş kopya dışa aktar"
+
+#: src/transfer.rs:825
+msgid "Export annotations"
+msgstr "Anotasyonları dışa aktar"
+
+#: src/transfer.rs:942
+msgid "Exported {n} annotation to {file}."
+msgid_plural "Exported {n} annotations to {file}."
+msgstr[0] "{file} dosyasına {n} anotasyon dışa aktarıldı."
+msgstr[1] "{file} dosyasına {n} anotasyon dışa aktarıldı."
+
+#: src/transfer.rs:948
+msgid "Could not export to {}"
+msgstr "{} dosyasına dışa aktarılamadı"
+
+#: src/transfer.rs:988
+msgid "Compare with another reader's annotations"
+msgstr "Başka bir değerlendiricinin anotasyonlarıyla karşılaştır"
+
+#: src/transfer.rs:990
+msgid "Annotations (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "Anotasyonlar (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:1114
+msgid "Could not compare with {}"
+msgstr "{} dosyasıyla karşılaştırılamadı"
+
+#: src/transfer.rs:1123
+msgid "Exporting all annotations"
+msgstr "Tüm anotasyonlar dışa aktarılıyor"
+
+#: src/transfer.rs:1176
+msgid "Exported the annotations of {n} slide."
+msgid_plural "Exported the annotations of {n} slides."
+msgstr[0] "{n} preparatın anotasyonları dışa aktarıldı."
+msgstr[1] "{n} preparatın anotasyonları dışa aktarıldı."
+
+#: src/transfer.rs:1184
+msgid "Could not export all annotations"
+msgstr "Tüm anotasyonlar dışa aktarılamadı"
+
+#: src/transfer.rs:1201
+msgid "Annotation database backed up."
+msgstr "Anotasyon veritabanı yedeklendi."
+
+#: src/transfer.rs:1203
+msgid "Could not back up the annotation database"
+msgstr "Anotasyon veritabanı yedeklenemedi"
+
+#: src/transfer.rs:1217
+msgid "Merging annotation database"
+msgstr "Anotasyon veritabanı birleştiriliyor"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers", {slides}
+#. is "1 new slide" or "3 new slides" (each translated on its own).
+#: src/transfer.rs:1232
+msgid "Merged {n} annotation {layers} ({slides})."
+msgid_plural "Merged {n} annotations {layers} ({slides})."
+msgstr[0] "{layers} {n} anotasyon birleştirildi ({slides})."
+msgstr[1] "{layers} {n} anotasyon birleştirildi ({slides})."
+
+#. Translators: {slides} in "Merged {n} annotations {layers} ({slides})."
+#: src/transfer.rs:1237
+msgid "{n} new slide"
+msgid_plural "{n} new slides"
+msgstr[0] "{n} yeni preparat"
+msgstr[1] "{n} yeni preparat"
+
+#: src/transfer.rs:1249
+msgid "Could not merge the database"
+msgstr "Veritabanı birleştirilemedi"
+
+#. Translators: read out for the layer new annotations go into; {} is its
+#. number of annotations.
+#: ui/annotations-sidebar.slint:115
+msgctxt "TreeItem"
+msgid "{} · new annotations go here"
+msgstr "{} · yeni anotasyonlar buraya eklenir"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Collapse layer"
+msgstr "Katmanı daralt"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Expand layer"
+msgstr "Katmanı genişlet"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Hide layer"
+msgstr "Katmanı gizle"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Show layer"
+msgstr "Katmanı göster"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Lock layer"
+msgstr "Katmanı kilitle"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Unlock layer"
+msgstr "Katmanın kilidini aç"
+
+#: ui/annotations-sidebar.slint:222
+msgctxt "TreeItem"
+msgid "Layer settings"
+msgstr "Katman ayarları"
+
+#: ui/annotations-sidebar.slint:292
+msgctxt "TreeItem"
+msgid "Locked"
+msgstr "Kilitli"
+
+#: ui/annotations-sidebar.slint:314
+msgctxt "AnnotationsSidebar"
+msgid "No slide open"
+msgstr "Açık preparat yok"
+
+#: ui/annotations-sidebar.slint:321
+msgctxt "AnnotationsSidebar"
+msgid "Unclassified"
+msgstr "Sınıflandırılmamış"
+
+#: ui/annotations-sidebar.slint:488
+msgctxt "AnnotationsSidebar"
+msgid "Import annotations…"
+msgstr "Anotasyonları içe aktar…"
+
+#: ui/annotations-sidebar.slint:489
+msgctxt "AnnotationsSidebar"
+msgid "Export as GeoJSON (QuPath)…"
+msgstr "GeoJSON (QuPath) olarak dışa aktar…"
+
+#: ui/annotations-sidebar.slint:490
+msgctxt "AnnotationsSidebar"
+msgid "Export as eov JSON…"
+msgstr "eov JSON olarak dışa aktar…"
+
+#: ui/annotations-sidebar.slint:491
+msgctxt "AnnotationsSidebar"
+msgid "Export as ASAP XML…"
+msgstr "ASAP XML olarak dışa aktar…"
+
+#: ui/annotations-sidebar.slint:492
+msgctxt "AnnotationsSidebar"
+msgid "Export as ImageScope XML…"
+msgstr "ImageScope XML olarak dışa aktar…"
+
+#: ui/annotations-sidebar.slint:493
+msgctxt "AnnotationsSidebar"
+msgid "Export as DICOM annotations…"
+msgstr "DICOM anotasyonları olarak dışa aktar…"
+
+#: ui/annotations-sidebar.slint:494
+msgctxt "AnnotationsSidebar"
+msgid "Export measurements (CSV)…"
+msgstr "Ölçümleri dışa aktar (CSV)…"
+
+#: ui/annotations-sidebar.slint:495
+msgctxt "AnnotationsSidebar"
+msgid "Export a blinded copy…"
+msgstr "Körleştirilmiş kopya dışa aktar…"
+
+#: ui/annotations-sidebar.slint:496
+msgctxt "AnnotationsSidebar"
+msgid "Compare with another reader…"
+msgstr "Başka bir değerlendiriciyle karşılaştır…"
+
+#. Translators: exports the annotations of every slide in the database to one
+#. annotation archive (a JSON file), not the slide images.
+#: ui/annotations-sidebar.slint:497 ui/annotations-sidebar.slint:1986
+msgctxt "AnnotationsSidebar"
+msgid "Export all slides…"
+msgstr "Tüm preparatları dışa aktar…"
+
+#: ui/annotations-sidebar.slint:498
+msgctxt "AnnotationsSidebar"
+msgid "Back up the database…"
+msgstr "Veritabanını yedekle…"
+
+#: ui/annotations-sidebar.slint:499
+msgctxt "AnnotationsSidebar"
+msgid "Merge a database…"
+msgstr "Veritabanını birleştir…"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field area"
+msgstr "Alan büyüklüğü"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field number and objective"
+msgstr "Alan numarası ve objektif"
+
+#: ui/annotations-sidebar.slint:600
+msgctxt "AnnotationsSidebar"
+msgid "Annotations"
+msgstr "Anotasyonlar"
+
+#: ui/annotations-sidebar.slint:635
+msgctxt "AnnotationsSidebar"
+msgid "Import and export"
+msgstr "İçe ve dışa aktarma"
+
+#: ui/annotations-sidebar.slint:668
+msgctxt "AnnotationsSidebar"
+msgid "Retry"
+msgstr "Yeniden dene"
+
+#: ui/annotations-sidebar.slint:683
+msgctxt "AnnotationsSidebar"
+msgid "Layers"
+msgstr "Katmanlar"
+
+#: ui/annotations-sidebar.slint:691
+msgctxt "AnnotationsSidebar"
+msgid "Classes"
+msgstr "Sınıflar"
+
+#. Translators: the tab for counting cells.
+#: ui/annotations-sidebar.slint:700
+msgctxt "AnnotationsSidebar"
+msgid "Count"
+msgstr "Sayım"
+
+#: ui/annotations-sidebar.slint:708
+msgctxt "AnnotationsSidebar"
+msgid "Data"
+msgstr "Veri"
+
+#: ui/annotations-sidebar.slint:747
+msgctxt "AnnotationsSidebar"
+msgid "Filter by name, class, kind or status"
+msgstr "Ada, sınıfa, türe veya duruma göre filtrele"
+
+#: ui/annotations-sidebar.slint:769
+msgctxt "AnnotationsSidebar"
+msgid "Filter annotations"
+msgstr "Anotasyonları filtrele"
+
+#: ui/annotations-sidebar.slint:786
+msgctxt "AnnotationsSidebar"
+msgid "New layer"
+msgstr "Yeni katman"
+
+#: ui/annotations-sidebar.slint:870 ui/annotations-sidebar.slint:1079
+#: ui/annotations-sidebar.slint:1500
+msgctxt "AnnotationsSidebar"
+msgid "Name"
+msgstr "Ad"
+
+#: ui/annotations-sidebar.slint:876 ui/annotations-sidebar.slint:878
+msgctxt "AnnotationsSidebar"
+msgid "Layer name"
+msgstr "Katman adı"
+
+#: ui/annotations-sidebar.slint:889
+msgctxt "AnnotationsSidebar"
+msgid "Colour"
+msgstr "Renk"
+
+#: ui/annotations-sidebar.slint:898
+msgctxt "AnnotationsSidebar"
+msgid "Layer colour"
+msgstr "Katman rengi"
+
+#: ui/annotations-sidebar.slint:906 ui/annotations-sidebar.slint:1518
+msgctxt "AnnotationsSidebar"
+msgid "Opacity"
+msgstr "Opaklık"
+
+#: ui/annotations-sidebar.slint:912
+msgctxt "AnnotationsSidebar"
+msgid "Layer opacity"
+msgstr "Katman opaklığı"
+
+#: ui/annotations-sidebar.slint:923 ui/annotations-sidebar.slint:1162
+msgctxt "AnnotationsSidebar"
+msgid "Notes"
+msgstr "Notlar"
+
+#: ui/annotations-sidebar.slint:931
+msgctxt "AnnotationsSidebar"
+msgid "Notes about this layer"
+msgstr "Bu katmanla ilgili notlar"
+
+#: ui/annotations-sidebar.slint:933
+msgctxt "AnnotationsSidebar"
+msgid "Layer notes"
+msgstr "Katman notları"
+
+#: ui/annotations-sidebar.slint:941
+msgctxt "AnnotationsSidebar"
+msgid "Draw into this layer"
+msgstr "Bu katmana çiz"
+
+#: ui/annotations-sidebar.slint:942
+msgctxt "AnnotationsSidebar"
+msgid "Delete layer…"
+msgstr "Katmanı sil…"
+
+#: ui/annotations-sidebar.slint:1020
+msgctxt "AnnotationsSidebar"
+msgid "Zoom to the annotation"
+msgstr "Anotasyona yakınlaştır"
+
+#: ui/annotations-sidebar.slint:1028
+msgctxt "AnnotationsSidebar"
+msgid "Copy measurements"
+msgstr "Ölçümleri kopyala"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the annotation"
+msgstr "Anotasyonu sil"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the selected annotations"
+msgstr "Seçili anotasyonları sil"
+
+#: ui/annotations-sidebar.slint:1065
+msgctxt "AnnotationsSidebar"
+msgid "Repair"
+msgstr "Onar"
+
+#: ui/annotations-sidebar.slint:1085
+msgctxt "AnnotationsSidebar"
+msgid "Unnamed"
+msgstr "Adsız"
+
+#: ui/annotations-sidebar.slint:1087
+msgctxt "AnnotationsSidebar"
+msgid "Annotation name"
+msgstr "Anotasyon adı"
+
+#: ui/annotations-sidebar.slint:1098
+msgctxt "AnnotationsSidebar"
+msgid "Class"
+msgstr "Sınıf"
+
+#: ui/annotations-sidebar.slint:1104
+msgctxt "AnnotationsSidebar"
+msgid "Annotation class"
+msgstr "Anotasyon sınıfı"
+
+#: ui/annotations-sidebar.slint:1115
+msgctxt "AnnotationsSidebar"
+msgid "Status"
+msgstr "Durum"
+
+#: ui/annotations-sidebar.slint:1121
+msgctxt "AnnotationsSidebar"
+msgid "Review status"
+msgstr "İnceleme durumu"
+
+#: ui/annotations-sidebar.slint:1132
+msgctxt "AnnotationsSidebar"
+msgid "Layer"
+msgstr "Katman"
+
+#: ui/annotations-sidebar.slint:1138
+msgctxt "AnnotationsSidebar"
+msgid "Annotation layer"
+msgstr "Anotasyon katmanı"
+
+#: ui/annotations-sidebar.slint:1149
+msgctxt "AnnotationsSidebar"
+msgid "Locked"
+msgstr "Kilitli"
+
+#: ui/annotations-sidebar.slint:1170 ui/annotations-sidebar.slint:1172
+msgctxt "AnnotationsSidebar"
+msgid "Description"
+msgstr "Açıklama"
+
+#: ui/annotations-sidebar.slint:1183
+msgctxt "AnnotationsSidebar"
+msgid "MEASUREMENTS"
+msgstr "ÖLÇÜMLER"
+
+#: ui/annotations-sidebar.slint:1213
+msgctxt "AnnotationsSidebar"
+msgid "PROPERTIES"
+msgstr "ÖZELLİKLER"
+
+#: ui/annotations-sidebar.slint:1224
+msgctxt "AnnotationsSidebar"
+msgid "Property name"
+msgstr "Özellik adı"
+
+#: ui/annotations-sidebar.slint:1233
+msgctxt "AnnotationsSidebar"
+msgid "Value"
+msgstr "Değer"
+
+#: ui/annotations-sidebar.slint:1235
+msgctxt "AnnotationsSidebar"
+msgid "Property value"
+msgstr "Özellik değeri"
+
+#: ui/annotations-sidebar.slint:1243
+msgctxt "AnnotationsSidebar"
+msgid "Remove property"
+msgstr "Özelliği kaldır"
+
+#: ui/annotations-sidebar.slint:1255
+msgctxt "AnnotationsSidebar"
+msgid "Add property"
+msgstr "Özellik ekle"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS"
+msgstr "YORUMLAR"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS ({})"
+msgstr "YORUMLAR ({})"
+
+#: ui/annotations-sidebar.slint:1294
+msgctxt "AnnotationsSidebar"
+msgid "Delete comment"
+msgstr "Yorumu sil"
+
+#: ui/annotations-sidebar.slint:1314
+msgctxt "AnnotationsSidebar"
+msgid "Add a comment"
+msgstr "Yorum ekleyin"
+
+#: ui/annotations-sidebar.slint:1316
+msgctxt "AnnotationsSidebar"
+msgid "New comment"
+msgstr "Yeni yorum"
+
+#. Translators: a button that adds the comment typed above.
+#: ui/annotations-sidebar.slint:1324
+msgctxt "AnnotationsSidebar"
+msgid "Comment"
+msgstr "Yorum yap"
+
+#: ui/annotations-sidebar.slint:1358
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Select an annotation on the slide or in the list to see its details. Double-"
+"click a row to zoom to it; Ctrl+click selects several."
+msgstr ""
+"Ayrıntılarını görmek için preparatta veya listede bir anotasyon seçin. "
+"Anotasyona yakınlaştırmak için satırına çift tıklayın; Ctrl+tıklama ile "
+"birden fazla seçebilirsiniz."
+
+#: ui/annotations-sidebar.slint:1379
+msgctxt "AnnotationsSidebar"
+msgid ""
+"New annotations get the active class (●), and the Count tool counts it; "
+"Shift+click counts the second class (◐). Pressing a class's hotkey makes it "
+"active."
+msgstr ""
+"Yeni anotasyonlar etkin sınıfı (●) alır ve Sayım aracı bu sınıfı sayar; "
+"Shift+tıklama ikinci sınıfı (◐) sayar. Bir sınıfın kısayol tuşuna basmak onu "
+"etkin sınıf yapar."
+
+#: ui/annotations-sidebar.slint:1418
+msgctxt "AnnotationsSidebar"
+msgid "Colour of {}"
+msgstr "{} sınıfının rengi"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Hide {}"
+msgstr "{} sınıfını gizle"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Show {}"
+msgstr "{} sınıfını göster"
+
+#: ui/annotations-sidebar.slint:1466
+msgctxt "AnnotationsSidebar"
+msgid "Class settings"
+msgstr "Sınıf ayarları"
+
+#: ui/annotations-sidebar.slint:1506 ui/annotations-sidebar.slint:1507
+msgctxt "AnnotationsSidebar"
+msgid "Class name"
+msgstr "Sınıf adı"
+
+#: ui/annotations-sidebar.slint:1523
+msgctxt "AnnotationsSidebar"
+msgid "Class opacity"
+msgstr "Sınıf opaklığı"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Count with Shift+click"
+msgstr "Shift+tıklama ile say"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Stop counting with Shift+click"
+msgstr "Shift+tıklama ile saymayı bırak"
+
+#: ui/annotations-sidebar.slint:1539
+msgctxt "AnnotationsSidebar"
+msgid "Delete…"
+msgstr "Sil…"
+
+#: ui/annotations-sidebar.slint:1558
+msgctxt "AnnotationsSidebar"
+msgid "New class"
+msgstr "Yeni sınıf"
+
+#: ui/annotations-sidebar.slint:1596
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Pick the Count tool (C) and click cells; Shift+click and Alt+click count the "
+"second and third class. Select regions or HPF fields to count inside them."
+msgstr ""
+"Sayım aracını (C) seçin ve hücrelere tıklayın; Shift+tıklama ve Alt+tıklama "
+"ikinci ve üçüncü sınıfı sayar. İçlerinde saymak için bölgeleri veya HPF "
+"alanlarını seçin."
+
+#: ui/annotations-sidebar.slint:1601
+msgctxt "AnnotationsSidebar"
+msgid "Count tool (C)"
+msgstr "Sayım aracı (C)"
+
+#: ui/annotations-sidebar.slint:1602
+msgctxt "AnnotationsSidebar"
+msgid "HPF field (H)"
+msgstr "HPF alanı (H)"
+
+#. Translators: the class a click with the Count tool counts.
+#: ui/annotations-sidebar.slint:1614
+msgctxt "AnnotationsSidebar"
+msgid "Click"
+msgstr "Tıklama"
+
+#: ui/annotations-sidebar.slint:1620
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by a click"
+msgstr "Tıklamayla sayılan sınıf"
+
+#: ui/annotations-sidebar.slint:1631
+msgctxt "AnnotationsSidebar"
+msgid "Shift+click"
+msgstr "Shift+tıklama"
+
+#: ui/annotations-sidebar.slint:1636
+msgctxt "AnnotationsSidebar"
+msgid "(same as click)"
+msgstr "(tıklamayla aynı)"
+
+#: ui/annotations-sidebar.slint:1637
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by Shift+click"
+msgstr "Shift+tıklamayla sayılan sınıf"
+
+#: ui/annotations-sidebar.slint:1648
+msgctxt "AnnotationsSidebar"
+msgid "Alt+click"
+msgstr "Alt+tıklama"
+
+#: ui/annotations-sidebar.slint:1653
+msgctxt "AnnotationsSidebar"
+msgid "(none)"
+msgstr "(yok)"
+
+#: ui/annotations-sidebar.slint:1654
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Class counted by Alt+click: PD-L1-positive immune cells for the combined "
+"positive score"
+msgstr ""
+"Alt+tıklamayla sayılan sınıf: kombine pozitif skor için PD-L1 pozitif immün "
+"hücreler"
+
+#: ui/annotations-sidebar.slint:1662
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Combined positive score: the click and Alt+click classes (PD-L1-positive "
+"tumour cells and PD-L1-positive immune cells) per 100 tumour cells (the "
+"click and Shift+click classes)."
+msgstr ""
+"Kombine pozitif skor: 100 tümör hücresi (tıklama ve Shift+tıklama sınıfları) "
+"başına düşen tıklama ve Alt+tıklama sınıfları (PD-L1 pozitif tümör hücreleri "
+"ve PD-L1 pozitif immün hücreler)."
+
+#: ui/annotations-sidebar.slint:1677
+msgctxt "AnnotationsSidebar"
+msgid "Nothing counted here yet."
+msgstr "Burada henüz sayım yapılmadı."
+
+#: ui/annotations-sidebar.slint:1748
+msgctxt "AnnotationsSidebar"
+msgid "Count points in hidden layers"
+msgstr "Gizli katmanlardaki noktaları say"
+
+#: ui/annotations-sidebar.slint:1759
+msgctxt "AnnotationsSidebar"
+msgid "Clear counts…"
+msgstr "Sayımları temizle…"
+
+#: ui/annotations-sidebar.slint:1771
+msgctxt "AnnotationsSidebar"
+msgid "HIGH-POWER FIELDS"
+msgstr "BÜYÜK BÜYÜTME ALANLARI"
+
+#: ui/annotations-sidebar.slint:1785
+msgctxt "AnnotationsSidebar"
+msgid "How the field size is given"
+msgstr "Alan boyutunun belirtilme şekli"
+
+#. Translators: FN is the eyepiece's field number, the diameter of the field
+#. of view.
+#: ui/annotations-sidebar.slint:1796
+msgctxt "AnnotationsSidebar"
+msgid "FN (mm)"
+msgstr "FN (mm)"
+
+#: ui/annotations-sidebar.slint:1803
+msgctxt "AnnotationsSidebar"
+msgid "Field number in mm"
+msgstr "mm cinsinden alan numarası"
+
+#. Translators: the magnification of the objective, as in 40×.
+#: ui/annotations-sidebar.slint:1811
+msgctxt "AnnotationsSidebar"
+msgid "Objective ×"
+msgstr "Objektif ×"
+
+#: ui/annotations-sidebar.slint:1821
+msgctxt "AnnotationsSidebar"
+msgid "Objective magnification"
+msgstr "Objektif büyütmesi"
+
+#: ui/annotations-sidebar.slint:1828 ui/annotations-sidebar.slint:1853
+msgctxt "AnnotationsSidebar"
+msgid "Apply"
+msgstr "Uygula"
+
+#: ui/annotations-sidebar.slint:1839
+msgctxt "AnnotationsSidebar"
+msgid "Area (mm²)"
+msgstr "Alan (mm²)"
+
+#: ui/annotations-sidebar.slint:1846
+msgctxt "AnnotationsSidebar"
+msgid "Field area in square millimetres"
+msgstr "Milimetrekare cinsinden alan büyüklüğü"
+
+#: ui/annotations-sidebar.slint:1873
+msgctxt "AnnotationsSidebar"
+msgid "{n} field placed on this slide."
+msgid_plural "{n} fields placed on this slide."
+msgstr[0] "Bu preparata {n} alan yerleştirildi."
+msgstr[1] "Bu preparata {n} alan yerleştirildi."
+
+#: ui/annotations-sidebar.slint:1885
+msgctxt "AnnotationsSidebar"
+msgid "Select all fields"
+msgstr "Tüm alanları seç"
+
+#: ui/annotations-sidebar.slint:1924
+msgctxt "AnnotationsSidebar"
+msgid "IMPORT AND EXPORT"
+msgstr "İÇE VE DIŞA AKTARMA"
+
+#: ui/annotations-sidebar.slint:1928
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Imports: GeoJSON (QuPath and others), eov JSON, ASAP XML, Aperio ImageScope "
+"XML, Hamamatsu NDPA and DICOM bulk annotations. Coordinates are level-0 "
+"pixels with y pointing down."
+msgstr ""
+"İçe aktarılabilenler: GeoJSON (QuPath ve diğerleri), eov JSON, ASAP XML, "
+"Aperio ImageScope XML, Hamamatsu NDPA ve DICOM toplu anotasyonları. "
+"Koordinatlar, y ekseni aşağıyı gösteren düzey 0 pikselleridir."
+
+#: ui/annotations-sidebar.slint:1935
+msgctxt "AnnotationsSidebar"
+msgid "Import…"
+msgstr "İçe aktar…"
+
+#: ui/annotations-sidebar.slint:1991
+msgctxt "AnnotationsSidebar"
+msgid "Back up…"
+msgstr "Yedekle…"
+
+#: ui/annotations-sidebar.slint:1992
+msgctxt "AnnotationsSidebar"
+msgid "Merge…"
+msgstr "Birleştir…"
+
+#. Translators: a reader is a person who annotates slides; a second reader
+#. annotates a blinded copy independently so two readers can be compared (as
+#. in a reader study); use the word for an observer or annotator, not the
+#. clinical term for a second diagnostic opinion.
+#: ui/annotations-sidebar.slint:2009
+msgctxt "AnnotationsSidebar"
+msgid "SECOND READER"
+msgstr "İKİNCİ DEĞERLENDİRİCİ"
+
+#: ui/annotations-sidebar.slint:2013
+msgctxt "AnnotationsSidebar"
+msgid ""
+"A blinded copy holds the visible layers' shapes, classes and names, without "
+"authors, comments, statuses, descriptions or properties. Compare reads "
+"another reader's export and compares it with the visible layers: counts per "
+"class, matched points and overlapping regions."
+msgstr ""
+"Körleştirilmiş kopya, görünür katmanların şekillerini, sınıflarını ve "
+"adlarını içerir; yazarlar, yorumlar, durumlar, açıklamalar ve özellikler "
+"dahil edilmez. Karşılaştır, başka bir değerlendiricinin dışa aktarımını okur "
+"ve görünür katmanlarla karşılaştırır: sınıf başına sayılar, eşleşen noktalar "
+"ve örtüşen bölgeler."
+
+#: ui/annotations-sidebar.slint:2018
+msgctxt "AnnotationsSidebar"
+msgid "Blinded copy…"
+msgstr "Körleştirilmiş kopya…"
+
+#: ui/annotations-sidebar.slint:2019
+msgctxt "AnnotationsSidebar"
+msgid "Compare…"
+msgstr "Karşılaştır…"
+
+#. Translators: a button: compare with the same file again.
+#: ui/annotations-sidebar.slint:2022
+msgctxt "AnnotationsSidebar"
+msgid "Again"
+msgstr "Tekrarla"
+
+#. Translators: a button: remove the comparison.
+#: ui/annotations-sidebar.slint:2029
+msgctxt "AnnotationsSidebar"
+msgid "Clear"
+msgstr "Temizle"
+
+#: ui/annotations-sidebar.slint:2066
+msgctxt "AnnotationsSidebar"
+msgid "Neither reader has points or regions in the compared layers."
+msgstr ""
+"Karşılaştırılan katmanlarda iki değerlendiricinin de noktası veya bölgesi "
+"yok."
+
+#: ui/annotations-sidebar.slint:2126
+msgctxt "AnnotationsSidebar"
+msgid "DATABASE"
+msgstr "VERİTABANI"
+
+#: ui/annotations-sidebar.slint:2150
+msgctxt "AnnotationsSidebar"
+msgid "Database file"
+msgstr "Veritabanı dosyası"
+
+#. Translators: {} is the path of the old database file.
+#: ui/annotations-sidebar.slint:2167
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Annotations made with eov before 1.0 are in {}. Bring them into this "
+"database (the old file is not changed):"
+msgstr ""
+"eov 1.0 öncesinde yapılan anotasyonlar şu konumda: {}. Bunları bu "
+"veritabanına aktarın (eski dosya değiştirilmez):"
+
+#: ui/annotations-sidebar.slint:2179
+msgctxt "AnnotationsSidebar"
+msgid "Bring them in"
+msgstr "Aktar"
+
+#: ui/annotations-sidebar.slint:2195
+msgctxt "AnnotationsSidebar"
+msgid "OTHER SLIDES"
+msgstr "DİĞER PREPARATLAR"
+
+#. Translators: a button that lists the other slides in the database.
+#: ui/annotations-sidebar.slint:2202
+msgctxt "AnnotationsSidebar"
+msgid "List"
+msgstr "Listele"
+
+#. Translators: a button: attach the annotations of this slide to the open
+#. slide.
+#: ui/annotations-sidebar.slint:2236
+msgctxt "AnnotationsSidebar"
+msgid "Attach"
+msgstr "İlişkilendir"
+
+#: ui/annotations-sidebar.slint:2258
+msgctxt "AnnotationsSidebar"
+msgid "AUTHOR AND EXPORTS"
+msgstr "YAZAR VE DIŞA AKTARMALAR"
+
+#: ui/annotations-sidebar.slint:2265 ui/annotations-sidebar.slint:2273
+msgctxt "AnnotationsSidebar"
+msgid "Author"
+msgstr "Yazar"
+
+#: ui/annotations-sidebar.slint:2272
+msgctxt "AnnotationsSidebar"
+msgid "Your name or initials"
+msgstr "Adınız veya baş harfleriniz"
+
+#: ui/annotations-sidebar.slint:2284 ui/annotations-sidebar.slint:2291
+msgctxt "AnnotationsSidebar"
+msgid "Organization"
+msgstr "Kurum"
+
+#: ui/annotations-sidebar.slint:2302 ui/annotations-sidebar.slint:2309
+msgctxt "AnnotationsSidebar"
+msgid "Project"
+msgstr "Proje"
+
+#: ui/annotations-sidebar.slint:2320 ui/annotations-sidebar.slint:2328
+msgctxt "AnnotationsSidebar"
+msgid "License"
+msgstr "Lisans"
+
+#: ui/annotations-sidebar.slint:2327
+msgctxt "AnnotationsSidebar"
+msgid "e.g. CC-BY-4.0"
+msgstr "örn. CC-BY-4.0"
+
+#: ui/annotations-sidebar.slint:2336
+msgctxt "AnnotationsSidebar"
+msgid "Include the slide's file name in exports"
+msgstr "Dışa aktarmalara preparatın dosya adını ekle"
+
+#: ui/annotations-sidebar.slint:2346
+msgctxt "AnnotationsSidebar"
+msgid "DISPLAY"
+msgstr "GÖRÜNÜM"
+
+#: ui/annotations-sidebar.slint:2350
+msgctxt "AnnotationsSidebar"
+msgid "Show names on the slide"
+msgstr "Adları preparat üzerinde göster"
+
+#: ui/annotations-sidebar.slint:2361 ui/annotations-sidebar.slint:2369
+msgctxt "AnnotationsSidebar"
+msgid "Point size"
+msgstr "Nokta boyutu"
+
+#: ui/annotations-sidebar.slint:2380 ui/annotations-sidebar.slint:2386
+msgctxt "AnnotationsSidebar"
+msgid "Fill opacity"
+msgstr "Dolgu opaklığı"
+
+#. Translators: S is the brush tool's key.
+#: ui/annotations-sidebar.slint:2397
+msgctxt "AnnotationsSidebar"
+msgid "BRUSH (S)"
+msgstr "FIRÇA (S)"
+
+#. Translators: the size of the brush.
+#: ui/annotations-sidebar.slint:2405
+msgctxt "AnnotationsSidebar"
+msgid "Size"
+msgstr "Boyut"
+
+#: ui/annotations-sidebar.slint:2413
+msgctxt "AnnotationsSidebar"
+msgid "Brush size"
+msgstr "Fırça boyutu"
+
+#: ui/annotations-sidebar.slint:2429
+msgctxt "AnnotationsSidebar"
+msgid "Erase from the selected region"
+msgstr "Seçili bölgeden sil"
+
+#: ui/annotations-sidebar.slint:2437
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Paint over a selected region to extend it, elsewhere to make a new one. Hold "
+"Alt to erase; [ and ] change the size."
+msgstr ""
+"Genişletmek için seçili bir bölgenin üzerine, yeni bölge oluşturmak için "
+"başka bir yere boyayın. Silmek için Alt tuşunu basılı tutun; [ ve ] boyutu "
+"değiştirir."
+
+#: ui/annotations-sidebar.slint:2557
+msgctxt "AnnotationsSidebar"
+msgid "Colours"
+msgstr "Renkler"
+
+#: ui/import-dialog.slint:117 ui/import-dialog.slint:124
+msgctxt "ImportDialog"
+msgid "Import annotations"
+msgstr "Anotasyonları içe aktar"
+
+#: ui/import-dialog.slint:186
+msgctxt "ImportDialog"
+msgid "NOTES"
+msgstr "NOTLAR"
+
+#: ui/import-dialog.slint:214
+msgctxt "ImportDialog"
+msgid "Add to the existing layers"
+msgstr "Mevcut katmanlara ekle"
+
+#: ui/import-dialog.slint:215
+msgctxt "ImportDialog"
+msgid "Imported annotations join the layer with the same name."
+msgstr "İçe aktarılan anotasyonlar aynı adlı katmana eklenir."
+
+#: ui/import-dialog.slint:223
+msgctxt "ImportDialog"
+msgid "Replace the existing layers"
+msgstr "Mevcut katmanları değiştir"
+
+#: ui/import-dialog.slint:224
+msgctxt "ImportDialog"
+msgid "The existing layers are deleted (this can be undone)."
+msgstr "Mevcut katmanlar silinir (bu işlem geri alınabilir)."
+
+#: ui/import-dialog.slint:232
+msgctxt "ImportDialog"
+msgid "Keep both"
+msgstr "İkisini de koru"
+
+#. Translators: "Tumour" is only an example of a layer name from the imported
+#. file: translate it, and keep the " (2)" that eov adds.
+#: ui/import-dialog.slint:234
+msgctxt "ImportDialog"
+msgid "Imported layers get a new name, such as \"Tumour (2)\"."
+msgstr "İçe aktarılan katmanlara “Tümör (2)” gibi yeni bir ad verilir."
+
+#: ui/import-dialog.slint:243
+msgctxt "ImportDialog"
+msgid "The import is one step: Ctrl+Z (⌘Z) removes everything it added."
+msgstr "İçe aktarma tek adımdır: Ctrl+Z (⌘Z) eklediği her şeyi kaldırır."
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Cancel"
+msgstr "İptal"
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Close"
+msgstr "Kapat"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import"
+msgstr "İçe aktar"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import anyway"
+msgstr "Yine de içe aktar"
+
+#: ui/widgets.slint:655
+msgctxt "Swatch"
+msgid "Change colour"
+msgstr "Rengi değiştir"
+
+#: ui/widgets.slint:694
+msgctxt "KeyField"
+msgid "Hotkey"
+msgstr "Kısayol tuşu"
+
+#: ui/widgets.slint:696
+msgctxt "KeyField"
+msgid "Click, then press a key. Backspace removes the hotkey."
+msgstr "Tıklayın, ardından bir tuşa basın. Backspace kısayol tuşunu kaldırır."

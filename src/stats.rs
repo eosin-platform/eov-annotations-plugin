@@ -1,6 +1,7 @@
 //! Counting statistics: exact Poisson and binomial intervals, and the area
 //! of a microscope high-power field.
 
+use eov_plugin_api::i18n::{self, tr};
 use serde::{Deserialize, Serialize};
 use statrs::distribution::{Beta, ChiSquared, ContinuousCDF};
 
@@ -90,21 +91,29 @@ impl FieldSize {
             .map(|a| 2.0 * (a / std::f64::consts::PI).sqrt())
     }
 
+    /// The field size as the Count tab shows it.
     pub fn describe(&self) -> String {
         let Some(area) = self.area_mm2() else {
-            return "Invalid field size".to_string();
+            return tr!("Invalid field size");
         };
         let d = self.diameter_mm().unwrap_or(0.0);
+        // The numbers keep their order and their place in right-to-left
+        // text (the units are the translation's).
+        let area = i18n::isolate(i18n::format_decimal(area, 4));
+        let d = i18n::isolate(i18n::format_decimal(d, 3));
         match *self {
             FieldSize::FieldNumber {
                 field_number,
                 objective,
-            } => format!(
-                "1 HPF = {area:.4} mm² (field number {} at {}×, ⌀ {d:.3} mm)",
-                trim_number(field_number),
-                trim_number(objective)
+            } => tr!(
+                // Translators: HPF is a high-power field; ⌀ its diameter.
+                "1 HPF = {area} mm² (field number {number} at {objective}×, ⌀ {d} mm)",
+                area = area,
+                number = i18n::isolate(trim_decimal(field_number)),
+                objective = i18n::isolate(trim_decimal(objective)),
+                d = d
             ),
-            FieldSize::Area { .. } => format!("1 HPF = {area:.4} mm² (⌀ {d:.3} mm)"),
+            FieldSize::Area { .. } => tr!("1 HPF = {area} mm² (⌀ {d} mm)", area = area, d = d),
         }
     }
 }
@@ -113,6 +122,16 @@ impl FieldSize {
 pub fn trim_number(value: f64) -> String {
     let text = format!("{value:.3}");
     text.trim_end_matches('0').trim_end_matches('.').to_string()
+}
+
+/// [`trim_number`] with the decimal separator of the interface's language
+/// (`26,5` in German), for numbers people read or edit.
+pub fn trim_decimal(value: f64) -> String {
+    let separator = i18n::current().decimal_separator;
+    let text = i18n::format_decimal(value, 3);
+    text.trim_end_matches('0')
+        .trim_end_matches(separator)
+        .to_string()
 }
 
 #[cfg(test)]

@@ -25,6 +25,7 @@
 
 use super::{ImportAnnotation, ImportDoc, ImportLayer, Units};
 use crate::model::{Bounds, Color, Geometry};
+use eov_plugin_api::i18n::tr;
 use eov_plugin_api::protocol::{FileInfo, PropertyMap};
 use roxmltree::Node;
 
@@ -56,37 +57,39 @@ impl Frame {
             .map(String::as_str)
             .unwrap_or("");
         if vendor != "hamamatsu" {
-            return Err(format!(
-                "NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), but this slide{} is \
-                 not one, so they cannot be placed on it.",
-                if vendor.is_empty() {
-                    String::new()
-                } else {
-                    format!(" ({vendor})")
-                }
-            ));
+            return Err(if vendor.is_empty() {
+                tr!(
+                    "NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), but this slide is \
+                     not one, so they cannot be placed on it."
+                )
+            } else {
+                tr!(
+                    // Translators: {} is the vendor of the slide's format ("aperio").
+                    "NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), but this slide ({}) is \
+                     not one, so they cannot be placed on it.",
+                    vendor
+                )
+            });
         }
         let (Some(offset_x_nm), Some(offset_y_nm)) = (
             property(props, "hamamatsu.XOffsetFromSlideCentre"),
             property(props, "hamamatsu.YOffsetFromSlideCentre"),
         ) else {
-            return Err(
+            return Err(tr!(
                 "This NDPI does not give its offsets from the slide centre (hamamatsu.XOffsetFromSlideCentre \
                  and YOffsetFromSlideCentre), so the NDPA coordinates cannot be placed on it."
-                    .to_string(),
-            );
+            ));
         };
         let mpp_x = property(props, "openslide.mpp-x").or(info.mpp_x);
         let mpp_y = property(props, "openslide.mpp-y").or(info.mpp_y);
         let (Some(mpp_x), Some(mpp_y)) = (mpp_x.filter(|v| *v > 0.0), mpp_y.filter(|v| *v > 0.0))
         else {
-            return Err(
+            return Err(tr!(
                 "This slide has no pixel size, so the NDPA's nanometre coordinates cannot be converted to pixels."
-                    .to_string(),
-            );
+            ));
         };
         if info.width == 0 || info.height == 0 {
-            return Err("The slide's size is unknown.".to_string());
+            return Err(tr!("The slide's size is unknown."));
         }
         Ok(Frame {
             offset_x_nm,
@@ -203,7 +206,9 @@ fn shape(annotation: Node<'_, '_>) -> Result<Geometry, String> {
         .attribute("type")
         .unwrap_or_default()
         .to_ascii_lowercase();
-    let unreadable = || format!("{kind} annotation with unreadable coordinates");
+    // Translators: a reason why an annotation of an imported file was skipped; {} is
+    // its type in the file ("freehand", "circle", "pin", …).
+    let unreadable = || tr!("{} annotation with unreadable coordinates", kind);
     match kind.as_str() {
         "freehand" => {
             let points = point_list(annotation).ok_or_else(unreadable)?;
@@ -259,7 +264,7 @@ fn shape(annotation: Node<'_, '_>) -> Result<Geometry, String> {
         "line" | "ruler" => Ok(Geometry::Polyline {
             points: segment(annotation).ok_or_else(unreadable)?,
         }),
-        other => Err(format!("unsupported NDPA annotation type '{other}'")),
+        other => Err(tr!("unsupported NDPA annotation type '{}'", other)),
     }
 }
 
@@ -288,11 +293,11 @@ pub fn parse(root: Node<'_, '_>, stem: &str) -> ImportDoc {
         if let Some(format) = text(state, "coordformat")
             && !format.eq_ignore_ascii_case("nanometers")
         {
-            doc.skip(format!("annotation in unsupported coordinates ({format})"));
+            doc.skip(tr!("annotation in unsupported coordinates ({})", format));
             continue;
         }
         let Some(annotation) = child(state, "annotation") else {
-            doc.skip("view state without an annotation");
+            doc.skip(tr!("view state without an annotation"));
             continue;
         };
         let geometry = match shape(annotation) {

@@ -1,0 +1,37 @@
+// The language of eov's interface, as the plugin's surfaces need it beyond
+// their texts (`@tr` translates those, with the plugin's catalogs).
+//
+// eov sets `eov-rtl` on the components it shows (AnnotationsSidebar,
+// ImportDialog), which pass it on here. Arabic, Persian and Hebrew are
+// written from right to left: Slint shapes and orders their text itself;
+// what is left to the surfaces is to align text at the start of the line,
+// which is the right edge in those languages. Use `Locale.start` (and
+// `Locale.end`) where text would otherwise be aligned left (right).
+
+export global Locale {
+    /// The interface is written from right to left.
+    in-out property <bool> rtl: false;
+    /// The language of the interface (a tag such as "pt-BR"), from the
+    /// surface's `eov-language`.
+    in-out property <string> language: "en";
+
+    /// Where a line of text starts and ends.
+    out property <TextHorizontalAlignment> start: root.rtl ? TextHorizontalAlignment.right : TextHorizontalAlignment.left;
+    out property <TextHorizontalAlignment> end: root.rtl ? TextHorizontalAlignment.left : TextHorizontalAlignment.right;
+
+    /// `text` for insertion into a translated text (`@tr("Open {}",
+    /// Locale.isolate(file-name))`): in right-to-left languages it is
+    /// isolated (U+2068 … U+2069), so that a file name or a path keeps its
+    /// own order and leaves the text around it alone.
+    public pure function isolate(text: string) -> string {
+        return root.rtl ? "\u{2068}" + text + "\u{2069}" : text;
+    }
+
+    /// The size for small text (`font-size: Locale.text-size(11px)`): at
+    /// least 12 px in Hindi, other languages keep `size`. Below 12 px eov's
+    /// GPU renderer draws Devanagari with overlapping and missing pieces at
+    /// a scale factor of 1.
+    public pure function text-size(size: length) -> length {
+        return root.language == "hi" ? max(size, 12px) : size;
+    }
+}

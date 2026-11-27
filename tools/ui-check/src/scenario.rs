@@ -384,6 +384,7 @@ pub fn samples() -> Result<Samples, String> {
         what: "hotkey".into(),
         id: format!("{}{tumour}", annotations::tools::CLASS_HOTKEY_PREFIX),
         reason: "another plugin uses Q".into(),
+        shown_reason: Some("another plugin uses Q".into()),
     })
     .map_err(|e| e.to_string())?;
     settle(&h);

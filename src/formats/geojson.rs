@@ -12,6 +12,7 @@ use super::eov::{ExportOptions, ExportSlide, coordinates, slide_json};
 use super::{ImportAnnotation, ImportDoc, ImportLayer, coord, num, parse_time};
 use crate::geometry::ellipse_ring;
 use crate::model::{Annotation, Class, Color, Geometry, Layer, Status};
+use eov_plugin_api::i18n::tr;
 use serde_json::{Map, Value, json};
 
 const GEOMETRY_TYPES: &[&str] = &[
@@ -59,68 +60,77 @@ fn polygon(value: &Value) -> Option<Geometry> {
     })
 }
 
-/// Geometries of a GeoJSON geometry object (multi-geometries split).
-fn geometries(value: &Value, out: &mut Vec<Geometry>) -> Result<(), &'static str> {
+/// Geometries of a GeoJSON geometry object (multi-geometries split); the
+/// error is why the feature is skipped.
+fn geometries(value: &Value, out: &mut Vec<Geometry>) -> Result<(), String> {
+    // Translators: reasons why a shape of an imported file was skipped,
+    // listed as "2 × unreadable point".
+    let unreadable_point = || tr!("unreadable point");
+    let unreadable_line = || tr!("unreadable line");
+    let unreadable_polygon = || tr!("unreadable polygon");
     let kind = value
         .get("type")
         .and_then(Value::as_str)
-        .ok_or("geometry without a type")?;
+        .ok_or_else(|| tr!("geometry without a type"))?;
     let coords = value.get("coordinates");
     match kind {
         "Point" => {
-            let [x, y] = coords.and_then(coord).ok_or("unreadable point")?;
+            let [x, y] = coords.and_then(coord).ok_or_else(unreadable_point)?;
             out.push(Geometry::Point { x, y });
         }
         "MultiPoint" => {
             for p in coords
                 .and_then(Value::as_array)
-                .ok_or("unreadable points")?
+                .ok_or_else(|| tr!("unreadable points"))?
             {
-                let [x, y] = coord(p).ok_or("unreadable point")?;
+                let [x, y] = coord(p).ok_or_else(unreadable_point)?;
                 out.push(Geometry::Point { x, y });
             }
         }
         "LineString" => {
             let points = coords
                 .and_then(Value::as_array)
-                .ok_or("unreadable line")?
+                .ok_or_else(unreadable_line)?
                 .iter()
                 .map(coord)
                 .collect::<Option<Vec<_>>>()
-                .ok_or("unreadable line")?;
+                .ok_or_else(unreadable_line)?;
             out.push(Geometry::Polyline { points });
         }
         "MultiLineString" => {
-            for line in coords.and_then(Value::as_array).ok_or("unreadable lines")? {
+            for line in coords
+                .and_then(Value::as_array)
+                .ok_or_else(|| tr!("unreadable lines"))?
+            {
                 let points = line
                     .as_array()
-                    .ok_or("unreadable line")?
+                    .ok_or_else(unreadable_line)?
                     .iter()
                     .map(coord)
                     .collect::<Option<Vec<_>>>()
-                    .ok_or("unreadable line")?;
+                    .ok_or_else(unreadable_line)?;
                 out.push(Geometry::Polyline { points });
             }
         }
-        "Polygon" => out.push(coords.and_then(polygon).ok_or("unreadable polygon")?),
+        "Polygon" => out.push(coords.and_then(polygon).ok_or_else(unreadable_polygon)?),
         "MultiPolygon" => {
             for p in coords
                 .and_then(Value::as_array)
-                .ok_or("unreadable polygons")?
+                .ok_or_else(|| tr!("unreadable polygons"))?
             {
-                out.push(polygon(p).ok_or("unreadable polygon")?);
+                out.push(polygon(p).ok_or_else(unreadable_polygon)?);
             }
         }
         "GeometryCollection" => {
             for g in value
                 .get("geometries")
                 .and_then(Value::as_array)
-                .ok_or("unreadable geometry collection")?
+                .ok_or_else(|| tr!("unreadable geometry collection"))?
             {
                 geometries(g, out)?;
             }
         }
-        _ => return Err("unsupported geometry type"),
+        _ => return Err(tr!("unsupported geometry type")),
     }
     Ok(())
 }
@@ -208,12 +218,12 @@ pub fn parse(value: &Value, stem: &str) -> Result<ImportDoc, String> {
                 .get("features")
                 .and_then(Value::as_array)
                 .cloned()
-                .ok_or("The FeatureCollection has no features.")?,
+                .ok_or_else(|| tr!("The FeatureCollection has no features."))?,
             Some("Feature") => vec![value.clone()],
             Some(_) => vec![json!({ "type": "Feature", "geometry": value, "properties": {} })],
-            None => return Err("Not GeoJSON.".to_string()),
+            None => return Err(tr!("Not GeoJSON.")),
         },
-        _ => return Err("Not GeoJSON.".to_string()),
+        _ => return Err(tr!("Not GeoJSON.")),
     };
     if let Some(eov) = value.get("eov").and_then(|e| e.get("slide")) {
         doc.slide.identity = eov
@@ -228,7 +238,8 @@ pub fn parse(value: &Value, stem: &str) -> Result<ImportDoc, String> {
     let mut layer_index: Vec<(String, usize)> = Vec::new();
     for feature in &features {
         if feature.get("type").and_then(Value::as_str) != Some("Feature") {
-            doc.skip("not a GeoJSON feature");
+            // Translators: a reason why an element of an imported file was skipped.
+            doc.skip(tr!("not a GeoJSON feature"));
             continue;
         }
         let empty = Map::new();
@@ -245,7 +256,7 @@ pub fn parse(value: &Value, stem: &str) -> Result<ImportDoc, String> {
             Some(g) => shapes.push(g),
             None => match feature.get("geometry") {
                 Some(Value::Null) | None => {
-                    doc.skip("feature without geometry");
+                    doc.skip(tr!("feature without geometry"));
                     continue;
                 }
                 Some(g) => {
@@ -303,7 +314,10 @@ pub fn parse(value: &Value, stem: &str) -> Result<ImportDoc, String> {
         string_map(props.get("measurements"), &mut properties);
         if properties.len() > crate::model::MAX_PROPERTIES {
             properties.truncate(crate::model::MAX_PROPERTIES);
-            doc.skip("properties beyond the limit of 64 per annotation");
+            doc.skip(tr!(
+                "properties beyond the limit of {} per annotation",
+                crate::model::MAX_PROPERTIES
+            ));
         }
         let text = |key: &str| {
             eov.and_then(|e| e.get(key))
@@ -334,7 +348,7 @@ pub fn parse(value: &Value, stem: &str) -> Result<ImportDoc, String> {
         }
     }
     if doc.layers.is_empty() && doc.skipped.is_empty() {
-        return Err("The GeoJSON file contains no features.".to_string());
+        return Err(tr!("The GeoJSON file contains no features."));
     }
     Ok(doc)
 }

@@ -1,0 +1,3413 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: annotations\n"
+"Report-Msgid-Bugs-To: https://github.com/eosin-platform/eov-annotations-"
+"plugin/issues\n"
+"Language-Team: Polish\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+"X-Review-Status: machine-translated; not yet reviewed by a native speaker\n"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid "Annotations"
+msgstr "Adnotacje"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid ""
+"Point, region, line and text annotations with reusable classes, cell "
+"counting, HPF fields and measurements; GeoJSON (QuPath) import and export, "
+"ASAP and Aperio ImageScope XML import."
+msgstr ""
+"Adnotacje punktowe, obszarowe, liniowe i tekstowe z klasami wielokrotnego "
+"użytku, zliczanie komórek, pola HPF i pomiary; import i eksport GeoJSON "
+"(QuPath), import XML z ASAP i Aperio ImageScope."
+
+#: src/actions.rs:23
+msgid "The annotations of this slide are still loading; try again in a moment."
+msgstr ""
+"Adnotacje tego preparatu są jeszcze wczytywane; spróbuj ponownie za chwilę."
+
+#: src/actions.rs:27 src/sidebar.rs:1390 src/sidebar.rs:1474
+msgid "That layer no longer exists."
+msgstr "Ta warstwa już nie istnieje."
+
+#: src/actions.rs:31
+msgid "That annotation no longer exists."
+msgstr "Ta adnotacja już nie istnieje."
+
+#: src/actions.rs:35 src/sidebar.rs:1605
+msgid "That class no longer exists."
+msgstr "Ta klasa już nie istnieje."
+
+#: src/actions.rs:39 src/transfer.rs:648 src/transfer.rs:658
+msgid "Layer \"{}\" is locked."
+msgstr "Warstwa „{}” jest zablokowana."
+
+#: src/actions.rs:43
+msgid "Parts outside the slide were cut off."
+msgstr "Części wychodzące poza preparat zostały obcięte."
+
+#: src/actions.rs:62
+msgid "The slide is not open any more."
+msgstr "Preparat nie jest już otwarty."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:136
+msgid "The outline crossed itself and was split into {n} parts."
+msgid_plural "The outline crossed itself and was split into {n} parts."
+msgstr[0] "Kontur przecinał sam siebie i został podzielony na {n} część."
+msgstr[1] "Kontur przecinał sam siebie i został podzielony na {n} części."
+msgstr[2] "Kontur przecinał sam siebie i został podzielony na {n} części."
+
+#: src/actions.rs:140
+msgid "The outline crossed itself and was repaired."
+msgstr "Kontur przecinał sam siebie i został naprawiony."
+
+#: src/actions.rs:156
+msgid "The HPF size is not valid; check it in the Count tab."
+msgstr "Rozmiar pola HPF jest nieprawidłowy; sprawdź go na karcie Zliczanie."
+
+#: src/actions.rs:160
+msgid "This slide has no pixel size, so HPF fields cannot be sized."
+msgstr ""
+"Ten preparat nie ma określonego rozmiaru piksela, więc nie można ustalić "
+"rozmiaru pól HPF."
+
+#: src/actions.rs:207
+msgid "Count cell"
+msgstr "Zliczenie komórki"
+
+#: src/actions.rs:218 src/lib.rs:613
+msgid "Add point"
+msgstr "Dodanie punktu"
+
+#: src/actions.rs:228
+msgid "Add line"
+msgstr "Dodanie linii"
+
+#: src/actions.rs:242
+msgid "Add arrow"
+msgstr "Dodanie strzałki"
+
+#: src/actions.rs:258
+msgid "Add text"
+msgstr "Dodanie tekstu"
+
+#: src/actions.rs:303
+msgid ""
+"To add the shape to a region (Shift) or cut it from a region (Alt), select "
+"exactly one region first. The shape was added as a new annotation."
+msgstr ""
+"Aby dodać kształt do obszaru (Shift) lub wyciąć go z obszaru (Alt), najpierw "
+"zaznacz dokładnie jeden obszar. Kształt dodano jako nową adnotację."
+
+#: src/actions.rs:314 src/actions.rs:325
+msgid "Add region"
+msgstr "Dodanie obszaru"
+
+#: src/actions.rs:378
+msgid "Place HPF field"
+msgstr "Umieszczenie pola HPF"
+
+#: src/actions.rs:399
+msgid "This field extends past the slide edge; its area includes empty canvas."
+msgstr ""
+"To pole wykracza poza krawędź preparatu; jego powierzchnia obejmuje pusty "
+"obszar poza obrazem."
+
+#: src/actions.rs:429
+msgid "Add to region"
+msgstr "Dodanie do obszaru"
+
+#: src/actions.rs:431
+msgid "Cut from region"
+msgstr "Wycięcie z obszaru"
+
+#: src/actions.rs:439
+msgid "The selected region no longer exists."
+msgstr "Zaznaczony obszar już nie istnieje."
+
+#: src/actions.rs:441
+msgid "The selected region is locked."
+msgstr "Zaznaczony obszar jest zablokowany."
+
+#: src/actions.rs:452
+msgid "Only regions can be combined."
+msgstr "Łączyć można tylko obszary."
+
+#: src/actions.rs:460
+msgid "The cut removed the whole region."
+msgstr "Wycięcie usunęło cały obszar."
+
+#: src/actions.rs:483
+msgid ""
+"The shapes do not touch; the new shape was added as a separate annotation."
+msgstr "Kształty się nie stykają; nowy kształt dodano jako osobną adnotację."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:488
+msgid "The cut split the region into {n} parts."
+msgid_plural "The cut split the region into {n} parts."
+msgstr[0] "Wycięcie podzieliło obszar na {n} część."
+msgstr[1] "Wycięcie podzieliło obszar na {n} części."
+msgstr[2] "Wycięcie podzieliło obszar na {n} części."
+
+#: src/actions.rs:522
+msgid "Edit shape"
+msgstr "Edycja kształtu"
+
+#: src/actions.rs:544
+msgid "The annotation is locked."
+msgstr "Adnotacja jest zablokowana."
+
+#: src/actions.rs:560
+msgid "That edit would turn the arrow into another shape, so it was undone."
+msgstr "Ta zmiana zamieniłaby strzałkę w inny kształt, dlatego ją cofnięto."
+
+#: src/actions.rs:564
+msgid "That edit was undone."
+msgstr "Tę zmianę cofnięto."
+
+#: src/actions.rs:591
+msgid "The edit was undone: {}"
+msgstr "Zmianę cofnięto: {}"
+
+#: src/actions.rs:596
+msgid "That edit would make the outline cross itself, so it was undone."
+msgstr ""
+"Ta zmiana spowodowałaby, że kontur przecinałby sam siebie, dlatego ją "
+"cofnięto."
+
+#: src/actions.rs:629
+msgid "Delete annotation"
+msgid_plural "Delete {n} annotations"
+msgstr[0] "Usunięcie adnotacji"
+msgstr[1] "Usunięcie {n} adnotacji"
+msgstr[2] "Usunięcie {n} adnotacji"
+
+#: src/actions.rs:649
+msgid "{n} locked annotation was kept."
+msgid_plural "{n} locked annotations were kept."
+msgstr[0] "Zachowano {n} zablokowaną adnotację."
+msgstr[1] "Zachowano {n} zablokowane adnotacje."
+msgstr[2] "Zachowano {n} zablokowanych adnotacji."
+
+#: src/actions.rs:703
+msgid "The target layer is locked or gone."
+msgstr "Warstwa docelowa jest zablokowana lub już nie istnieje."
+
+#: src/actions.rs:712
+msgid "{n} locked annotation was not changed."
+msgid_plural "{n} locked annotations were not changed."
+msgstr[0] "Nie zmieniono {n} zablokowanej adnotacji."
+msgstr[1] "Nie zmieniono {n} zablokowanych adnotacji."
+msgstr[2] "Nie zmieniono {n} zablokowanych adnotacji."
+
+#: src/actions.rs:777
+msgid "Could not zoom to the annotation"
+msgstr "Nie udało się powiększyć do adnotacji"
+
+#: src/actions.rs:790
+msgid "New layer"
+msgstr "Utworzenie warstwy"
+
+#: src/actions.rs:865
+msgid "Rename layer"
+msgstr "Zmiana nazwy warstwy"
+
+#: src/actions.rs:877
+msgid "Delete layer"
+msgstr "Usunięcie warstwy"
+
+#: src/actions.rs:887
+msgid "Delete layer \"{}\""
+msgstr "Usunięcie warstwy „{}”"
+
+#: src/actions.rs:897
+msgid "Choose layer"
+msgstr "Wybór warstwy"
+
+#: src/actions.rs:902
+msgid ""
+"New annotations go to a regular layer; count points and HPF fields have "
+"their own."
+msgstr ""
+"Nowe adnotacje trafiają do zwykłej warstwy; punkty zliczania i pola HPF mają "
+"własne warstwy."
+
+#. Translators: an undo step, shown by eov as "Undo {}".
+#: src/actions.rs:918
+msgid "Clear counts"
+msgstr "Wyczyszczenie zliczeń"
+
+#: src/actions.rs:950
+msgid ""
+"There are no HPF fields on this slide yet. Use the HPF field tool (H) to "
+"place them."
+msgstr ""
+"Na tym preparacie nie ma jeszcze pól HPF. Umieść je narzędziem Pole HPF (H)."
+
+#: src/actions.rs:960
+msgid "Repair outline"
+msgstr "Naprawa konturu"
+
+#: src/actions.rs:975
+msgid "Nothing is left of the outline."
+msgstr "Z konturu nic nie zostało."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:997
+msgid "The outline was split into {n} parts."
+msgid_plural "The outline was split into {n} parts."
+msgstr[0] "Kontur podzielono na {n} część."
+msgstr[1] "Kontur podzielono na {n} części."
+msgstr[2] "Kontur podzielono na {n} części."
+
+#: src/actions.rs:1012
+msgid "Could not attach the annotations"
+msgstr "Nie udało się dołączyć adnotacji"
+
+#: src/actions.rs:1018
+msgid "Attach annotations of another slide"
+msgstr "Dołączenie adnotacji innego preparatu"
+
+#: src/actions.rs:1024
+msgid "Those annotations already belong to this slide."
+msgstr "Te adnotacje już należą do tego preparatu."
+
+#: src/actions.rs:1027
+msgid "That slide has no annotations left."
+msgstr "Tamten preparat nie ma już żadnych adnotacji."
+
+#: src/actions.rs:1035
+msgid "Attached {n} layer to this slide."
+msgid_plural "Attached {n} layers to this slide."
+msgstr[0] "Dołączono {n} warstwę do tego preparatu."
+msgstr[1] "Dołączono {n} warstwy do tego preparatu."
+msgstr[2] "Dołączono {n} warstw do tego preparatu."
+
+#: src/actions.rs:1076
+msgid "New class"
+msgstr "Utworzenie klasy"
+
+#: src/actions.rs:1138
+msgid "Rename class"
+msgstr "Zmiana nazwy klasy"
+
+#: src/actions.rs:1147
+msgid "A class named \"{}\" already exists."
+msgstr "Klasa o nazwie „{}” już istnieje."
+
+#: src/actions.rs:1161
+msgid "Set class hotkey"
+msgstr "Ustawienie skrótu klawiaturowego klasy"
+
+#: src/actions.rs:1186
+msgid "Change class colour"
+msgstr "Zmiana koloru klasy"
+
+#: src/actions.rs:1190 src/sidebar.rs:1358
+msgid "\"{}\" is not a colour."
+msgstr "„{}” nie jest kolorem."
+
+#: src/actions.rs:1197
+msgid "Delete class"
+msgstr "Usunięcie klasy"
+
+#: src/actions.rs:1201
+msgid "Delete class \"{}\""
+msgstr "Usunięcie klasy „{}”"
+
+#: src/actions.rs:1243 src/lib.rs:96 src/overlay.rs:164 src/sidebar.rs:151
+#: src/sidebar.rs:384
+msgid "Unclassified"
+msgstr "Bez klasy"
+
+#: src/actions.rs:1244
+msgid "Class: {}"
+msgstr "Klasa: {}"
+
+#. Translators: on the slide, beside the HPF field that follows the
+#. pointer: its area and how many points (such as counted cells) lie in it.
+#: src/actions.rs:1274
+msgid "1 HPF · {area} mm² · {n} point"
+msgid_plural "1 HPF · {area} mm² · {n} points"
+msgstr[0] "1 HPF · {area} mm² · {n} punkt"
+msgstr[1] "1 HPF · {area} mm² · {n} punkty"
+msgstr[2] "1 HPF · {area} mm² · {n} punktów"
+
+#: src/actions.rs:1466
+msgid "Add comment"
+msgstr "Dodanie komentarza"
+
+#: src/actions.rs:1472
+msgid "Write the comment first."
+msgstr "Najpierw wpisz komentarz."
+
+#: src/actions.rs:1481
+msgid "An annotation can have at most {n} comments."
+msgid_plural "An annotation can have at most {n} comments."
+msgstr[0] "Adnotacja może mieć najwyżej {n} komentarz."
+msgstr[1] "Adnotacja może mieć najwyżej {n} komentarze."
+msgstr[2] "Adnotacja może mieć najwyżej {n} komentarzy."
+
+#: src/actions.rs:1511
+msgid "Delete comment"
+msgstr "Usunięcie komentarza"
+
+#: src/actions.rs:1524
+msgid "That comment no longer exists."
+msgstr "Ten komentarz już nie istnieje."
+
+#: src/actions.rs:1723
+msgid ""
+"Brush {} px, eraser: paint over a selected region to erase from it; [ and ] "
+"change the size"
+msgstr ""
+"Pędzel {} px, gumka: maluj po zaznaczonym obszarze, aby wymazać jego "
+"fragmenty; [ i ] zmieniają rozmiar"
+
+#: src/actions.rs:1728
+msgid ""
+"Brush {} px: paint a region (over a selected region to extend it); Alt "
+"erases; [ and ] change the size"
+msgstr ""
+"Pędzel {} px: maluj obszar (po zaznaczonym obszarze, aby go powiększyć); Alt "
+"wymazuje; [ i ] zmieniają rozmiar"
+
+#: src/actions.rs:1742
+msgid "Erase"
+msgstr "Wymazanie"
+
+#: src/actions.rs:1744
+msgid "Brush stroke"
+msgstr "Pociągnięcie pędzlem"
+
+#: src/actions.rs:1768
+msgid "The stroke is outside the slide."
+msgstr "Pociągnięcie pędzlem leży poza preparatem."
+
+#: src/actions.rs:1818
+msgid "Select the region to erase from."
+msgstr "Zaznacz obszar, z którego chcesz wymazać."
+
+#: src/actions.rs:1843
+msgid "The eraser did not touch the selected region."
+msgstr "Gumka nie dotknęła zaznaczonego obszaru."
+
+#. Translators: a part of the plugin that works in the background.
+#: src/core.rs:228
+msgid "Could not start a worker thread"
+msgstr "Nie udało się uruchomić wątku roboczego"
+
+#: src/core.rs:385
+msgid "Internal error while opening the database"
+msgstr "Błąd wewnętrzny podczas otwierania bazy danych"
+
+#: src/core.rs:393
+msgid "Internal error while loading annotations"
+msgstr "Błąd wewnętrzny podczas wczytywania adnotacji"
+
+#: src/core.rs:398
+msgid "Internal error while saving annotations"
+msgstr "Błąd wewnętrzny podczas zapisywania adnotacji"
+
+#: src/core.rs:403
+msgid "Internal error while undoing"
+msgstr "Błąd wewnętrzny podczas cofania"
+
+#: src/core.rs:408
+msgid "Internal error while working on the database"
+msgstr "Błąd wewnętrzny podczas pracy z bazą danych"
+
+#: src/core.rs:427
+msgid "Internal error while reading or writing a file"
+msgstr "Błąd wewnętrzny podczas odczytu lub zapisu pliku"
+
+#: src/core.rs:561
+msgid "The annotation database could not be opened"
+msgstr "Nie udało się otworzyć bazy danych adnotacji"
+
+#: src/core.rs:590
+msgid "Annotations from eov before 1.0"
+msgstr "Adnotacje z eov sprzed wersji 1.0"
+
+#: src/core.rs:592
+msgid ""
+"The annotations plugin of eov before 1.0 left a database at {}. Bring its "
+"annotations into the current database? The old file is not changed. You can "
+"also do this later in the Data tab of the annotations panel."
+msgstr ""
+"Wtyczka adnotacji z eov sprzed wersji 1.0 pozostawiła bazę danych w "
+"lokalizacji {}. Zaimportować jej adnotacje do bieżącej bazy danych? Stary "
+"plik nie zostanie zmieniony. Można to też zrobić później na karcie Dane "
+"panelu adnotacji."
+
+#: src/core.rs:597
+msgid "Bring them in"
+msgstr "Zaimportuj"
+
+#: src/core.rs:598
+msgid "Not now"
+msgstr "Nie teraz"
+
+#. Translators: the plugin could not ask whether to bring in the annotations made
+#. with eov before 1.0 (the title of that question is "Annotations from eov before 1.0").
+#: src/core.rs:612
+msgid "Could not offer the annotations from eov before 1.0"
+msgstr "Nie udało się zaproponować importu adnotacji z eov sprzed wersji 1.0"
+
+#: src/core.rs:657 src/sidebar.rs:457
+msgid "Could not load this slide's annotations: {}"
+msgstr "Nie udało się wczytać adnotacji tego preparatu: {}"
+
+#. Translators: a second read is an independent annotation of the slide by another person
+#. (as in a reader study), not a clinical second opinion. Data, Second reader and Blinded
+#. copy are the tab, section and button of the annotations panel: use their translations.
+#: src/core.rs:670
+msgid ""
+"{opened} has the same content as {annotated}, so it shows and edits the same "
+"annotations. For an independent second read, use Data → Second reader → "
+"Blinded copy."
+msgstr ""
+"{opened} ma tę samą zawartość co {annotated}, więc wyświetla i edytuje te "
+"same adnotacje. Aby uzyskać niezależną drugą ocenę, użyj polecenia Dane → "
+"Drugi oceniający → Kopia zaślepiona."
+
+#: src/core.rs:721 src/core.rs:1019 src/core.rs:1156
+msgid "the database is not open"
+msgstr "baza danych nie jest otwarta"
+
+#: src/core.rs:809
+msgid "{n} annotation of {file} could not be read and was skipped."
+msgid_plural "{n} annotations of {file} could not be read and were skipped."
+msgstr[0] ""
+"Nie udało się odczytać {n} adnotacji preparatu {file}; pominięto ją."
+msgstr[1] ""
+"Nie udało się odczytać {n} adnotacji preparatu {file}; pominięto je."
+msgstr[2] ""
+"Nie udało się odczytać {n} adnotacji preparatu {file}; pominięto je."
+
+#: src/core.rs:900
+msgid "Could not reload annotations"
+msgstr "Nie udało się ponownie wczytać adnotacji"
+
+#: src/core.rs:931
+msgid "Annotations were changed by another eov window and have been reloaded."
+msgstr "Adnotacje zostały zmienione w innym oknie eov i wczytano je ponownie."
+
+#: src/core.rs:957
+msgid "the database stayed locked"
+msgstr "baza danych pozostała zablokowana"
+
+#: src/core.rs:964
+msgid "a class with that name already exists"
+msgstr "klasa o tej nazwie już istnieje"
+
+#: src/core.rs:966
+msgid "the annotation database is read-only"
+msgstr "baza danych adnotacji jest tylko do odczytu"
+
+#: src/core.rs:969
+msgid "the annotation was changed elsewhere in the meantime"
+msgstr "adnotacja została w międzyczasie zmieniona w innym miejscu"
+
+#: src/core.rs:971
+msgid "the layer was changed elsewhere in the meantime"
+msgstr "warstwa została w międzyczasie zmieniona w innym miejscu"
+
+#: src/core.rs:972
+msgid "the class was changed elsewhere in the meantime"
+msgstr "klasa została w międzyczasie zmieniona w innym miejscu"
+
+#: src/core.rs:973
+msgid "a layer being moved was changed elsewhere in the meantime"
+msgstr "przenoszona warstwa została w międzyczasie zmieniona w innym miejscu"
+
+#: src/core.rs:1053
+msgid "Could not save \"{}\""
+msgstr "Nie udało się zapisać zmiany „{}”"
+
+#: src/core.rs:1123
+msgid "This annotation change can no longer be undone."
+msgstr "Tej zmiany adnotacji nie można już cofnąć."
+
+#: src/core.rs:1137
+msgid "The slide of this change is not open any more."
+msgstr "Preparat, którego dotyczy ta zmiana, nie jest już otwarty."
+
+#: src/core.rs:1176
+msgid "Could not redo \"{}\""
+msgstr "Nie udało się ponowić zmiany „{}”"
+
+#: src/core.rs:1178
+msgid "Could not undo \"{}\""
+msgstr "Nie udało się cofnąć zmiany „{}”"
+
+#. Translators: cells per square millimetre, with the 95% confidence interval.
+#: src/counting.rs:185
+msgid "{density} /mm² (95% {low}–{high})"
+msgstr "{density} /mm² (95% {low}–{high})"
+
+#. Translators: cells per 10 high-power fields.
+#: src/counting.rs:194
+msgid "{} /10 HPF"
+msgstr "{} /10 HPF"
+
+#: src/counting.rs:222
+msgid "100 (capped; the ratio is higher)"
+msgstr "100 (wartość ograniczona; stosunek jest wyższy)"
+
+#. Translators: CPS is the PD-L1 combined positive score; {positive},
+#. {negative} and {immune} are names of classes of cells.
+#: src/counting.rs:234
+msgid ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cell "
+"({positive} + {negative}) × 100."
+msgid_plural ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cells "
+"({positive} + {negative}) × 100."
+msgstr[0] ""
+"CPS {score} — ({a} {positive} + {c} {immune}) na {n} komórkę nowotworową "
+"({positive} + {negative}) × 100."
+msgstr[1] ""
+"CPS {score} — ({a} {positive} + {c} {immune}) na {n} komórki nowotworowe "
+"({positive} + {negative}) × 100."
+msgstr[2] ""
+"CPS {score} — ({a} {positive} + {c} {immune}) na {n} komórek nowotworowych "
+"({positive} + {negative}) × 100."
+
+#: src/counting.rs:248
+msgid "Fewer than {n} tumour cells: below the minimum for a valid score."
+msgid_plural ""
+"Fewer than {n} tumour cells: below the minimum for a valid score."
+msgstr[0] ""
+"Mniej niż {n} komórka nowotworowa: poniżej minimum wymaganego do uzyskania "
+"ważnego wyniku."
+msgstr[1] ""
+"Mniej niż {n} komórki nowotworowe: poniżej minimum wymaganego do uzyskania "
+"ważnego wyniku."
+msgstr[2] ""
+"Mniej niż {n} komórek nowotworowych: poniżej minimum wymaganego do uzyskania "
+"ważnego wyniku."
+
+#. Translators: e.g. "Ki-67+ index: 25.0 % (95% 20.1–30.4 %) — 25 of 100 (Ki-67+ + Ki-67-)";
+#. {class} and {other} are names of classes of cells.
+#: src/counting.rs:263
+msgid ""
+"{class} index: {value} % (95% {low}–{high} %) — {k} of {total} ({class} + "
+"{other})"
+msgstr ""
+"Indeks {class}: {value}% (95% {low}–{high}%) — {k} z {total} ({class} + "
+"{other})"
+
+#: src/db/mod.rs:116
+msgid "The annotation database is read-only; editing is disabled."
+msgstr "Baza danych adnotacji jest tylko do odczytu; edycja jest wyłączona."
+
+#: src/db/mod.rs:119
+msgid "{n} layer colour was unreadable and was replaced."
+msgid_plural "{n} layer colours were unreadable and were replaced."
+msgstr[0] "{n} kolor warstwy był nieczytelny i został zastąpiony."
+msgstr[1] "{n} kolory warstw były nieczytelne i zostały zastąpione."
+msgstr[2] "{n} kolorów warstw było nieczytelnych i zostało zastąpionych."
+
+#. Translators: {slides} in "Upgraded the annotation database from the pre-1.0 format: {slides}, …".
+#: src/db/mod.rs:131
+msgid "{n} slide"
+msgid_plural "{n} slides"
+msgstr[0] "{n} preparat"
+msgstr[1] "{n} preparaty"
+msgstr[2] "{n} preparatów"
+
+#. Translators: {slides} is "1 slide" or "3 slides" (translated on its own).
+#: src/db/mod.rs:136
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotation."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotations."
+msgstr[0] ""
+"Uaktualniono bazę danych adnotacji z formatu sprzed wersji 1.0: {slides}, "
+"{n} adnotacja."
+msgstr[1] ""
+"Uaktualniono bazę danych adnotacji z formatu sprzed wersji 1.0: {slides}, "
+"{n} adnotacje."
+msgstr[2] ""
+"Uaktualniono bazę danych adnotacji z formatu sprzed wersji 1.0: {slides}, "
+"{n} adnotacji."
+
+#. Translators: {slides} is "1 slide" or "3 slides", {annotations} is
+#. "1 annotation" or "5 annotations" (each translated on its own).
+#: src/db/mod.rs:145
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotation skipped."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotations skipped."
+msgstr[0] ""
+"Uaktualniono bazę danych adnotacji z formatu sprzed wersji 1.0: {slides}, "
+"{annotations}, {n} pominięta nieczytelna adnotacja."
+msgstr[1] ""
+"Uaktualniono bazę danych adnotacji z formatu sprzed wersji 1.0: {slides}, "
+"{annotations}, {n} pominięte nieczytelne adnotacje."
+msgstr[2] ""
+"Uaktualniono bazę danych adnotacji z formatu sprzed wersji 1.0: {slides}, "
+"{annotations}, {n} pominiętych nieczytelnych adnotacji."
+
+#. Translators: a number of annotations on its own, in two texts: {annotations} in
+#. "Upgraded the annotation database from the pre-1.0 format: {slides}, {annotations}, …"
+#. and {ours} in "This slide's visible layers ({ours}) against the {n} annotations in {name}, …".
+#: src/db/mod.rs:153 src/state.rs:516
+msgid "{n} annotation"
+msgid_plural "{n} annotations"
+msgstr[0] "{n} adnotacja"
+msgstr[1] "{n} adnotacje"
+msgstr[2] "{n} adnotacji"
+
+#: src/db/mod.rs:159
+msgid ""
+"New database. If you annotated with eov before 1.0, those annotations are in "
+"annotations.db in eov's old settings folder (~/.config/eov on Linux, ~/"
+"Library/Application Support/eov on macOS, %APPDATA%\\eov on Windows): bring "
+"them in with Merge… above."
+msgstr ""
+"Nowa baza danych. Jeśli adnotacje były tworzone w eov przed wersją 1.0, "
+"znajdują się w pliku annotations.db w dawnym folderze ustawień eov (~/."
+"config/eov w systemie Linux, ~/Library/Application Support/eov w systemie "
+"macOS, %APPDATA%\\eov w systemie Windows): zaimportuj je przyciskiem „Scal…” "
+"powyżej."
+
+#: src/fileio.rs:105 src/fileio.rs:115
+msgid "cannot read {file}: {error}"
+msgstr "nie można odczytać pliku {file}: {error}"
+
+#: src/fileio.rs:109
+msgid "{file} is {size} MB; imports are limited to {limit} MB"
+msgstr "plik {file} ma {size} MB; limit importu wynosi {limit} MB"
+
+#: src/formats/dicom/mod.rs:605
+msgid "There are too many coordinates for one DICOM annotation group."
+msgstr "Za dużo współrzędnych dla jednej grupy adnotacji DICOM."
+
+#: src/formats/dicom/mod.rs:674
+msgid "There are too many annotation groups."
+msgstr "Za dużo grup adnotacji."
+
+#: src/formats/dicom/mod.rs:695
+msgid "There are too many annotations in one group."
+msgstr "Za dużo adnotacji w jednej grupie."
+
+#: src/formats/dicom/mod.rs:736
+msgid "The slide has no annotations to export."
+msgstr "Preparat nie ma adnotacji do wyeksportowania."
+
+#: src/formats/dicom/mod.rs:872
+msgid ""
+"It refers to this slide's DICOM image (series {}) and joins its study; the "
+"patient and study attributes are the slide's."
+msgstr ""
+"Plik odwołuje się do obrazu DICOM tego preparatu (seria {}) i dołącza do "
+"jego badania; atrybuty pacjenta i badania są przejęte z preparatu."
+
+#: src/formats/dicom/mod.rs:876
+msgid ""
+"This slide is not a DICOM image, so the file refers to no image: it is a "
+"study of its own with empty patient attributes, and DICOM viewers cannot "
+"attach it to a slide by themselves."
+msgstr ""
+"Ten preparat nie jest obrazem DICOM, więc plik nie odwołuje się do żadnego "
+"obrazu: stanowi osobne badanie z pustymi atrybutami pacjenta, a przeglądarki "
+"DICOM nie mogą samodzielnie powiązać go z preparatem."
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot
+#. hold {}: …"; {regions} is "in 1 region" or "in 2 regions"; "drawn
+#. without it/them": other viewers draw these regions without their holes.
+#: src/formats/dicom/mod.rs:886
+msgid "{n} hole {regions} (drawn without it)"
+msgid_plural "{n} holes {regions} (drawn without them)"
+msgstr[0] "{n} otwór {regions} (pomijany przy rysowaniu)"
+msgstr[1] "{n} otwory {regions} (pomijane przy rysowaniu)"
+msgstr[2] "{n} otworów {regions} (pomijanych przy rysowaniu)"
+
+#. Translators: in "{n} holes {regions} (drawn without them)".
+#: src/formats/dicom/mod.rs:890
+msgid "in {n} region"
+msgid_plural "in {n} regions"
+msgstr[0] "w {n} obszarze"
+msgstr[1] "w {n} obszarach"
+msgstr[2] "w {n} obszarach"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:897
+msgid "the text of {n} text label (written as points)"
+msgid_plural "the text of {n} text labels (written as points)"
+msgstr[0] "tekst {n} etykiety tekstowej (zapisanej jako punkt)"
+msgstr[1] "tekst {n} etykiet tekstowych (zapisanych jako punkty)"
+msgstr[2] "tekst {n} etykiet tekstowych (zapisanych jako punkty)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:904
+msgid "the heads of {n} arrow (written as lines)"
+msgid_plural "the heads of {n} arrows (written as lines)"
+msgstr[0] "grot {n} strzałki (zapisanej jako linia)"
+msgstr[1] "groty {n} strzałek (zapisanych jako linie)"
+msgstr[2] "groty {n} strzałek (zapisanych jako linie)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:911
+msgid "the names, descriptions and statuses of {n} annotation"
+msgid_plural "the names, descriptions and statuses of {n} annotations"
+msgstr[0] "nazwy, opisy i statusy {n} adnotacji"
+msgstr[1] "nazwy, opisy i statusy {n} adnotacji"
+msgstr[2] "nazwy, opisy i statusy {n} adnotacji"
+
+#. Translators: {} lists what is lost, such as "the heads of 2 arrows (written
+#. as lines) and the text of 1 text label (written as points)".
+#: src/formats/dicom/mod.rs:919
+msgid ""
+"DICOM bulk annotations cannot hold {}: other viewers do not see them, but "
+"eov reads them back from its private attributes."
+msgstr ""
+"Adnotacje zbiorcze DICOM nie mogą zawierać następujących elementów: {}. Inne "
+"przeglądarki ich nie widzą, ale eov odczytuje je z własnych atrybutów "
+"prywatnych."
+
+#: src/formats/dicom/mod.rs:924
+msgid ""
+"Each layer, class and kind of shape is a group labelled with its class (or "
+"its layer). Authors, comments, properties and times are not exported (eov "
+"JSON keeps everything)."
+msgstr ""
+"Każda kombinacja warstwy, klasy i rodzaju kształtu tworzy grupę oznaczoną "
+"jej klasą (lub warstwą). Autorzy, komentarze, właściwości i znaczniki czasu "
+"nie są eksportowane (format eov JSON zachowuje wszystko)."
+
+#: src/formats/dicom/mod.rs:928
+msgid ""
+"{n} annotation with too few points or unusable coordinates was left out."
+msgid_plural ""
+"{n} annotations with too few points or unusable coordinates were left out."
+msgstr[0] ""
+"Pominięto {n} adnotację o zbyt małej liczbie punktów lub z nieużytecznymi "
+"współrzędnymi."
+msgstr[1] ""
+"Pominięto {n} adnotacje o zbyt małej liczbie punktów lub z nieużytecznymi "
+"współrzędnymi."
+msgstr[2] ""
+"Pominięto {n} adnotacji o zbyt małej liczbie punktów lub z nieużytecznymi "
+"współrzędnymi."
+
+#. Translators: the end of a list, "a, b and c": {first} is "a, b".
+#: src/formats/dicom/mod.rs:943
+msgid "{first} and {last}"
+msgstr "{first} i {last}"
+
+#. Translators: between the items of a list ("a, b and c").
+#: src/formats/dicom/mod.rs:946
+msgid ", "
+msgstr ", "
+
+#: src/formats/dicom/mod.rs:978
+msgid ""
+"Made for a DICOM slide; this one is not a DICOM image, so whether the "
+"annotations belong to it cannot be checked. Coordinates are taken as level-0 "
+"pixels of this slide."
+msgstr ""
+"Utworzono dla preparatu DICOM; ten preparat nie jest obrazem DICOM, więc nie "
+"można sprawdzić, czy adnotacje do niego należą. Współrzędne są traktowane "
+"jako piksele poziomu 0 tego preparatu."
+
+#: src/formats/dicom/mod.rs:987
+msgid "Made for this slide (its DICOM image)."
+msgstr "Utworzono dla tego preparatu (jego obrazu DICOM)."
+
+#: src/formats/dicom/mod.rs:994
+msgid "Made for this slide (its DICOM series)."
+msgstr "Utworzono dla tego preparatu (jego serii DICOM)."
+
+#: src/formats/dicom/mod.rs:998
+msgid ""
+"Made for another image of this slide's DICOM series (another resolution "
+"level?), whose pixels may not be level-0 pixels."
+msgstr ""
+"Utworzono dla innego obrazu serii DICOM tego preparatu (innego poziomu "
+"rozdzielczości?), którego piksele mogą nie być pikselami poziomu 0."
+
+#: src/formats/dicom/mod.rs:1005
+msgid "Made for a different DICOM slide (it refers to other images)."
+msgstr ""
+"Utworzono dla innego preparatu DICOM (plik odwołuje się do innych obrazów)."
+
+#: src/formats/dicom/mod.rs:1014
+msgid ""
+"This DICOM file is a slide image (VL Whole Slide Microscopy), not "
+"annotations: open it as a slide. Annotations are read from Microscopy Bulk "
+"Simple Annotations objects (modality ANN)."
+msgstr ""
+"Ten plik DICOM jest obrazem preparatu (VL Whole Slide Microscopy), a nie "
+"adnotacjami: otwórz go jako preparat. Adnotacje są odczytywane z obiektów "
+"Microscopy Bulk Simple Annotations (modalność ANN)."
+
+#: src/formats/dicom/mod.rs:1018
+msgid ""
+"This DICOM file is a structured report (SR). eov reads DICOM annotations "
+"from Microscopy Bulk Simple Annotations objects (modality ANN), not from "
+"structured reports."
+msgstr ""
+"Ten plik DICOM jest raportem strukturalnym (SR). eov odczytuje adnotacje "
+"DICOM z obiektów Microscopy Bulk Simple Annotations (modalność ANN), a nie z "
+"raportów strukturalnych."
+
+#: src/formats/dicom/mod.rs:1021
+msgid "This DICOM file does not say what it holds (it has no SOP Class UID)."
+msgstr "Ten plik DICOM nie określa, co zawiera (brak atrybutu SOP Class UID)."
+
+#: src/formats/dicom/mod.rs:1024
+msgid ""
+"This DICOM file is not an annotation object (SOP class {}); eov reads "
+"Microscopy Bulk Simple Annotations (modality ANN)."
+msgstr ""
+"Ten plik DICOM nie jest obiektem adnotacji (klasa SOP {}); eov odczytuje "
+"obiekty Microscopy Bulk Simple Annotations (modalność ANN)."
+
+#: src/formats/dicom/mod.rs:1047
+msgid "eov's private description of the slide is unreadable and was ignored."
+msgstr ""
+"Prywatny opis preparatu zapisany przez eov jest nieczytelny i został "
+"pominięty."
+
+#. Translators: {} says what is wrong with the file, in English.
+#: src/formats/dicom/mod.rs:1080
+msgid "The DICOM file cannot be read: {}."
+msgstr "Nie można odczytać pliku DICOM: {}."
+
+#: src/formats/dicom/mod.rs:1099
+msgid ""
+"This file holds 3D annotations: their coordinates are millimetres in the "
+"slide's frame of reference (DICOM SCOORD3D), and eov places annotations by "
+"level-0 pixels. Only 2D (pixel) annotations can be imported."
+msgstr ""
+"Ten plik zawiera adnotacje 3D: ich współrzędne są podane w milimetrach w "
+"układzie odniesienia preparatu (DICOM SCOORD3D), a eov umieszcza adnotacje "
+"według pikseli poziomu 0. Importować można tylko adnotacje 2D (pikselowe)."
+
+#: src/formats/dicom/mod.rs:1104
+msgid ""
+"The file does not say whether its coordinates are 2D or 3D (Annotation "
+"Coordinate Type is missing)."
+msgstr ""
+"Plik nie określa, czy jego współrzędne są 2D, czy 3D (brak atrybutu "
+"Annotation Coordinate Type)."
+
+#: src/formats/dicom/mod.rs:1109
+msgid ""
+"The file's coordinates are of an unknown type (\"{}\"); 2D annotations can "
+"be imported."
+msgstr ""
+"Współrzędne w pliku są nieznanego typu („{}”); importować można adnotacje 2D."
+
+#: src/formats/dicom/mod.rs:1126
+msgid ""
+"The annotations' pixel coordinates are relative to single frames (tiles) of "
+"the image (Pixel Origin Interpretation FRAME), which eov cannot place; "
+"coordinates relative to the whole image (VOLUME) can be imported."
+msgstr ""
+"Współrzędne pikselowe adnotacji odnoszą się do pojedynczych ramek (kafelków) "
+"obrazu (Pixel Origin Interpretation FRAME), a takich współrzędnych eov nie "
+"potrafi umieścić na preparacie; importować można współrzędne odniesione do "
+"całego obrazu (VOLUME)."
+
+#: src/formats/dicom/mod.rs:1130
+msgid ""
+"Unknown pixel origin interpretation \"{}\"; coordinates are taken relative "
+"to the whole image."
+msgstr ""
+"Nieznana interpretacja początku układu pikseli („{}”); współrzędne są "
+"traktowane względem całego obrazu."
+
+#: src/formats/dicom/mod.rs:1136
+msgid "The DICOM file has no annotation groups."
+msgstr "Plik DICOM nie zawiera grup adnotacji."
+
+#: src/formats/dicom/mod.rs:1146
+msgid ""
+"{n} rectangle or ellipse not aligned with the image axes became a polygon."
+msgid_plural ""
+"{n} rectangles and ellipses not aligned with the image axes became polygons."
+msgstr[0] ""
+"{n} prostokąt lub elipsa nierównoległa do osi obrazu została zamieniona na "
+"wielokąt."
+msgstr[1] ""
+"{n} prostokąty i elipsy nierównoległe do osi obrazu zostały zamienione na "
+"wielokąty."
+msgstr[2] ""
+"{n} prostokątów i elips nierównoległych do osi obrazu zostało zamienionych "
+"na wielokąty."
+
+#: src/formats/dicom/mod.rs:1178
+msgid "annotation group with lines or polygons without a point index list"
+msgstr "grupa adnotacji z liniami lub wielokątami bez listy indeksów punktów"
+
+#: src/formats/dicom/mod.rs:1182
+msgid "annotation group with an unreadable point index list"
+msgstr "grupa adnotacji z nieczytelną listą indeksów punktów"
+
+#: src/formats/dicom/mod.rs:1197
+msgid "annotation group with lines or polygons with an empty point index list"
+msgstr ""
+"grupa adnotacji z liniami lub wielokątami z pustą listą indeksów punktów"
+
+#: src/formats/dicom/mod.rs:1211
+msgid ""
+"The point index list of \"{}\" counts points rather than coordinate values; "
+"it was read that way."
+msgstr ""
+"Lista indeksów punktów grupy „{}” liczy punkty zamiast wartości "
+"współrzędnych; odczytano ją w ten sposób."
+
+#: src/formats/dicom/mod.rs:1217
+msgid ""
+"annotation group with a point index list that does not fit its coordinates"
+msgstr ""
+"grupa adnotacji z listą indeksów punktów niepasującą do jej współrzędnych"
+
+#. Translators: a reason why a measurement of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1333
+msgid "measurement without values"
+msgstr "pomiar bez wartości"
+
+#: src/formats/dicom/mod.rs:1340
+msgid "measurement with unreadable values"
+msgstr "pomiar z nieczytelnymi wartościami"
+
+#: src/formats/dicom/mod.rs:1352
+msgid "measurement that does not match its annotations"
+msgstr "pomiar niezgodny ze swoimi adnotacjami"
+
+#. Translators: a reason why a group of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1398
+msgid "annotation group without coordinates"
+msgstr "grupa adnotacji bez współrzędnych"
+
+#: src/formats/dicom/mod.rs:1402
+msgid "annotation group with unreadable coordinates"
+msgstr "grupa adnotacji z nieczytelnymi współrzędnymi"
+
+#: src/formats/dicom/mod.rs:1408
+msgid "annotation group whose coordinates are not (column, row) pairs"
+msgstr "grupa adnotacji, której współrzędne nie są parami (kolumna, wiersz)"
+
+#: src/formats/dicom/mod.rs:1426
+msgid "rectangles or ellipses without four points each"
+msgstr "prostokąty lub elipsy bez wymaganych czterech punktów"
+
+#: src/formats/dicom/mod.rs:1439
+msgid "annotation group without a graphic type"
+msgstr "grupa adnotacji bez typu graficznego"
+
+#: src/formats/dicom/mod.rs:1443
+msgid "annotation group of graphic type {}"
+msgstr "grupa adnotacji o typie graficznym {}"
+
+#: src/formats/dicom/mod.rs:1451
+msgid ""
+"\"{name}\" says it has {n} annotation, but its coordinates hold {held}; the "
+"coordinates were read."
+msgid_plural ""
+"\"{name}\" says it has {n} annotations, but its coordinates hold {held}; the "
+"coordinates were read."
+msgstr[0] ""
+"Grupa „{name}” deklaruje {n} adnotację, ale jej współrzędne opisują {held}; "
+"odczytano według współrzędnych."
+msgstr[1] ""
+"Grupa „{name}” deklaruje {n} adnotacje, ale jej współrzędne opisują {held}; "
+"odczytano według współrzędnych."
+msgstr[2] ""
+"Grupa „{name}” deklaruje {n} adnotacji, ale jej współrzędne opisują {held}; "
+"odczytano według współrzędnych."
+
+#: src/formats/dicom/mod.rs:1463
+msgid ""
+"eov's private attributes of \"{}\" are unreadable; the group was read from "
+"its DICOM attributes alone."
+msgstr ""
+"Prywatne atrybuty eov grupy „{}” są nieczytelne; grupę odczytano wyłącznie z "
+"jej atrybutów DICOM."
+
+#: src/formats/dicom/mod.rs:1529
+msgid "annotations beyond the limit of {} per file"
+msgstr "adnotacje ponad limit {} na plik"
+
+#: src/formats/dicom/mod.rs:1537
+msgid "annotation with non-finite coordinates"
+msgstr "adnotacja z nieskończonymi lub nieokreślonymi współrzędnymi"
+
+#: src/formats/eov.rs:209
+msgid ""
+"This file uses eov annotation format {version}; this plugin reads up to "
+"{supported}. Update the plugin."
+msgstr ""
+"Ten plik używa formatu adnotacji eov w wersji {version}; ta wtyczka "
+"odczytuje wersje do {supported}. Zaktualizuj wtyczkę."
+
+#: src/formats/eov.rs:261
+msgid "The file has no \"layers\"."
+msgstr "Plik nie zawiera pola „layers”."
+
+#: src/formats/eov.rs:277
+msgid "Layer \"{}\" has an unreadable colour; a palette colour is used."
+msgstr "Warstwa „{}” ma nieczytelny kolor; użyto koloru z palety."
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/eov.rs:292
+msgid "unreadable geometry"
+msgstr "nieczytelna geometria"
+
+#: src/formats/eov.rs:332
+msgid "The file has no \"annotation_layers\"."
+msgstr "Plik nie zawiera pola „annotation_layers”."
+
+#: src/formats/eov.rs:359
+msgid "point without coordinates"
+msgstr "punkt bez współrzędnych"
+
+#: src/formats/eov.rs:384
+msgid "polygon with unreadable vertices"
+msgstr "wielokąt z nieczytelnymi wierzchołkami"
+
+#: src/formats/eov.rs:390
+msgid "unknown annotation type"
+msgstr "nieznany typ adnotacji"
+
+#: src/formats/eov.rs:426
+msgid "The archive has no \"slides\"."
+msgstr "Archiwum nie zawiera pola „slides”."
+
+#: src/formats/eov.rs:432
+msgid "An archive entry was skipped: {}"
+msgstr "Pominięto wpis archiwum: {}"
+
+#. Translators: reasons why a shape of an imported file was skipped,
+#. listed as "2 × unreadable point".
+#: src/formats/geojson.rs:68
+msgid "unreadable point"
+msgstr "nieczytelny punkt"
+
+#: src/formats/geojson.rs:69
+msgid "unreadable line"
+msgstr "nieczytelna linia"
+
+#: src/formats/geojson.rs:70
+msgid "unreadable polygon"
+msgstr "nieczytelny wielokąt"
+
+#: src/formats/geojson.rs:74
+msgid "geometry without a type"
+msgstr "geometria bez typu"
+
+#: src/formats/geojson.rs:84
+msgid "unreadable points"
+msgstr "nieczytelne punkty"
+
+#: src/formats/geojson.rs:103
+msgid "unreadable lines"
+msgstr "nieczytelne linie"
+
+#: src/formats/geojson.rs:119
+msgid "unreadable polygons"
+msgstr "nieczytelne wielokąty"
+
+#: src/formats/geojson.rs:128
+msgid "unreadable geometry collection"
+msgstr "nieczytelna kolekcja geometrii"
+
+#: src/formats/geojson.rs:133
+msgid "unsupported geometry type"
+msgstr "nieobsługiwany typ geometrii"
+
+#: src/formats/geojson.rs:221
+msgid "The FeatureCollection has no features."
+msgstr "FeatureCollection nie zawiera żadnych obiektów (features)."
+
+#: src/formats/geojson.rs:224 src/formats/geojson.rs:226
+msgid "Not GeoJSON."
+msgstr "To nie jest GeoJSON."
+
+#. Translators: a reason why an element of an imported file was skipped.
+#: src/formats/geojson.rs:242
+msgid "not a GeoJSON feature"
+msgstr "element niebędący obiektem GeoJSON (Feature)"
+
+#: src/formats/geojson.rs:259
+msgid "feature without geometry"
+msgstr "obiekt bez geometrii"
+
+#: src/formats/geojson.rs:318
+msgid "properties beyond the limit of {} per annotation"
+msgstr "właściwości ponad limit {} na adnotację"
+
+#: src/formats/geojson.rs:351
+msgid "The GeoJSON file contains no features."
+msgstr "Plik GeoJSON nie zawiera żadnych obiektów (features)."
+
+#: src/formats/mod.rs:240
+msgid "This .dcm file is not a DICOM file (\"DICM\" is missing at byte 128)."
+msgstr "Ten plik .dcm nie jest plikiem DICOM (brak „DICM” w bajcie 128)."
+
+#: src/formats/mod.rs:242
+msgid ""
+"The file is not UTF-8 text or DICOM, so it is not a supported annotation "
+"file."
+msgstr ""
+"Plik nie jest tekstem UTF-8 ani plikiem DICOM, więc nie jest obsługiwanym "
+"plikiem adnotacji."
+
+#: src/formats/mod.rs:250
+msgid "The file is not valid JSON: {}"
+msgstr "Plik nie jest poprawnym plikiem JSON: {}"
+
+#: src/formats/mod.rs:257
+msgid "This JSON file is neither GeoJSON nor an eov annotation export."
+msgstr ""
+"Ten plik JSON nie jest ani plikiem GeoJSON, ani eksportem adnotacji eov."
+
+#: src/formats/mod.rs:263
+msgid ""
+"Unsupported file: expected GeoJSON, eov JSON, ASAP XML, ImageScope XML, NDPA "
+"or DICOM bulk annotations."
+msgstr ""
+"Nieobsługiwany plik: oczekiwano formatu GeoJSON, eov JSON, ASAP XML, "
+"ImageScope XML, NDPA lub adnotacji zbiorczych DICOM."
+
+#: src/formats/ndpa.rs:62
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide is not one, so they cannot be placed on it."
+msgstr ""
+"Współrzędne NDPA są mierzone od środka preparatu Hamamatsu (NDPI), ale ten "
+"preparat nim nie jest, więc nie można ich na nim umieścić."
+
+#. Translators: {} is the vendor of the slide's format ("aperio").
+#: src/formats/ndpa.rs:68
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide ({}) is not one, so they cannot be placed on it."
+msgstr ""
+"Współrzędne NDPA są mierzone od środka preparatu Hamamatsu (NDPI), ale ten "
+"preparat ({}) nim nie jest, więc nie można ich na nim umieścić."
+
+#: src/formats/ndpa.rs:79
+msgid ""
+"This NDPI does not give its offsets from the slide centre (hamamatsu."
+"XOffsetFromSlideCentre and YOffsetFromSlideCentre), so the NDPA coordinates "
+"cannot be placed on it."
+msgstr ""
+"Ten plik NDPI nie podaje swojego przesunięcia względem środka preparatu "
+"(hamamatsu.XOffsetFromSlideCentre i YOffsetFromSlideCentre), więc nie można "
+"na nim umieścić współrzędnych NDPA."
+
+#: src/formats/ndpa.rs:88
+msgid ""
+"This slide has no pixel size, so the NDPA's nanometre coordinates cannot be "
+"converted to pixels."
+msgstr ""
+"Ten preparat nie ma określonego rozmiaru piksela, więc nie można przeliczyć "
+"współrzędnych NDPA podanych w nanometrach na piksele."
+
+#: src/formats/ndpa.rs:92
+msgid "The slide's size is unknown."
+msgstr "Rozmiar preparatu jest nieznany."
+
+#. Translators: a reason why an annotation of an imported file was skipped; {} is
+#. its type in the file ("freehand", "circle", "pin", …).
+#: src/formats/ndpa.rs:211
+msgid "{} annotation with unreadable coordinates"
+msgstr "adnotacja typu {} z nieczytelnymi współrzędnymi"
+
+#: src/formats/ndpa.rs:267
+msgid "unsupported NDPA annotation type '{}'"
+msgstr "nieobsługiwany typ adnotacji NDPA „{}”"
+
+#: src/formats/ndpa.rs:296
+msgid "annotation in unsupported coordinates ({})"
+msgstr "adnotacja w nieobsługiwanym układzie współrzędnych ({})"
+
+#: src/formats/ndpa.rs:300
+msgid "view state without an annotation"
+msgstr "stan widoku bez adnotacji"
+
+#: src/formats/xml.rs:28
+msgid "The XML is not well-formed: {}"
+msgstr "Plik XML nie jest poprawnie sformułowany: {}"
+
+#: src/formats/xml.rs:37
+msgid ""
+"Unsupported XML annotations (root element <{}>); ASAP, Aperio ImageScope and "
+"Hamamatsu NDPA files are supported."
+msgstr ""
+"Nieobsługiwane adnotacje XML (element główny <{}>); obsługiwane są pliki "
+"ASAP, Aperio ImageScope i Hamamatsu NDPA."
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/xml.rs:96
+msgid "annotation with unreadable coordinates"
+msgstr "adnotacja z nieczytelnymi współrzędnymi"
+
+#: src/formats/xml.rs:158
+msgid "unsupported ASAP annotation type"
+msgstr "nieobsługiwany typ adnotacji ASAP"
+
+#: src/formats/xml.rs:198
+msgid "hole of a shape that is not a polygon"
+msgstr "otwór kształtu, który nie jest wielokątem"
+
+#: src/formats/xml.rs:200
+msgid "hole of a missing polygon"
+msgstr "otwór nieistniejącego wielokąta"
+
+#: src/formats/xml.rs:275
+msgid "region with unreadable vertices"
+msgstr "obszar z nieczytelnymi wierzchołkami"
+
+#: src/formats/xml.rs:357
+msgid "negative region outside every region"
+msgstr "obszar wykluczający leżący poza wszystkimi obszarami"
+
+#: src/geometry.rs:252
+msgid "The shape has invalid (non-finite) coordinates."
+msgstr "Kształt ma nieprawidłowe współrzędne (nieskończone lub nieokreślone)."
+
+#: src/geometry.rs:256
+msgid "The shape has {n} vertices; the limit is {limit}."
+msgid_plural "The shape has {n} vertices; the limit is {limit}."
+msgstr[0] "Kształt ma {n} wierzchołek; limit wynosi {limit}."
+msgstr[1] "Kształt ma {n} wierzchołki; limit wynosi {limit}."
+msgstr[2] "Kształt ma {n} wierzchołków; limit wynosi {limit}."
+
+#: src/geometry.rs:266
+msgid "The point is outside the slide."
+msgstr "Punkt leży poza preparatem."
+
+#: src/geometry.rs:288
+msgid "An arrow needs two distinct points."
+msgstr "Strzałka wymaga dwóch różnych punktów."
+
+#: src/geometry.rs:290
+msgid "A line needs at least two distinct points."
+msgstr "Linia wymaga co najmniej dwóch różnych punktów."
+
+#: src/geometry.rs:317
+msgid "The rectangle is outside the slide."
+msgstr "Prostokąt leży poza preparatem."
+
+#: src/geometry.rs:325
+msgid "The rectangle has no area."
+msgstr "Prostokąt ma zerową powierzchnię."
+
+#: src/geometry.rs:337
+msgid "The ellipse has no area."
+msgstr "Elipsa ma zerową powierzchnię."
+
+#: src/geometry.rs:340
+msgid "The ellipse is centred outside the slide."
+msgstr "Środek elipsy leży poza preparatem."
+
+#: src/geometry.rs:352
+msgid "A polygon needs at least three distinct corners."
+msgstr "Wielokąt wymaga co najmniej trzech różnych wierzchołków."
+
+#: src/geometry.rs:355 src/geometry.rs:393
+msgid "The polygon encloses no area."
+msgstr "Wielokąt nie obejmuje żadnej powierzchni."
+
+#: src/geometry.rs:391
+msgid "The polygon is outside the slide."
+msgstr "Wielokąt leży poza preparatem."
+
+#: src/lib.rs:80 src/lib.rs:202
+msgid "Annotations"
+msgstr "Adnotacje"
+
+#: src/lib.rs:85
+msgid "Show or hide annotations on this slide"
+msgstr "Pokaż lub ukryj adnotacje na tym preparacie"
+
+#: src/lib.rs:102
+msgid "Counting {}"
+msgstr "Zliczanie: {}"
+
+#: src/lib.rs:104
+msgid "Counting {class}, Shift+click: {alternate}"
+msgstr "Zliczanie: {class}, Shift+kliknięcie: {alternate}"
+
+#: src/lib.rs:109
+msgid "Counting {class}, Alt+click: {immune}"
+msgstr "Zliczanie: {class}, Alt+kliknięcie: {immune}"
+
+#: src/lib.rs:114
+msgid "Counting {class}, Shift+click: {alternate}, Alt+click: {immune}"
+msgstr ""
+"Zliczanie: {class}, Shift+kliknięcie: {alternate}, Alt+kliknięcie: {immune}"
+
+#. Translators: HPF is a high-power field.
+#: src/lib.rs:123
+msgid ""
+"The dashed circle is one HPF: click to place a field, drag to pan, Esc to "
+"leave"
+msgstr ""
+"Przerywany okrąg to jedno pole HPF: kliknij, aby umieścić pole, przeciągnij, "
+"aby przesunąć widok, naciśnij Esc, aby zakończyć"
+
+#: src/lib.rs:125
+msgid "Click to select, drag to select several; drag handles to edit"
+msgstr ""
+"Kliknij, aby zaznaczyć, przeciągnij, aby zaznaczyć kilka; przeciągaj "
+"uchwyty, aby edytować"
+
+#: src/lib.rs:127
+msgid "Drawing {}"
+msgstr "Rysowanie: {}"
+
+#. Translators: {} is the name of a file format ("GeoJSON").
+#: src/lib.rs:441
+msgid "{} · cannot be placed on this slide"
+msgstr "{} · nie można umieścić na tym preparacie"
+
+#. Translators: {format} is the name of a file format ("GeoJSON");
+#. {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/lib.rs:448
+msgid "{format} · {n} annotation {layers}"
+msgid_plural "{format} · {n} annotations {layers}"
+msgstr[0] "{format} · {n} adnotacja {layers}"
+msgstr[1] "{format} · {n} adnotacje {layers}"
+msgstr[2] "{format} · {n} adnotacji {layers}"
+
+#: src/lib.rs:455
+msgid "{n} class"
+msgid_plural "{n} classes"
+msgstr[0] "{n} klasa"
+msgstr[1] "{n} klasy"
+msgstr[2] "{n} klas"
+
+#: src/lib.rs:465
+msgid "Layers with the same name already exist: {}"
+msgstr "Warstwy o tych samych nazwach już istnieją: {}"
+
+#: src/lib.rs:497 src/transfer.rs:373
+msgid "Import annotations"
+msgstr "Import adnotacji"
+
+#: src/lib.rs:507
+msgid "Cannot show the import dialog"
+msgstr "Nie można wyświetlić okna importu"
+
+#: src/lib.rs:641 src/sidebar.rs:1490
+msgid "Lock"
+msgstr "Zablokowanie"
+
+#: src/lib.rs:643 src/sidebar.rs:1492
+msgid "Unlock"
+msgstr "Odblokowanie"
+
+#: src/lib.rs:789
+msgid "Could not save the annotation settings"
+msgstr "Nie udało się zapisać ustawień adnotacji"
+
+#: src/lib.rs:1063
+msgid "Show in annotations panel"
+msgstr "Pokaż w panelu adnotacji"
+
+#: src/lib.rs:1064
+msgid "Copy measurements"
+msgstr "Kopiuj pomiary"
+
+#: src/lib.rs:1066
+msgid "Unlock annotation"
+msgstr "Odblokuj adnotację"
+
+#: src/lib.rs:1068
+msgid "Lock annotation"
+msgstr "Zablokuj adnotację"
+
+#: src/lib.rs:1077
+msgctxt "Context menu"
+msgid "Delete annotation"
+msgstr "Usuń adnotację"
+
+#: src/lib.rs:1083
+msgid "Add point here"
+msgstr "Dodaj punkt tutaj"
+
+#: src/lib.rs:1084
+msgid "Place HPF field here"
+msgstr "Umieść tutaj pole HPF"
+
+#: src/lib.rs:1085
+msgid "Annotations panel"
+msgstr "Panel adnotacji"
+
+#: src/measure.rs:276
+msgid "Area"
+msgstr "Powierzchnia"
+
+#: src/measure.rs:281
+msgid "Length"
+msgstr "Długość"
+
+#: src/measure.rs:283
+msgid "Perimeter"
+msgstr "Obwód"
+
+#: src/measure.rs:289
+msgid "Max diameter (Feret)"
+msgstr "Maks. średnica (Fereta)"
+
+#: src/measure.rs:292
+msgid "Min diameter (Feret)"
+msgstr "Min. średnica (Fereta)"
+
+#: src/measure.rs:297
+msgid "Centre (px)"
+msgstr "Środek (px)"
+
+#: src/measure.rs:302 src/measure.rs:307
+msgid "Calibration"
+msgstr "Kalibracja"
+
+#: src/measure.rs:303
+msgid "No pixel size: values in level-0 pixels"
+msgstr "Brak rozmiaru piksela: wartości w pikselach poziomu 0"
+
+#: src/measure.rs:308
+msgid "One pixel axis missing; assumed square pixels"
+msgstr "Brak rozmiaru piksela w jednej osi; przyjęto piksele kwadratowe"
+
+#: src/model.rs:49 ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Draft"
+msgstr "Szkic"
+
+#: src/model.rs:50 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Verified"
+msgstr "Zweryfikowana"
+
+#: src/model.rs:51 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Rejected"
+msgstr "Odrzucona"
+
+#: src/model.rs:118
+msgctxt "Annotation kind"
+msgid "Point"
+msgstr "Punkt"
+
+#: src/model.rs:119
+msgctxt "Annotation kind"
+msgid "Line"
+msgstr "Linia"
+
+#: src/model.rs:120
+msgctxt "Annotation kind"
+msgid "Arrow"
+msgstr "Strzałka"
+
+#: src/model.rs:121
+msgctxt "Annotation kind"
+msgid "Polygon"
+msgstr "Wielokąt"
+
+#: src/model.rs:122
+msgctxt "Annotation kind"
+msgid "Rectangle"
+msgstr "Prostokąt"
+
+#: src/model.rs:123
+msgctxt "Annotation kind"
+msgid "Ellipse"
+msgstr "Elipsa"
+
+#: src/model.rs:124
+msgctxt "Annotation kind"
+msgid "Text"
+msgstr "Tekst"
+
+#: src/model.rs:750
+msgid "The layer name cannot be empty."
+msgstr "Nazwa warstwy nie może być pusta."
+
+#: src/model.rs:751
+msgid "The class name cannot be empty."
+msgstr "Nazwa klasy nie może być pusta."
+
+#: src/model.rs:752
+msgid "The name cannot be empty."
+msgstr "Nazwa nie może być pusta."
+
+#: src/model.rs:759
+msgid "The name is {n} characters long; the limit is {limit}."
+msgid_plural "The name is {n} characters long; the limit is {limit}."
+msgstr[0] "Nazwa ma {n} znak; limit wynosi {limit}."
+msgstr[1] "Nazwa ma {n} znaki; limit wynosi {limit}."
+msgstr[2] "Nazwa ma {n} znaków; limit wynosi {limit}."
+
+#: src/model.rs:764
+msgid "The layer name is {n} characters long; the limit is {limit}."
+msgid_plural "The layer name is {n} characters long; the limit is {limit}."
+msgstr[0] "Nazwa warstwy ma {n} znak; limit wynosi {limit}."
+msgstr[1] "Nazwa warstwy ma {n} znaki; limit wynosi {limit}."
+msgstr[2] "Nazwa warstwy ma {n} znaków; limit wynosi {limit}."
+
+#: src/model.rs:769
+msgid "The class name is {n} characters long; the limit is {limit}."
+msgid_plural "The class name is {n} characters long; the limit is {limit}."
+msgstr[0] "Nazwa klasy ma {n} znak; limit wynosi {limit}."
+msgstr[1] "Nazwa klasy ma {n} znaki; limit wynosi {limit}."
+msgstr[2] "Nazwa klasy ma {n} znaków; limit wynosi {limit}."
+
+#: src/model.rs:774
+msgid "The author is {n} characters long; the limit is {limit}."
+msgid_plural "The author is {n} characters long; the limit is {limit}."
+msgstr[0] "Nazwa autora ma {n} znak; limit wynosi {limit}."
+msgstr[1] "Nazwa autora ma {n} znaki; limit wynosi {limit}."
+msgstr[2] "Nazwa autora ma {n} znaków; limit wynosi {limit}."
+
+#: src/model.rs:779
+msgid "The setting is {n} characters long; the limit is {limit}."
+msgid_plural "The setting is {n} characters long; the limit is {limit}."
+msgstr[0] "Wartość ustawienia ma {n} znak; limit wynosi {limit}."
+msgstr[1] "Wartość ustawienia ma {n} znaki; limit wynosi {limit}."
+msgstr[2] "Wartość ustawienia ma {n} znaków; limit wynosi {limit}."
+
+#: src/model.rs:784
+msgid "The notes are {n} characters long; the limit is {limit}."
+msgid_plural "The notes are {n} characters long; the limit is {limit}."
+msgstr[0] "Notatki mają {n} znak; limit wynosi {limit}."
+msgstr[1] "Notatki mają {n} znaki; limit wynosi {limit}."
+msgstr[2] "Notatki mają {n} znaków; limit wynosi {limit}."
+
+#: src/model.rs:789
+msgid "The description is {n} characters long; the limit is {limit}."
+msgid_plural "The description is {n} characters long; the limit is {limit}."
+msgstr[0] "Opis ma {n} znak; limit wynosi {limit}."
+msgstr[1] "Opis ma {n} znaki; limit wynosi {limit}."
+msgstr[2] "Opis ma {n} znaków; limit wynosi {limit}."
+
+#: src/model.rs:794
+msgid "The comment is {n} characters long; the limit is {limit}."
+msgid_plural "The comment is {n} characters long; the limit is {limit}."
+msgstr[0] "Komentarz ma {n} znak; limit wynosi {limit}."
+msgstr[1] "Komentarz ma {n} znaki; limit wynosi {limit}."
+msgstr[2] "Komentarz ma {n} znaków; limit wynosi {limit}."
+
+#: src/model.rs:837
+msgid "An annotation can have at most {n} properties."
+msgid_plural "An annotation can have at most {n} properties."
+msgstr[0] "Adnotacja może mieć najwyżej {n} właściwość."
+msgstr[1] "Adnotacja może mieć najwyżej {n} właściwości."
+msgstr[2] "Adnotacja może mieć najwyżej {n} właściwości."
+
+#: src/model.rs:851
+msgid "Property names are limited to {n} characters."
+msgid_plural "Property names are limited to {n} characters."
+msgstr[0] "Nazwy właściwości mogą mieć najwyżej {n} znak."
+msgstr[1] "Nazwy właściwości mogą mieć najwyżej {n} znaki."
+msgstr[2] "Nazwy właściwości mogą mieć najwyżej {n} znaków."
+
+#: src/model.rs:856
+msgid "Property values are limited to {n} characters."
+msgid_plural "Property values are limited to {n} characters."
+msgstr[0] "Wartości właściwości mogą mieć najwyżej {n} znak."
+msgstr[1] "Wartości właściwości mogą mieć najwyżej {n} znaki."
+msgstr[2] "Wartości właściwości mogą mieć najwyżej {n} znaków."
+
+#: src/model.rs:884
+msgid "A hotkey is a single character (a letter or a symbol), not {}."
+msgstr "Skrót klawiaturowy to pojedynczy znak (litera lub symbol), a nie {}."
+
+#: src/model.rs:889
+msgid "A hotkey must be a visible character."
+msgstr "Skrót klawiaturowy musi być widocznym znakiem."
+
+#: src/model.rs:892
+msgid "eov already uses the '{}' key."
+msgstr "eov już używa klawisza „{}”."
+
+#: src/model.rs:896
+msgid "'{}' is already used by an annotation tool or class."
+msgstr "Klawisz „{}” jest już używany przez narzędzie adnotacji lub klasę."
+
+#. Translators: in the tooltip of a locked annotation, after its class and name.
+#: src/overlay.rs:171
+msgid "locked"
+msgstr "zablokowana"
+
+#. Translators: this slide's points against the other reader's; F1 is the F1 score.
+#: src/sidebar.rs:360
+msgid "Points {ours} vs {theirs} · {matched} matched · F1 {f1}"
+msgstr "Punkty: {ours} vs {theirs} · dopasowane: {matched} · F1 {f1}"
+
+#. Translators: this slide's regions and their area against the other reader's;
+#. Dice is the Dice coefficient of the areas.
+#: src/sidebar.rs:373
+msgid "Regions {ours} vs {theirs} · {our_area} vs {their_area} · Dice {dice}"
+msgstr "Obszary: {ours} vs {theirs} · {our_area} vs {their_area} · Dice {dice}"
+
+#: src/sidebar.rs:385
+msgid "All regions"
+msgstr "Wszystkie obszary"
+
+#. Translators: {layers} in texts such as "{n} annotations {layers}" ("12 annotations in 3 layers").
+#: src/sidebar.rs:431
+msgid "in {n} layer"
+msgid_plural "in {n} layers"
+msgstr[0] "w {n} warstwie"
+msgstr[1] "w {n} warstwach"
+msgstr[2] "w {n} warstwach"
+
+#: src/sidebar.rs:447
+msgid "No slide open"
+msgstr "Brak otwartego preparatu"
+
+#: src/sidebar.rs:453
+msgid "Annotation database unavailable: {}"
+msgstr "Baza danych adnotacji jest niedostępna: {}"
+
+#: src/sidebar.rs:455
+msgid "Opening the annotation database…"
+msgstr "Otwieranie bazy danych adnotacji…"
+
+#: src/sidebar.rs:461
+msgid "Loading annotations…"
+msgstr "Wczytywanie adnotacji…"
+
+#: src/sidebar.rs:469
+msgid ""
+"The annotation database is read-only: annotations can be viewed and "
+"exported, not edited."
+msgstr ""
+"Baza danych adnotacji jest tylko do odczytu: adnotacje można przeglądać i "
+"eksportować, ale nie edytować."
+
+#: src/sidebar.rs:477
+msgid ""
+"This slide has no stable identity; its annotations are keyed by file name "
+"and size."
+msgstr ""
+"Ten preparat nie ma stałego identyfikatora; jego adnotacje są przypisane "
+"według nazwy i rozmiaru pliku."
+
+#. Translators: beside a layer of count points: the number of points.
+#: src/sidebar.rs:526
+msgid "{} · counts"
+msgstr "{} · zliczenia"
+
+#. Translators: beside the layer of HPF fields: the number of fields.
+#: src/sidebar.rs:528
+msgid "{} · HPF fields"
+msgstr "{} · pola HPF"
+
+#: src/sidebar.rs:615
+msgid "{n} comment"
+msgid_plural "{n} comments"
+msgstr[0] "{n} komentarz"
+msgstr[1] "{n} komentarze"
+msgstr[2] "{n} komentarzy"
+
+#: src/sidebar.rs:649
+msgid "Show more ({n} not shown)"
+msgid_plural "Show more ({n} not shown)"
+msgstr[0] "Pokaż więcej (pozostało: {n})"
+msgstr[1] "Pokaż więcej (pozostało: {n})"
+msgstr[2] "Pokaż więcej (pozostało: {n})"
+
+#: src/sidebar.rs:667
+msgid "{n} match"
+msgid_plural "{n} matches"
+msgstr[0] "{n} wynik"
+msgstr[1] "{n} wyniki"
+msgstr[2] "{n} wyników"
+
+#: src/sidebar.rs:670
+msgid ""
+"No annotations yet. Pick a tool in the toolbar (P polygon, . point, C count) "
+"and draw on the slide."
+msgstr ""
+"Nie ma jeszcze adnotacji. Wybierz narzędzie na pasku narzędzi (P – "
+"wielokąt, . – punkt, C – zliczanie) i rysuj na preparacie."
+
+#: src/sidebar.rs:674
+msgid "Open a slide to see and draw its annotations."
+msgstr "Otwórz preparat, aby wyświetlać i rysować jego adnotacje."
+
+#: src/sidebar.rs:724
+msgid "created {created} · edited {edited}"
+msgstr "utworzono {created} · edytowano {edited}"
+
+#: src/sidebar.rs:730
+msgid "By {author} · created {created} · edited {edited}"
+msgstr "Autor: {author} · utworzono {created} · edytowano {edited}"
+
+#: src/sidebar.rs:750
+msgid "Unknown author"
+msgstr "Nieznany autor"
+
+#: src/sidebar.rs:769
+msgid ""
+"This outline crosses itself (it was drawn with an older version). Its area "
+"uses the even-odd rule, like the display; Repair turns it into simple parts."
+msgstr ""
+"Ten kontur przecina sam siebie (narysowano go we wcześniejszej wersji). Jego "
+"powierzchnia jest liczona według reguły parzystości (even-odd), tak jak na "
+"ekranie; przycisk Napraw dzieli go na proste części."
+
+#: src/sidebar.rs:775
+msgid "{n} annotation selected"
+msgid_plural "{n} annotations selected"
+msgstr[0] "Zaznaczono {n} adnotację"
+msgstr[1] "Zaznaczono {n} adnotacje"
+msgstr[2] "Zaznaczono {n} adnotacji"
+
+#: src/sidebar.rs:778
+msgid "Mixed classes; changes apply to all selected."
+msgstr "Różne klasy; zmiany dotyczą wszystkich zaznaczonych."
+
+#: src/sidebar.rs:780
+msgid "Changes apply to all selected."
+msgstr "Zmiany dotyczą wszystkich zaznaczonych."
+
+#. Translators: under a class whose key does nothing; {} is
+#. eov's reason, a whole sentence such as "Hotkey 'q' of …
+#. was ignored: it is a key eov already uses."
+#: src/sidebar.rs:828
+msgid "eov refused the hotkey: {}"
+msgstr "Program eov odrzucił skrót klawiaturowy: {}"
+
+#: src/sidebar.rs:861
+msgid ""
+"Whole slide. Select regions or HPF fields to count inside them and get "
+"densities."
+msgstr ""
+"Cały preparat. Zaznacz obszary lub pola HPF, aby zliczać wewnątrz nich i "
+"uzyskać gęstości."
+
+#. Translators: {fields} is "1 HPF field" or "3 HPF fields"
+#. (translated on its own; HPF is a high-power field).
+#: src/sidebar.rs:873
+msgid "Inside {n} selected region ({fields}): {area}"
+msgid_plural "Inside {n} selected regions ({fields}): {area}"
+msgstr[0] "Wewnątrz {n} zaznaczonego obszaru ({fields}): {area}"
+msgstr[1] "Wewnątrz {n} zaznaczonych obszarów ({fields}): {area}"
+msgstr[2] "Wewnątrz {n} zaznaczonych obszarów ({fields}): {area}"
+
+#. Translators: {fields} in "Inside {n} selected regions ({fields}): {area}".
+#: src/sidebar.rs:877
+msgid "{n} HPF field"
+msgid_plural "{n} HPF fields"
+msgstr[0] "{n} pole HPF"
+msgstr[1] "{n} pola HPF"
+msgstr[2] "{n} pól HPF"
+
+#: src/sidebar.rs:883
+msgid "Inside {n} selected region: {area}"
+msgid_plural "Inside {n} selected regions: {area}"
+msgstr[0] "Wewnątrz {n} zaznaczonego obszaru: {area}"
+msgstr[1] "Wewnątrz {n} zaznaczonych obszarów: {area}"
+msgstr[2] "Wewnątrz {n} zaznaczonych obszarów: {area}"
+
+#: src/sidebar.rs:890
+msgid "Inside {n} selected region: {area} (no pixel size, so no density)"
+msgid_plural ""
+"Inside {n} selected regions: {area} (no pixel size, so no density)"
+msgstr[0] ""
+"Wewnątrz {n} zaznaczonego obszaru: {area} (brak rozmiaru piksela, więc brak "
+"gęstości)"
+msgstr[1] ""
+"Wewnątrz {n} zaznaczonych obszarów: {area} (brak rozmiaru piksela, więc brak "
+"gęstości)"
+msgstr[2] ""
+"Wewnątrz {n} zaznaczonych obszarów: {area} (brak rozmiaru piksela, więc brak "
+"gęstości)"
+
+#. Translators: cells per high-power field.
+#: src/sidebar.rs:905
+msgid "{} /HPF field"
+msgstr "{} /pole HPF"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1000
+msgid "Read-only"
+msgstr "Tylko do odczytu"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1003
+msgid "Ready"
+msgstr "Gotowa"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1007
+msgid "Opening…"
+msgstr "Otwieranie…"
+
+#: src/sidebar.rs:1008
+msgid "Unavailable: {}"
+msgstr "Niedostępna: {}"
+
+#. Translators: a slide whose file name an older eov did not record; {} is its number in the annotation database.
+#: src/sidebar.rs:1068
+msgid "Slide #{} (from an older version)"
+msgstr "Preparat nr {} (z wcześniejszej wersji)"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/sidebar.rs:1075
+msgid "{n} annotation {layers} · last opened {date}"
+msgid_plural "{n} annotations {layers} · last opened {date}"
+msgstr[0] "{n} adnotacja {layers} · ostatnio otwarty {date}"
+msgstr[1] "{n} adnotacje {layers} · ostatnio otwarty {date}"
+msgstr[2] "{n} adnotacji {layers} · ostatnio otwarty {date}"
+
+#. Translators: "List" is the label of the button beside this text.
+#: src/sidebar.rs:1093
+msgid "Press \"List\" to see the other slides in the database."
+msgstr "Kliknij „Pokaż listę”, aby zobaczyć inne preparaty w bazie danych."
+
+#: src/sidebar.rs:1094
+msgid "No other slides have annotations."
+msgstr "Żaden inny preparat nie ma adnotacji."
+
+#: src/sidebar.rs:1096
+msgid ""
+"If a slide was re-saved or de-identified, its annotations stay with the old "
+"file. Attach them to the open slide here."
+msgstr ""
+"Jeśli preparat został ponownie zapisany lub usunięto z niego dane "
+"identyfikujące, jego adnotacje pozostają przypisane do starego pliku. Tutaj "
+"można je dołączyć do otwartego preparatu."
+
+#: src/sidebar.rs:1161
+msgid "Cannot ask for confirmation"
+msgstr "Nie można poprosić o potwierdzenie"
+
+#: src/sidebar.rs:1173
+msgid "Open a slide first."
+msgstr "Najpierw otwórz preparat."
+
+#: src/sidebar.rs:1213
+msgid "Compare with another reader's file first."
+msgstr "Najpierw porównaj z plikiem innego oceniającego."
+
+#: src/sidebar.rs:1219
+msgid "Export all annotations"
+msgstr "Eksport wszystkich adnotacji"
+
+#: src/sidebar.rs:1222
+msgid "eov annotation archive"
+msgstr "Archiwum adnotacji eov"
+
+#: src/sidebar.rs:1229
+msgid "Back up the annotation database"
+msgstr "Kopia zapasowa bazy danych adnotacji"
+
+#: src/sidebar.rs:1232 src/sidebar.rs:1242
+msgid "SQLite database"
+msgstr "Baza danych SQLite"
+
+#: src/sidebar.rs:1239
+msgid ""
+"Merge an annotation database (a backup, or annotations.db of eov before 1.0)"
+msgstr ""
+"Scalanie bazy danych adnotacji (kopii zapasowej lub pliku annotations.db z "
+"eov sprzed wersji 1.0)"
+
+#: src/sidebar.rs:1308
+msgid "Show or hide layer"
+msgstr "Pokazanie lub ukrycie warstwy"
+
+#: src/sidebar.rs:1322
+msgid "Layer opacity"
+msgstr "Zmiana krycia warstwy"
+
+#: src/sidebar.rs:1337
+msgid "Lock layer"
+msgstr "Zablokowanie warstwy"
+
+#: src/sidebar.rs:1339
+msgid "Unlock layer"
+msgstr "Odblokowanie warstwy"
+
+#: src/sidebar.rs:1354
+msgid "Change layer colour"
+msgstr "Zmiana koloru warstwy"
+
+#: src/sidebar.rs:1370
+msgid "Edit layer notes"
+msgstr "Edycja notatek warstwy"
+
+#: src/sidebar.rs:1387
+msgid "The slide is still loading."
+msgstr "Preparat jest jeszcze wczytywany."
+
+#: src/sidebar.rs:1396
+msgctxt "Dialog title"
+msgid "Delete layer"
+msgstr "Usuwanie warstwy"
+
+#: src/sidebar.rs:1398
+msgid ""
+"Delete layer \"{name}\" and its {n} annotation? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgid_plural ""
+"Delete layer \"{name}\" and its {n} annotations? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgstr[0] ""
+"Usunąć warstwę „{name}” i jej {n} adnotację? Można to cofnąć skrótem Ctrl+Z "
+"(⌘Z)."
+msgstr[1] ""
+"Usunąć warstwę „{name}” i jej {n} adnotacje? Można to cofnąć skrótem Ctrl+Z "
+"(⌘Z)."
+msgstr[2] ""
+"Usunąć warstwę „{name}” i jej {n} adnotacji? Można to cofnąć skrótem Ctrl+Z "
+"(⌘Z)."
+
+#: src/sidebar.rs:1403 src/sidebar.rs:1620
+msgid "Delete"
+msgstr "Usuń"
+
+#: src/sidebar.rs:1404 src/sidebar.rs:1621 src/sidebar.rs:1679
+#: src/sidebar.rs:1772
+msgid "Cancel"
+msgstr "Anuluj"
+
+#: src/sidebar.rs:1420
+msgid "Rename annotation"
+msgstr "Zmiana nazwy adnotacji"
+
+#: src/sidebar.rs:1432
+msgid "Edit description"
+msgstr "Edycja opisu"
+
+#: src/sidebar.rs:1444
+msgid "Set class"
+msgstr "Ustawienie klasy"
+
+#: src/sidebar.rs:1458
+msgid "Mark draft"
+msgstr "Oznaczenie jako szkic"
+
+#: src/sidebar.rs:1459
+msgid "Mark verified"
+msgstr "Oznaczenie jako zweryfikowane"
+
+#: src/sidebar.rs:1460
+msgid "Mark rejected"
+msgstr "Oznaczenie jako odrzucone"
+
+#: src/sidebar.rs:1476
+msgid "Move to layer"
+msgstr "Przeniesienie do warstwy"
+
+#: src/sidebar.rs:1529
+msgid "Edit properties"
+msgstr "Edycja właściwości"
+
+#: src/sidebar.rs:1553
+msgid "Select one annotation to comment on."
+msgstr "Zaznacz jedną adnotację, aby ją skomentować."
+
+#: src/sidebar.rs:1566
+msgid "Measurements copied."
+msgstr "Skopiowano pomiary."
+
+#: src/sidebar.rs:1578
+msgid "Show or hide class"
+msgstr "Pokazanie lub ukrycie klasy"
+
+#: src/sidebar.rs:1591
+msgid "Class opacity"
+msgstr "Zmiana krycia klasy"
+
+#: src/sidebar.rs:1611
+msgctxt "Dialog title"
+msgid "Delete class"
+msgstr "Usuwanie klasy"
+
+#: src/sidebar.rs:1613
+msgid ""
+"Delete class \"{name}\"? {n} annotation on open slides uses it; it will show "
+"as unclassified. You can undo this."
+msgid_plural ""
+"Delete class \"{name}\"? {n} annotations on open slides use it; they will "
+"show as unclassified. You can undo this."
+msgstr[0] ""
+"Usunąć klasę „{name}”? Używa jej {n} adnotacja na otwartych preparatach; "
+"będzie wyświetlana jako adnotacja bez klasy. Można to cofnąć."
+msgstr[1] ""
+"Usunąć klasę „{name}”? Używają jej {n} adnotacje na otwartych preparatach; "
+"będą wyświetlane jako adnotacje bez klasy. Można to cofnąć."
+msgstr[2] ""
+"Usunąć klasę „{name}”? Używa jej {n} adnotacji na otwartych preparatach; "
+"będą wyświetlane jako adnotacje bez klasy. Można to cofnąć."
+
+#: src/sidebar.rs:1668
+msgctxt "Dialog title"
+msgid "Clear counts"
+msgstr "Czyszczenie zliczeń"
+
+#. Translators: the question of the "Clear counts" dialog, whose
+#. button is "Clear": use the same verb.
+#: src/sidebar.rs:1672
+msgid "Clear the {n} count point of this slide? You can undo this."
+msgid_plural "Clear all {n} count points of this slide? You can undo this."
+msgstr[0] "Wyczyścić {n} punkt zliczania tego preparatu? Można to cofnąć."
+msgstr[1] ""
+"Wyczyścić wszystkie {n} punkty zliczania tego preparatu? Można to cofnąć."
+msgstr[2] ""
+"Wyczyścić wszystkie {n} punktów zliczania tego preparatu? Można to cofnąć."
+
+#. Translators: the button that removes the count points, in the
+#. "Clear counts" dialog.
+#: src/sidebar.rs:1678
+msgid "Clear"
+msgstr "Wyczyść"
+
+#: src/sidebar.rs:1694
+msgid "Enter the field area in mm², e.g. {}."
+msgstr "Wpisz powierzchnię pola w mm², np. {}."
+
+#: src/sidebar.rs:1702
+msgid "Enter the field number in mm, e.g. 22."
+msgstr "Wpisz numer pola widzenia w mm, np. 22."
+
+#: src/sidebar.rs:1704
+msgid "Enter the objective magnification, e.g. 40."
+msgstr "Wpisz powiększenie obiektywu, np. 40."
+
+#: src/sidebar.rs:1708
+msgid "That field size is not usable."
+msgstr "Tego rozmiaru pola nie można użyć."
+
+#: src/sidebar.rs:1720
+msgid "There is no database from before eov 1.0 to merge."
+msgstr "Nie ma bazy danych sprzed eov 1.0, którą można by scalić."
+
+#: src/sidebar.rs:1737
+msgid "That slide is not listed any more."
+msgstr "Tego preparatu nie ma już na liście."
+
+#: src/sidebar.rs:1748
+msgid ""
+"Attach the annotations of an older slide to the open slide? Use this when "
+"the slide file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"Dołączyć adnotacje starszego preparatu do otwartego preparatu? Użyj tej "
+"funkcji, gdy plik preparatu został ponownie zapisany lub przekonwertowany "
+"albo usunięto z niego dane identyfikujące. Można to cofnąć."
+
+#: src/sidebar.rs:1753
+msgid ""
+"Attach the annotations of \"{}\" to the open slide? Use this when the slide "
+"file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"Dołączyć adnotacje preparatu „{}” do otwartego preparatu? Użyj tej funkcji, "
+"gdy plik preparatu został ponownie zapisany lub przekonwertowany albo "
+"usunięto z niego dane identyfikujące. Można to cofnąć."
+
+#: src/sidebar.rs:1762
+msgid ""
+"Warning: the two slides have different sizes, so the annotations may not "
+"line up."
+msgstr ""
+"Ostrzeżenie: preparaty mają różne rozmiary, więc adnotacje mogą nie pokrywać "
+"się z obrazem."
+
+#: src/sidebar.rs:1769
+msgid "Attach annotations"
+msgstr "Dołączanie adnotacji"
+
+#: src/sidebar.rs:1771
+msgid "Attach"
+msgstr "Dołącz"
+
+#: src/state.rs:501
+msgid "Compared with {}"
+msgstr "Porównanie z {}"
+
+#. Translators: {ours} is "1 annotation" or "5 annotations" (translated on its own).
+#: src/state.rs:509
+msgid ""
+"This slide's visible layers ({ours}) against the {n} annotation in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgid_plural ""
+"This slide's visible layers ({ours}) against the {n} annotations in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgstr[0] ""
+"Widoczne warstwy tego preparatu ({ours}) porównane z {n} adnotacją w {name}, "
+"bez pól HPF; liczby podano najpierw dla tego preparatu, potem dla drugiego "
+"oceniającego. Punkty jednej klasy są dopasowywane jeden do jednego w "
+"promieniu {radius} (F1 = 2 · dopasowane / suma obu liczb); obszary – według "
+"nakładania się (Dice = 2 · wspólna powierzchnia / suma obu powierzchni)."
+msgstr[1] ""
+"Widoczne warstwy tego preparatu ({ours}) porównane z {n} adnotacjami w "
+"{name}, bez pól HPF; liczby podano najpierw dla tego preparatu, potem dla "
+"drugiego oceniającego. Punkty jednej klasy są dopasowywane jeden do jednego "
+"w promieniu {radius} (F1 = 2 · dopasowane / suma obu liczb); obszary – "
+"według nakładania się (Dice = 2 · wspólna powierzchnia / suma obu "
+"powierzchni)."
+msgstr[2] ""
+"Widoczne warstwy tego preparatu ({ours}) porównane z {n} adnotacjami w "
+"{name}, bez pól HPF; liczby podano najpierw dla tego preparatu, potem dla "
+"drugiego oceniającego. Punkty jednej klasy są dopasowywane jeden do jednego "
+"w promieniu {radius} (F1 = 2 · dopasowane / suma obu liczb); obszary – "
+"według nakładania się (Dice = 2 · wspólna powierzchnia / suma obu "
+"powierzchni)."
+
+#: src/state.rs:522
+msgid "Check the file: {}"
+msgstr "Sprawdź plik: {}"
+
+#: src/state.rs:664
+msgid "The annotation database is read-only."
+msgstr "Baza danych adnotacji jest tylko do odczytu."
+
+#: src/state.rs:665
+msgid "The annotation database is still opening."
+msgstr "Baza danych adnotacji jest jeszcze otwierana."
+
+#: src/state.rs:667
+msgid "The annotation database is unavailable: {}"
+msgstr "Baza danych adnotacji jest niedostępna: {}"
+
+#: src/stats.rs:97
+msgid "Invalid field size"
+msgstr "Nieprawidłowy rozmiar pola"
+
+#. Translators: HPF is a high-power field; ⌀ its diameter.
+#: src/stats.rs:110
+msgid "1 HPF = {area} mm² (field number {number} at {objective}×, ⌀ {d} mm)"
+msgstr ""
+"1 HPF = {area} mm² (numer pola {number} przy obiektywie {objective}×, ⌀ {d} "
+"mm)"
+
+#: src/stats.rs:116
+msgid "1 HPF = {area} mm² (⌀ {d} mm)"
+msgstr "1 HPF = {area} mm² (⌀ {d} mm)"
+
+#: src/tools.rs:63
+msgid "Select and edit annotations"
+msgstr "Zaznaczanie i edycja adnotacji"
+
+#: src/tools.rs:64
+msgid "Point annotation"
+msgstr "Adnotacja punktowa"
+
+#: src/tools.rs:65
+msgid "Count cells (Shift+click: second class)"
+msgstr "Zliczanie komórek (Shift+kliknięcie: druga klasa)"
+
+#: src/tools.rs:66
+msgid "Polygon (Shift: add to selection, Alt: cut from it)"
+msgstr "Wielokąt (Shift: dodaj do zaznaczenia, Alt: wytnij z niego)"
+
+#: src/tools.rs:67
+msgid "Freehand outline (Shift: add, Alt: cut)"
+msgstr "Kontur odręczny (Shift: dodaj, Alt: wytnij)"
+
+#: src/tools.rs:68
+msgid "Rectangle"
+msgstr "Prostokąt"
+
+#: src/tools.rs:69
+msgid "Ellipse"
+msgstr "Elipsa"
+
+#: src/tools.rs:70
+msgid "Line / path"
+msgstr "Linia / linia łamana"
+
+#: src/tools.rs:72
+msgid ""
+"Brush (paint a region, over a selected region to extend it; Alt or the "
+"eraser erases; [ and ] change the size)"
+msgstr ""
+"Pędzel (maluj obszar, po zaznaczonym obszarze, aby go powiększyć; Alt lub "
+"gumka wymazuje; [ i ] zmieniają rozmiar)"
+
+#: src/tools.rs:74
+msgid "Arrow (click the tail, double-click the tip; more clicks bend it)"
+msgstr ""
+"Strzałka (kliknij w miejscu początku, kliknij dwukrotnie w miejscu grotu; "
+"kolejne kliknięcia ją zginają)"
+
+#: src/tools.rs:75
+msgid "Text label"
+msgstr "Etykieta tekstowa"
+
+#: src/tools.rs:77
+msgid ""
+"HPF field (a field of the configured size follows the pointer; click to "
+"place it, drag to pan)"
+msgstr ""
+"Pole HPF (pole o ustawionym rozmiarze podąża za wskaźnikiem; kliknij, aby je "
+"umieścić, przeciągnij, aby przesunąć widok)"
+
+#: src/tools.rs:225
+msgid "Annotation class: {}"
+msgstr "Klasa adnotacji: {}"
+
+#. Translators: {} lists what was skipped, as "2 × reason; 1 × other reason".
+#: src/transfer.rs:249
+msgid "Skipped: {}."
+msgstr "Pominięto: {}."
+
+#: src/transfer.rs:253
+msgid "{n} outline crossed itself and was repaired with the even-odd rule."
+msgid_plural ""
+"{n} outlines crossed themselves and were repaired with the even-odd rule."
+msgstr[0] ""
+"{n} kontur przecinał sam siebie i został naprawiony według reguły "
+"parzystości (even-odd)."
+msgstr[1] ""
+"{n} kontury przecinały same siebie i zostały naprawione według reguły "
+"parzystości (even-odd)."
+msgstr[2] ""
+"{n} konturów przecinało same siebie i zostało naprawionych według reguły "
+"parzystości (even-odd)."
+
+#: src/transfer.rs:260
+msgid "{n} shape extended past the slide and was cut at its edge."
+msgid_plural "{n} shapes extended past the slide and were cut at its edge."
+msgstr[0] ""
+"{n} kształt wykraczał poza preparat i został obcięty na jego krawędzi."
+msgstr[1] ""
+"{n} kształty wykraczały poza preparat i zostały obcięte na jego krawędzi."
+msgstr[2] ""
+"{n} kształtów wykraczało poza preparat i zostało obciętych na jego krawędzi."
+
+#: src/transfer.rs:265
+msgid "{n} over-long name or text was shortened."
+msgid_plural "{n} over-long names or texts were shortened."
+msgstr[0] "Skrócono {n} zbyt długą nazwę lub tekst."
+msgstr[1] "Skrócono {n} zbyt długie nazwy lub teksty."
+msgstr[2] "Skrócono {n} zbyt długich nazw lub tekstów."
+
+#: src/transfer.rs:270
+msgid "The file contains no annotations."
+msgstr "Plik nie zawiera adnotacji."
+
+#: src/transfer.rs:272
+msgid "Nothing could be imported. {}"
+msgstr "Nie udało się niczego zaimportować. {}"
+
+#: src/transfer.rs:339
+msgid "Made for this slide."
+msgstr "Utworzono dla tego preparatu."
+
+#: src/transfer.rs:342
+msgid "Made for a different slide (its identity does not match)."
+msgstr "Utworzono dla innego preparatu (identyfikator się nie zgadza)."
+
+#: src/transfer.rs:352
+msgid "Made for a slide of {theirs}; this one is {ours}."
+msgstr "Utworzono dla preparatu o wymiarach {theirs}; ten ma wymiary {ours}."
+
+#: src/transfer.rs:360
+msgid "Made for a slide of the same size."
+msgstr "Utworzono dla preparatu o tym samym rozmiarze."
+
+#: src/transfer.rs:364
+msgid ""
+"The file does not say which slide it belongs to; coordinates are taken as "
+"level-0 pixels of this slide."
+msgstr ""
+"Plik nie określa, do którego preparatu należy; współrzędne są traktowane "
+"jako piksele poziomu 0 tego preparatu."
+
+#: src/transfer.rs:376
+msgid "Annotations (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "Adnotacje (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:386
+msgid "All files"
+msgstr "Wszystkie pliki"
+
+#: src/transfer.rs:398 src/transfer.rs:853 src/transfer.rs:1007
+msgid "Cannot show the file dialog"
+msgstr "Nie można wyświetlić okna wyboru pliku"
+
+#: src/transfer.rs:413
+msgid "The annotations of this slide are still loading."
+msgstr "Adnotacje tego preparatu są jeszcze wczytywane."
+
+#: src/transfer.rs:434
+msgid "Importing {}"
+msgstr "Importowanie {}"
+
+#. Translators: the step of an import that reads the file.
+#: src/transfer.rs:447
+msgid "Reading"
+msgstr "Odczytywanie"
+
+#: src/transfer.rs:474
+msgid ""
+"NDP.view annotations, placed with this slide's offsets from the slide centre "
+"and its pixel size."
+msgstr ""
+"Adnotacje NDP.view umieszczone z użyciem przesunięcia tego preparatu "
+"względem środka szkiełka i jego rozmiaru piksela."
+
+#: src/transfer.rs:486
+msgid "Checking the slide"
+msgstr "Sprawdzanie preparatu"
+
+#: src/transfer.rs:489
+msgid "cannot read the slide to check the import: {}"
+msgstr "nie można odczytać preparatu, aby sprawdzić import: {}"
+
+#: src/transfer.rs:494
+msgid "Made for this slide (checked by content)."
+msgstr "Utworzono dla tego preparatu (sprawdzono na podstawie zawartości)."
+
+#: src/transfer.rs:497
+msgid "Made for a different slide (its checksum does not match)."
+msgstr "Utworzono dla innego preparatu (suma kontrolna się nie zgadza)."
+
+#: src/transfer.rs:521
+msgid "Import cancelled."
+msgstr "Anulowano import."
+
+#: src/transfer.rs:522
+msgid "Could not import {}"
+msgstr "Nie udało się zaimportować {}"
+
+#. Translators: "Merge a database…" is the item of the Import and export
+#. menu: quote it as it is translated there.
+#: src/transfer.rs:560
+msgid ""
+"This archive has no annotations for the current slide. Restore whole backups "
+"with \"Merge a database…\"."
+msgstr ""
+"To archiwum nie zawiera adnotacji dla bieżącego preparatu. Całe kopie "
+"zapasowe można przywrócić poleceniem „Scal bazę danych…”."
+
+#: src/transfer.rs:574
+msgid "Import {n} annotation"
+msgid_plural "Import {n} annotations"
+msgstr[0] "Import {n} adnotacji"
+msgstr[1] "Import {n} adnotacji"
+msgstr[2] "Import {n} adnotacji"
+
+#: src/transfer.rs:581
+msgid "The slide this import was started on is not open any more."
+msgstr "Preparat, dla którego rozpoczęto ten import, nie jest już otwarty."
+
+#: src/transfer.rs:737
+msgid "Imported {n} annotation from {file}."
+msgid_plural "Imported {n} annotations from {file}."
+msgstr[0] "Zaimportowano {n} adnotację z {file}."
+msgstr[1] "Zaimportowano {n} adnotacje z {file}."
+msgstr[2] "Zaimportowano {n} adnotacji z {file}."
+
+#: src/transfer.rs:783 src/transfer.rs:818
+msgid "eov annotations"
+msgstr "Adnotacje eov"
+
+#: src/transfer.rs:811
+msgid "DICOM bulk annotations"
+msgstr "Adnotacje zbiorcze DICOM"
+
+#: src/transfer.rs:824
+msgid "Export a blinded copy for another reader"
+msgstr "Eksport kopii zaślepionej dla innego oceniającego"
+
+#: src/transfer.rs:825
+msgid "Export annotations"
+msgstr "Eksport adnotacji"
+
+#: src/transfer.rs:942
+msgid "Exported {n} annotation to {file}."
+msgid_plural "Exported {n} annotations to {file}."
+msgstr[0] "Wyeksportowano {n} adnotację do {file}."
+msgstr[1] "Wyeksportowano {n} adnotacje do {file}."
+msgstr[2] "Wyeksportowano {n} adnotacji do {file}."
+
+#: src/transfer.rs:948
+msgid "Could not export to {}"
+msgstr "Nie udało się wyeksportować do {}"
+
+#: src/transfer.rs:988
+msgid "Compare with another reader's annotations"
+msgstr "Porównanie z adnotacjami innego oceniającego"
+
+#: src/transfer.rs:990
+msgid "Annotations (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "Adnotacje (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:1114
+msgid "Could not compare with {}"
+msgstr "Nie udało się porównać z {}"
+
+#: src/transfer.rs:1123
+msgid "Exporting all annotations"
+msgstr "Eksportowanie wszystkich adnotacji"
+
+#: src/transfer.rs:1176
+msgid "Exported the annotations of {n} slide."
+msgid_plural "Exported the annotations of {n} slides."
+msgstr[0] "Wyeksportowano adnotacje {n} preparatu."
+msgstr[1] "Wyeksportowano adnotacje {n} preparatów."
+msgstr[2] "Wyeksportowano adnotacje {n} preparatów."
+
+#: src/transfer.rs:1184
+msgid "Could not export all annotations"
+msgstr "Nie udało się wyeksportować wszystkich adnotacji"
+
+#: src/transfer.rs:1201
+msgid "Annotation database backed up."
+msgstr "Utworzono kopię zapasową bazy danych adnotacji."
+
+#: src/transfer.rs:1203
+msgid "Could not back up the annotation database"
+msgstr "Nie udało się utworzyć kopii zapasowej bazy danych adnotacji"
+
+#: src/transfer.rs:1217
+msgid "Merging annotation database"
+msgstr "Scalanie bazy danych adnotacji"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers", {slides}
+#. is "1 new slide" or "3 new slides" (each translated on its own).
+#: src/transfer.rs:1232
+msgid "Merged {n} annotation {layers} ({slides})."
+msgid_plural "Merged {n} annotations {layers} ({slides})."
+msgstr[0] "Scalono {n} adnotację {layers} ({slides})."
+msgstr[1] "Scalono {n} adnotacje {layers} ({slides})."
+msgstr[2] "Scalono {n} adnotacji {layers} ({slides})."
+
+#. Translators: {slides} in "Merged {n} annotations {layers} ({slides})."
+#: src/transfer.rs:1237
+msgid "{n} new slide"
+msgid_plural "{n} new slides"
+msgstr[0] "{n} nowy preparat"
+msgstr[1] "{n} nowe preparaty"
+msgstr[2] "{n} nowych preparatów"
+
+#: src/transfer.rs:1249
+msgid "Could not merge the database"
+msgstr "Nie udało się scalić bazy danych"
+
+#. Translators: read out for the layer new annotations go into; {} is its
+#. number of annotations.
+#: ui/annotations-sidebar.slint:115
+msgctxt "TreeItem"
+msgid "{} · new annotations go here"
+msgstr "{} · tu trafiają nowe adnotacje"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Collapse layer"
+msgstr "Zwiń warstwę"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Expand layer"
+msgstr "Rozwiń warstwę"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Hide layer"
+msgstr "Ukryj warstwę"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Show layer"
+msgstr "Pokaż warstwę"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Lock layer"
+msgstr "Zablokuj warstwę"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Unlock layer"
+msgstr "Odblokuj warstwę"
+
+#: ui/annotations-sidebar.slint:222
+msgctxt "TreeItem"
+msgid "Layer settings"
+msgstr "Ustawienia warstwy"
+
+#: ui/annotations-sidebar.slint:292
+msgctxt "TreeItem"
+msgid "Locked"
+msgstr "Zablokowana"
+
+#: ui/annotations-sidebar.slint:314
+msgctxt "AnnotationsSidebar"
+msgid "No slide open"
+msgstr "Brak otwartego preparatu"
+
+#: ui/annotations-sidebar.slint:321
+msgctxt "AnnotationsSidebar"
+msgid "Unclassified"
+msgstr "Bez klasy"
+
+#: ui/annotations-sidebar.slint:488
+msgctxt "AnnotationsSidebar"
+msgid "Import annotations…"
+msgstr "Importuj adnotacje…"
+
+#: ui/annotations-sidebar.slint:489
+msgctxt "AnnotationsSidebar"
+msgid "Export as GeoJSON (QuPath)…"
+msgstr "Eksportuj jako GeoJSON (QuPath)…"
+
+#: ui/annotations-sidebar.slint:490
+msgctxt "AnnotationsSidebar"
+msgid "Export as eov JSON…"
+msgstr "Eksportuj jako eov JSON…"
+
+#: ui/annotations-sidebar.slint:491
+msgctxt "AnnotationsSidebar"
+msgid "Export as ASAP XML…"
+msgstr "Eksportuj jako ASAP XML…"
+
+#: ui/annotations-sidebar.slint:492
+msgctxt "AnnotationsSidebar"
+msgid "Export as ImageScope XML…"
+msgstr "Eksportuj jako ImageScope XML…"
+
+#: ui/annotations-sidebar.slint:493
+msgctxt "AnnotationsSidebar"
+msgid "Export as DICOM annotations…"
+msgstr "Eksportuj jako adnotacje DICOM…"
+
+#: ui/annotations-sidebar.slint:494
+msgctxt "AnnotationsSidebar"
+msgid "Export measurements (CSV)…"
+msgstr "Eksportuj pomiary (CSV)…"
+
+#: ui/annotations-sidebar.slint:495
+msgctxt "AnnotationsSidebar"
+msgid "Export a blinded copy…"
+msgstr "Eksportuj kopię zaślepioną…"
+
+#: ui/annotations-sidebar.slint:496
+msgctxt "AnnotationsSidebar"
+msgid "Compare with another reader…"
+msgstr "Porównaj z innym oceniającym…"
+
+#. Translators: exports the annotations of every slide in the database to one
+#. annotation archive (a JSON file), not the slide images.
+#: ui/annotations-sidebar.slint:497 ui/annotations-sidebar.slint:1986
+msgctxt "AnnotationsSidebar"
+msgid "Export all slides…"
+msgstr "Eksportuj wszystko…"
+
+#: ui/annotations-sidebar.slint:498
+msgctxt "AnnotationsSidebar"
+msgid "Back up the database…"
+msgstr "Utwórz kopię zapasową bazy danych…"
+
+#: ui/annotations-sidebar.slint:499
+msgctxt "AnnotationsSidebar"
+msgid "Merge a database…"
+msgstr "Scal bazę danych…"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field area"
+msgstr "Powierzchnia pola"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field number and objective"
+msgstr "Numer pola i obiektyw"
+
+#: ui/annotations-sidebar.slint:600
+msgctxt "AnnotationsSidebar"
+msgid "Annotations"
+msgstr "Adnotacje"
+
+#: ui/annotations-sidebar.slint:635
+msgctxt "AnnotationsSidebar"
+msgid "Import and export"
+msgstr "Import i eksport"
+
+#: ui/annotations-sidebar.slint:668
+msgctxt "AnnotationsSidebar"
+msgid "Retry"
+msgstr "Ponów próbę"
+
+#: ui/annotations-sidebar.slint:683
+msgctxt "AnnotationsSidebar"
+msgid "Layers"
+msgstr "Warstwy"
+
+#: ui/annotations-sidebar.slint:691
+msgctxt "AnnotationsSidebar"
+msgid "Classes"
+msgstr "Klasy"
+
+#. Translators: the tab for counting cells.
+#: ui/annotations-sidebar.slint:700
+msgctxt "AnnotationsSidebar"
+msgid "Count"
+msgstr "Zliczanie"
+
+#: ui/annotations-sidebar.slint:708
+msgctxt "AnnotationsSidebar"
+msgid "Data"
+msgstr "Dane"
+
+#: ui/annotations-sidebar.slint:747
+msgctxt "AnnotationsSidebar"
+msgid "Filter by name, class, kind or status"
+msgstr "Filtruj według nazwy, klasy, rodzaju lub statusu"
+
+#: ui/annotations-sidebar.slint:769
+msgctxt "AnnotationsSidebar"
+msgid "Filter annotations"
+msgstr "Filtruj adnotacje"
+
+#: ui/annotations-sidebar.slint:786
+msgctxt "AnnotationsSidebar"
+msgid "New layer"
+msgstr "Nowa warstwa"
+
+#: ui/annotations-sidebar.slint:870 ui/annotations-sidebar.slint:1079
+#: ui/annotations-sidebar.slint:1500
+msgctxt "AnnotationsSidebar"
+msgid "Name"
+msgstr "Nazwa"
+
+#: ui/annotations-sidebar.slint:876 ui/annotations-sidebar.slint:878
+msgctxt "AnnotationsSidebar"
+msgid "Layer name"
+msgstr "Nazwa warstwy"
+
+#: ui/annotations-sidebar.slint:889
+msgctxt "AnnotationsSidebar"
+msgid "Colour"
+msgstr "Kolor"
+
+#: ui/annotations-sidebar.slint:898
+msgctxt "AnnotationsSidebar"
+msgid "Layer colour"
+msgstr "Kolor warstwy"
+
+#: ui/annotations-sidebar.slint:906 ui/annotations-sidebar.slint:1518
+msgctxt "AnnotationsSidebar"
+msgid "Opacity"
+msgstr "Krycie"
+
+#: ui/annotations-sidebar.slint:912
+msgctxt "AnnotationsSidebar"
+msgid "Layer opacity"
+msgstr "Krycie warstwy"
+
+#: ui/annotations-sidebar.slint:923 ui/annotations-sidebar.slint:1162
+msgctxt "AnnotationsSidebar"
+msgid "Notes"
+msgstr "Notatki"
+
+#: ui/annotations-sidebar.slint:931
+msgctxt "AnnotationsSidebar"
+msgid "Notes about this layer"
+msgstr "Notatki dotyczące tej warstwy"
+
+#: ui/annotations-sidebar.slint:933
+msgctxt "AnnotationsSidebar"
+msgid "Layer notes"
+msgstr "Notatki warstwy"
+
+#: ui/annotations-sidebar.slint:941
+msgctxt "AnnotationsSidebar"
+msgid "Draw into this layer"
+msgstr "Rysuj w tej warstwie"
+
+#: ui/annotations-sidebar.slint:942
+msgctxt "AnnotationsSidebar"
+msgid "Delete layer…"
+msgstr "Usuń warstwę…"
+
+#: ui/annotations-sidebar.slint:1020
+msgctxt "AnnotationsSidebar"
+msgid "Zoom to the annotation"
+msgstr "Powiększ do adnotacji"
+
+#: ui/annotations-sidebar.slint:1028
+msgctxt "AnnotationsSidebar"
+msgid "Copy measurements"
+msgstr "Kopiuj pomiary"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the annotation"
+msgstr "Usuń adnotację"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the selected annotations"
+msgstr "Usuń zaznaczone adnotacje"
+
+#: ui/annotations-sidebar.slint:1065
+msgctxt "AnnotationsSidebar"
+msgid "Repair"
+msgstr "Napraw"
+
+#: ui/annotations-sidebar.slint:1085
+msgctxt "AnnotationsSidebar"
+msgid "Unnamed"
+msgstr "Bez nazwy"
+
+#: ui/annotations-sidebar.slint:1087
+msgctxt "AnnotationsSidebar"
+msgid "Annotation name"
+msgstr "Nazwa adnotacji"
+
+#: ui/annotations-sidebar.slint:1098
+msgctxt "AnnotationsSidebar"
+msgid "Class"
+msgstr "Klasa"
+
+#: ui/annotations-sidebar.slint:1104
+msgctxt "AnnotationsSidebar"
+msgid "Annotation class"
+msgstr "Klasa adnotacji"
+
+#: ui/annotations-sidebar.slint:1115
+msgctxt "AnnotationsSidebar"
+msgid "Status"
+msgstr "Status"
+
+#: ui/annotations-sidebar.slint:1121
+msgctxt "AnnotationsSidebar"
+msgid "Review status"
+msgstr "Status weryfikacji"
+
+#: ui/annotations-sidebar.slint:1132
+msgctxt "AnnotationsSidebar"
+msgid "Layer"
+msgstr "Warstwa"
+
+#: ui/annotations-sidebar.slint:1138
+msgctxt "AnnotationsSidebar"
+msgid "Annotation layer"
+msgstr "Warstwa adnotacji"
+
+#: ui/annotations-sidebar.slint:1149
+msgctxt "AnnotationsSidebar"
+msgid "Locked"
+msgstr "Zablokowana"
+
+#: ui/annotations-sidebar.slint:1170 ui/annotations-sidebar.slint:1172
+msgctxt "AnnotationsSidebar"
+msgid "Description"
+msgstr "Opis"
+
+#: ui/annotations-sidebar.slint:1183
+msgctxt "AnnotationsSidebar"
+msgid "MEASUREMENTS"
+msgstr "POMIARY"
+
+#: ui/annotations-sidebar.slint:1213
+msgctxt "AnnotationsSidebar"
+msgid "PROPERTIES"
+msgstr "WŁAŚCIWOŚCI"
+
+#: ui/annotations-sidebar.slint:1224
+msgctxt "AnnotationsSidebar"
+msgid "Property name"
+msgstr "Nazwa właściwości"
+
+#: ui/annotations-sidebar.slint:1233
+msgctxt "AnnotationsSidebar"
+msgid "Value"
+msgstr "Wartość"
+
+#: ui/annotations-sidebar.slint:1235
+msgctxt "AnnotationsSidebar"
+msgid "Property value"
+msgstr "Wartość właściwości"
+
+#: ui/annotations-sidebar.slint:1243
+msgctxt "AnnotationsSidebar"
+msgid "Remove property"
+msgstr "Usuń właściwość"
+
+#: ui/annotations-sidebar.slint:1255
+msgctxt "AnnotationsSidebar"
+msgid "Add property"
+msgstr "Dodaj właściwość"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS"
+msgstr "KOMENTARZE"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS ({})"
+msgstr "KOMENTARZE ({})"
+
+#: ui/annotations-sidebar.slint:1294
+msgctxt "AnnotationsSidebar"
+msgid "Delete comment"
+msgstr "Usuń komentarz"
+
+#: ui/annotations-sidebar.slint:1314
+msgctxt "AnnotationsSidebar"
+msgid "Add a comment"
+msgstr "Dodaj komentarz"
+
+#: ui/annotations-sidebar.slint:1316
+msgctxt "AnnotationsSidebar"
+msgid "New comment"
+msgstr "Nowy komentarz"
+
+#. Translators: a button that adds the comment typed above.
+#: ui/annotations-sidebar.slint:1324
+msgctxt "AnnotationsSidebar"
+msgid "Comment"
+msgstr "Dodaj"
+
+#: ui/annotations-sidebar.slint:1358
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Select an annotation on the slide or in the list to see its details. Double-"
+"click a row to zoom to it; Ctrl+click selects several."
+msgstr ""
+"Zaznacz adnotację na preparacie lub na liście, aby zobaczyć jej szczegóły. "
+"Kliknij dwukrotnie wiersz, aby powiększyć do adnotacji; Ctrl+kliknięcie "
+"zaznacza kilka."
+
+#: ui/annotations-sidebar.slint:1379
+msgctxt "AnnotationsSidebar"
+msgid ""
+"New annotations get the active class (●), and the Count tool counts it; "
+"Shift+click counts the second class (◐). Pressing a class's hotkey makes it "
+"active."
+msgstr ""
+"Nowe adnotacje otrzymują aktywną klasę (●) i to ją zlicza narzędzie "
+"Zliczanie; Shift+kliknięcie zlicza drugą klasę (◐). Naciśnięcie skrótu "
+"klawiaturowego klasy czyni ją aktywną."
+
+#: ui/annotations-sidebar.slint:1418
+msgctxt "AnnotationsSidebar"
+msgid "Colour of {}"
+msgstr "Kolor: {}"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Hide {}"
+msgstr "Ukryj {}"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Show {}"
+msgstr "Pokaż {}"
+
+#: ui/annotations-sidebar.slint:1466
+msgctxt "AnnotationsSidebar"
+msgid "Class settings"
+msgstr "Ustawienia klasy"
+
+#: ui/annotations-sidebar.slint:1506 ui/annotations-sidebar.slint:1507
+msgctxt "AnnotationsSidebar"
+msgid "Class name"
+msgstr "Nazwa klasy"
+
+#: ui/annotations-sidebar.slint:1523
+msgctxt "AnnotationsSidebar"
+msgid "Class opacity"
+msgstr "Krycie klasy"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Count with Shift+click"
+msgstr "Zliczaj Shift+kliknięciem"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Stop counting with Shift+click"
+msgstr "Wyłącz zliczanie Shift+kliknięciem"
+
+#: ui/annotations-sidebar.slint:1539
+msgctxt "AnnotationsSidebar"
+msgid "Delete…"
+msgstr "Usuń…"
+
+#: ui/annotations-sidebar.slint:1558
+msgctxt "AnnotationsSidebar"
+msgid "New class"
+msgstr "Nowa klasa"
+
+#: ui/annotations-sidebar.slint:1596
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Pick the Count tool (C) and click cells; Shift+click and Alt+click count the "
+"second and third class. Select regions or HPF fields to count inside them."
+msgstr ""
+"Wybierz narzędzie Zliczanie (C) i klikaj komórki; Shift+kliknięcie i "
+"Alt+kliknięcie zliczają drugą i trzecią klasę. Zaznacz obszary lub pola HPF, "
+"aby zliczać wewnątrz nich."
+
+#: ui/annotations-sidebar.slint:1601
+msgctxt "AnnotationsSidebar"
+msgid "Count tool (C)"
+msgstr "Narzędzie Zliczanie (C)"
+
+#: ui/annotations-sidebar.slint:1602
+msgctxt "AnnotationsSidebar"
+msgid "HPF field (H)"
+msgstr "Pole HPF (H)"
+
+#. Translators: the class a click with the Count tool counts.
+#: ui/annotations-sidebar.slint:1614
+msgctxt "AnnotationsSidebar"
+msgid "Click"
+msgstr "Kliknięcie"
+
+#: ui/annotations-sidebar.slint:1620
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by a click"
+msgstr "Klasa zliczana kliknięciem"
+
+#: ui/annotations-sidebar.slint:1631
+msgctxt "AnnotationsSidebar"
+msgid "Shift+click"
+msgstr "Shift+kliknięcie"
+
+#: ui/annotations-sidebar.slint:1636
+msgctxt "AnnotationsSidebar"
+msgid "(same as click)"
+msgstr "(jak kliknięcie)"
+
+#: ui/annotations-sidebar.slint:1637
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by Shift+click"
+msgstr "Klasa zliczana Shift+kliknięciem"
+
+#: ui/annotations-sidebar.slint:1648
+msgctxt "AnnotationsSidebar"
+msgid "Alt+click"
+msgstr "Alt+kliknięcie"
+
+#: ui/annotations-sidebar.slint:1653
+msgctxt "AnnotationsSidebar"
+msgid "(none)"
+msgstr "(brak)"
+
+#: ui/annotations-sidebar.slint:1654
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Class counted by Alt+click: PD-L1-positive immune cells for the combined "
+"positive score"
+msgstr ""
+"Klasa zliczana Alt+kliknięciem: PD-L1-dodatnie komórki immunologiczne do "
+"złożonego wskaźnika pozytywności (CPS)"
+
+#: ui/annotations-sidebar.slint:1662
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Combined positive score: the click and Alt+click classes (PD-L1-positive "
+"tumour cells and PD-L1-positive immune cells) per 100 tumour cells (the "
+"click and Shift+click classes)."
+msgstr ""
+"Złożony wskaźnik pozytywności (CPS): klasy kliknięcia i Alt+kliknięcia (PD-"
+"L1-dodatnie komórki nowotworowe i PD-L1-dodatnie komórki immunologiczne) na "
+"100 komórek nowotworowych (klasy kliknięcia i Shift+kliknięcia)."
+
+#: ui/annotations-sidebar.slint:1677
+msgctxt "AnnotationsSidebar"
+msgid "Nothing counted here yet."
+msgstr "Nic tu jeszcze nie zliczono."
+
+#: ui/annotations-sidebar.slint:1748
+msgctxt "AnnotationsSidebar"
+msgid "Count points in hidden layers"
+msgstr "Zliczaj punkty w ukrytych warstwach"
+
+#: ui/annotations-sidebar.slint:1759
+msgctxt "AnnotationsSidebar"
+msgid "Clear counts…"
+msgstr "Wyczyść zliczenia…"
+
+#: ui/annotations-sidebar.slint:1771
+msgctxt "AnnotationsSidebar"
+msgid "HIGH-POWER FIELDS"
+msgstr "POLA DUŻEGO POWIĘKSZENIA (HPF)"
+
+#: ui/annotations-sidebar.slint:1785
+msgctxt "AnnotationsSidebar"
+msgid "How the field size is given"
+msgstr "Sposób podania rozmiaru pola"
+
+#. Translators: FN is the eyepiece's field number, the diameter of the field
+#. of view.
+#: ui/annotations-sidebar.slint:1796
+msgctxt "AnnotationsSidebar"
+msgid "FN (mm)"
+msgstr "FN (mm)"
+
+#: ui/annotations-sidebar.slint:1803
+msgctxt "AnnotationsSidebar"
+msgid "Field number in mm"
+msgstr "Numer pola widzenia w mm"
+
+#. Translators: the magnification of the objective, as in 40×.
+#: ui/annotations-sidebar.slint:1811
+msgctxt "AnnotationsSidebar"
+msgid "Objective ×"
+msgstr "Obiektyw ×"
+
+#: ui/annotations-sidebar.slint:1821
+msgctxt "AnnotationsSidebar"
+msgid "Objective magnification"
+msgstr "Powiększenie obiektywu"
+
+#: ui/annotations-sidebar.slint:1828 ui/annotations-sidebar.slint:1853
+msgctxt "AnnotationsSidebar"
+msgid "Apply"
+msgstr "Zastosuj"
+
+#: ui/annotations-sidebar.slint:1839
+msgctxt "AnnotationsSidebar"
+msgid "Area (mm²)"
+msgstr "Powierzchnia (mm²)"
+
+#: ui/annotations-sidebar.slint:1846
+msgctxt "AnnotationsSidebar"
+msgid "Field area in square millimetres"
+msgstr "Powierzchnia pola w milimetrach kwadratowych"
+
+#: ui/annotations-sidebar.slint:1873
+msgctxt "AnnotationsSidebar"
+msgid "{n} field placed on this slide."
+msgid_plural "{n} fields placed on this slide."
+msgstr[0] "Na tym preparacie umieszczono {n} pole."
+msgstr[1] "Na tym preparacie umieszczono {n} pola."
+msgstr[2] "Na tym preparacie umieszczono {n} pól."
+
+#: ui/annotations-sidebar.slint:1885
+msgctxt "AnnotationsSidebar"
+msgid "Select all fields"
+msgstr "Zaznacz wszystkie pola"
+
+#: ui/annotations-sidebar.slint:1924
+msgctxt "AnnotationsSidebar"
+msgid "IMPORT AND EXPORT"
+msgstr "IMPORT I EKSPORT"
+
+#: ui/annotations-sidebar.slint:1928
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Imports: GeoJSON (QuPath and others), eov JSON, ASAP XML, Aperio ImageScope "
+"XML, Hamamatsu NDPA and DICOM bulk annotations. Coordinates are level-0 "
+"pixels with y pointing down."
+msgstr ""
+"Import: GeoJSON (QuPath i inne), eov JSON, ASAP XML, Aperio ImageScope XML, "
+"Hamamatsu NDPA oraz adnotacje zbiorcze DICOM. Współrzędne to piksele poziomu "
+"0, oś y jest skierowana w dół."
+
+#: ui/annotations-sidebar.slint:1935
+msgctxt "AnnotationsSidebar"
+msgid "Import…"
+msgstr "Importuj…"
+
+#: ui/annotations-sidebar.slint:1991
+msgctxt "AnnotationsSidebar"
+msgid "Back up…"
+msgstr "Kopia zapasowa…"
+
+#: ui/annotations-sidebar.slint:1992
+msgctxt "AnnotationsSidebar"
+msgid "Merge…"
+msgstr "Scal…"
+
+#. Translators: a reader is a person who annotates slides; a second reader
+#. annotates a blinded copy independently so two readers can be compared (as
+#. in a reader study); use the word for an observer or annotator, not the
+#. clinical term for a second diagnostic opinion.
+#: ui/annotations-sidebar.slint:2009
+msgctxt "AnnotationsSidebar"
+msgid "SECOND READER"
+msgstr "DRUGI OCENIAJĄCY"
+
+#: ui/annotations-sidebar.slint:2013
+msgctxt "AnnotationsSidebar"
+msgid ""
+"A blinded copy holds the visible layers' shapes, classes and names, without "
+"authors, comments, statuses, descriptions or properties. Compare reads "
+"another reader's export and compares it with the visible layers: counts per "
+"class, matched points and overlapping regions."
+msgstr ""
+"Kopia zaślepiona zawiera kształty, klasy i nazwy z widocznych warstw, bez "
+"autorów, komentarzy, statusów, opisów i właściwości. Funkcja Porównaj "
+"wczytuje eksport innego oceniającego i porównuje go z widocznymi warstwami: "
+"liczby w poszczególnych klasach, dopasowane punkty i nakładające się obszary."
+
+#: ui/annotations-sidebar.slint:2018
+msgctxt "AnnotationsSidebar"
+msgid "Blinded copy…"
+msgstr "Kopia zaślepiona…"
+
+#: ui/annotations-sidebar.slint:2019
+msgctxt "AnnotationsSidebar"
+msgid "Compare…"
+msgstr "Porównaj…"
+
+#. Translators: a button: compare with the same file again.
+#: ui/annotations-sidebar.slint:2022
+msgctxt "AnnotationsSidebar"
+msgid "Again"
+msgstr "Ponów"
+
+#. Translators: a button: remove the comparison.
+#: ui/annotations-sidebar.slint:2029
+msgctxt "AnnotationsSidebar"
+msgid "Clear"
+msgstr "Usuń"
+
+#: ui/annotations-sidebar.slint:2066
+msgctxt "AnnotationsSidebar"
+msgid "Neither reader has points or regions in the compared layers."
+msgstr ""
+"Żaden z oceniających nie ma punktów ani obszarów w porównywanych warstwach."
+
+#: ui/annotations-sidebar.slint:2126
+msgctxt "AnnotationsSidebar"
+msgid "DATABASE"
+msgstr "BAZA DANYCH"
+
+#: ui/annotations-sidebar.slint:2150
+msgctxt "AnnotationsSidebar"
+msgid "Database file"
+msgstr "Plik bazy danych"
+
+#. Translators: {} is the path of the old database file.
+#: ui/annotations-sidebar.slint:2167
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Annotations made with eov before 1.0 are in {}. Bring them into this "
+"database (the old file is not changed):"
+msgstr ""
+"Adnotacje utworzone w eov przed wersją 1.0 znajdują się w {}. Zaimportuj je "
+"do tej bazy danych (stary plik nie zostanie zmieniony):"
+
+#: ui/annotations-sidebar.slint:2179
+msgctxt "AnnotationsSidebar"
+msgid "Bring them in"
+msgstr "Zaimportuj"
+
+#: ui/annotations-sidebar.slint:2195
+msgctxt "AnnotationsSidebar"
+msgid "OTHER SLIDES"
+msgstr "INNE PREPARATY"
+
+#. Translators: a button that lists the other slides in the database.
+#: ui/annotations-sidebar.slint:2202
+msgctxt "AnnotationsSidebar"
+msgid "List"
+msgstr "Pokaż listę"
+
+#. Translators: a button: attach the annotations of this slide to the open
+#. slide.
+#: ui/annotations-sidebar.slint:2236
+msgctxt "AnnotationsSidebar"
+msgid "Attach"
+msgstr "Dołącz"
+
+#: ui/annotations-sidebar.slint:2258
+msgctxt "AnnotationsSidebar"
+msgid "AUTHOR AND EXPORTS"
+msgstr "AUTOR I EKSPORT"
+
+#: ui/annotations-sidebar.slint:2265 ui/annotations-sidebar.slint:2273
+msgctxt "AnnotationsSidebar"
+msgid "Author"
+msgstr "Autor"
+
+#: ui/annotations-sidebar.slint:2272
+msgctxt "AnnotationsSidebar"
+msgid "Your name or initials"
+msgstr "Imię i nazwisko lub inicjały"
+
+#: ui/annotations-sidebar.slint:2284 ui/annotations-sidebar.slint:2291
+msgctxt "AnnotationsSidebar"
+msgid "Organization"
+msgstr "Organizacja"
+
+#: ui/annotations-sidebar.slint:2302 ui/annotations-sidebar.slint:2309
+msgctxt "AnnotationsSidebar"
+msgid "Project"
+msgstr "Projekt"
+
+#: ui/annotations-sidebar.slint:2320 ui/annotations-sidebar.slint:2328
+msgctxt "AnnotationsSidebar"
+msgid "License"
+msgstr "Licencja"
+
+#: ui/annotations-sidebar.slint:2327
+msgctxt "AnnotationsSidebar"
+msgid "e.g. CC-BY-4.0"
+msgstr "np. CC-BY-4.0"
+
+#: ui/annotations-sidebar.slint:2336
+msgctxt "AnnotationsSidebar"
+msgid "Include the slide's file name in exports"
+msgstr "Dołączaj nazwę pliku preparatu do eksportów"
+
+#: ui/annotations-sidebar.slint:2346
+msgctxt "AnnotationsSidebar"
+msgid "DISPLAY"
+msgstr "WYŚWIETLANIE"
+
+#: ui/annotations-sidebar.slint:2350
+msgctxt "AnnotationsSidebar"
+msgid "Show names on the slide"
+msgstr "Pokazuj nazwy na preparacie"
+
+#: ui/annotations-sidebar.slint:2361 ui/annotations-sidebar.slint:2369
+msgctxt "AnnotationsSidebar"
+msgid "Point size"
+msgstr "Rozmiar punktów"
+
+#: ui/annotations-sidebar.slint:2380 ui/annotations-sidebar.slint:2386
+msgctxt "AnnotationsSidebar"
+msgid "Fill opacity"
+msgstr "Krycie wypełnienia"
+
+#. Translators: S is the brush tool's key.
+#: ui/annotations-sidebar.slint:2397
+msgctxt "AnnotationsSidebar"
+msgid "BRUSH (S)"
+msgstr "PĘDZEL (S)"
+
+#. Translators: the size of the brush.
+#: ui/annotations-sidebar.slint:2405
+msgctxt "AnnotationsSidebar"
+msgid "Size"
+msgstr "Rozmiar"
+
+#: ui/annotations-sidebar.slint:2413
+msgctxt "AnnotationsSidebar"
+msgid "Brush size"
+msgstr "Rozmiar pędzla"
+
+#: ui/annotations-sidebar.slint:2429
+msgctxt "AnnotationsSidebar"
+msgid "Erase from the selected region"
+msgstr "Wymazuj z zaznaczonego obszaru"
+
+#: ui/annotations-sidebar.slint:2437
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Paint over a selected region to extend it, elsewhere to make a new one. Hold "
+"Alt to erase; [ and ] change the size."
+msgstr ""
+"Maluj po zaznaczonym obszarze, aby go powiększyć, a w innym miejscu, aby "
+"utworzyć nowy. Przytrzymaj Alt, aby wymazywać; [ i ] zmieniają rozmiar."
+
+#: ui/annotations-sidebar.slint:2557
+msgctxt "AnnotationsSidebar"
+msgid "Colours"
+msgstr "Kolory"
+
+#: ui/import-dialog.slint:117 ui/import-dialog.slint:124
+msgctxt "ImportDialog"
+msgid "Import annotations"
+msgstr "Import adnotacji"
+
+#: ui/import-dialog.slint:186
+msgctxt "ImportDialog"
+msgid "NOTES"
+msgstr "UWAGI"
+
+#: ui/import-dialog.slint:214
+msgctxt "ImportDialog"
+msgid "Add to the existing layers"
+msgstr "Dodaj do istniejących warstw"
+
+#: ui/import-dialog.slint:215
+msgctxt "ImportDialog"
+msgid "Imported annotations join the layer with the same name."
+msgstr "Zaimportowane adnotacje trafiają do warstwy o tej samej nazwie."
+
+#: ui/import-dialog.slint:223
+msgctxt "ImportDialog"
+msgid "Replace the existing layers"
+msgstr "Zastąp istniejące warstwy"
+
+#: ui/import-dialog.slint:224
+msgctxt "ImportDialog"
+msgid "The existing layers are deleted (this can be undone)."
+msgstr "Istniejące warstwy zostaną usunięte (można to cofnąć)."
+
+#: ui/import-dialog.slint:232
+msgctxt "ImportDialog"
+msgid "Keep both"
+msgstr "Zachowaj obie"
+
+#. Translators: "Tumour" is only an example of a layer name from the imported
+#. file: translate it, and keep the " (2)" that eov adds.
+#: ui/import-dialog.slint:234
+msgctxt "ImportDialog"
+msgid "Imported layers get a new name, such as \"Tumour (2)\"."
+msgstr "Zaimportowane warstwy otrzymają nową nazwę, np. „Nowotwór (2)”."
+
+#: ui/import-dialog.slint:243
+msgctxt "ImportDialog"
+msgid "The import is one step: Ctrl+Z (⌘Z) removes everything it added."
+msgstr "Import jest jednym krokiem: Ctrl+Z (⌘Z) usuwa wszystko, co dodał."
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Cancel"
+msgstr "Anuluj"
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Close"
+msgstr "Zamknij"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import"
+msgstr "Importuj"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import anyway"
+msgstr "Importuj mimo to"
+
+#: ui/widgets.slint:655
+msgctxt "Swatch"
+msgid "Change colour"
+msgstr "Zmień kolor"
+
+#: ui/widgets.slint:694
+msgctxt "KeyField"
+msgid "Hotkey"
+msgstr "Skrót klawiaturowy"
+
+#: ui/widgets.slint:696
+msgctxt "KeyField"
+msgid "Click, then press a key. Backspace removes the hotkey."
+msgstr "Kliknij, a następnie naciśnij klawisz. Backspace usuwa skrót."

@@ -19,10 +19,24 @@ pub struct Item {
     pub class: Option<String>,
 }
 
+/// What a line of the comparison is about.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Subject {
+    /// The class `Row::name`.
+    Class,
+    /// Annotations without a class.
+    Unclassified,
+    /// Every region of either reader, whatever its class.
+    AllRegions,
+}
+
 /// One line of the comparison (a class, or all regions together).
 #[derive(Debug, Clone, PartialEq)]
 pub struct Row {
+    /// The class name (in English for the two rows that are not a class:
+    /// the interface names them by `subject`).
     pub name: String,
+    pub subject: Subject,
     pub color: Option<Color>,
     /// Point counts: (this reader, the other).
     pub points: (usize, usize),
@@ -46,7 +60,7 @@ impl Row {
     }
 }
 
-const UNCLASSIFIED: &str = "Unclassified";
+pub const UNCLASSIFIED: &str = "Unclassified";
 /// The last row: every region of either reader, whatever its class.
 pub const ALL_REGIONS: &str = "All regions";
 
@@ -157,6 +171,11 @@ pub fn compare(
                 .iter()
                 .find(|(m, _)| m.eq_ignore_ascii_case(&n))
                 .map(|(_, c)| *c),
+            subject: if n == UNCLASSIFIED {
+                Subject::Unclassified
+            } else {
+                Subject::Class
+            },
             name: n,
             points: (a.0.len(), b.0.len()),
             matched: match_points(&a.0, &b.0, match_radius),
@@ -173,6 +192,7 @@ pub fn compare(
     if !a.is_empty() || !b.is_empty() {
         rows.push(Row {
             name: ALL_REGIONS.to_string(),
+            subject: Subject::AllRegions,
             color: None,
             points: (0, 0),
             matched: 0,

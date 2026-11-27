@@ -1,6 +1,7 @@
 //! File helpers: slide hashing (off the UI thread, ANN-14) and atomic writes
 //! (ANN-17).
 
+use eov_plugin_api::i18n::{self, tr};
 use sha2::{Digest, Sha256};
 use std::fs::File;
 use std::io::{self, Read, Seek, SeekFrom, Write};
@@ -97,20 +98,21 @@ pub fn write_atomically(path: &Path, bytes: &[u8]) -> io::Result<()> {
 /// Largest import read into memory.
 pub const MAX_IMPORT_BYTES: u64 = 1 << 30;
 
-/// Reads an import file with a size limit.
+/// Reads an import file with a size limit; the error is for the user.
 pub fn read_limited(path: &Path) -> Result<Vec<u8>, String> {
+    let file = || i18n::isolate(path.display());
     let len = std::fs::metadata(path)
-        .map_err(|e| format!("cannot read {}: {e}", path.display()))?
+        .map_err(|e| tr!("cannot read {file}: {error}", file = file(), error = e))?
         .len();
     if len > MAX_IMPORT_BYTES {
-        return Err(format!(
-            "{} is {} MB; imports are limited to {} MB",
-            path.display(),
-            len >> 20,
-            MAX_IMPORT_BYTES >> 20
+        return Err(tr!(
+            "{file} is {size} MB; imports are limited to {limit} MB",
+            file = file(),
+            size = len >> 20,
+            limit = MAX_IMPORT_BYTES >> 20
         ));
     }
-    std::fs::read(path).map_err(|e| format!("cannot read {}: {e}", path.display()))
+    std::fs::read(path).map_err(|e| tr!("cannot read {file}: {error}", file = file(), error = e))
 }
 
 #[cfg(test)]

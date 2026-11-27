@@ -1,0 +1,3358 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: annotations\n"
+"Report-Msgid-Bugs-To: https://github.com/eosin-platform/eov-annotations-"
+"plugin/issues\n"
+"Language-Team: Greek\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Review-Status: machine-translated; not yet reviewed by a native speaker\n"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid "Annotations"
+msgstr "Επισημάνσεις"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid ""
+"Point, region, line and text annotations with reusable classes, cell "
+"counting, HPF fields and measurements; GeoJSON (QuPath) import and export, "
+"ASAP and Aperio ImageScope XML import."
+msgstr ""
+"Επισημάνσεις σημείων, περιοχών, γραμμών και κειμένου με "
+"επαναχρησιμοποιήσιμες κατηγορίες, καταμέτρηση κυττάρων, πεδία HPF και "
+"μετρήσεις· εισαγωγή και εξαγωγή GeoJSON (QuPath), εισαγωγή XML από ASAP και "
+"Aperio ImageScope."
+
+#: src/actions.rs:23
+msgid "The annotations of this slide are still loading; try again in a moment."
+msgstr ""
+"Οι επισημάνσεις αυτού του πλακιδίου φορτώνονται ακόμη· δοκιμάστε ξανά σε "
+"λίγο."
+
+#: src/actions.rs:27 src/sidebar.rs:1390 src/sidebar.rs:1474
+msgid "That layer no longer exists."
+msgstr "Αυτή η στρώση δεν υπάρχει πλέον."
+
+#: src/actions.rs:31
+msgid "That annotation no longer exists."
+msgstr "Αυτή η επισήμανση δεν υπάρχει πλέον."
+
+#: src/actions.rs:35 src/sidebar.rs:1605
+msgid "That class no longer exists."
+msgstr "Αυτή η κατηγορία δεν υπάρχει πλέον."
+
+#: src/actions.rs:39 src/transfer.rs:648 src/transfer.rs:658
+msgid "Layer \"{}\" is locked."
+msgstr "Η στρώση «{}» είναι κλειδωμένη."
+
+#: src/actions.rs:43
+msgid "Parts outside the slide were cut off."
+msgstr "Τα μέρη έξω από το πλακίδιο αποκόπηκαν."
+
+#: src/actions.rs:62
+msgid "The slide is not open any more."
+msgstr "Το πλακίδιο δεν είναι πλέον ανοιχτό."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:136
+msgid "The outline crossed itself and was split into {n} parts."
+msgid_plural "The outline crossed itself and was split into {n} parts."
+msgstr[0] "Το περίγραμμα τεμνόταν με τον εαυτό του και χωρίστηκε σε {n} μέρος."
+msgstr[1] "Το περίγραμμα τεμνόταν με τον εαυτό του και χωρίστηκε σε {n} μέρη."
+
+#: src/actions.rs:140
+msgid "The outline crossed itself and was repaired."
+msgstr "Το περίγραμμα τεμνόταν με τον εαυτό του και επιδιορθώθηκε."
+
+#: src/actions.rs:156
+msgid "The HPF size is not valid; check it in the Count tab."
+msgstr ""
+"Το μέγεθος HPF δεν είναι έγκυρο· ελέγξτε το στην καρτέλα «Καταμέτρηση»."
+
+#: src/actions.rs:160
+msgid "This slide has no pixel size, so HPF fields cannot be sized."
+msgstr ""
+"Αυτό το πλακίδιο δεν έχει μέγεθος pixel, οπότε δεν μπορεί να οριστεί το "
+"μέγεθος των πεδίων HPF."
+
+#: src/actions.rs:207
+msgid "Count cell"
+msgstr "Καταμέτρηση κυττάρου"
+
+#: src/actions.rs:218 src/lib.rs:613
+msgid "Add point"
+msgstr "Προσθήκη σημείου"
+
+#: src/actions.rs:228
+msgid "Add line"
+msgstr "Προσθήκη γραμμής"
+
+#: src/actions.rs:242
+msgid "Add arrow"
+msgstr "Προσθήκη βέλους"
+
+#: src/actions.rs:258
+msgid "Add text"
+msgstr "Προσθήκη κειμένου"
+
+#: src/actions.rs:303
+msgid ""
+"To add the shape to a region (Shift) or cut it from a region (Alt), select "
+"exactly one region first. The shape was added as a new annotation."
+msgstr ""
+"Για να προσθέσετε το σχήμα σε μια περιοχή (Shift) ή να το αποκόψετε από μια "
+"περιοχή (Alt), επιλέξτε πρώτα ακριβώς μία περιοχή. Το σχήμα προστέθηκε ως "
+"νέα επισήμανση."
+
+#: src/actions.rs:314 src/actions.rs:325
+msgid "Add region"
+msgstr "Προσθήκη περιοχής"
+
+#: src/actions.rs:378
+msgid "Place HPF field"
+msgstr "Τοποθέτηση πεδίου HPF"
+
+#: src/actions.rs:399
+msgid "This field extends past the slide edge; its area includes empty canvas."
+msgstr ""
+"Αυτό το πεδίο εκτείνεται πέρα από το άκρο του πλακιδίου· το εμβαδόν του "
+"περιλαμβάνει κενό καμβά."
+
+#: src/actions.rs:429
+msgid "Add to region"
+msgstr "Προσθήκη σε περιοχή"
+
+#: src/actions.rs:431
+msgid "Cut from region"
+msgstr "Αποκοπή από περιοχή"
+
+#: src/actions.rs:439
+msgid "The selected region no longer exists."
+msgstr "Η επιλεγμένη περιοχή δεν υπάρχει πλέον."
+
+#: src/actions.rs:441
+msgid "The selected region is locked."
+msgstr "Η επιλεγμένη περιοχή είναι κλειδωμένη."
+
+#: src/actions.rs:452
+msgid "Only regions can be combined."
+msgstr "Μόνο περιοχές μπορούν να συνδυαστούν."
+
+#: src/actions.rs:460
+msgid "The cut removed the whole region."
+msgstr "Η αποκοπή αφαίρεσε ολόκληρη την περιοχή."
+
+#: src/actions.rs:483
+msgid ""
+"The shapes do not touch; the new shape was added as a separate annotation."
+msgstr ""
+"Τα σχήματα δεν εφάπτονται· το νέο σχήμα προστέθηκε ως ξεχωριστή επισήμανση."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:488
+msgid "The cut split the region into {n} parts."
+msgid_plural "The cut split the region into {n} parts."
+msgstr[0] "Η αποκοπή χώρισε την περιοχή σε {n} μέρος."
+msgstr[1] "Η αποκοπή χώρισε την περιοχή σε {n} μέρη."
+
+#: src/actions.rs:522
+msgid "Edit shape"
+msgstr "Επεξεργασία σχήματος"
+
+#: src/actions.rs:544
+msgid "The annotation is locked."
+msgstr "Η επισήμανση είναι κλειδωμένη."
+
+#: src/actions.rs:560
+msgid "That edit would turn the arrow into another shape, so it was undone."
+msgstr ""
+"Αυτή η επεξεργασία θα μετέτρεπε το βέλος σε άλλο σχήμα, οπότε αναιρέθηκε."
+
+#: src/actions.rs:564
+msgid "That edit was undone."
+msgstr "Αυτή η επεξεργασία αναιρέθηκε."
+
+#: src/actions.rs:591
+msgid "The edit was undone: {}"
+msgstr "Η επεξεργασία αναιρέθηκε: {}"
+
+#: src/actions.rs:596
+msgid "That edit would make the outline cross itself, so it was undone."
+msgstr ""
+"Αυτή η επεξεργασία θα έκανε το περίγραμμα να τέμνεται με τον εαυτό του, "
+"οπότε αναιρέθηκε."
+
+#: src/actions.rs:629
+msgid "Delete annotation"
+msgid_plural "Delete {n} annotations"
+msgstr[0] "Διαγραφή επισήμανσης"
+msgstr[1] "Διαγραφή {n} επισημάνσεων"
+
+#: src/actions.rs:649
+msgid "{n} locked annotation was kept."
+msgid_plural "{n} locked annotations were kept."
+msgstr[0] "Διατηρήθηκε {n} κλειδωμένη επισήμανση."
+msgstr[1] "Διατηρήθηκαν {n} κλειδωμένες επισημάνσεις."
+
+#: src/actions.rs:703
+msgid "The target layer is locked or gone."
+msgstr "Η στρώση προορισμού είναι κλειδωμένη ή δεν υπάρχει πλέον."
+
+#: src/actions.rs:712
+msgid "{n} locked annotation was not changed."
+msgid_plural "{n} locked annotations were not changed."
+msgstr[0] "{n} κλειδωμένη επισήμανση δεν άλλαξε."
+msgstr[1] "{n} κλειδωμένες επισημάνσεις δεν άλλαξαν."
+
+#: src/actions.rs:777
+msgid "Could not zoom to the annotation"
+msgstr "Δεν ήταν δυνατό το ζουμ στην επισήμανση"
+
+#: src/actions.rs:790
+msgid "New layer"
+msgstr "Νέα στρώση"
+
+#: src/actions.rs:865
+msgid "Rename layer"
+msgstr "Μετονομασία στρώσης"
+
+#: src/actions.rs:877
+msgid "Delete layer"
+msgstr "Διαγραφή στρώσης"
+
+#: src/actions.rs:887
+msgid "Delete layer \"{}\""
+msgstr "Διαγραφή στρώσης «{}»"
+
+#: src/actions.rs:897
+msgid "Choose layer"
+msgstr "Επιλογή στρώσης"
+
+#: src/actions.rs:902
+msgid ""
+"New annotations go to a regular layer; count points and HPF fields have "
+"their own."
+msgstr ""
+"Οι νέες επισημάνσεις τοποθετούνται σε κανονική στρώση· τα σημεία "
+"καταμέτρησης και τα πεδία HPF έχουν τις δικές τους."
+
+#. Translators: an undo step, shown by eov as "Undo {}".
+#: src/actions.rs:918
+msgid "Clear counts"
+msgstr "Απαλοιφή καταμετρήσεων"
+
+#: src/actions.rs:950
+msgid ""
+"There are no HPF fields on this slide yet. Use the HPF field tool (H) to "
+"place them."
+msgstr ""
+"Δεν υπάρχουν ακόμη πεδία HPF σε αυτό το πλακίδιο. Χρησιμοποιήστε το εργαλείο "
+"πεδίου HPF (H) για να τα τοποθετήσετε."
+
+#: src/actions.rs:960
+msgid "Repair outline"
+msgstr "Επιδιόρθωση περιγράμματος"
+
+#: src/actions.rs:975
+msgid "Nothing is left of the outline."
+msgstr "Δεν απέμεινε τίποτα από το περίγραμμα."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:997
+msgid "The outline was split into {n} parts."
+msgid_plural "The outline was split into {n} parts."
+msgstr[0] "Το περίγραμμα χωρίστηκε σε {n} μέρος."
+msgstr[1] "Το περίγραμμα χωρίστηκε σε {n} μέρη."
+
+#: src/actions.rs:1012
+msgid "Could not attach the annotations"
+msgstr "Δεν ήταν δυνατή η προσάρτηση των επισημάνσεων"
+
+#: src/actions.rs:1018
+msgid "Attach annotations of another slide"
+msgstr "Προσάρτηση επισημάνσεων άλλου πλακιδίου"
+
+#: src/actions.rs:1024
+msgid "Those annotations already belong to this slide."
+msgstr "Αυτές οι επισημάνσεις ανήκουν ήδη σε αυτό το πλακίδιο."
+
+#: src/actions.rs:1027
+msgid "That slide has no annotations left."
+msgstr "Σε εκείνο το πλακίδιο δεν απέμειναν επισημάνσεις."
+
+#: src/actions.rs:1035
+msgid "Attached {n} layer to this slide."
+msgid_plural "Attached {n} layers to this slide."
+msgstr[0] "Προσαρτήθηκε {n} στρώση σε αυτό το πλακίδιο."
+msgstr[1] "Προσαρτήθηκαν {n} στρώσεις σε αυτό το πλακίδιο."
+
+#: src/actions.rs:1076
+msgid "New class"
+msgstr "Νέα κατηγορία"
+
+#: src/actions.rs:1138
+msgid "Rename class"
+msgstr "Μετονομασία κατηγορίας"
+
+#: src/actions.rs:1147
+msgid "A class named \"{}\" already exists."
+msgstr "Υπάρχει ήδη κατηγορία με το όνομα «{}»."
+
+#: src/actions.rs:1161
+msgid "Set class hotkey"
+msgstr "Ορισμός συντόμευσης κατηγορίας"
+
+#: src/actions.rs:1186
+msgid "Change class colour"
+msgstr "Αλλαγή χρώματος κατηγορίας"
+
+#: src/actions.rs:1190 src/sidebar.rs:1358
+msgid "\"{}\" is not a colour."
+msgstr "Το «{}» δεν είναι χρώμα."
+
+#: src/actions.rs:1197
+msgid "Delete class"
+msgstr "Διαγραφή κατηγορίας"
+
+#: src/actions.rs:1201
+msgid "Delete class \"{}\""
+msgstr "Διαγραφή κατηγορίας «{}»"
+
+#: src/actions.rs:1243 src/lib.rs:96 src/overlay.rs:164 src/sidebar.rs:151
+#: src/sidebar.rs:384
+msgid "Unclassified"
+msgstr "Χωρίς κατηγορία"
+
+#: src/actions.rs:1244
+msgid "Class: {}"
+msgstr "Κατηγορία: {}"
+
+#. Translators: on the slide, beside the HPF field that follows the
+#. pointer: its area and how many points (such as counted cells) lie in it.
+#: src/actions.rs:1274
+msgid "1 HPF · {area} mm² · {n} point"
+msgid_plural "1 HPF · {area} mm² · {n} points"
+msgstr[0] "1 HPF · {area} mm² · {n} σημείο"
+msgstr[1] "1 HPF · {area} mm² · {n} σημεία"
+
+#: src/actions.rs:1466
+msgid "Add comment"
+msgstr "Προσθήκη σχολίου"
+
+#: src/actions.rs:1472
+msgid "Write the comment first."
+msgstr "Γράψτε πρώτα το σχόλιο."
+
+#: src/actions.rs:1481
+msgid "An annotation can have at most {n} comments."
+msgid_plural "An annotation can have at most {n} comments."
+msgstr[0] "Μια επισήμανση μπορεί να έχει το πολύ {n} σχόλιο."
+msgstr[1] "Μια επισήμανση μπορεί να έχει το πολύ {n} σχόλια."
+
+#: src/actions.rs:1511
+msgid "Delete comment"
+msgstr "Διαγραφή σχολίου"
+
+#: src/actions.rs:1524
+msgid "That comment no longer exists."
+msgstr "Αυτό το σχόλιο δεν υπάρχει πλέον."
+
+#: src/actions.rs:1723
+msgid ""
+"Brush {} px, eraser: paint over a selected region to erase from it; [ and ] "
+"change the size"
+msgstr ""
+"Πινέλο {} px, γόμα: ζωγραφίστε πάνω σε επιλεγμένη περιοχή για να σβήσετε από "
+"αυτήν· τα [ και ] αλλάζουν το μέγεθος"
+
+#: src/actions.rs:1728
+msgid ""
+"Brush {} px: paint a region (over a selected region to extend it); Alt "
+"erases; [ and ] change the size"
+msgstr ""
+"Πινέλο {} px: ζωγραφίστε μια περιοχή (πάνω σε επιλεγμένη περιοχή για να την "
+"επεκτείνετε)· το Alt σβήνει· τα [ και ] αλλάζουν το μέγεθος"
+
+#: src/actions.rs:1742
+msgid "Erase"
+msgstr "Σβήσιμο"
+
+#: src/actions.rs:1744
+msgid "Brush stroke"
+msgstr "Πινελιά"
+
+#: src/actions.rs:1768
+msgid "The stroke is outside the slide."
+msgstr "Η πινελιά βρίσκεται έξω από το πλακίδιο."
+
+#: src/actions.rs:1818
+msgid "Select the region to erase from."
+msgstr "Επιλέξτε την περιοχή από την οποία θα σβήσετε."
+
+#: src/actions.rs:1843
+msgid "The eraser did not touch the selected region."
+msgstr "Η γόμα δεν άγγιξε την επιλεγμένη περιοχή."
+
+#. Translators: a part of the plugin that works in the background.
+#: src/core.rs:228
+msgid "Could not start a worker thread"
+msgstr "Δεν ήταν δυνατή η εκκίνηση νήματος εργασίας"
+
+#: src/core.rs:385
+msgid "Internal error while opening the database"
+msgstr "Εσωτερικό σφάλμα κατά το άνοιγμα της βάσης δεδομένων"
+
+#: src/core.rs:393
+msgid "Internal error while loading annotations"
+msgstr "Εσωτερικό σφάλμα κατά τη φόρτωση των επισημάνσεων"
+
+#: src/core.rs:398
+msgid "Internal error while saving annotations"
+msgstr "Εσωτερικό σφάλμα κατά την αποθήκευση των επισημάνσεων"
+
+#: src/core.rs:403
+msgid "Internal error while undoing"
+msgstr "Εσωτερικό σφάλμα κατά την αναίρεση"
+
+#: src/core.rs:408
+msgid "Internal error while working on the database"
+msgstr "Εσωτερικό σφάλμα κατά την εργασία στη βάση δεδομένων"
+
+#: src/core.rs:427
+msgid "Internal error while reading or writing a file"
+msgstr "Εσωτερικό σφάλμα κατά την ανάγνωση ή την εγγραφή αρχείου"
+
+#: src/core.rs:561
+msgid "The annotation database could not be opened"
+msgstr "Δεν ήταν δυνατό το άνοιγμα της βάσης δεδομένων επισημάνσεων"
+
+#: src/core.rs:590
+msgid "Annotations from eov before 1.0"
+msgstr "Επισημάνσεις από εκδόσεις του eov πριν από την 1.0"
+
+#: src/core.rs:592
+msgid ""
+"The annotations plugin of eov before 1.0 left a database at {}. Bring its "
+"annotations into the current database? The old file is not changed. You can "
+"also do this later in the Data tab of the annotations panel."
+msgstr ""
+"Το πρόσθετο επισημάνσεων των εκδόσεων του eov πριν από την 1.0 άφησε μια "
+"βάση δεδομένων στο {}. Να μεταφερθούν οι επισημάνσεις της στην τρέχουσα βάση "
+"δεδομένων; Το παλιό αρχείο δεν αλλάζει. Μπορείτε να το κάνετε και αργότερα "
+"στην καρτέλα «Δεδομένα» του πάνελ επισημάνσεων."
+
+#: src/core.rs:597
+msgid "Bring them in"
+msgstr "Μεταφορά"
+
+#: src/core.rs:598
+msgid "Not now"
+msgstr "Όχι τώρα"
+
+#. Translators: the plugin could not ask whether to bring in the annotations made
+#. with eov before 1.0 (the title of that question is "Annotations from eov before 1.0").
+#: src/core.rs:612
+msgid "Could not offer the annotations from eov before 1.0"
+msgstr ""
+"Δεν ήταν δυνατό να προταθεί η μεταφορά των επισημάνσεων από εκδόσεις του eov "
+"πριν από την 1.0"
+
+#: src/core.rs:657 src/sidebar.rs:457
+msgid "Could not load this slide's annotations: {}"
+msgstr "Δεν ήταν δυνατή η φόρτωση των επισημάνσεων αυτού του πλακιδίου: {}"
+
+#. Translators: a second read is an independent annotation of the slide by another person
+#. (as in a reader study), not a clinical second opinion. Data, Second reader and Blinded
+#. copy are the tab, section and button of the annotations panel: use their translations.
+#: src/core.rs:670
+msgid ""
+"{opened} has the same content as {annotated}, so it shows and edits the same "
+"annotations. For an independent second read, use Data → Second reader → "
+"Blinded copy."
+msgstr ""
+"Το {opened} έχει το ίδιο περιεχόμενο με το {annotated}, οπότε εμφανίζει και "
+"επεξεργάζεται τις ίδιες επισημάνσεις. Για ανεξάρτητη δεύτερη αξιολόγηση, "
+"χρησιμοποιήστε την επιλογή Δεδομένα → Δεύτερος αξιολογητής → Τυφλό αντίγραφο."
+
+#: src/core.rs:721 src/core.rs:1019 src/core.rs:1156
+msgid "the database is not open"
+msgstr "η βάση δεδομένων δεν είναι ανοιχτή"
+
+#: src/core.rs:809
+msgid "{n} annotation of {file} could not be read and was skipped."
+msgid_plural "{n} annotations of {file} could not be read and were skipped."
+msgstr[0] ""
+"{n} επισήμανση του {file} δεν ήταν δυνατό να διαβαστεί και παραλείφθηκε."
+msgstr[1] ""
+"{n} επισημάνσεις του {file} δεν ήταν δυνατό να διαβαστούν και παραλείφθηκαν."
+
+#: src/core.rs:900
+msgid "Could not reload annotations"
+msgstr "Δεν ήταν δυνατή η επαναφόρτωση των επισημάνσεων"
+
+#: src/core.rs:931
+msgid "Annotations were changed by another eov window and have been reloaded."
+msgstr "Οι επισημάνσεις άλλαξαν από άλλο παράθυρο του eov και φορτώθηκαν ξανά."
+
+#: src/core.rs:957
+msgid "the database stayed locked"
+msgstr "η βάση δεδομένων παρέμεινε κλειδωμένη"
+
+#: src/core.rs:964
+msgid "a class with that name already exists"
+msgstr "υπάρχει ήδη κατηγορία με αυτό το όνομα"
+
+#: src/core.rs:966
+msgid "the annotation database is read-only"
+msgstr "η βάση δεδομένων επισημάνσεων είναι μόνο για ανάγνωση"
+
+#: src/core.rs:969
+msgid "the annotation was changed elsewhere in the meantime"
+msgstr "η επισήμανση άλλαξε αλλού στο μεταξύ"
+
+#: src/core.rs:971
+msgid "the layer was changed elsewhere in the meantime"
+msgstr "η στρώση άλλαξε αλλού στο μεταξύ"
+
+#: src/core.rs:972
+msgid "the class was changed elsewhere in the meantime"
+msgstr "η κατηγορία άλλαξε αλλού στο μεταξύ"
+
+#: src/core.rs:973
+msgid "a layer being moved was changed elsewhere in the meantime"
+msgstr "μια στρώση που μετακινούνταν άλλαξε αλλού στο μεταξύ"
+
+#: src/core.rs:1053
+msgid "Could not save \"{}\""
+msgstr "Δεν ήταν δυνατή η αποθήκευση της αλλαγής «{}»"
+
+#: src/core.rs:1123
+msgid "This annotation change can no longer be undone."
+msgstr "Αυτή η αλλαγή επισημάνσεων δεν μπορεί πλέον να αναιρεθεί."
+
+#: src/core.rs:1137
+msgid "The slide of this change is not open any more."
+msgstr "Το πλακίδιο αυτής της αλλαγής δεν είναι πλέον ανοιχτό."
+
+#: src/core.rs:1176
+msgid "Could not redo \"{}\""
+msgstr "Δεν ήταν δυνατή η επανάληψη της αλλαγής «{}»"
+
+#: src/core.rs:1178
+msgid "Could not undo \"{}\""
+msgstr "Δεν ήταν δυνατή η αναίρεση της αλλαγής «{}»"
+
+#. Translators: cells per square millimetre, with the 95% confidence interval.
+#: src/counting.rs:185
+msgid "{density} /mm² (95% {low}–{high})"
+msgstr "{density} /mm² (95% ΔΕ {low}–{high})"
+
+#. Translators: cells per 10 high-power fields.
+#: src/counting.rs:194
+msgid "{} /10 HPF"
+msgstr "{} /10 HPF"
+
+#: src/counting.rs:222
+msgid "100 (capped; the ratio is higher)"
+msgstr "100 (ανώτατο όριο· ο λόγος είναι μεγαλύτερος)"
+
+#. Translators: CPS is the PD-L1 combined positive score; {positive},
+#. {negative} and {immune} are names of classes of cells.
+#: src/counting.rs:234
+msgid ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cell "
+"({positive} + {negative}) × 100."
+msgid_plural ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cells "
+"({positive} + {negative}) × 100."
+msgstr[0] ""
+"CPS {score} — ({a} {positive} + {c} {immune}) ανά {n} καρκινικό κύτταρο "
+"({positive} + {negative}) × 100."
+msgstr[1] ""
+"CPS {score} — ({a} {positive} + {c} {immune}) ανά {n} καρκινικά κύτταρα "
+"({positive} + {negative}) × 100."
+
+#: src/counting.rs:248
+msgid "Fewer than {n} tumour cells: below the minimum for a valid score."
+msgid_plural ""
+"Fewer than {n} tumour cells: below the minimum for a valid score."
+msgstr[0] ""
+"Λιγότερα από {n} καρκινικό κύτταρο: κάτω από το ελάχιστο για έγκυρη "
+"βαθμολογία."
+msgstr[1] ""
+"Λιγότερα από {n} καρκινικά κύτταρα: κάτω από το ελάχιστο για έγκυρη "
+"βαθμολογία."
+
+#. Translators: e.g. "Ki-67+ index: 25.0 % (95% 20.1–30.4 %) — 25 of 100 (Ki-67+ + Ki-67-)";
+#. {class} and {other} are names of classes of cells.
+#: src/counting.rs:263
+msgid ""
+"{class} index: {value} % (95% {low}–{high} %) — {k} of {total} ({class} + "
+"{other})"
+msgstr ""
+"Δείκτης {class}: {value}% (95% ΔΕ {low}–{high}%) — {k} από {total} ({class} "
+"+ {other})"
+
+#: src/db/mod.rs:116
+msgid "The annotation database is read-only; editing is disabled."
+msgstr ""
+"Η βάση δεδομένων επισημάνσεων είναι μόνο για ανάγνωση· η επεξεργασία είναι "
+"απενεργοποιημένη."
+
+#: src/db/mod.rs:119
+msgid "{n} layer colour was unreadable and was replaced."
+msgid_plural "{n} layer colours were unreadable and were replaced."
+msgstr[0] "{n} χρώμα στρώσης δεν ήταν αναγνώσιμο και αντικαταστάθηκε."
+msgstr[1] "{n} χρώματα στρώσεων δεν ήταν αναγνώσιμα και αντικαταστάθηκαν."
+
+#. Translators: {slides} in "Upgraded the annotation database from the pre-1.0 format: {slides}, …".
+#: src/db/mod.rs:131
+msgid "{n} slide"
+msgid_plural "{n} slides"
+msgstr[0] "{n} πλακίδιο"
+msgstr[1] "{n} πλακίδια"
+
+#. Translators: {slides} is "1 slide" or "3 slides" (translated on its own).
+#: src/db/mod.rs:136
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotation."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotations."
+msgstr[0] ""
+"Η βάση δεδομένων επισημάνσεων αναβαθμίστηκε από τη μορφή των εκδόσεων πριν "
+"από την 1.0: {slides}, {n} επισήμανση."
+msgstr[1] ""
+"Η βάση δεδομένων επισημάνσεων αναβαθμίστηκε από τη μορφή των εκδόσεων πριν "
+"από την 1.0: {slides}, {n} επισημάνσεις."
+
+#. Translators: {slides} is "1 slide" or "3 slides", {annotations} is
+#. "1 annotation" or "5 annotations" (each translated on its own).
+#: src/db/mod.rs:145
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotation skipped."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotations skipped."
+msgstr[0] ""
+"Η βάση δεδομένων επισημάνσεων αναβαθμίστηκε από τη μορφή των εκδόσεων πριν "
+"από την 1.0: {slides}, {annotations}, παραλείφθηκε {n} μη αναγνώσιμη "
+"επισήμανση."
+msgstr[1] ""
+"Η βάση δεδομένων επισημάνσεων αναβαθμίστηκε από τη μορφή των εκδόσεων πριν "
+"από την 1.0: {slides}, {annotations}, παραλείφθηκαν {n} μη αναγνώσιμες "
+"επισημάνσεις."
+
+#. Translators: a number of annotations on its own, in two texts: {annotations} in
+#. "Upgraded the annotation database from the pre-1.0 format: {slides}, {annotations}, …"
+#. and {ours} in "This slide's visible layers ({ours}) against the {n} annotations in {name}, …".
+#: src/db/mod.rs:153 src/state.rs:516
+msgid "{n} annotation"
+msgid_plural "{n} annotations"
+msgstr[0] "{n} επισήμανση"
+msgstr[1] "{n} επισημάνσεις"
+
+#: src/db/mod.rs:159
+msgid ""
+"New database. If you annotated with eov before 1.0, those annotations are in "
+"annotations.db in eov's old settings folder (~/.config/eov on Linux, ~/"
+"Library/Application Support/eov on macOS, %APPDATA%\\eov on Windows): bring "
+"them in with Merge… above."
+msgstr ""
+"Νέα βάση δεδομένων. Αν κάνατε επισημάνσεις με το eov πριν από την έκδοση "
+"1.0, αυτές βρίσκονται στο annotations.db στον παλιό φάκελο ρυθμίσεων του eov "
+"(~/.config/eov σε Linux, ~/Library/Application Support/eov σε macOS, "
+"%APPDATA%\\eov σε Windows): μεταφέρετέ τις με τη «Συγχώνευση…» παραπάνω."
+
+#: src/fileio.rs:105 src/fileio.rs:115
+msgid "cannot read {file}: {error}"
+msgstr "δεν είναι δυνατή η ανάγνωση του {file}: {error}"
+
+#: src/fileio.rs:109
+msgid "{file} is {size} MB; imports are limited to {limit} MB"
+msgstr ""
+"το {file} έχει μέγεθος {size} MB· οι εισαγωγές περιορίζονται στα {limit} MB"
+
+#: src/formats/dicom/mod.rs:605
+msgid "There are too many coordinates for one DICOM annotation group."
+msgstr "Υπάρχουν πάρα πολλές συντεταγμένες για μία ομάδα επισημάνσεων DICOM."
+
+#: src/formats/dicom/mod.rs:674
+msgid "There are too many annotation groups."
+msgstr "Υπάρχουν πάρα πολλές ομάδες επισημάνσεων."
+
+#: src/formats/dicom/mod.rs:695
+msgid "There are too many annotations in one group."
+msgstr "Υπάρχουν πάρα πολλές επισημάνσεις σε μία ομάδα."
+
+#: src/formats/dicom/mod.rs:736
+msgid "The slide has no annotations to export."
+msgstr "Το πλακίδιο δεν έχει επισημάνσεις για εξαγωγή."
+
+#: src/formats/dicom/mod.rs:872
+msgid ""
+"It refers to this slide's DICOM image (series {}) and joins its study; the "
+"patient and study attributes are the slide's."
+msgstr ""
+"Παραπέμπει στην εικόνα DICOM αυτού του πλακιδίου (σειρά {}) και εντάσσεται "
+"στη μελέτη της· τα χαρακτηριστικά ασθενούς και μελέτης είναι αυτά του "
+"πλακιδίου."
+
+#: src/formats/dicom/mod.rs:876
+msgid ""
+"This slide is not a DICOM image, so the file refers to no image: it is a "
+"study of its own with empty patient attributes, and DICOM viewers cannot "
+"attach it to a slide by themselves."
+msgstr ""
+"Αυτό το πλακίδιο δεν είναι εικόνα DICOM, οπότε το αρχείο δεν παραπέμπει σε "
+"καμία εικόνα: αποτελεί αυτόνομη μελέτη με κενά χαρακτηριστικά ασθενούς και "
+"τα προγράμματα προβολής DICOM δεν μπορούν να το συνδέσουν μόνα τους με "
+"κάποιο πλακίδιο."
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot
+#. hold {}: …"; {regions} is "in 1 region" or "in 2 regions"; "drawn
+#. without it/them": other viewers draw these regions without their holes.
+#: src/formats/dicom/mod.rs:886
+msgid "{n} hole {regions} (drawn without it)"
+msgid_plural "{n} holes {regions} (drawn without them)"
+msgstr[0] "{n} οπή {regions} (η σχεδίαση γίνεται χωρίς αυτήν)"
+msgstr[1] "{n} οπές {regions} (η σχεδίαση γίνεται χωρίς αυτές)"
+
+#. Translators: in "{n} holes {regions} (drawn without them)".
+#: src/formats/dicom/mod.rs:890
+msgid "in {n} region"
+msgid_plural "in {n} regions"
+msgstr[0] "σε {n} περιοχή"
+msgstr[1] "σε {n} περιοχές"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:897
+msgid "the text of {n} text label (written as points)"
+msgid_plural "the text of {n} text labels (written as points)"
+msgstr[0] "το κείμενο {n} ετικέτας κειμένου (γράφεται ως σημείο)"
+msgstr[1] "το κείμενο {n} ετικετών κειμένου (γράφονται ως σημεία)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:904
+msgid "the heads of {n} arrow (written as lines)"
+msgid_plural "the heads of {n} arrows (written as lines)"
+msgstr[0] "την αιχμή {n} βέλους (γράφεται ως γραμμή)"
+msgstr[1] "τις αιχμές {n} βελών (γράφονται ως γραμμές)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:911
+msgid "the names, descriptions and statuses of {n} annotation"
+msgid_plural "the names, descriptions and statuses of {n} annotations"
+msgstr[0] "το όνομα, την περιγραφή και την κατάσταση {n} επισήμανσης"
+msgstr[1] "τα ονόματα, τις περιγραφές και τις καταστάσεις {n} επισημάνσεων"
+
+#. Translators: {} lists what is lost, such as "the heads of 2 arrows (written
+#. as lines) and the text of 1 text label (written as points)".
+#: src/formats/dicom/mod.rs:919
+msgid ""
+"DICOM bulk annotations cannot hold {}: other viewers do not see them, but "
+"eov reads them back from its private attributes."
+msgstr ""
+"Οι μαζικές επισημάνσεις DICOM (bulk annotations) δεν μπορούν να περιέχουν "
+"{}: άλλα προγράμματα προβολής δεν τα βλέπουν, αλλά το eov τα ανακτά από τα "
+"ιδιωτικά του χαρακτηριστικά."
+
+#: src/formats/dicom/mod.rs:924
+msgid ""
+"Each layer, class and kind of shape is a group labelled with its class (or "
+"its layer). Authors, comments, properties and times are not exported (eov "
+"JSON keeps everything)."
+msgstr ""
+"Κάθε συνδυασμός στρώσης, κατηγορίας και είδους σχήματος αποτελεί μια ομάδα "
+"με ετικέτα την κατηγορία του (ή τη στρώση του). Συντάκτες, σχόλια, ιδιότητες "
+"και χρόνοι δεν εξάγονται (η μορφή eov JSON τα διατηρεί όλα)."
+
+#: src/formats/dicom/mod.rs:928
+msgid ""
+"{n} annotation with too few points or unusable coordinates was left out."
+msgid_plural ""
+"{n} annotations with too few points or unusable coordinates were left out."
+msgstr[0] ""
+"{n} επισήμανση με πολύ λίγα σημεία ή μη αξιοποιήσιμες συντεταγμένες "
+"παραλείφθηκε."
+msgstr[1] ""
+"{n} επισημάνσεις με πολύ λίγα σημεία ή μη αξιοποιήσιμες συντεταγμένες "
+"παραλείφθηκαν."
+
+#. Translators: the end of a list, "a, b and c": {first} is "a, b".
+#: src/formats/dicom/mod.rs:943
+msgid "{first} and {last}"
+msgstr "{first} και {last}"
+
+#. Translators: between the items of a list ("a, b and c").
+#: src/formats/dicom/mod.rs:946
+msgid ", "
+msgstr ", "
+
+#: src/formats/dicom/mod.rs:978
+msgid ""
+"Made for a DICOM slide; this one is not a DICOM image, so whether the "
+"annotations belong to it cannot be checked. Coordinates are taken as level-0 "
+"pixels of this slide."
+msgstr ""
+"Δημιουργήθηκε για πλακίδιο DICOM· αυτό το πλακίδιο δεν είναι εικόνα DICOM, "
+"οπότε δεν μπορεί να ελεγχθεί αν οι επισημάνσεις ανήκουν σε αυτό. Οι "
+"συντεταγμένες λαμβάνονται ως pixel επιπέδου 0 αυτού του πλακιδίου."
+
+#: src/formats/dicom/mod.rs:987
+msgid "Made for this slide (its DICOM image)."
+msgstr "Δημιουργήθηκε για αυτό το πλακίδιο (την εικόνα DICOM του)."
+
+#: src/formats/dicom/mod.rs:994
+msgid "Made for this slide (its DICOM series)."
+msgstr "Δημιουργήθηκε για αυτό το πλακίδιο (τη σειρά DICOM του)."
+
+#: src/formats/dicom/mod.rs:998
+msgid ""
+"Made for another image of this slide's DICOM series (another resolution "
+"level?), whose pixels may not be level-0 pixels."
+msgstr ""
+"Δημιουργήθηκε για άλλη εικόνα της σειράς DICOM αυτού του πλακιδίου (άλλο "
+"επίπεδο ανάλυσης;), της οποίας τα pixel ενδέχεται να μην είναι pixel "
+"επιπέδου 0."
+
+#: src/formats/dicom/mod.rs:1005
+msgid "Made for a different DICOM slide (it refers to other images)."
+msgstr ""
+"Δημιουργήθηκε για διαφορετικό πλακίδιο DICOM (παραπέμπει σε άλλες εικόνες)."
+
+#: src/formats/dicom/mod.rs:1014
+msgid ""
+"This DICOM file is a slide image (VL Whole Slide Microscopy), not "
+"annotations: open it as a slide. Annotations are read from Microscopy Bulk "
+"Simple Annotations objects (modality ANN)."
+msgstr ""
+"Αυτό το αρχείο DICOM είναι εικόνα πλακιδίου (VL Whole Slide Microscopy), όχι "
+"επισημάνσεις: ανοίξτε το ως πλακίδιο. Οι επισημάνσεις διαβάζονται από "
+"αντικείμενα Microscopy Bulk Simple Annotations (modality ANN)."
+
+#: src/formats/dicom/mod.rs:1018
+msgid ""
+"This DICOM file is a structured report (SR). eov reads DICOM annotations "
+"from Microscopy Bulk Simple Annotations objects (modality ANN), not from "
+"structured reports."
+msgstr ""
+"Αυτό το αρχείο DICOM είναι δομημένη αναφορά (SR). Το eov διαβάζει "
+"επισημάνσεις DICOM από αντικείμενα Microscopy Bulk Simple Annotations "
+"(modality ANN), όχι από δομημένες αναφορές."
+
+#: src/formats/dicom/mod.rs:1021
+msgid "This DICOM file does not say what it holds (it has no SOP Class UID)."
+msgstr "Αυτό το αρχείο DICOM δεν δηλώνει τι περιέχει (δεν έχει SOP Class UID)."
+
+#: src/formats/dicom/mod.rs:1024
+msgid ""
+"This DICOM file is not an annotation object (SOP class {}); eov reads "
+"Microscopy Bulk Simple Annotations (modality ANN)."
+msgstr ""
+"Αυτό το αρχείο DICOM δεν είναι αντικείμενο επισημάνσεων (SOP class {})· το "
+"eov διαβάζει Microscopy Bulk Simple Annotations (modality ANN)."
+
+#: src/formats/dicom/mod.rs:1047
+msgid "eov's private description of the slide is unreadable and was ignored."
+msgstr ""
+"Η ιδιωτική περιγραφή του πλακιδίου από το eov δεν είναι αναγνώσιμη και "
+"αγνοήθηκε."
+
+#. Translators: {} says what is wrong with the file, in English.
+#: src/formats/dicom/mod.rs:1080
+msgid "The DICOM file cannot be read: {}."
+msgstr "Δεν είναι δυνατή η ανάγνωση του αρχείου DICOM: {}."
+
+#: src/formats/dicom/mod.rs:1099
+msgid ""
+"This file holds 3D annotations: their coordinates are millimetres in the "
+"slide's frame of reference (DICOM SCOORD3D), and eov places annotations by "
+"level-0 pixels. Only 2D (pixel) annotations can be imported."
+msgstr ""
+"Αυτό το αρχείο περιέχει επισημάνσεις 3D: οι συντεταγμένες τους είναι "
+"χιλιοστόμετρα στο σύστημα αναφοράς του πλακιδίου (DICOM SCOORD3D), ενώ το "
+"eov τοποθετεί τις επισημάνσεις με βάση τα pixel επιπέδου 0. Μπορούν να "
+"εισαχθούν μόνο επισημάνσεις 2D (σε pixel)."
+
+#: src/formats/dicom/mod.rs:1104
+msgid ""
+"The file does not say whether its coordinates are 2D or 3D (Annotation "
+"Coordinate Type is missing)."
+msgstr ""
+"Το αρχείο δεν δηλώνει αν οι συντεταγμένες του είναι 2D ή 3D (λείπει το "
+"Annotation Coordinate Type)."
+
+#: src/formats/dicom/mod.rs:1109
+msgid ""
+"The file's coordinates are of an unknown type (\"{}\"); 2D annotations can "
+"be imported."
+msgstr ""
+"Οι συντεταγμένες του αρχείου είναι άγνωστου τύπου («{}»)· μπορούν να "
+"εισαχθούν επισημάνσεις 2D."
+
+#: src/formats/dicom/mod.rs:1126
+msgid ""
+"The annotations' pixel coordinates are relative to single frames (tiles) of "
+"the image (Pixel Origin Interpretation FRAME), which eov cannot place; "
+"coordinates relative to the whole image (VOLUME) can be imported."
+msgstr ""
+"Οι συντεταγμένες pixel των επισημάνσεων αναφέρονται σε μεμονωμένα καρέ "
+"(τμήματα) της εικόνας (Pixel Origin Interpretation FRAME), οπότε το eov δεν "
+"μπορεί να τις τοποθετήσει· μπορούν να εισαχθούν συντεταγμένες που "
+"αναφέρονται σε ολόκληρη την εικόνα (VOLUME)."
+
+#: src/formats/dicom/mod.rs:1130
+msgid ""
+"Unknown pixel origin interpretation \"{}\"; coordinates are taken relative "
+"to the whole image."
+msgstr ""
+"Άγνωστη ερμηνεία αρχής pixel «{}»· οι συντεταγμένες λαμβάνονται σε σχέση με "
+"ολόκληρη την εικόνα."
+
+#: src/formats/dicom/mod.rs:1136
+msgid "The DICOM file has no annotation groups."
+msgstr "Το αρχείο DICOM δεν έχει ομάδες επισημάνσεων."
+
+#: src/formats/dicom/mod.rs:1146
+msgid ""
+"{n} rectangle or ellipse not aligned with the image axes became a polygon."
+msgid_plural ""
+"{n} rectangles and ellipses not aligned with the image axes became polygons."
+msgstr[0] ""
+"{n} ορθογώνιο ή έλλειψη με κλίση ως προς τους άξονες της εικόνας μετατράπηκε "
+"σε πολύγωνο."
+msgstr[1] ""
+"{n} ορθογώνια και ελλείψεις με κλίση ως προς τους άξονες της εικόνας "
+"μετατράπηκαν σε πολύγωνα."
+
+#: src/formats/dicom/mod.rs:1178
+msgid "annotation group with lines or polygons without a point index list"
+msgstr "ομάδα επισημάνσεων με γραμμές ή πολύγωνα χωρίς λίστα δεικτών σημείων"
+
+#: src/formats/dicom/mod.rs:1182
+msgid "annotation group with an unreadable point index list"
+msgstr "ομάδα επισημάνσεων με μη αναγνώσιμη λίστα δεικτών σημείων"
+
+#: src/formats/dicom/mod.rs:1197
+msgid "annotation group with lines or polygons with an empty point index list"
+msgstr "ομάδα επισημάνσεων με γραμμές ή πολύγωνα με κενή λίστα δεικτών σημείων"
+
+#: src/formats/dicom/mod.rs:1211
+msgid ""
+"The point index list of \"{}\" counts points rather than coordinate values; "
+"it was read that way."
+msgstr ""
+"Η λίστα δεικτών σημείων στο «{}» μετρά σημεία αντί για τιμές συντεταγμένων· "
+"διαβάστηκε ανάλογα."
+
+#: src/formats/dicom/mod.rs:1217
+msgid ""
+"annotation group with a point index list that does not fit its coordinates"
+msgstr ""
+"ομάδα επισημάνσεων με λίστα δεικτών σημείων που δεν ταιριάζει με τις "
+"συντεταγμένες της"
+
+#. Translators: a reason why a measurement of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1333
+msgid "measurement without values"
+msgstr "μέτρηση χωρίς τιμές"
+
+#: src/formats/dicom/mod.rs:1340
+msgid "measurement with unreadable values"
+msgstr "μέτρηση με μη αναγνώσιμες τιμές"
+
+#: src/formats/dicom/mod.rs:1352
+msgid "measurement that does not match its annotations"
+msgstr "μέτρηση που δεν αντιστοιχεί στις επισημάνσεις της"
+
+#. Translators: a reason why a group of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1398
+msgid "annotation group without coordinates"
+msgstr "ομάδα επισημάνσεων χωρίς συντεταγμένες"
+
+#: src/formats/dicom/mod.rs:1402
+msgid "annotation group with unreadable coordinates"
+msgstr "ομάδα επισημάνσεων με μη αναγνώσιμες συντεταγμένες"
+
+#: src/formats/dicom/mod.rs:1408
+msgid "annotation group whose coordinates are not (column, row) pairs"
+msgstr ""
+"ομάδα επισημάνσεων της οποίας οι συντεταγμένες δεν είναι ζεύγη (στήλη, "
+"γραμμή)"
+
+#: src/formats/dicom/mod.rs:1426
+msgid "rectangles or ellipses without four points each"
+msgstr "ορθογώνια ή ελλείψεις χωρίς τέσσερα σημεία το καθένα"
+
+#: src/formats/dicom/mod.rs:1439
+msgid "annotation group without a graphic type"
+msgstr "ομάδα επισημάνσεων χωρίς τύπο γραφικού"
+
+#: src/formats/dicom/mod.rs:1443
+msgid "annotation group of graphic type {}"
+msgstr "ομάδα επισημάνσεων με τύπο γραφικού {}"
+
+#: src/formats/dicom/mod.rs:1451
+msgid ""
+"\"{name}\" says it has {n} annotation, but its coordinates hold {held}; the "
+"coordinates were read."
+msgid_plural ""
+"\"{name}\" says it has {n} annotations, but its coordinates hold {held}; the "
+"coordinates were read."
+msgstr[0] ""
+"Το «{name}» δηλώνει ότι έχει {n} επισήμανση, αλλά οι συντεταγμένες του "
+"περιέχουν {held}· διαβάστηκαν οι συντεταγμένες."
+msgstr[1] ""
+"Το «{name}» δηλώνει ότι έχει {n} επισημάνσεις, αλλά οι συντεταγμένες του "
+"περιέχουν {held}· διαβάστηκαν οι συντεταγμένες."
+
+#: src/formats/dicom/mod.rs:1463
+msgid ""
+"eov's private attributes of \"{}\" are unreadable; the group was read from "
+"its DICOM attributes alone."
+msgstr ""
+"Τα ιδιωτικά χαρακτηριστικά του eov στο «{}» δεν είναι αναγνώσιμα· η ομάδα "
+"διαβάστηκε μόνο από τα χαρακτηριστικά DICOM της."
+
+#: src/formats/dicom/mod.rs:1529
+msgid "annotations beyond the limit of {} per file"
+msgstr "επισημάνσεις πέρα από το όριο των {} ανά αρχείο"
+
+#: src/formats/dicom/mod.rs:1537
+msgid "annotation with non-finite coordinates"
+msgstr "επισήμανση με μη πεπερασμένες συντεταγμένες"
+
+#: src/formats/eov.rs:209
+msgid ""
+"This file uses eov annotation format {version}; this plugin reads up to "
+"{supported}. Update the plugin."
+msgstr ""
+"Αυτό το αρχείο χρησιμοποιεί τη μορφή επισημάνσεων eov, έκδοση {version}· "
+"αυτό το πρόσθετο διαβάζει έως και την έκδοση {supported}. Ενημερώστε το "
+"πρόσθετο."
+
+#: src/formats/eov.rs:261
+msgid "The file has no \"layers\"."
+msgstr "Το αρχείο δεν περιέχει το πεδίο \"layers\"."
+
+#: src/formats/eov.rs:277
+msgid "Layer \"{}\" has an unreadable colour; a palette colour is used."
+msgstr ""
+"Η στρώση «{}» έχει μη αναγνώσιμο χρώμα· χρησιμοποιείται ένα χρώμα της "
+"παλέτας."
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/eov.rs:292
+msgid "unreadable geometry"
+msgstr "μη αναγνώσιμη γεωμετρία"
+
+#: src/formats/eov.rs:332
+msgid "The file has no \"annotation_layers\"."
+msgstr "Το αρχείο δεν περιέχει το πεδίο \"annotation_layers\"."
+
+#: src/formats/eov.rs:359
+msgid "point without coordinates"
+msgstr "σημείο χωρίς συντεταγμένες"
+
+#: src/formats/eov.rs:384
+msgid "polygon with unreadable vertices"
+msgstr "πολύγωνο με μη αναγνώσιμες κορυφές"
+
+#: src/formats/eov.rs:390
+msgid "unknown annotation type"
+msgstr "άγνωστος τύπος επισήμανσης"
+
+#: src/formats/eov.rs:426
+msgid "The archive has no \"slides\"."
+msgstr "Η αρχειοθήκη δεν περιέχει το πεδίο \"slides\"."
+
+#: src/formats/eov.rs:432
+msgid "An archive entry was skipped: {}"
+msgstr "Παραλείφθηκε μια καταχώριση της αρχειοθήκης: {}"
+
+#. Translators: reasons why a shape of an imported file was skipped,
+#. listed as "2 × unreadable point".
+#: src/formats/geojson.rs:68
+msgid "unreadable point"
+msgstr "μη αναγνώσιμο σημείο"
+
+#: src/formats/geojson.rs:69
+msgid "unreadable line"
+msgstr "μη αναγνώσιμη γραμμή"
+
+#: src/formats/geojson.rs:70
+msgid "unreadable polygon"
+msgstr "μη αναγνώσιμο πολύγωνο"
+
+#: src/formats/geojson.rs:74
+msgid "geometry without a type"
+msgstr "γεωμετρία χωρίς τύπο"
+
+#: src/formats/geojson.rs:84
+msgid "unreadable points"
+msgstr "μη αναγνώσιμα σημεία"
+
+#: src/formats/geojson.rs:103
+msgid "unreadable lines"
+msgstr "μη αναγνώσιμες γραμμές"
+
+#: src/formats/geojson.rs:119
+msgid "unreadable polygons"
+msgstr "μη αναγνώσιμα πολύγωνα"
+
+#: src/formats/geojson.rs:128
+msgid "unreadable geometry collection"
+msgstr "μη αναγνώσιμη συλλογή γεωμετριών"
+
+#: src/formats/geojson.rs:133
+msgid "unsupported geometry type"
+msgstr "μη υποστηριζόμενος τύπος γεωμετρίας"
+
+#: src/formats/geojson.rs:221
+msgid "The FeatureCollection has no features."
+msgstr "Το FeatureCollection δεν περιέχει στοιχεία (features)."
+
+#: src/formats/geojson.rs:224 src/formats/geojson.rs:226
+msgid "Not GeoJSON."
+msgstr "Δεν είναι GeoJSON."
+
+#. Translators: a reason why an element of an imported file was skipped.
+#: src/formats/geojson.rs:242
+msgid "not a GeoJSON feature"
+msgstr "δεν είναι στοιχείο (feature) GeoJSON"
+
+#: src/formats/geojson.rs:259
+msgid "feature without geometry"
+msgstr "στοιχείο (feature) χωρίς γεωμετρία"
+
+#: src/formats/geojson.rs:318
+msgid "properties beyond the limit of {} per annotation"
+msgstr "ιδιότητες πέρα από το όριο των {} ανά επισήμανση"
+
+#: src/formats/geojson.rs:351
+msgid "The GeoJSON file contains no features."
+msgstr "Το αρχείο GeoJSON δεν περιέχει στοιχεία (features)."
+
+#: src/formats/mod.rs:240
+msgid "This .dcm file is not a DICOM file (\"DICM\" is missing at byte 128)."
+msgstr ""
+"Αυτό το αρχείο .dcm δεν είναι αρχείο DICOM (λείπει το «DICM» στο byte 128)."
+
+#: src/formats/mod.rs:242
+msgid ""
+"The file is not UTF-8 text or DICOM, so it is not a supported annotation "
+"file."
+msgstr ""
+"Το αρχείο δεν είναι κείμενο UTF-8 ούτε DICOM, οπότε δεν είναι υποστηριζόμενο "
+"αρχείο επισημάνσεων."
+
+#: src/formats/mod.rs:250
+msgid "The file is not valid JSON: {}"
+msgstr "Το αρχείο δεν είναι έγκυρο JSON: {}"
+
+#: src/formats/mod.rs:257
+msgid "This JSON file is neither GeoJSON nor an eov annotation export."
+msgstr ""
+"Αυτό το αρχείο JSON δεν είναι ούτε GeoJSON ούτε εξαγωγή επισημάνσεων του eov."
+
+#: src/formats/mod.rs:263
+msgid ""
+"Unsupported file: expected GeoJSON, eov JSON, ASAP XML, ImageScope XML, NDPA "
+"or DICOM bulk annotations."
+msgstr ""
+"Μη υποστηριζόμενο αρχείο: αναμενόταν GeoJSON, eov JSON, ASAP XML, ImageScope "
+"XML, NDPA ή μαζικές επισημάνσεις DICOM."
+
+#: src/formats/ndpa.rs:62
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide is not one, so they cannot be placed on it."
+msgstr ""
+"Οι συντεταγμένες NDPA μετρώνται από το κέντρο ενός πλακιδίου Hamamatsu "
+"(NDPI), αλλά αυτό το πλακίδιο δεν είναι τέτοιο, οπότε δεν μπορούν να "
+"τοποθετηθούν σε αυτό."
+
+#. Translators: {} is the vendor of the slide's format ("aperio").
+#: src/formats/ndpa.rs:68
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide ({}) is not one, so they cannot be placed on it."
+msgstr ""
+"Οι συντεταγμένες NDPA μετρώνται από το κέντρο ενός πλακιδίου Hamamatsu "
+"(NDPI), αλλά αυτό το πλακίδιο ({}) δεν είναι τέτοιο, οπότε δεν μπορούν να "
+"τοποθετηθούν σε αυτό."
+
+#: src/formats/ndpa.rs:79
+msgid ""
+"This NDPI does not give its offsets from the slide centre (hamamatsu."
+"XOffsetFromSlideCentre and YOffsetFromSlideCentre), so the NDPA coordinates "
+"cannot be placed on it."
+msgstr ""
+"Αυτό το NDPI δεν δίνει τις μετατοπίσεις του από το κέντρο του πλακιδίου "
+"(hamamatsu.XOffsetFromSlideCentre και YOffsetFromSlideCentre), οπότε οι "
+"συντεταγμένες NDPA δεν μπορούν να τοποθετηθούν σε αυτό."
+
+#: src/formats/ndpa.rs:88
+msgid ""
+"This slide has no pixel size, so the NDPA's nanometre coordinates cannot be "
+"converted to pixels."
+msgstr ""
+"Αυτό το πλακίδιο δεν έχει μέγεθος pixel, οπότε οι συντεταγμένες του NDPA σε "
+"νανόμετρα δεν μπορούν να μετατραπούν σε pixel."
+
+#: src/formats/ndpa.rs:92
+msgid "The slide's size is unknown."
+msgstr "Το μέγεθος του πλακιδίου είναι άγνωστο."
+
+#. Translators: a reason why an annotation of an imported file was skipped; {} is
+#. its type in the file ("freehand", "circle", "pin", …).
+#: src/formats/ndpa.rs:211
+msgid "{} annotation with unreadable coordinates"
+msgstr "επισήμανση τύπου {} με μη αναγνώσιμες συντεταγμένες"
+
+#: src/formats/ndpa.rs:267
+msgid "unsupported NDPA annotation type '{}'"
+msgstr "μη υποστηριζόμενος τύπος επισήμανσης NDPA «{}»"
+
+#: src/formats/ndpa.rs:296
+msgid "annotation in unsupported coordinates ({})"
+msgstr "επισήμανση σε μη υποστηριζόμενες συντεταγμένες ({})"
+
+#: src/formats/ndpa.rs:300
+msgid "view state without an annotation"
+msgstr "κατάσταση προβολής χωρίς επισήμανση"
+
+#: src/formats/xml.rs:28
+msgid "The XML is not well-formed: {}"
+msgstr "Το XML δεν είναι σωστά δομημένο: {}"
+
+#: src/formats/xml.rs:37
+msgid ""
+"Unsupported XML annotations (root element <{}>); ASAP, Aperio ImageScope and "
+"Hamamatsu NDPA files are supported."
+msgstr ""
+"Μη υποστηριζόμενες επισημάνσεις XML (ριζικό στοιχείο <{}>)· υποστηρίζονται "
+"αρχεία ASAP, Aperio ImageScope και Hamamatsu NDPA."
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/xml.rs:96
+msgid "annotation with unreadable coordinates"
+msgstr "επισήμανση με μη αναγνώσιμες συντεταγμένες"
+
+#: src/formats/xml.rs:158
+msgid "unsupported ASAP annotation type"
+msgstr "μη υποστηριζόμενος τύπος επισήμανσης ASAP"
+
+#: src/formats/xml.rs:198
+msgid "hole of a shape that is not a polygon"
+msgstr "οπή σχήματος που δεν είναι πολύγωνο"
+
+#: src/formats/xml.rs:200
+msgid "hole of a missing polygon"
+msgstr "οπή πολυγώνου που λείπει"
+
+#: src/formats/xml.rs:275
+msgid "region with unreadable vertices"
+msgstr "περιοχή με μη αναγνώσιμες κορυφές"
+
+#: src/formats/xml.rs:357
+msgid "negative region outside every region"
+msgstr "αρνητική περιοχή έξω από κάθε περιοχή"
+
+#: src/geometry.rs:252
+msgid "The shape has invalid (non-finite) coordinates."
+msgstr "Το σχήμα έχει μη έγκυρες (μη πεπερασμένες) συντεταγμένες."
+
+#: src/geometry.rs:256
+msgid "The shape has {n} vertices; the limit is {limit}."
+msgid_plural "The shape has {n} vertices; the limit is {limit}."
+msgstr[0] "Το σχήμα έχει {n} κορυφή· το όριο είναι {limit}."
+msgstr[1] "Το σχήμα έχει {n} κορυφές· το όριο είναι {limit}."
+
+#: src/geometry.rs:266
+msgid "The point is outside the slide."
+msgstr "Το σημείο βρίσκεται έξω από το πλακίδιο."
+
+#: src/geometry.rs:288
+msgid "An arrow needs two distinct points."
+msgstr "Ένα βέλος χρειάζεται δύο διακριτά σημεία."
+
+#: src/geometry.rs:290
+msgid "A line needs at least two distinct points."
+msgstr "Μια γραμμή χρειάζεται τουλάχιστον δύο διακριτά σημεία."
+
+#: src/geometry.rs:317
+msgid "The rectangle is outside the slide."
+msgstr "Το ορθογώνιο βρίσκεται έξω από το πλακίδιο."
+
+#: src/geometry.rs:325
+msgid "The rectangle has no area."
+msgstr "Το ορθογώνιο δεν έχει εμβαδόν."
+
+#: src/geometry.rs:337
+msgid "The ellipse has no area."
+msgstr "Η έλλειψη δεν έχει εμβαδόν."
+
+#: src/geometry.rs:340
+msgid "The ellipse is centred outside the slide."
+msgstr "Το κέντρο της έλλειψης βρίσκεται έξω από το πλακίδιο."
+
+#: src/geometry.rs:352
+msgid "A polygon needs at least three distinct corners."
+msgstr "Ένα πολύγωνο χρειάζεται τουλάχιστον τρεις διακριτές κορυφές."
+
+#: src/geometry.rs:355 src/geometry.rs:393
+msgid "The polygon encloses no area."
+msgstr "Το πολύγωνο δεν περικλείει εμβαδόν."
+
+#: src/geometry.rs:391
+msgid "The polygon is outside the slide."
+msgstr "Το πολύγωνο βρίσκεται έξω από το πλακίδιο."
+
+#: src/lib.rs:80 src/lib.rs:202
+msgid "Annotations"
+msgstr "Επισημάνσεις"
+
+#: src/lib.rs:85
+msgid "Show or hide annotations on this slide"
+msgstr "Εμφάνιση ή απόκρυψη των επισημάνσεων σε αυτό το πλακίδιο"
+
+#: src/lib.rs:102
+msgid "Counting {}"
+msgstr "Καταμέτρηση: {}"
+
+#: src/lib.rs:104
+msgid "Counting {class}, Shift+click: {alternate}"
+msgstr "Καταμέτρηση: {class}, Shift+κλικ: {alternate}"
+
+#: src/lib.rs:109
+msgid "Counting {class}, Alt+click: {immune}"
+msgstr "Καταμέτρηση: {class}, Alt+κλικ: {immune}"
+
+#: src/lib.rs:114
+msgid "Counting {class}, Shift+click: {alternate}, Alt+click: {immune}"
+msgstr "Καταμέτρηση: {class}, Shift+κλικ: {alternate}, Alt+κλικ: {immune}"
+
+#. Translators: HPF is a high-power field.
+#: src/lib.rs:123
+msgid ""
+"The dashed circle is one HPF: click to place a field, drag to pan, Esc to "
+"leave"
+msgstr ""
+"Ο διακεκομμένος κύκλος είναι ένα HPF: κάντε κλικ για να τοποθετήσετε πεδίο, "
+"σύρετε για μετακίνηση, Esc για έξοδο"
+
+#: src/lib.rs:125
+msgid "Click to select, drag to select several; drag handles to edit"
+msgstr ""
+"Κάντε κλικ για επιλογή, σύρετε για επιλογή πολλών· σύρετε τις λαβές για "
+"επεξεργασία"
+
+#: src/lib.rs:127
+msgid "Drawing {}"
+msgstr "Σχεδίαση: {}"
+
+#. Translators: {} is the name of a file format ("GeoJSON").
+#: src/lib.rs:441
+msgid "{} · cannot be placed on this slide"
+msgstr "{} · δεν μπορεί να τοποθετηθεί σε αυτό το πλακίδιο"
+
+#. Translators: {format} is the name of a file format ("GeoJSON");
+#. {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/lib.rs:448
+msgid "{format} · {n} annotation {layers}"
+msgid_plural "{format} · {n} annotations {layers}"
+msgstr[0] "{format} · {n} επισήμανση {layers}"
+msgstr[1] "{format} · {n} επισημάνσεις {layers}"
+
+#: src/lib.rs:455
+msgid "{n} class"
+msgid_plural "{n} classes"
+msgstr[0] "{n} κατηγορία"
+msgstr[1] "{n} κατηγορίες"
+
+#: src/lib.rs:465
+msgid "Layers with the same name already exist: {}"
+msgstr "Υπάρχουν ήδη στρώσεις με το ίδιο όνομα: {}"
+
+#: src/lib.rs:497 src/transfer.rs:373
+msgid "Import annotations"
+msgstr "Εισαγωγή επισημάνσεων"
+
+#: src/lib.rs:507
+msgid "Cannot show the import dialog"
+msgstr "Δεν είναι δυνατή η εμφάνιση του παραθύρου διαλόγου εισαγωγής"
+
+#: src/lib.rs:641 src/sidebar.rs:1490
+msgid "Lock"
+msgstr "Κλείδωμα"
+
+#: src/lib.rs:643 src/sidebar.rs:1492
+msgid "Unlock"
+msgstr "Ξεκλείδωμα"
+
+#: src/lib.rs:789
+msgid "Could not save the annotation settings"
+msgstr "Δεν ήταν δυνατή η αποθήκευση των ρυθμίσεων επισημάνσεων"
+
+#: src/lib.rs:1063
+msgid "Show in annotations panel"
+msgstr "Εμφάνιση στο πάνελ επισημάνσεων"
+
+#: src/lib.rs:1064
+msgid "Copy measurements"
+msgstr "Αντιγραφή μετρήσεων"
+
+#: src/lib.rs:1066
+msgid "Unlock annotation"
+msgstr "Ξεκλείδωμα επισήμανσης"
+
+#: src/lib.rs:1068
+msgid "Lock annotation"
+msgstr "Κλείδωμα επισήμανσης"
+
+#: src/lib.rs:1077
+msgctxt "Context menu"
+msgid "Delete annotation"
+msgstr "Διαγραφή επισήμανσης"
+
+#: src/lib.rs:1083
+msgid "Add point here"
+msgstr "Προσθήκη σημείου εδώ"
+
+#: src/lib.rs:1084
+msgid "Place HPF field here"
+msgstr "Τοποθέτηση πεδίου HPF εδώ"
+
+#: src/lib.rs:1085
+msgid "Annotations panel"
+msgstr "Πάνελ επισημάνσεων"
+
+#: src/measure.rs:276
+msgid "Area"
+msgstr "Εμβαδόν"
+
+#: src/measure.rs:281
+msgid "Length"
+msgstr "Μήκος"
+
+#: src/measure.rs:283
+msgid "Perimeter"
+msgstr "Περίμετρος"
+
+#: src/measure.rs:289
+msgid "Max diameter (Feret)"
+msgstr "Μέγιστη διάμετρος (Feret)"
+
+#: src/measure.rs:292
+msgid "Min diameter (Feret)"
+msgstr "Ελάχιστη διάμετρος (Feret)"
+
+#: src/measure.rs:297
+msgid "Centre (px)"
+msgstr "Κέντρο (px)"
+
+#: src/measure.rs:302 src/measure.rs:307
+msgid "Calibration"
+msgstr "Βαθμονόμηση"
+
+#: src/measure.rs:303
+msgid "No pixel size: values in level-0 pixels"
+msgstr "Χωρίς μέγεθος pixel: τιμές σε pixel επιπέδου 0"
+
+#: src/measure.rs:308
+msgid "One pixel axis missing; assumed square pixels"
+msgstr "Λείπει ο ένας άξονας pixel· θεωρήθηκαν τετράγωνα pixel"
+
+#: src/model.rs:49 ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Draft"
+msgstr "Πρόχειρη"
+
+#: src/model.rs:50 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Verified"
+msgstr "Επαληθευμένη"
+
+#: src/model.rs:51 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Rejected"
+msgstr "Απορριφθείσα"
+
+#: src/model.rs:118
+msgctxt "Annotation kind"
+msgid "Point"
+msgstr "Σημείο"
+
+#: src/model.rs:119
+msgctxt "Annotation kind"
+msgid "Line"
+msgstr "Γραμμή"
+
+#: src/model.rs:120
+msgctxt "Annotation kind"
+msgid "Arrow"
+msgstr "Βέλος"
+
+#: src/model.rs:121
+msgctxt "Annotation kind"
+msgid "Polygon"
+msgstr "Πολύγωνο"
+
+#: src/model.rs:122
+msgctxt "Annotation kind"
+msgid "Rectangle"
+msgstr "Ορθογώνιο"
+
+#: src/model.rs:123
+msgctxt "Annotation kind"
+msgid "Ellipse"
+msgstr "Έλλειψη"
+
+#: src/model.rs:124
+msgctxt "Annotation kind"
+msgid "Text"
+msgstr "Κείμενο"
+
+#: src/model.rs:750
+msgid "The layer name cannot be empty."
+msgstr "Το όνομα της στρώσης δεν μπορεί να είναι κενό."
+
+#: src/model.rs:751
+msgid "The class name cannot be empty."
+msgstr "Το όνομα της κατηγορίας δεν μπορεί να είναι κενό."
+
+#: src/model.rs:752
+msgid "The name cannot be empty."
+msgstr "Το όνομα δεν μπορεί να είναι κενό."
+
+#: src/model.rs:759
+msgid "The name is {n} characters long; the limit is {limit}."
+msgid_plural "The name is {n} characters long; the limit is {limit}."
+msgstr[0] "Το όνομα έχει {n} χαρακτήρα· το όριο είναι {limit}."
+msgstr[1] "Το όνομα έχει {n} χαρακτήρες· το όριο είναι {limit}."
+
+#: src/model.rs:764
+msgid "The layer name is {n} characters long; the limit is {limit}."
+msgid_plural "The layer name is {n} characters long; the limit is {limit}."
+msgstr[0] "Το όνομα της στρώσης έχει {n} χαρακτήρα· το όριο είναι {limit}."
+msgstr[1] "Το όνομα της στρώσης έχει {n} χαρακτήρες· το όριο είναι {limit}."
+
+#: src/model.rs:769
+msgid "The class name is {n} characters long; the limit is {limit}."
+msgid_plural "The class name is {n} characters long; the limit is {limit}."
+msgstr[0] "Το όνομα της κατηγορίας έχει {n} χαρακτήρα· το όριο είναι {limit}."
+msgstr[1] "Το όνομα της κατηγορίας έχει {n} χαρακτήρες· το όριο είναι {limit}."
+
+#: src/model.rs:774
+msgid "The author is {n} characters long; the limit is {limit}."
+msgid_plural "The author is {n} characters long; the limit is {limit}."
+msgstr[0] "Το όνομα του συντάκτη έχει {n} χαρακτήρα· το όριο είναι {limit}."
+msgstr[1] "Το όνομα του συντάκτη έχει {n} χαρακτήρες· το όριο είναι {limit}."
+
+#: src/model.rs:779
+msgid "The setting is {n} characters long; the limit is {limit}."
+msgid_plural "The setting is {n} characters long; the limit is {limit}."
+msgstr[0] "Η ρύθμιση έχει {n} χαρακτήρα· το όριο είναι {limit}."
+msgstr[1] "Η ρύθμιση έχει {n} χαρακτήρες· το όριο είναι {limit}."
+
+#: src/model.rs:784
+msgid "The notes are {n} characters long; the limit is {limit}."
+msgid_plural "The notes are {n} characters long; the limit is {limit}."
+msgstr[0] "Οι σημειώσεις έχουν {n} χαρακτήρα· το όριο είναι {limit}."
+msgstr[1] "Οι σημειώσεις έχουν {n} χαρακτήρες· το όριο είναι {limit}."
+
+#: src/model.rs:789
+msgid "The description is {n} characters long; the limit is {limit}."
+msgid_plural "The description is {n} characters long; the limit is {limit}."
+msgstr[0] "Η περιγραφή έχει {n} χαρακτήρα· το όριο είναι {limit}."
+msgstr[1] "Η περιγραφή έχει {n} χαρακτήρες· το όριο είναι {limit}."
+
+#: src/model.rs:794
+msgid "The comment is {n} characters long; the limit is {limit}."
+msgid_plural "The comment is {n} characters long; the limit is {limit}."
+msgstr[0] "Το σχόλιο έχει {n} χαρακτήρα· το όριο είναι {limit}."
+msgstr[1] "Το σχόλιο έχει {n} χαρακτήρες· το όριο είναι {limit}."
+
+#: src/model.rs:837
+msgid "An annotation can have at most {n} properties."
+msgid_plural "An annotation can have at most {n} properties."
+msgstr[0] "Μια επισήμανση μπορεί να έχει το πολύ {n} ιδιότητα."
+msgstr[1] "Μια επισήμανση μπορεί να έχει το πολύ {n} ιδιότητες."
+
+#: src/model.rs:851
+msgid "Property names are limited to {n} characters."
+msgid_plural "Property names are limited to {n} characters."
+msgstr[0] "Τα ονόματα ιδιοτήτων περιορίζονται σε {n} χαρακτήρα."
+msgstr[1] "Τα ονόματα ιδιοτήτων περιορίζονται σε {n} χαρακτήρες."
+
+#: src/model.rs:856
+msgid "Property values are limited to {n} characters."
+msgid_plural "Property values are limited to {n} characters."
+msgstr[0] "Οι τιμές ιδιοτήτων περιορίζονται σε {n} χαρακτήρα."
+msgstr[1] "Οι τιμές ιδιοτήτων περιορίζονται σε {n} χαρακτήρες."
+
+#: src/model.rs:884
+msgid "A hotkey is a single character (a letter or a symbol), not {}."
+msgstr "Η συντόμευση είναι ένας μόνο χαρακτήρας (γράμμα ή σύμβολο), όχι {}."
+
+#: src/model.rs:889
+msgid "A hotkey must be a visible character."
+msgstr "Η συντόμευση πρέπει να είναι ορατός χαρακτήρας."
+
+#: src/model.rs:892
+msgid "eov already uses the '{}' key."
+msgstr "Το eov χρησιμοποιεί ήδη το πλήκτρο «{}»."
+
+#: src/model.rs:896
+msgid "'{}' is already used by an annotation tool or class."
+msgstr "Το «{}» χρησιμοποιείται ήδη από εργαλείο επισήμανσης ή κατηγορία."
+
+#. Translators: in the tooltip of a locked annotation, after its class and name.
+#: src/overlay.rs:171
+msgid "locked"
+msgstr "κλειδωμένη"
+
+#. Translators: this slide's points against the other reader's; F1 is the F1 score.
+#: src/sidebar.rs:360
+msgid "Points {ours} vs {theirs} · {matched} matched · F1 {f1}"
+msgstr "Σημεία {ours} έναντι {theirs} · αντιστοιχισμένα: {matched} · F1 {f1}"
+
+#. Translators: this slide's regions and their area against the other reader's;
+#. Dice is the Dice coefficient of the areas.
+#: src/sidebar.rs:373
+msgid "Regions {ours} vs {theirs} · {our_area} vs {their_area} · Dice {dice}"
+msgstr ""
+"Περιοχές {ours} έναντι {theirs} · {our_area} έναντι {their_area} · Dice "
+"{dice}"
+
+#: src/sidebar.rs:385
+msgid "All regions"
+msgstr "Όλες οι περιοχές"
+
+#. Translators: {layers} in texts such as "{n} annotations {layers}" ("12 annotations in 3 layers").
+#: src/sidebar.rs:431
+msgid "in {n} layer"
+msgid_plural "in {n} layers"
+msgstr[0] "σε {n} στρώση"
+msgstr[1] "σε {n} στρώσεις"
+
+#: src/sidebar.rs:447
+msgid "No slide open"
+msgstr "Δεν υπάρχει ανοιχτό πλακίδιο"
+
+#: src/sidebar.rs:453
+msgid "Annotation database unavailable: {}"
+msgstr "Η βάση δεδομένων επισημάνσεων δεν είναι διαθέσιμη: {}"
+
+#: src/sidebar.rs:455
+msgid "Opening the annotation database…"
+msgstr "Άνοιγμα της βάσης δεδομένων επισημάνσεων…"
+
+#: src/sidebar.rs:461
+msgid "Loading annotations…"
+msgstr "Φόρτωση επισημάνσεων…"
+
+#: src/sidebar.rs:469
+msgid ""
+"The annotation database is read-only: annotations can be viewed and "
+"exported, not edited."
+msgstr ""
+"Η βάση δεδομένων επισημάνσεων είναι μόνο για ανάγνωση: οι επισημάνσεις "
+"μπορούν να προβληθούν και να εξαχθούν, όχι όμως να επεξεργαστούν."
+
+#: src/sidebar.rs:477
+msgid ""
+"This slide has no stable identity; its annotations are keyed by file name "
+"and size."
+msgstr ""
+"Αυτό το πλακίδιο δεν έχει σταθερή ταυτότητα· οι επισημάνσεις του "
+"αντιστοιχίζονται βάσει του ονόματος και του μεγέθους του αρχείου."
+
+#. Translators: beside a layer of count points: the number of points.
+#: src/sidebar.rs:526
+msgid "{} · counts"
+msgstr "{} · καταμετρήσεις"
+
+#. Translators: beside the layer of HPF fields: the number of fields.
+#: src/sidebar.rs:528
+msgid "{} · HPF fields"
+msgstr "{} · πεδία HPF"
+
+#: src/sidebar.rs:615
+msgid "{n} comment"
+msgid_plural "{n} comments"
+msgstr[0] "{n} σχόλιο"
+msgstr[1] "{n} σχόλια"
+
+#: src/sidebar.rs:649
+msgid "Show more ({n} not shown)"
+msgid_plural "Show more ({n} not shown)"
+msgstr[0] "Εμφάνιση περισσότερων ({n} δεν εμφανίζεται)"
+msgstr[1] "Εμφάνιση περισσότερων ({n} δεν εμφανίζονται)"
+
+#: src/sidebar.rs:667
+msgid "{n} match"
+msgid_plural "{n} matches"
+msgstr[0] "{n} αποτέλεσμα"
+msgstr[1] "{n} αποτελέσματα"
+
+#: src/sidebar.rs:670
+msgid ""
+"No annotations yet. Pick a tool in the toolbar (P polygon, . point, C count) "
+"and draw on the slide."
+msgstr ""
+"Δεν υπάρχουν ακόμη επισημάνσεις. Επιλέξτε ένα εργαλείο στη γραμμή εργαλείων "
+"(P πολύγωνο, . σημείο, C καταμέτρηση) και σχεδιάστε στο πλακίδιο."
+
+#: src/sidebar.rs:674
+msgid "Open a slide to see and draw its annotations."
+msgstr ""
+"Ανοίξτε ένα πλακίδιο για να δείτε και να σχεδιάσετε τις επισημάνσεις του."
+
+#: src/sidebar.rs:724
+msgid "created {created} · edited {edited}"
+msgstr "δημιουργία {created} · επεξεργασία {edited}"
+
+#: src/sidebar.rs:730
+msgid "By {author} · created {created} · edited {edited}"
+msgstr "Συντάκτης: {author} · δημιουργία {created} · επεξεργασία {edited}"
+
+#: src/sidebar.rs:750
+msgid "Unknown author"
+msgstr "Άγνωστος συντάκτης"
+
+#: src/sidebar.rs:769
+msgid ""
+"This outline crosses itself (it was drawn with an older version). Its area "
+"uses the even-odd rule, like the display; Repair turns it into simple parts."
+msgstr ""
+"Αυτό το περίγραμμα τέμνεται με τον εαυτό του (σχεδιάστηκε με παλαιότερη "
+"έκδοση). Το εμβαδόν του υπολογίζεται με τον κανόνα άρτιου-περιττού (even-"
+"odd), όπως και η εμφάνιση· η «Επιδιόρθωση» το μετατρέπει σε απλά μέρη."
+
+#: src/sidebar.rs:775
+msgid "{n} annotation selected"
+msgid_plural "{n} annotations selected"
+msgstr[0] "{n} επιλεγμένη επισήμανση"
+msgstr[1] "{n} επιλεγμένες επισημάνσεις"
+
+#: src/sidebar.rs:778
+msgid "Mixed classes; changes apply to all selected."
+msgstr "Διαφορετικές κατηγορίες· οι αλλαγές ισχύουν για όλες τις επιλεγμένες."
+
+#: src/sidebar.rs:780
+msgid "Changes apply to all selected."
+msgstr "Οι αλλαγές ισχύουν για όλες τις επιλεγμένες."
+
+#. Translators: under a class whose key does nothing; {} is
+#. eov's reason, a whole sentence such as "Hotkey 'q' of …
+#. was ignored: it is a key eov already uses."
+#: src/sidebar.rs:828
+msgid "eov refused the hotkey: {}"
+msgstr "Το eov απέρριψε τη συντόμευση: {}"
+
+#: src/sidebar.rs:861
+msgid ""
+"Whole slide. Select regions or HPF fields to count inside them and get "
+"densities."
+msgstr ""
+"Ολόκληρο το πλακίδιο. Επιλέξτε περιοχές ή πεδία HPF για να καταμετρήσετε "
+"μέσα σε αυτά και να λάβετε πυκνότητες."
+
+#. Translators: {fields} is "1 HPF field" or "3 HPF fields"
+#. (translated on its own; HPF is a high-power field).
+#: src/sidebar.rs:873
+msgid "Inside {n} selected region ({fields}): {area}"
+msgid_plural "Inside {n} selected regions ({fields}): {area}"
+msgstr[0] "Μέσα σε {n} επιλεγμένη περιοχή ({fields}): {area}"
+msgstr[1] "Μέσα σε {n} επιλεγμένες περιοχές ({fields}): {area}"
+
+#. Translators: {fields} in "Inside {n} selected regions ({fields}): {area}".
+#: src/sidebar.rs:877
+msgid "{n} HPF field"
+msgid_plural "{n} HPF fields"
+msgstr[0] "{n} πεδίο HPF"
+msgstr[1] "{n} πεδία HPF"
+
+#: src/sidebar.rs:883
+msgid "Inside {n} selected region: {area}"
+msgid_plural "Inside {n} selected regions: {area}"
+msgstr[0] "Μέσα σε {n} επιλεγμένη περιοχή: {area}"
+msgstr[1] "Μέσα σε {n} επιλεγμένες περιοχές: {area}"
+
+#: src/sidebar.rs:890
+msgid "Inside {n} selected region: {area} (no pixel size, so no density)"
+msgid_plural ""
+"Inside {n} selected regions: {area} (no pixel size, so no density)"
+msgstr[0] ""
+"Μέσα σε {n} επιλεγμένη περιοχή: {area} (χωρίς μέγεθος pixel, άρα χωρίς "
+"πυκνότητα)"
+msgstr[1] ""
+"Μέσα σε {n} επιλεγμένες περιοχές: {area} (χωρίς μέγεθος pixel, άρα χωρίς "
+"πυκνότητα)"
+
+#. Translators: cells per high-power field.
+#: src/sidebar.rs:905
+msgid "{} /HPF field"
+msgstr "{} /πεδίο HPF"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1000
+msgid "Read-only"
+msgstr "Μόνο για ανάγνωση"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1003
+msgid "Ready"
+msgstr "Έτοιμη"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1007
+msgid "Opening…"
+msgstr "Άνοιγμα…"
+
+#: src/sidebar.rs:1008
+msgid "Unavailable: {}"
+msgstr "Μη διαθέσιμη: {}"
+
+#. Translators: a slide whose file name an older eov did not record; {} is its number in the annotation database.
+#: src/sidebar.rs:1068
+msgid "Slide #{} (from an older version)"
+msgstr "Πλακίδιο #{} (από παλαιότερη έκδοση)"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/sidebar.rs:1075
+msgid "{n} annotation {layers} · last opened {date}"
+msgid_plural "{n} annotations {layers} · last opened {date}"
+msgstr[0] "{n} επισήμανση {layers} · τελευταίο άνοιγμα {date}"
+msgstr[1] "{n} επισημάνσεις {layers} · τελευταίο άνοιγμα {date}"
+
+#. Translators: "List" is the label of the button beside this text.
+#: src/sidebar.rs:1093
+msgid "Press \"List\" to see the other slides in the database."
+msgstr "Πατήστε «Λίστα» για να δείτε τα άλλα πλακίδια της βάσης δεδομένων."
+
+#: src/sidebar.rs:1094
+msgid "No other slides have annotations."
+msgstr "Κανένα άλλο πλακίδιο δεν έχει επισημάνσεις."
+
+#: src/sidebar.rs:1096
+msgid ""
+"If a slide was re-saved or de-identified, its annotations stay with the old "
+"file. Attach them to the open slide here."
+msgstr ""
+"Αν ένα πλακίδιο αποθηκεύτηκε ξανά ή αποταυτοποιήθηκε, οι επισημάνσεις του "
+"παραμένουν στο παλιό αρχείο. Προσαρτήστε τις εδώ στο ανοιχτό πλακίδιο."
+
+#: src/sidebar.rs:1161
+msgid "Cannot ask for confirmation"
+msgstr "Δεν είναι δυνατή η αίτηση επιβεβαίωσης"
+
+#: src/sidebar.rs:1173
+msgid "Open a slide first."
+msgstr "Ανοίξτε πρώτα ένα πλακίδιο."
+
+#: src/sidebar.rs:1213
+msgid "Compare with another reader's file first."
+msgstr "Κάντε πρώτα σύγκριση με το αρχείο άλλου αξιολογητή."
+
+#: src/sidebar.rs:1219
+msgid "Export all annotations"
+msgstr "Εξαγωγή όλων των επισημάνσεων"
+
+#: src/sidebar.rs:1222
+msgid "eov annotation archive"
+msgstr "Αρχειοθήκη επισημάνσεων eov"
+
+#: src/sidebar.rs:1229
+msgid "Back up the annotation database"
+msgstr "Δημιουργία αντιγράφου ασφαλείας της βάσης δεδομένων επισημάνσεων"
+
+#: src/sidebar.rs:1232 src/sidebar.rs:1242
+msgid "SQLite database"
+msgstr "Βάση δεδομένων SQLite"
+
+#: src/sidebar.rs:1239
+msgid ""
+"Merge an annotation database (a backup, or annotations.db of eov before 1.0)"
+msgstr ""
+"Συγχώνευση βάσης δεδομένων επισημάνσεων (αντίγραφο ασφαλείας ή το "
+"annotations.db του eov πριν από την 1.0)"
+
+#: src/sidebar.rs:1308
+msgid "Show or hide layer"
+msgstr "Εμφάνιση ή απόκρυψη στρώσης"
+
+#: src/sidebar.rs:1322
+msgid "Layer opacity"
+msgstr "Αδιαφάνεια στρώσης"
+
+#: src/sidebar.rs:1337
+msgid "Lock layer"
+msgstr "Κλείδωμα στρώσης"
+
+#: src/sidebar.rs:1339
+msgid "Unlock layer"
+msgstr "Ξεκλείδωμα στρώσης"
+
+#: src/sidebar.rs:1354
+msgid "Change layer colour"
+msgstr "Αλλαγή χρώματος στρώσης"
+
+#: src/sidebar.rs:1370
+msgid "Edit layer notes"
+msgstr "Επεξεργασία σημειώσεων στρώσης"
+
+#: src/sidebar.rs:1387
+msgid "The slide is still loading."
+msgstr "Το πλακίδιο φορτώνεται ακόμη."
+
+#: src/sidebar.rs:1396
+msgctxt "Dialog title"
+msgid "Delete layer"
+msgstr "Διαγραφή στρώσης"
+
+#: src/sidebar.rs:1398
+msgid ""
+"Delete layer \"{name}\" and its {n} annotation? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgid_plural ""
+"Delete layer \"{name}\" and its {n} annotations? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgstr[0] ""
+"Διαγραφή της στρώσης «{name}» και της {n} επισήμανσής της; Μπορείτε να το "
+"αναιρέσετε με Ctrl+Z (⌘Z)."
+msgstr[1] ""
+"Διαγραφή της στρώσης «{name}» και των {n} επισημάνσεών της; Μπορείτε να το "
+"αναιρέσετε με Ctrl+Z (⌘Z)."
+
+#: src/sidebar.rs:1403 src/sidebar.rs:1620
+msgid "Delete"
+msgstr "Διαγραφή"
+
+#: src/sidebar.rs:1404 src/sidebar.rs:1621 src/sidebar.rs:1679
+#: src/sidebar.rs:1772
+msgid "Cancel"
+msgstr "Ακύρωση"
+
+#: src/sidebar.rs:1420
+msgid "Rename annotation"
+msgstr "Μετονομασία επισήμανσης"
+
+#: src/sidebar.rs:1432
+msgid "Edit description"
+msgstr "Επεξεργασία περιγραφής"
+
+#: src/sidebar.rs:1444
+msgid "Set class"
+msgstr "Ορισμός κατηγορίας"
+
+#: src/sidebar.rs:1458
+msgid "Mark draft"
+msgstr "Σήμανση ως πρόχειρη"
+
+#: src/sidebar.rs:1459
+msgid "Mark verified"
+msgstr "Σήμανση ως επαληθευμένη"
+
+#: src/sidebar.rs:1460
+msgid "Mark rejected"
+msgstr "Σήμανση ως απορριφθείσα"
+
+#: src/sidebar.rs:1476
+msgid "Move to layer"
+msgstr "Μετακίνηση σε στρώση"
+
+#: src/sidebar.rs:1529
+msgid "Edit properties"
+msgstr "Επεξεργασία ιδιοτήτων"
+
+#: src/sidebar.rs:1553
+msgid "Select one annotation to comment on."
+msgstr "Επιλέξτε μία επισήμανση για να τη σχολιάσετε."
+
+#: src/sidebar.rs:1566
+msgid "Measurements copied."
+msgstr "Οι μετρήσεις αντιγράφηκαν."
+
+#: src/sidebar.rs:1578
+msgid "Show or hide class"
+msgstr "Εμφάνιση ή απόκρυψη κατηγορίας"
+
+#: src/sidebar.rs:1591
+msgid "Class opacity"
+msgstr "Αδιαφάνεια κατηγορίας"
+
+#: src/sidebar.rs:1611
+msgctxt "Dialog title"
+msgid "Delete class"
+msgstr "Διαγραφή κατηγορίας"
+
+#: src/sidebar.rs:1613
+msgid ""
+"Delete class \"{name}\"? {n} annotation on open slides uses it; it will show "
+"as unclassified. You can undo this."
+msgid_plural ""
+"Delete class \"{name}\"? {n} annotations on open slides use it; they will "
+"show as unclassified. You can undo this."
+msgstr[0] ""
+"Διαγραφή της κατηγορίας «{name}»; Τη χρησιμοποιεί {n} επισήμανση σε ανοιχτά "
+"πλακίδια· θα εμφανίζεται χωρίς κατηγορία. Μπορείτε να το αναιρέσετε."
+msgstr[1] ""
+"Διαγραφή της κατηγορίας «{name}»; Τη χρησιμοποιούν {n} επισημάνσεις σε "
+"ανοιχτά πλακίδια· θα εμφανίζονται χωρίς κατηγορία. Μπορείτε να το αναιρέσετε."
+
+#: src/sidebar.rs:1668
+msgctxt "Dialog title"
+msgid "Clear counts"
+msgstr "Απαλοιφή καταμετρήσεων"
+
+#. Translators: the question of the "Clear counts" dialog, whose
+#. button is "Clear": use the same verb.
+#: src/sidebar.rs:1672
+msgid "Clear the {n} count point of this slide? You can undo this."
+msgid_plural "Clear all {n} count points of this slide? You can undo this."
+msgstr[0] ""
+"Απαλοιφή του {n} σημείου καταμέτρησης αυτού του πλακιδίου; Μπορείτε να το "
+"αναιρέσετε."
+msgstr[1] ""
+"Απαλοιφή και των {n} σημείων καταμέτρησης αυτού του πλακιδίου; Μπορείτε να "
+"το αναιρέσετε."
+
+#. Translators: the button that removes the count points, in the
+#. "Clear counts" dialog.
+#: src/sidebar.rs:1678
+msgid "Clear"
+msgstr "Απαλοιφή"
+
+#: src/sidebar.rs:1694
+msgid "Enter the field area in mm², e.g. {}."
+msgstr "Εισαγάγετε το εμβαδόν του πεδίου σε mm², π.χ. {}."
+
+#: src/sidebar.rs:1702
+msgid "Enter the field number in mm, e.g. 22."
+msgstr "Εισαγάγετε τον αριθμό πεδίου σε mm, π.χ. 22."
+
+#: src/sidebar.rs:1704
+msgid "Enter the objective magnification, e.g. 40."
+msgstr "Εισαγάγετε τη μεγέθυνση του αντικειμενικού φακού, π.χ. 40."
+
+#: src/sidebar.rs:1708
+msgid "That field size is not usable."
+msgstr "Αυτό το μέγεθος πεδίου δεν είναι αξιοποιήσιμο."
+
+#: src/sidebar.rs:1720
+msgid "There is no database from before eov 1.0 to merge."
+msgstr ""
+"Δεν υπάρχει βάση δεδομένων από εκδόσεις πριν από το eov 1.0 για συγχώνευση."
+
+#: src/sidebar.rs:1737
+msgid "That slide is not listed any more."
+msgstr "Αυτό το πλακίδιο δεν εμφανίζεται πλέον στη λίστα."
+
+#: src/sidebar.rs:1748
+msgid ""
+"Attach the annotations of an older slide to the open slide? Use this when "
+"the slide file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"Προσάρτηση των επισημάνσεων ενός παλαιότερου πλακιδίου στο ανοιχτό πλακίδιο; "
+"Χρησιμοποιήστε το όταν το αρχείο του πλακιδίου αποθηκεύτηκε ξανά, "
+"μετατράπηκε ή αποταυτοποιήθηκε. Μπορείτε να το αναιρέσετε."
+
+#: src/sidebar.rs:1753
+msgid ""
+"Attach the annotations of \"{}\" to the open slide? Use this when the slide "
+"file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"Προσάρτηση των επισημάνσεων του «{}» στο ανοιχτό πλακίδιο; Χρησιμοποιήστε το "
+"όταν το αρχείο του πλακιδίου αποθηκεύτηκε ξανά, μετατράπηκε ή "
+"αποταυτοποιήθηκε. Μπορείτε να το αναιρέσετε."
+
+#: src/sidebar.rs:1762
+msgid ""
+"Warning: the two slides have different sizes, so the annotations may not "
+"line up."
+msgstr ""
+"Προειδοποίηση: τα δύο πλακίδια έχουν διαφορετικά μεγέθη, οπότε οι "
+"επισημάνσεις ενδέχεται να μην ευθυγραμμίζονται."
+
+#: src/sidebar.rs:1769
+msgid "Attach annotations"
+msgstr "Προσάρτηση επισημάνσεων"
+
+#: src/sidebar.rs:1771
+msgid "Attach"
+msgstr "Προσάρτηση"
+
+#: src/state.rs:501
+msgid "Compared with {}"
+msgstr "Σύγκριση με {}"
+
+#. Translators: {ours} is "1 annotation" or "5 annotations" (translated on its own).
+#: src/state.rs:509
+msgid ""
+"This slide's visible layers ({ours}) against the {n} annotation in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgid_plural ""
+"This slide's visible layers ({ours}) against the {n} annotations in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgstr[0] ""
+"Οι ορατές στρώσεις αυτού του πλακιδίου ({ours}) έναντι της {n} επισήμανσης "
+"στο {name}, χωρίς τα πεδία HPF· οι αριθμοί είναι πρώτα αυτού του πλακιδίου "
+"και μετά του άλλου αξιολογητή. Τα σημεία μιας κατηγορίας αντιστοιχίζονται "
+"ένα προς ένα εντός {radius} (F1 = 2 · αντιστοιχισμένα / άθροισμα των δύο "
+"πλήθων)· οι περιοχές με βάση την αλληλοεπικάλυψή τους (Dice = 2 · κοινό "
+"εμβαδόν / άθροισμα των δύο εμβαδών)."
+msgstr[1] ""
+"Οι ορατές στρώσεις αυτού του πλακιδίου ({ours}) έναντι των {n} επισημάνσεων "
+"στο {name}, χωρίς τα πεδία HPF· οι αριθμοί είναι πρώτα αυτού του πλακιδίου "
+"και μετά του άλλου αξιολογητή. Τα σημεία μιας κατηγορίας αντιστοιχίζονται "
+"ένα προς ένα εντός {radius} (F1 = 2 · αντιστοιχισμένα / άθροισμα των δύο "
+"πλήθων)· οι περιοχές με βάση την αλληλοεπικάλυψή τους (Dice = 2 · κοινό "
+"εμβαδόν / άθροισμα των δύο εμβαδών)."
+
+#: src/state.rs:522
+msgid "Check the file: {}"
+msgstr "Ελέγξτε το αρχείο: {}"
+
+#: src/state.rs:664
+msgid "The annotation database is read-only."
+msgstr "Η βάση δεδομένων επισημάνσεων είναι μόνο για ανάγνωση."
+
+#: src/state.rs:665
+msgid "The annotation database is still opening."
+msgstr "Η βάση δεδομένων επισημάνσεων ανοίγει ακόμη."
+
+#: src/state.rs:667
+msgid "The annotation database is unavailable: {}"
+msgstr "Η βάση δεδομένων επισημάνσεων δεν είναι διαθέσιμη: {}"
+
+#: src/stats.rs:97
+msgid "Invalid field size"
+msgstr "Μη έγκυρο μέγεθος πεδίου"
+
+#. Translators: HPF is a high-power field; ⌀ its diameter.
+#: src/stats.rs:110
+msgid "1 HPF = {area} mm² (field number {number} at {objective}×, ⌀ {d} mm)"
+msgstr "1 HPF = {area} mm² (αριθμός πεδίου {number} με {objective}×, ⌀ {d} mm)"
+
+#: src/stats.rs:116
+msgid "1 HPF = {area} mm² (⌀ {d} mm)"
+msgstr "1 HPF = {area} mm² (⌀ {d} mm)"
+
+#: src/tools.rs:63
+msgid "Select and edit annotations"
+msgstr "Επιλογή και επεξεργασία επισημάνσεων"
+
+#: src/tools.rs:64
+msgid "Point annotation"
+msgstr "Επισήμανση σημείου"
+
+#: src/tools.rs:65
+msgid "Count cells (Shift+click: second class)"
+msgstr "Καταμέτρηση κυττάρων (Shift+κλικ: δεύτερη κατηγορία)"
+
+#: src/tools.rs:66
+msgid "Polygon (Shift: add to selection, Alt: cut from it)"
+msgstr "Πολύγωνο (Shift: προσθήκη στην επιλογή, Alt: αποκοπή από αυτήν)"
+
+#: src/tools.rs:67
+msgid "Freehand outline (Shift: add, Alt: cut)"
+msgstr "Περίγραμμα ελεύθερης σχεδίασης (Shift: προσθήκη, Alt: αποκοπή)"
+
+#: src/tools.rs:68
+msgid "Rectangle"
+msgstr "Ορθογώνιο"
+
+#: src/tools.rs:69
+msgid "Ellipse"
+msgstr "Έλλειψη"
+
+#: src/tools.rs:70
+msgid "Line / path"
+msgstr "Γραμμή / διαδρομή"
+
+#: src/tools.rs:72
+msgid ""
+"Brush (paint a region, over a selected region to extend it; Alt or the "
+"eraser erases; [ and ] change the size)"
+msgstr ""
+"Πινέλο (ζωγραφίστε μια περιοχή, πάνω σε επιλεγμένη περιοχή για να την "
+"επεκτείνετε· το Alt ή η γόμα σβήνει· τα [ και ] αλλάζουν το μέγεθος)"
+
+#: src/tools.rs:74
+msgid "Arrow (click the tail, double-click the tip; more clicks bend it)"
+msgstr ""
+"Βέλος (κλικ στην ουρά, διπλό κλικ στην αιχμή· περισσότερα κλικ το λυγίζουν)"
+
+#: src/tools.rs:75
+msgid "Text label"
+msgstr "Ετικέτα κειμένου"
+
+#: src/tools.rs:77
+msgid ""
+"HPF field (a field of the configured size follows the pointer; click to "
+"place it, drag to pan)"
+msgstr ""
+"Πεδίο HPF (ένα πεδίο του ορισμένου μεγέθους ακολουθεί τον δείκτη· κάντε κλικ "
+"για να το τοποθετήσετε, σύρετε για μετακίνηση)"
+
+#: src/tools.rs:225
+msgid "Annotation class: {}"
+msgstr "Κατηγορία επισήμανσης: {}"
+
+#. Translators: {} lists what was skipped, as "2 × reason; 1 × other reason".
+#: src/transfer.rs:249
+msgid "Skipped: {}."
+msgstr "Παραλείφθηκαν: {}."
+
+#: src/transfer.rs:253
+msgid "{n} outline crossed itself and was repaired with the even-odd rule."
+msgid_plural ""
+"{n} outlines crossed themselves and were repaired with the even-odd rule."
+msgstr[0] ""
+"{n} περίγραμμα τεμνόταν με τον εαυτό του και επιδιορθώθηκε με τον κανόνα "
+"άρτιου-περιττού."
+msgstr[1] ""
+"{n} περιγράμματα τέμνονταν με τον εαυτό τους και επιδιορθώθηκαν με τον "
+"κανόνα άρτιου-περιττού."
+
+#: src/transfer.rs:260
+msgid "{n} shape extended past the slide and was cut at its edge."
+msgid_plural "{n} shapes extended past the slide and were cut at its edge."
+msgstr[0] ""
+"{n} σχήμα εκτεινόταν πέρα από το πλακίδιο και αποκόπηκε στο άκρο του."
+msgstr[1] ""
+"{n} σχήματα εκτείνονταν πέρα από το πλακίδιο και αποκόπηκαν στο άκρο του."
+
+#: src/transfer.rs:265
+msgid "{n} over-long name or text was shortened."
+msgid_plural "{n} over-long names or texts were shortened."
+msgstr[0] "{n} υπερβολικά μεγάλο όνομα ή κείμενο συντομεύτηκε."
+msgstr[1] "{n} υπερβολικά μεγάλα ονόματα ή κείμενα συντομεύτηκαν."
+
+#: src/transfer.rs:270
+msgid "The file contains no annotations."
+msgstr "Το αρχείο δεν περιέχει επισημάνσεις."
+
+#: src/transfer.rs:272
+msgid "Nothing could be imported. {}"
+msgstr "Δεν ήταν δυνατή η εισαγωγή κανενός στοιχείου. {}"
+
+#: src/transfer.rs:339
+msgid "Made for this slide."
+msgstr "Δημιουργήθηκε για αυτό το πλακίδιο."
+
+#: src/transfer.rs:342
+msgid "Made for a different slide (its identity does not match)."
+msgstr "Δημιουργήθηκε για διαφορετικό πλακίδιο (η ταυτότητά του δεν συμφωνεί)."
+
+#: src/transfer.rs:352
+msgid "Made for a slide of {theirs}; this one is {ours}."
+msgstr ""
+"Δημιουργήθηκε για πλακίδιο μεγέθους {theirs}· αυτό έχει μέγεθος {ours}."
+
+#: src/transfer.rs:360
+msgid "Made for a slide of the same size."
+msgstr "Δημιουργήθηκε για πλακίδιο ίδιου μεγέθους."
+
+#: src/transfer.rs:364
+msgid ""
+"The file does not say which slide it belongs to; coordinates are taken as "
+"level-0 pixels of this slide."
+msgstr ""
+"Το αρχείο δεν δηλώνει σε ποιο πλακίδιο ανήκει· οι συντεταγμένες λαμβάνονται "
+"ως pixel επιπέδου 0 αυτού του πλακιδίου."
+
+#: src/transfer.rs:376
+msgid "Annotations (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "Επισημάνσεις (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:386
+msgid "All files"
+msgstr "Όλα τα αρχεία"
+
+#: src/transfer.rs:398 src/transfer.rs:853 src/transfer.rs:1007
+msgid "Cannot show the file dialog"
+msgstr "Δεν είναι δυνατή η εμφάνιση του παραθύρου διαλόγου αρχείων"
+
+#: src/transfer.rs:413
+msgid "The annotations of this slide are still loading."
+msgstr "Οι επισημάνσεις αυτού του πλακιδίου φορτώνονται ακόμη."
+
+#: src/transfer.rs:434
+msgid "Importing {}"
+msgstr "Εισαγωγή: {}"
+
+#. Translators: the step of an import that reads the file.
+#: src/transfer.rs:447
+msgid "Reading"
+msgstr "Ανάγνωση"
+
+#: src/transfer.rs:474
+msgid ""
+"NDP.view annotations, placed with this slide's offsets from the slide centre "
+"and its pixel size."
+msgstr ""
+"Επισημάνσεις NDP.view, τοποθετημένες με βάση τις μετατοπίσεις αυτού του "
+"πλακιδίου από το κέντρο του και το μέγεθος pixel του."
+
+#: src/transfer.rs:486
+msgid "Checking the slide"
+msgstr "Έλεγχος του πλακιδίου"
+
+#: src/transfer.rs:489
+msgid "cannot read the slide to check the import: {}"
+msgstr ""
+"δεν είναι δυνατή η ανάγνωση του πλακιδίου για τον έλεγχο της εισαγωγής: {}"
+
+#: src/transfer.rs:494
+msgid "Made for this slide (checked by content)."
+msgstr "Δημιουργήθηκε για αυτό το πλακίδιο (ελέγχθηκε βάσει περιεχομένου)."
+
+#: src/transfer.rs:497
+msgid "Made for a different slide (its checksum does not match)."
+msgstr ""
+"Δημιουργήθηκε για διαφορετικό πλακίδιο (το άθροισμα ελέγχου του δεν "
+"συμφωνεί)."
+
+#: src/transfer.rs:521
+msgid "Import cancelled."
+msgstr "Η εισαγωγή ακυρώθηκε."
+
+#: src/transfer.rs:522
+msgid "Could not import {}"
+msgstr "Δεν ήταν δυνατή η εισαγωγή του {}"
+
+#. Translators: "Merge a database…" is the item of the Import and export
+#. menu: quote it as it is translated there.
+#: src/transfer.rs:560
+msgid ""
+"This archive has no annotations for the current slide. Restore whole backups "
+"with \"Merge a database…\"."
+msgstr ""
+"Αυτή η αρχειοθήκη δεν έχει επισημάνσεις για το τρέχον πλακίδιο. Επαναφέρετε "
+"ολόκληρα αντίγραφα ασφαλείας με τη «Συγχώνευση βάσης δεδομένων…»."
+
+#: src/transfer.rs:574
+msgid "Import {n} annotation"
+msgid_plural "Import {n} annotations"
+msgstr[0] "Εισαγωγή {n} επισήμανσης"
+msgstr[1] "Εισαγωγή {n} επισημάνσεων"
+
+#: src/transfer.rs:581
+msgid "The slide this import was started on is not open any more."
+msgstr ""
+"Το πλακίδιο στο οποίο ξεκίνησε αυτή η εισαγωγή δεν είναι πλέον ανοιχτό."
+
+#: src/transfer.rs:737
+msgid "Imported {n} annotation from {file}."
+msgid_plural "Imported {n} annotations from {file}."
+msgstr[0] "Εισήχθη {n} επισήμανση από το {file}."
+msgstr[1] "Εισήχθησαν {n} επισημάνσεις από το {file}."
+
+#: src/transfer.rs:783 src/transfer.rs:818
+msgid "eov annotations"
+msgstr "Επισημάνσεις eov"
+
+#: src/transfer.rs:811
+msgid "DICOM bulk annotations"
+msgstr "Μαζικές επισημάνσεις DICOM"
+
+#: src/transfer.rs:824
+msgid "Export a blinded copy for another reader"
+msgstr "Εξαγωγή τυφλού αντιγράφου για άλλον αξιολογητή"
+
+#: src/transfer.rs:825
+msgid "Export annotations"
+msgstr "Εξαγωγή επισημάνσεων"
+
+#: src/transfer.rs:942
+msgid "Exported {n} annotation to {file}."
+msgid_plural "Exported {n} annotations to {file}."
+msgstr[0] "Εξήχθη {n} επισήμανση στο {file}."
+msgstr[1] "Εξήχθησαν {n} επισημάνσεις στο {file}."
+
+#: src/transfer.rs:948
+msgid "Could not export to {}"
+msgstr "Δεν ήταν δυνατή η εξαγωγή στο {}"
+
+#: src/transfer.rs:988
+msgid "Compare with another reader's annotations"
+msgstr "Σύγκριση με τις επισημάνσεις άλλου αξιολογητή"
+
+#: src/transfer.rs:990
+msgid "Annotations (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "Επισημάνσεις (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:1114
+msgid "Could not compare with {}"
+msgstr "Δεν ήταν δυνατή η σύγκριση με το {}"
+
+#: src/transfer.rs:1123
+msgid "Exporting all annotations"
+msgstr "Εξαγωγή όλων των επισημάνσεων"
+
+#: src/transfer.rs:1176
+msgid "Exported the annotations of {n} slide."
+msgid_plural "Exported the annotations of {n} slides."
+msgstr[0] "Εξήχθησαν οι επισημάνσεις {n} πλακιδίου."
+msgstr[1] "Εξήχθησαν οι επισημάνσεις {n} πλακιδίων."
+
+#: src/transfer.rs:1184
+msgid "Could not export all annotations"
+msgstr "Δεν ήταν δυνατή η εξαγωγή όλων των επισημάνσεων"
+
+#: src/transfer.rs:1201
+msgid "Annotation database backed up."
+msgstr "Δημιουργήθηκε αντίγραφο ασφαλείας της βάσης δεδομένων επισημάνσεων."
+
+#: src/transfer.rs:1203
+msgid "Could not back up the annotation database"
+msgstr ""
+"Δεν ήταν δυνατή η δημιουργία αντιγράφου ασφαλείας της βάσης δεδομένων "
+"επισημάνσεων"
+
+#: src/transfer.rs:1217
+msgid "Merging annotation database"
+msgstr "Συγχώνευση βάσης δεδομένων επισημάνσεων"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers", {slides}
+#. is "1 new slide" or "3 new slides" (each translated on its own).
+#: src/transfer.rs:1232
+msgid "Merged {n} annotation {layers} ({slides})."
+msgid_plural "Merged {n} annotations {layers} ({slides})."
+msgstr[0] "Συγχωνεύτηκε {n} επισήμανση {layers} ({slides})."
+msgstr[1] "Συγχωνεύτηκαν {n} επισημάνσεις {layers} ({slides})."
+
+#. Translators: {slides} in "Merged {n} annotations {layers} ({slides})."
+#: src/transfer.rs:1237
+msgid "{n} new slide"
+msgid_plural "{n} new slides"
+msgstr[0] "{n} νέο πλακίδιο"
+msgstr[1] "{n} νέα πλακίδια"
+
+#: src/transfer.rs:1249
+msgid "Could not merge the database"
+msgstr "Δεν ήταν δυνατή η συγχώνευση της βάσης δεδομένων"
+
+#. Translators: read out for the layer new annotations go into; {} is its
+#. number of annotations.
+#: ui/annotations-sidebar.slint:115
+msgctxt "TreeItem"
+msgid "{} · new annotations go here"
+msgstr "{} · οι νέες επισημάνσεις τοποθετούνται εδώ"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Collapse layer"
+msgstr "Σύμπτυξη στρώσης"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Expand layer"
+msgstr "Ανάπτυξη στρώσης"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Hide layer"
+msgstr "Απόκρυψη στρώσης"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Show layer"
+msgstr "Εμφάνιση στρώσης"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Lock layer"
+msgstr "Κλείδωμα στρώσης"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Unlock layer"
+msgstr "Ξεκλείδωμα στρώσης"
+
+#: ui/annotations-sidebar.slint:222
+msgctxt "TreeItem"
+msgid "Layer settings"
+msgstr "Ρυθμίσεις στρώσης"
+
+#: ui/annotations-sidebar.slint:292
+msgctxt "TreeItem"
+msgid "Locked"
+msgstr "Κλειδωμένη"
+
+#: ui/annotations-sidebar.slint:314
+msgctxt "AnnotationsSidebar"
+msgid "No slide open"
+msgstr "Δεν υπάρχει ανοιχτό πλακίδιο"
+
+#: ui/annotations-sidebar.slint:321
+msgctxt "AnnotationsSidebar"
+msgid "Unclassified"
+msgstr "Χωρίς κατηγορία"
+
+#: ui/annotations-sidebar.slint:488
+msgctxt "AnnotationsSidebar"
+msgid "Import annotations…"
+msgstr "Εισαγωγή επισημάνσεων…"
+
+#: ui/annotations-sidebar.slint:489
+msgctxt "AnnotationsSidebar"
+msgid "Export as GeoJSON (QuPath)…"
+msgstr "Εξαγωγή ως GeoJSON (QuPath)…"
+
+#: ui/annotations-sidebar.slint:490
+msgctxt "AnnotationsSidebar"
+msgid "Export as eov JSON…"
+msgstr "Εξαγωγή ως eov JSON…"
+
+#: ui/annotations-sidebar.slint:491
+msgctxt "AnnotationsSidebar"
+msgid "Export as ASAP XML…"
+msgstr "Εξαγωγή ως ASAP XML…"
+
+#: ui/annotations-sidebar.slint:492
+msgctxt "AnnotationsSidebar"
+msgid "Export as ImageScope XML…"
+msgstr "Εξαγωγή ως ImageScope XML…"
+
+#: ui/annotations-sidebar.slint:493
+msgctxt "AnnotationsSidebar"
+msgid "Export as DICOM annotations…"
+msgstr "Εξαγωγή ως επισημάνσεις DICOM…"
+
+#: ui/annotations-sidebar.slint:494
+msgctxt "AnnotationsSidebar"
+msgid "Export measurements (CSV)…"
+msgstr "Εξαγωγή μετρήσεων (CSV)…"
+
+#: ui/annotations-sidebar.slint:495
+msgctxt "AnnotationsSidebar"
+msgid "Export a blinded copy…"
+msgstr "Εξαγωγή τυφλού αντιγράφου…"
+
+#: ui/annotations-sidebar.slint:496
+msgctxt "AnnotationsSidebar"
+msgid "Compare with another reader…"
+msgstr "Σύγκριση με άλλον αξιολογητή…"
+
+#. Translators: exports the annotations of every slide in the database to one
+#. annotation archive (a JSON file), not the slide images.
+#: ui/annotations-sidebar.slint:497 ui/annotations-sidebar.slint:1986
+msgctxt "AnnotationsSidebar"
+msgid "Export all slides…"
+msgstr "Εξαγωγή όλων των πλακιδίων…"
+
+#: ui/annotations-sidebar.slint:498
+msgctxt "AnnotationsSidebar"
+msgid "Back up the database…"
+msgstr "Αντίγραφο ασφαλείας της βάσης δεδομένων…"
+
+#: ui/annotations-sidebar.slint:499
+msgctxt "AnnotationsSidebar"
+msgid "Merge a database…"
+msgstr "Συγχώνευση βάσης δεδομένων…"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field area"
+msgstr "Εμβαδόν πεδίου"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field number and objective"
+msgstr "Αριθμός πεδίου και αντικειμενικός φακός"
+
+#: ui/annotations-sidebar.slint:600
+msgctxt "AnnotationsSidebar"
+msgid "Annotations"
+msgstr "Επισημάνσεις"
+
+#: ui/annotations-sidebar.slint:635
+msgctxt "AnnotationsSidebar"
+msgid "Import and export"
+msgstr "Εισαγωγή και εξαγωγή"
+
+#: ui/annotations-sidebar.slint:668
+msgctxt "AnnotationsSidebar"
+msgid "Retry"
+msgstr "Νέα προσπάθεια"
+
+#: ui/annotations-sidebar.slint:683
+msgctxt "AnnotationsSidebar"
+msgid "Layers"
+msgstr "Στρώσεις"
+
+#: ui/annotations-sidebar.slint:691
+msgctxt "AnnotationsSidebar"
+msgid "Classes"
+msgstr "Κατηγορίες"
+
+#. Translators: the tab for counting cells.
+#: ui/annotations-sidebar.slint:700
+msgctxt "AnnotationsSidebar"
+msgid "Count"
+msgstr "Καταμέτρηση"
+
+#: ui/annotations-sidebar.slint:708
+msgctxt "AnnotationsSidebar"
+msgid "Data"
+msgstr "Δεδομένα"
+
+#: ui/annotations-sidebar.slint:747
+msgctxt "AnnotationsSidebar"
+msgid "Filter by name, class, kind or status"
+msgstr "Φιλτράρισμα κατά όνομα, κατηγορία, είδος ή κατάσταση"
+
+#: ui/annotations-sidebar.slint:769
+msgctxt "AnnotationsSidebar"
+msgid "Filter annotations"
+msgstr "Φιλτράρισμα επισημάνσεων"
+
+#: ui/annotations-sidebar.slint:786
+msgctxt "AnnotationsSidebar"
+msgid "New layer"
+msgstr "Νέα στρώση"
+
+#: ui/annotations-sidebar.slint:870 ui/annotations-sidebar.slint:1079
+#: ui/annotations-sidebar.slint:1500
+msgctxt "AnnotationsSidebar"
+msgid "Name"
+msgstr "Όνομα"
+
+#: ui/annotations-sidebar.slint:876 ui/annotations-sidebar.slint:878
+msgctxt "AnnotationsSidebar"
+msgid "Layer name"
+msgstr "Όνομα στρώσης"
+
+#: ui/annotations-sidebar.slint:889
+msgctxt "AnnotationsSidebar"
+msgid "Colour"
+msgstr "Χρώμα"
+
+#: ui/annotations-sidebar.slint:898
+msgctxt "AnnotationsSidebar"
+msgid "Layer colour"
+msgstr "Χρώμα στρώσης"
+
+#: ui/annotations-sidebar.slint:906 ui/annotations-sidebar.slint:1518
+msgctxt "AnnotationsSidebar"
+msgid "Opacity"
+msgstr "Αδιαφάνεια"
+
+#: ui/annotations-sidebar.slint:912
+msgctxt "AnnotationsSidebar"
+msgid "Layer opacity"
+msgstr "Αδιαφάνεια στρώσης"
+
+#: ui/annotations-sidebar.slint:923 ui/annotations-sidebar.slint:1162
+msgctxt "AnnotationsSidebar"
+msgid "Notes"
+msgstr "Σημειώσεις"
+
+#: ui/annotations-sidebar.slint:931
+msgctxt "AnnotationsSidebar"
+msgid "Notes about this layer"
+msgstr "Σημειώσεις για αυτή τη στρώση"
+
+#: ui/annotations-sidebar.slint:933
+msgctxt "AnnotationsSidebar"
+msgid "Layer notes"
+msgstr "Σημειώσεις στρώσης"
+
+#: ui/annotations-sidebar.slint:941
+msgctxt "AnnotationsSidebar"
+msgid "Draw into this layer"
+msgstr "Σχεδίαση σε αυτή τη στρώση"
+
+#: ui/annotations-sidebar.slint:942
+msgctxt "AnnotationsSidebar"
+msgid "Delete layer…"
+msgstr "Διαγραφή στρώσης…"
+
+#: ui/annotations-sidebar.slint:1020
+msgctxt "AnnotationsSidebar"
+msgid "Zoom to the annotation"
+msgstr "Ζουμ στην επισήμανση"
+
+#: ui/annotations-sidebar.slint:1028
+msgctxt "AnnotationsSidebar"
+msgid "Copy measurements"
+msgstr "Αντιγραφή μετρήσεων"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the annotation"
+msgstr "Διαγραφή της επισήμανσης"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the selected annotations"
+msgstr "Διαγραφή των επιλεγμένων επισημάνσεων"
+
+#: ui/annotations-sidebar.slint:1065
+msgctxt "AnnotationsSidebar"
+msgid "Repair"
+msgstr "Επιδιόρθωση"
+
+#: ui/annotations-sidebar.slint:1085
+msgctxt "AnnotationsSidebar"
+msgid "Unnamed"
+msgstr "Χωρίς όνομα"
+
+#: ui/annotations-sidebar.slint:1087
+msgctxt "AnnotationsSidebar"
+msgid "Annotation name"
+msgstr "Όνομα επισήμανσης"
+
+#: ui/annotations-sidebar.slint:1098
+msgctxt "AnnotationsSidebar"
+msgid "Class"
+msgstr "Κατηγορία"
+
+#: ui/annotations-sidebar.slint:1104
+msgctxt "AnnotationsSidebar"
+msgid "Annotation class"
+msgstr "Κατηγορία επισήμανσης"
+
+#: ui/annotations-sidebar.slint:1115
+msgctxt "AnnotationsSidebar"
+msgid "Status"
+msgstr "Κατάσταση"
+
+#: ui/annotations-sidebar.slint:1121
+msgctxt "AnnotationsSidebar"
+msgid "Review status"
+msgstr "Κατάσταση ελέγχου"
+
+#: ui/annotations-sidebar.slint:1132
+msgctxt "AnnotationsSidebar"
+msgid "Layer"
+msgstr "Στρώση"
+
+#: ui/annotations-sidebar.slint:1138
+msgctxt "AnnotationsSidebar"
+msgid "Annotation layer"
+msgstr "Στρώση επισήμανσης"
+
+#: ui/annotations-sidebar.slint:1149
+msgctxt "AnnotationsSidebar"
+msgid "Locked"
+msgstr "Κλειδωμένη"
+
+#: ui/annotations-sidebar.slint:1170 ui/annotations-sidebar.slint:1172
+msgctxt "AnnotationsSidebar"
+msgid "Description"
+msgstr "Περιγραφή"
+
+#: ui/annotations-sidebar.slint:1183
+msgctxt "AnnotationsSidebar"
+msgid "MEASUREMENTS"
+msgstr "ΜΕΤΡΗΣΕΙΣ"
+
+#: ui/annotations-sidebar.slint:1213
+msgctxt "AnnotationsSidebar"
+msgid "PROPERTIES"
+msgstr "ΙΔΙΟΤΗΤΕΣ"
+
+#: ui/annotations-sidebar.slint:1224
+msgctxt "AnnotationsSidebar"
+msgid "Property name"
+msgstr "Όνομα ιδιότητας"
+
+#: ui/annotations-sidebar.slint:1233
+msgctxt "AnnotationsSidebar"
+msgid "Value"
+msgstr "Τιμή"
+
+#: ui/annotations-sidebar.slint:1235
+msgctxt "AnnotationsSidebar"
+msgid "Property value"
+msgstr "Τιμή ιδιότητας"
+
+#: ui/annotations-sidebar.slint:1243
+msgctxt "AnnotationsSidebar"
+msgid "Remove property"
+msgstr "Κατάργηση ιδιότητας"
+
+#: ui/annotations-sidebar.slint:1255
+msgctxt "AnnotationsSidebar"
+msgid "Add property"
+msgstr "Προσθήκη ιδιότητας"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS"
+msgstr "ΣΧΟΛΙΑ"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS ({})"
+msgstr "ΣΧΟΛΙΑ ({})"
+
+#: ui/annotations-sidebar.slint:1294
+msgctxt "AnnotationsSidebar"
+msgid "Delete comment"
+msgstr "Διαγραφή σχολίου"
+
+#: ui/annotations-sidebar.slint:1314
+msgctxt "AnnotationsSidebar"
+msgid "Add a comment"
+msgstr "Προσθέστε ένα σχόλιο"
+
+#: ui/annotations-sidebar.slint:1316
+msgctxt "AnnotationsSidebar"
+msgid "New comment"
+msgstr "Νέο σχόλιο"
+
+#. Translators: a button that adds the comment typed above.
+#: ui/annotations-sidebar.slint:1324
+msgctxt "AnnotationsSidebar"
+msgid "Comment"
+msgstr "Προσθήκη"
+
+#: ui/annotations-sidebar.slint:1358
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Select an annotation on the slide or in the list to see its details. Double-"
+"click a row to zoom to it; Ctrl+click selects several."
+msgstr ""
+"Επιλέξτε μια επισήμανση στο πλακίδιο ή στη λίστα για να δείτε τις "
+"λεπτομέρειές της. Κάντε διπλό κλικ σε μια γραμμή για ζουμ σε αυτήν· το "
+"Ctrl+κλικ επιλέγει πολλές."
+
+#: ui/annotations-sidebar.slint:1379
+msgctxt "AnnotationsSidebar"
+msgid ""
+"New annotations get the active class (●), and the Count tool counts it; "
+"Shift+click counts the second class (◐). Pressing a class's hotkey makes it "
+"active."
+msgstr ""
+"Οι νέες επισημάνσεις λαμβάνουν την ενεργή κατηγορία (●), την οποία καταμετρά "
+"και το εργαλείο καταμέτρησης· το Shift+κλικ καταμετρά τη δεύτερη κατηγορία "
+"(◐). Με το πάτημα της συντόμευσης μιας κατηγορίας, αυτή γίνεται ενεργή."
+
+#: ui/annotations-sidebar.slint:1418
+msgctxt "AnnotationsSidebar"
+msgid "Colour of {}"
+msgstr "Χρώμα: {}"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Hide {}"
+msgstr "Απόκρυψη: {}"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Show {}"
+msgstr "Εμφάνιση: {}"
+
+#: ui/annotations-sidebar.slint:1466
+msgctxt "AnnotationsSidebar"
+msgid "Class settings"
+msgstr "Ρυθμίσεις κατηγορίας"
+
+#: ui/annotations-sidebar.slint:1506 ui/annotations-sidebar.slint:1507
+msgctxt "AnnotationsSidebar"
+msgid "Class name"
+msgstr "Όνομα κατηγορίας"
+
+#: ui/annotations-sidebar.slint:1523
+msgctxt "AnnotationsSidebar"
+msgid "Class opacity"
+msgstr "Αδιαφάνεια κατηγορίας"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Count with Shift+click"
+msgstr "Καταμέτρηση με Shift+κλικ"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Stop counting with Shift+click"
+msgstr "Διακοπή καταμέτρησης με Shift+κλικ"
+
+#: ui/annotations-sidebar.slint:1539
+msgctxt "AnnotationsSidebar"
+msgid "Delete…"
+msgstr "Διαγραφή…"
+
+#: ui/annotations-sidebar.slint:1558
+msgctxt "AnnotationsSidebar"
+msgid "New class"
+msgstr "Νέα κατηγορία"
+
+#: ui/annotations-sidebar.slint:1596
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Pick the Count tool (C) and click cells; Shift+click and Alt+click count the "
+"second and third class. Select regions or HPF fields to count inside them."
+msgstr ""
+"Επιλέξτε το εργαλείο καταμέτρησης (C) και κάντε κλικ στα κύτταρα· το "
+"Shift+κλικ και το Alt+κλικ καταμετρούν τη δεύτερη και την τρίτη κατηγορία. "
+"Επιλέξτε περιοχές ή πεδία HPF για να καταμετρήσετε μέσα σε αυτά."
+
+#: ui/annotations-sidebar.slint:1601
+msgctxt "AnnotationsSidebar"
+msgid "Count tool (C)"
+msgstr "Εργαλείο καταμέτρησης (C)"
+
+#: ui/annotations-sidebar.slint:1602
+msgctxt "AnnotationsSidebar"
+msgid "HPF field (H)"
+msgstr "Πεδίο HPF (H)"
+
+#. Translators: the class a click with the Count tool counts.
+#: ui/annotations-sidebar.slint:1614
+msgctxt "AnnotationsSidebar"
+msgid "Click"
+msgstr "Κλικ"
+
+#: ui/annotations-sidebar.slint:1620
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by a click"
+msgstr "Κατηγορία που καταμετράται με κλικ"
+
+#: ui/annotations-sidebar.slint:1631
+msgctxt "AnnotationsSidebar"
+msgid "Shift+click"
+msgstr "Shift+κλικ"
+
+#: ui/annotations-sidebar.slint:1636
+msgctxt "AnnotationsSidebar"
+msgid "(same as click)"
+msgstr "(όπως το κλικ)"
+
+#: ui/annotations-sidebar.slint:1637
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by Shift+click"
+msgstr "Κατηγορία που καταμετράται με Shift+κλικ"
+
+#: ui/annotations-sidebar.slint:1648
+msgctxt "AnnotationsSidebar"
+msgid "Alt+click"
+msgstr "Alt+κλικ"
+
+#: ui/annotations-sidebar.slint:1653
+msgctxt "AnnotationsSidebar"
+msgid "(none)"
+msgstr "(καμία)"
+
+#: ui/annotations-sidebar.slint:1654
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Class counted by Alt+click: PD-L1-positive immune cells for the combined "
+"positive score"
+msgstr ""
+"Κατηγορία που καταμετράται με Alt+κλικ: ανοσοκύτταρα θετικά για PD-L1, για "
+"τη συνδυασμένη θετική βαθμολογία"
+
+#: ui/annotations-sidebar.slint:1662
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Combined positive score: the click and Alt+click classes (PD-L1-positive "
+"tumour cells and PD-L1-positive immune cells) per 100 tumour cells (the "
+"click and Shift+click classes)."
+msgstr ""
+"Συνδυασμένη θετική βαθμολογία (CPS): οι κατηγορίες του κλικ και του Alt+κλικ "
+"(καρκινικά κύτταρα θετικά για PD-L1 και ανοσοκύτταρα θετικά για PD-L1) ανά "
+"100 καρκινικά κύτταρα (οι κατηγορίες του κλικ και του Shift+κλικ)."
+
+#: ui/annotations-sidebar.slint:1677
+msgctxt "AnnotationsSidebar"
+msgid "Nothing counted here yet."
+msgstr "Δεν έχει καταμετρηθεί τίποτα εδώ ακόμη."
+
+#: ui/annotations-sidebar.slint:1748
+msgctxt "AnnotationsSidebar"
+msgid "Count points in hidden layers"
+msgstr "Καταμέτρηση και των σημείων σε κρυφές στρώσεις"
+
+#: ui/annotations-sidebar.slint:1759
+msgctxt "AnnotationsSidebar"
+msgid "Clear counts…"
+msgstr "Απαλοιφή καταμετρήσεων…"
+
+#: ui/annotations-sidebar.slint:1771
+msgctxt "AnnotationsSidebar"
+msgid "HIGH-POWER FIELDS"
+msgstr "ΟΠΤΙΚΑ ΠΕΔΙΑ ΜΕΓΑΛΗΣ ΜΕΓΕΘΥΝΣΗΣ"
+
+#: ui/annotations-sidebar.slint:1785
+msgctxt "AnnotationsSidebar"
+msgid "How the field size is given"
+msgstr "Τρόπος ορισμού του μεγέθους πεδίου"
+
+#. Translators: FN is the eyepiece's field number, the diameter of the field
+#. of view.
+#: ui/annotations-sidebar.slint:1796
+msgctxt "AnnotationsSidebar"
+msgid "FN (mm)"
+msgstr "FN (mm)"
+
+#: ui/annotations-sidebar.slint:1803
+msgctxt "AnnotationsSidebar"
+msgid "Field number in mm"
+msgstr "Αριθμός πεδίου σε mm"
+
+#. Translators: the magnification of the objective, as in 40×.
+#: ui/annotations-sidebar.slint:1811
+msgctxt "AnnotationsSidebar"
+msgid "Objective ×"
+msgstr "Αντικειμενικός ×"
+
+#: ui/annotations-sidebar.slint:1821
+msgctxt "AnnotationsSidebar"
+msgid "Objective magnification"
+msgstr "Μεγέθυνση αντικειμενικού φακού"
+
+#: ui/annotations-sidebar.slint:1828 ui/annotations-sidebar.slint:1853
+msgctxt "AnnotationsSidebar"
+msgid "Apply"
+msgstr "Εφαρμογή"
+
+#: ui/annotations-sidebar.slint:1839
+msgctxt "AnnotationsSidebar"
+msgid "Area (mm²)"
+msgstr "Εμβαδόν (mm²)"
+
+#: ui/annotations-sidebar.slint:1846
+msgctxt "AnnotationsSidebar"
+msgid "Field area in square millimetres"
+msgstr "Εμβαδόν πεδίου σε τετραγωνικά χιλιοστόμετρα"
+
+#: ui/annotations-sidebar.slint:1873
+msgctxt "AnnotationsSidebar"
+msgid "{n} field placed on this slide."
+msgid_plural "{n} fields placed on this slide."
+msgstr[0] "Έχει τοποθετηθεί {n} πεδίο σε αυτό το πλακίδιο."
+msgstr[1] "Έχουν τοποθετηθεί {n} πεδία σε αυτό το πλακίδιο."
+
+#: ui/annotations-sidebar.slint:1885
+msgctxt "AnnotationsSidebar"
+msgid "Select all fields"
+msgstr "Επιλογή όλων των πεδίων"
+
+#: ui/annotations-sidebar.slint:1924
+msgctxt "AnnotationsSidebar"
+msgid "IMPORT AND EXPORT"
+msgstr "ΕΙΣΑΓΩΓΗ ΚΑΙ ΕΞΑΓΩΓΗ"
+
+#: ui/annotations-sidebar.slint:1928
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Imports: GeoJSON (QuPath and others), eov JSON, ASAP XML, Aperio ImageScope "
+"XML, Hamamatsu NDPA and DICOM bulk annotations. Coordinates are level-0 "
+"pixels with y pointing down."
+msgstr ""
+"Εισαγωγή από: GeoJSON (QuPath και άλλα), eov JSON, ASAP XML, Aperio "
+"ImageScope XML, Hamamatsu NDPA και μαζικές επισημάνσεις DICOM. Οι "
+"συντεταγμένες είναι pixel επιπέδου 0, με τον άξονα y προς τα κάτω."
+
+#: ui/annotations-sidebar.slint:1935
+msgctxt "AnnotationsSidebar"
+msgid "Import…"
+msgstr "Εισαγωγή…"
+
+#: ui/annotations-sidebar.slint:1991
+msgctxt "AnnotationsSidebar"
+msgid "Back up…"
+msgstr "Αντίγραφο ασφαλείας…"
+
+#: ui/annotations-sidebar.slint:1992
+msgctxt "AnnotationsSidebar"
+msgid "Merge…"
+msgstr "Συγχώνευση…"
+
+#. Translators: a reader is a person who annotates slides; a second reader
+#. annotates a blinded copy independently so two readers can be compared (as
+#. in a reader study); use the word for an observer or annotator, not the
+#. clinical term for a second diagnostic opinion.
+#: ui/annotations-sidebar.slint:2009
+msgctxt "AnnotationsSidebar"
+msgid "SECOND READER"
+msgstr "ΔΕΥΤΕΡΟΣ ΑΞΙΟΛΟΓΗΤΗΣ"
+
+#: ui/annotations-sidebar.slint:2013
+msgctxt "AnnotationsSidebar"
+msgid ""
+"A blinded copy holds the visible layers' shapes, classes and names, without "
+"authors, comments, statuses, descriptions or properties. Compare reads "
+"another reader's export and compares it with the visible layers: counts per "
+"class, matched points and overlapping regions."
+msgstr ""
+"Ένα τυφλό αντίγραφο περιέχει τα σχήματα, τις κατηγορίες και τα ονόματα των "
+"ορατών στρώσεων, χωρίς συντάκτες, σχόλια, καταστάσεις, περιγραφές ή "
+"ιδιότητες. Η «Σύγκριση» διαβάζει την εξαγωγή άλλου αξιολογητή και τη "
+"συγκρίνει με τις ορατές στρώσεις: αριθμούς ανά κατηγορία, αντιστοιχισμένα "
+"σημεία και περιοχές που αλληλοεπικαλύπτονται."
+
+#: ui/annotations-sidebar.slint:2018
+msgctxt "AnnotationsSidebar"
+msgid "Blinded copy…"
+msgstr "Τυφλό αντίγραφο…"
+
+#: ui/annotations-sidebar.slint:2019
+msgctxt "AnnotationsSidebar"
+msgid "Compare…"
+msgstr "Σύγκριση…"
+
+#. Translators: a button: compare with the same file again.
+#: ui/annotations-sidebar.slint:2022
+msgctxt "AnnotationsSidebar"
+msgid "Again"
+msgstr "Ξανά"
+
+#. Translators: a button: remove the comparison.
+#: ui/annotations-sidebar.slint:2029
+msgctxt "AnnotationsSidebar"
+msgid "Clear"
+msgstr "Απαλοιφή"
+
+#: ui/annotations-sidebar.slint:2066
+msgctxt "AnnotationsSidebar"
+msgid "Neither reader has points or regions in the compared layers."
+msgstr ""
+"Κανένας από τους δύο αξιολογητές δεν έχει σημεία ή περιοχές στις στρώσεις "
+"που συγκρίνονται."
+
+#: ui/annotations-sidebar.slint:2126
+msgctxt "AnnotationsSidebar"
+msgid "DATABASE"
+msgstr "ΒΑΣΗ ΔΕΔΟΜΕΝΩΝ"
+
+#: ui/annotations-sidebar.slint:2150
+msgctxt "AnnotationsSidebar"
+msgid "Database file"
+msgstr "Αρχείο βάσης δεδομένων"
+
+#. Translators: {} is the path of the old database file.
+#: ui/annotations-sidebar.slint:2167
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Annotations made with eov before 1.0 are in {}. Bring them into this "
+"database (the old file is not changed):"
+msgstr ""
+"Οι επισημάνσεις που έγιναν με το eov πριν από την 1.0 βρίσκονται στο {}. "
+"Μεταφέρετέ τις σε αυτή τη βάση δεδομένων (το παλιό αρχείο δεν αλλάζει):"
+
+#: ui/annotations-sidebar.slint:2179
+msgctxt "AnnotationsSidebar"
+msgid "Bring them in"
+msgstr "Μεταφορά"
+
+#: ui/annotations-sidebar.slint:2195
+msgctxt "AnnotationsSidebar"
+msgid "OTHER SLIDES"
+msgstr "ΑΛΛΑ ΠΛΑΚΙΔΙΑ"
+
+#. Translators: a button that lists the other slides in the database.
+#: ui/annotations-sidebar.slint:2202
+msgctxt "AnnotationsSidebar"
+msgid "List"
+msgstr "Λίστα"
+
+#. Translators: a button: attach the annotations of this slide to the open
+#. slide.
+#: ui/annotations-sidebar.slint:2236
+msgctxt "AnnotationsSidebar"
+msgid "Attach"
+msgstr "Προσάρτηση"
+
+#: ui/annotations-sidebar.slint:2258
+msgctxt "AnnotationsSidebar"
+msgid "AUTHOR AND EXPORTS"
+msgstr "ΣΥΝΤΑΚΤΗΣ ΚΑΙ ΕΞΑΓΩΓΕΣ"
+
+#: ui/annotations-sidebar.slint:2265 ui/annotations-sidebar.slint:2273
+msgctxt "AnnotationsSidebar"
+msgid "Author"
+msgstr "Συντάκτης"
+
+#: ui/annotations-sidebar.slint:2272
+msgctxt "AnnotationsSidebar"
+msgid "Your name or initials"
+msgstr "Το όνομα ή τα αρχικά σας"
+
+#: ui/annotations-sidebar.slint:2284 ui/annotations-sidebar.slint:2291
+msgctxt "AnnotationsSidebar"
+msgid "Organization"
+msgstr "Οργανισμός"
+
+#: ui/annotations-sidebar.slint:2302 ui/annotations-sidebar.slint:2309
+msgctxt "AnnotationsSidebar"
+msgid "Project"
+msgstr "Έργο"
+
+#: ui/annotations-sidebar.slint:2320 ui/annotations-sidebar.slint:2328
+msgctxt "AnnotationsSidebar"
+msgid "License"
+msgstr "Άδεια χρήσης"
+
+#: ui/annotations-sidebar.slint:2327
+msgctxt "AnnotationsSidebar"
+msgid "e.g. CC-BY-4.0"
+msgstr "π.χ. CC-BY-4.0"
+
+#: ui/annotations-sidebar.slint:2336
+msgctxt "AnnotationsSidebar"
+msgid "Include the slide's file name in exports"
+msgstr "Συμπερίληψη του ονόματος αρχείου του πλακιδίου στις εξαγωγές"
+
+#: ui/annotations-sidebar.slint:2346
+msgctxt "AnnotationsSidebar"
+msgid "DISPLAY"
+msgstr "ΕΜΦΑΝΙΣΗ"
+
+#: ui/annotations-sidebar.slint:2350
+msgctxt "AnnotationsSidebar"
+msgid "Show names on the slide"
+msgstr "Εμφάνιση ονομάτων στο πλακίδιο"
+
+#: ui/annotations-sidebar.slint:2361 ui/annotations-sidebar.slint:2369
+msgctxt "AnnotationsSidebar"
+msgid "Point size"
+msgstr "Μέγεθος σημείου"
+
+#: ui/annotations-sidebar.slint:2380 ui/annotations-sidebar.slint:2386
+msgctxt "AnnotationsSidebar"
+msgid "Fill opacity"
+msgstr "Αδιαφάνεια γεμίσματος"
+
+#. Translators: S is the brush tool's key.
+#: ui/annotations-sidebar.slint:2397
+msgctxt "AnnotationsSidebar"
+msgid "BRUSH (S)"
+msgstr "ΠΙΝΕΛΟ (S)"
+
+#. Translators: the size of the brush.
+#: ui/annotations-sidebar.slint:2405
+msgctxt "AnnotationsSidebar"
+msgid "Size"
+msgstr "Μέγεθος"
+
+#: ui/annotations-sidebar.slint:2413
+msgctxt "AnnotationsSidebar"
+msgid "Brush size"
+msgstr "Μέγεθος πινέλου"
+
+#: ui/annotations-sidebar.slint:2429
+msgctxt "AnnotationsSidebar"
+msgid "Erase from the selected region"
+msgstr "Σβήσιμο από την επιλεγμένη περιοχή"
+
+#: ui/annotations-sidebar.slint:2437
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Paint over a selected region to extend it, elsewhere to make a new one. Hold "
+"Alt to erase; [ and ] change the size."
+msgstr ""
+"Ζωγραφίστε πάνω σε επιλεγμένη περιοχή για να την επεκτείνετε ή αλλού για να "
+"δημιουργήσετε νέα. Κρατήστε πατημένο το Alt για σβήσιμο· τα [ και ] αλλάζουν "
+"το μέγεθος."
+
+#: ui/annotations-sidebar.slint:2557
+msgctxt "AnnotationsSidebar"
+msgid "Colours"
+msgstr "Χρώματα"
+
+#: ui/import-dialog.slint:117 ui/import-dialog.slint:124
+msgctxt "ImportDialog"
+msgid "Import annotations"
+msgstr "Εισαγωγή επισημάνσεων"
+
+#: ui/import-dialog.slint:186
+msgctxt "ImportDialog"
+msgid "NOTES"
+msgstr "ΣΗΜΕΙΩΣΕΙΣ"
+
+#: ui/import-dialog.slint:214
+msgctxt "ImportDialog"
+msgid "Add to the existing layers"
+msgstr "Προσθήκη στις υπάρχουσες στρώσεις"
+
+#: ui/import-dialog.slint:215
+msgctxt "ImportDialog"
+msgid "Imported annotations join the layer with the same name."
+msgstr "Οι εισαγόμενες επισημάνσεις προστίθενται στη στρώση με το ίδιο όνομα."
+
+#: ui/import-dialog.slint:223
+msgctxt "ImportDialog"
+msgid "Replace the existing layers"
+msgstr "Αντικατάσταση των υπαρχουσών στρώσεων"
+
+#: ui/import-dialog.slint:224
+msgctxt "ImportDialog"
+msgid "The existing layers are deleted (this can be undone)."
+msgstr "Οι υπάρχουσες στρώσεις διαγράφονται (αυτό μπορεί να αναιρεθεί)."
+
+#: ui/import-dialog.slint:232
+msgctxt "ImportDialog"
+msgid "Keep both"
+msgstr "Διατήρηση και των δύο"
+
+#. Translators: "Tumour" is only an example of a layer name from the imported
+#. file: translate it, and keep the " (2)" that eov adds.
+#: ui/import-dialog.slint:234
+msgctxt "ImportDialog"
+msgid "Imported layers get a new name, such as \"Tumour (2)\"."
+msgstr "Οι εισαγόμενες στρώσεις παίρνουν νέο όνομα, όπως «Όγκος (2)»."
+
+#: ui/import-dialog.slint:243
+msgctxt "ImportDialog"
+msgid "The import is one step: Ctrl+Z (⌘Z) removes everything it added."
+msgstr "Η εισαγωγή είναι ένα βήμα: το Ctrl+Z (⌘Z) αφαιρεί όλα όσα πρόσθεσε."
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Cancel"
+msgstr "Ακύρωση"
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Close"
+msgstr "Κλείσιμο"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import"
+msgstr "Εισαγωγή"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import anyway"
+msgstr "Εισαγωγή παρ' όλα αυτά"
+
+#: ui/widgets.slint:655
+msgctxt "Swatch"
+msgid "Change colour"
+msgstr "Αλλαγή χρώματος"
+
+#: ui/widgets.slint:694
+msgctxt "KeyField"
+msgid "Hotkey"
+msgstr "Συντόμευση"
+
+#: ui/widgets.slint:696
+msgctxt "KeyField"
+msgid "Click, then press a key. Backspace removes the hotkey."
+msgstr ""
+"Κάντε κλικ και μετά πατήστε ένα πλήκτρο. Το Backspace αφαιρεί τη συντόμευση."

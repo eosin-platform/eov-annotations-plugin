@@ -15,6 +15,7 @@ use crate::measure::Calibration;
 use crate::model::{Color, Geometry, LayerRole};
 use crate::state::{SlideData, State};
 use crate::stats::{FieldSize, binomial_interval, poisson_interval};
+use eov_plugin_api::i18n::{self, tr};
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -179,15 +180,19 @@ pub fn tally(state: &State, slide: &SlideData, selection: &[String]) -> Tally {
 pub fn density_text(count: u64, area_mm2: f64, field: &FieldSize) -> (String, String) {
     let (lo, hi) = poisson_interval(count);
     let per_mm2 = count as f64 / area_mm2;
-    let density = format!(
-        "{} /mm² (95% {}–{})",
-        short(per_mm2),
-        short(lo / area_mm2),
-        short(hi / area_mm2)
+    let density = tr!(
+        // Translators: cells per square millimetre, with the 95% confidence interval.
+        "{density} /mm² (95% {low}–{high})",
+        density = short(per_mm2),
+        low = short(lo / area_mm2),
+        high = short(hi / area_mm2)
     );
     let per_hpf = field
         .area_mm2()
-        .map(|hpf| format!("{} /10 HPF", short(per_mm2 * 10.0 * hpf)))
+        .map(|hpf| {
+            // Translators: cells per 10 high-power fields.
+            tr!("{} /10 HPF", short(per_mm2 * 10.0 * hpf))
+        })
         .unwrap_or_default();
     (density, per_hpf)
 }
@@ -214,41 +219,69 @@ pub fn cps_text(
     }
     let raw = 100.0 * (a + c) as f64 / tumour as f64;
     let score = if raw > 100.0 {
-        "100 (capped; the ratio is higher)".to_string()
+        tr!("100 (capped; the ratio is higher)")
     } else {
-        format!("{raw:.1}")
+        i18n::format_decimal(raw, 1)
     };
-    let few = if tumour < CPS_MIN_TUMOUR_CELLS {
-        format!(
-            " Fewer than {CPS_MIN_TUMOUR_CELLS} tumour cells: below the minimum for a valid score."
-        )
-    } else {
-        String::new()
-    };
-    Some(format!(
-        "CPS {score} — ({a} {tumour_positive} + {c} {immune_positive}) per {tumour} tumour cells ({tumour_positive} + {tumour_negative}) × 100.{few}"
-    ))
+    let (positive, negative, immune) = (
+        i18n::isolate(tumour_positive),
+        i18n::isolate(tumour_negative),
+        i18n::isolate(immune_positive),
+    );
+    let mut text = tr!(
+        // Translators: CPS is the PD-L1 combined positive score; {positive},
+        // {negative} and {immune} are names of classes of cells.
+        "CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cell ({positive} + {negative}) × 100."
+            | "CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cells ({positive} + {negative}) × 100."
+                % tumour,
+        score = score,
+        a = a,
+        positive = positive,
+        c = c,
+        immune = immune,
+        negative = negative
+    );
+    if tumour < CPS_MIN_TUMOUR_CELLS {
+        text = i18n::join_sentences([
+            text,
+            tr!(
+                "Fewer than {n} tumour cells: below the minimum for a valid score."
+                    | "Fewer than {n} tumour cells: below the minimum for a valid score."
+                        % CPS_MIN_TUMOUR_CELLS
+            ),
+        ]);
+    }
+    Some(text)
 }
 
 pub fn index_text(numerator: &str, denominator: &str, k: u64, m: u64) -> Option<String> {
     let n = k + m;
     let (lo, hi) = binomial_interval(k, n)?;
-    Some(format!(
-        "{numerator} index: {:.1} % (95% {:.1}–{:.1} %) — {k} of {n} ({numerator} + {denominator})",
-        100.0 * k as f64 / n as f64,
-        100.0 * lo,
-        100.0 * hi
+    Some(tr!(
+        // Translators: e.g. "Ki-67+ index: 25.0 % (95% 20.1–30.4 %) — 25 of 100 (Ki-67+ + Ki-67-)";
+        // {class} and {other} are names of classes of cells.
+        "{class} index: {value} % (95% {low}–{high} %) — {k} of {total} ({class} + {other})",
+        class = i18n::isolate(numerator),
+        value = i18n::format_decimal(100.0 * k as f64 / n as f64, 1),
+        low = i18n::format_decimal(100.0 * lo, 1),
+        high = i18n::format_decimal(100.0 * hi, 1),
+        k = k,
+        total = n,
+        other = i18n::isolate(denominator)
     ))
 }
 
+/// A density with three significant digits or so, in the interface's
+/// decimal notation.
 fn short(value: f64) -> String {
-    if value >= 100.0 {
-        format!("{value:.0}")
+    let decimals = if value >= 100.0 {
+        0
     } else if value >= 10.0 {
-        format!("{value:.1}")
+        1
     } else {
-        format!("{value:.2}")
-    }
+        2
+    };
+    i18n::format_decimal(value, decimals)
 }
 
 /// Points inside a circle-ish field (the HPF reticle).

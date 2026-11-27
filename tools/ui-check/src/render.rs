@@ -185,6 +185,27 @@ fn run(out: &Path) -> Result<(), String> {
             render(&instance, &window, 340, 860, &out.join(file))?;
         }
         let _ = std::fs::remove_file(out.join("scratch.png"));
+        // As in Arabic, Persian and Hebrew: texts start at the right (eov
+        // sets `eov-rtl`; the texts stay English here).
+        for (tab, name, state) in [(0, "layers", "one selected"), (3, "data", "data tab")] {
+            let properties = sample(state).unwrap_or(properties);
+            let (instance, window) = instantiate(&sidebar_def, properties)?;
+            for (property, value) in [
+                ("tab", Value::Number(tab as f64)),
+                ("eov-rtl", Value::Bool(true)),
+            ] {
+                instance
+                    .set_property(property, value)
+                    .map_err(|e| e.to_string())?;
+            }
+            render(
+                &instance,
+                &window,
+                340,
+                1200,
+                &out.join(format!("rtl-tab-{name}.png")),
+            )?;
+        }
     }
     for (label, properties) in &samples.import {
         let (instance, window) = instantiate(&import_def, properties)?;
@@ -194,6 +215,19 @@ fn run(out: &Path) -> Result<(), String> {
             520,
             400,
             &out.join(format!("{}.png", label.replace(' ', "-"))),
+        )?;
+    }
+    if let Some((label, properties)) = samples.import.first() {
+        let (instance, window) = instantiate(&import_def, properties)?;
+        instance
+            .set_property("eov-rtl", Value::Bool(true))
+            .map_err(|e| e.to_string())?;
+        render(
+            &instance,
+            &window,
+            520,
+            400,
+            &out.join(format!("rtl-{}.png", label.replace(' ', "-"))),
         )?;
     }
     Ok(())

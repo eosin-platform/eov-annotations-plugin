@@ -159,13 +159,16 @@ impl Styler {
         if self.show_labels && kind != GeometryKind::Text && !a.name.trim().is_empty() {
             object.label = Some(a.name.clone());
         }
-        let class_name = class.map_or("Unclassified", |c| c.name.as_str());
-        let mut tooltip = format!("{class_name} · {}", a.display_name());
+        // The tooltip lists the class, the name and the state, each in the
+        // interface's language.
+        let class_name = class.map_or_else(|| tr!("Unclassified"), |c| c.name.clone());
+        let mut tooltip = format!("{class_name} · {}", a.shown_name());
         if a.status != Status::Draft {
             tooltip.push_str(&format!(" · {}", a.status.label()));
         }
         if a.locked {
-            tooltip.push_str(" · locked");
+            // Translators: in the tooltip of a locked annotation, after its class and name.
+            tooltip.push_str(&format!(" · {}", tr!("locked")));
         }
         object.tooltip = Some(tooltip);
         if a.locked {

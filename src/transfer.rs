@@ -8,16 +8,17 @@
 //! atomically and carry no absolute path (ANN-17).
 
 use crate::change::Change;
-use crate::core::{Core, Op, Planned};
+use crate::core::{Core, Op, Planned, label};
 use crate::fileio;
 use crate::formats::{self, ImportClass, ImportDoc, eov, geojson};
 use crate::geometry;
 use crate::measure::Calibration;
 use crate::model::{
-    Annotation, Bounds, Class, Color, Geometry, Layer, LayerRole, SlideId, Status, clean_name,
-    clean_properties, clean_text, new_id, now_ms, pick_color,
+    Annotation, Bounds, Class, Color, Field, Geometry, Layer, LayerRole, SlideId, Status,
+    clean_name, clean_properties, clean_text, new_id, now_ms, pick_color,
 };
 use crate::state::{ExportFormat, Pending, State};
+use eov_plugin_api::i18n;
 use eov_plugin_api::prelude::*;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
@@ -142,8 +143,9 @@ pub fn prepare(
     let (mut repaired, mut clipped, mut truncated) = (0usize, 0usize, 0usize);
     let mut layers = Vec::new();
     for layer in std::mem::take(&mut doc.layers) {
-        let name = match clean_name(&layer.name, "layer name", false) {
+        let name = match clean_name(&layer.name, Field::LayerName, false) {
             Ok(name) => name,
+            // A name for the data, in English like other default names.
             Err(_) if layer.name.trim().is_empty() => "Imported".to_string(),
             Err(_) => {
                 truncated += 1;
@@ -160,7 +162,7 @@ pub fn prepare(
         let mut out = PreparedLayer {
             name,
             color: layer.color,
-            notes: clean_text(&layer.notes, "notes").unwrap_or_else(|_| {
+            notes: clean_text(&layer.notes, Field::Notes).unwrap_or_else(|_| {
                 truncated += 1;
                 layer
                     .notes
@@ -176,13 +178,14 @@ pub fn prepare(
             let normalized = match geometry::normalize(a.geometry, image) {
                 Ok(n) => n,
                 Err(reason) => {
-                    doc.skip(reason.trim_end_matches('.').to_string());
+                    // A reason in a list ("2 × the point is outside the slide").
+                    doc.skip(reason.trim_end_matches(['.', '。', '।']).to_string());
                     continue;
                 }
             };
             repaired += usize::from(normalized.repaired);
             clipped += usize::from(normalized.clipped);
-            let name = clean_name(&a.name, "name", true).unwrap_or_else(|_| {
+            let name = clean_name(&a.name, Field::Name, true).unwrap_or_else(|_| {
                 truncated += 1;
                 a.name
                     .chars()
@@ -190,7 +193,7 @@ pub fn prepare(
                     .take(200)
                     .collect()
             });
-            let description = clean_text(&a.description, "description").unwrap_or_else(|_| {
+            let description = clean_text(&a.description, Field::Description).unwrap_or_else(|_| {
                 truncated += 1;
                 a.description
                     .chars()
@@ -219,8 +222,8 @@ pub fn prepare(
             let class = a
                 .class
                 .as_deref()
-                .and_then(|c| clean_name(c, "class", false).ok());
-            let author = clean_name(&a.author, "author", true).unwrap_or_default();
+                .and_then(|c| clean_name(c, Field::ClassName, false).ok());
+            let author = clean_name(&a.author, Field::Author, true).unwrap_or_default();
             for part in normalized.parts {
                 out.annotations.push(PreparedAnnotation {
                     geometry: part,
@@ -242,27 +245,33 @@ pub fn prepare(
         }
     }
     if let Some(skipped) = doc.skipped_summary() {
-        notes.push(format!("Skipped: {skipped}."));
+        // Translators: {} lists what was skipped, as "2 × reason; 1 × other reason".
+        notes.push(tr!("Skipped: {}.", skipped));
     }
     if repaired > 0 {
-        notes.push(format!(
-            "{repaired} outline(s) crossed themselves and were repaired with the even-odd rule."
+        notes.push(tr!(
+            "{n} outline crossed itself and was repaired with the even-odd rule."
+                | "{n} outlines crossed themselves and were repaired with the even-odd rule."
+                    % repaired
         ));
     }
     if clipped > 0 {
-        notes.push(format!(
-            "{clipped} shape(s) extended past the slide and were cut at its edge."
+        notes.push(tr!(
+            "{n} shape extended past the slide and was cut at its edge."
+                | "{n} shapes extended past the slide and were cut at its edge." % clipped
         ));
     }
     if truncated > 0 {
-        notes.push(format!(
-            "{truncated} over-long name(s) or text(s) were shortened."
-        ));
+        notes.push(tr!("{n} over-long name or text was shortened."
+            | "{n} over-long names or texts were shortened." % truncated));
     }
     if layers.is_empty() {
         return Err(match notes.is_empty() {
-            true => "The file contains no annotations.".to_string(),
-            false => format!("Nothing could be imported. {}", notes.join(" ")),
+            true => tr!("The file contains no annotations."),
+            false => tr!(
+                "Nothing could be imported. {}",
+                i18n::join_sentences(&notes)
+            ),
         });
     }
     let (match_text, mismatch) = slide_match(&doc, info);
@@ -278,7 +287,7 @@ pub fn prepare(
     let classes = doc
         .classes
         .into_iter()
-        .filter(|c| clean_name(&c.name, "class", false).is_ok())
+        .filter(|c| clean_name(&c.name, Field::ClassName, false).is_ok())
         .collect();
     Ok(ImportPlan {
         file_id,
@@ -327,10 +336,10 @@ fn slide_match(doc: &ImportDoc, info: &FileInfo) -> (String, bool) {
     let hint = &doc.slide;
     if let (Some(theirs), Some(ours)) = (&hint.identity, &info.identity) {
         return if theirs == ours {
-            ("Made for this slide.".to_string(), false)
+            (tr!("Made for this slide."), false)
         } else {
             (
-                "Made for a different slide (its identity does not match).".to_string(),
+                tr!("Made for a different slide (its identity does not match)."),
                 true,
             )
         };
@@ -339,26 +348,32 @@ fn slide_match(doc: &ImportDoc, info: &FileInfo) -> (String, bool) {
         && (w != info.width || h != info.height)
     {
         return (
-            format!(
-                "Made for a slide of {w} × {h} px; this one is {} × {} px.",
-                info.width, info.height
+            tr!(
+                "Made for a slide of {theirs}; this one is {ours}.",
+                theirs = i18n::isolate(format!("{w} × {h} px")),
+                ours = i18n::isolate(format!("{} × {} px", info.width, info.height))
             ),
             true,
         );
     }
     if hint.width.is_some() {
-        return ("Made for a slide of the same size.".to_string(), false);
+        return (tr!("Made for a slide of the same size."), false);
     }
-    ("The file does not say which slide it belongs to; coordinates are taken as level-0 pixels of this slide.".to_string(), false)
+    (
+        tr!(
+            "The file does not say which slide it belongs to; coordinates are taken as level-0 pixels of this slide."
+        ),
+        false,
+    )
 }
 
 /// Starts an import: the file dialog.
 pub fn start_import(core: &Arc<Core>, file_id: FileId) {
     let args = FileDialogArgs {
-        title: Some("Import annotations".into()),
+        title: Some(tr!("Import annotations")),
         filters: vec![
             FileFilter {
-                name: "Annotations (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)".into(),
+                name: tr!("Annotations (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"),
                 extensions: vec![
                     "geojson".into(),
                     "json".into(),
@@ -368,7 +383,7 @@ pub fn start_import(core: &Arc<Core>, file_id: FileId) {
                 ],
             },
             FileFilter {
-                name: "All files".into(),
+                name: tr!("All files"),
                 extensions: vec!["*".into()],
             },
         ],
@@ -380,7 +395,7 @@ pub fn start_import(core: &Arc<Core>, file_id: FileId) {
                 .pending
                 .insert(request, Pending::Import { file_id });
         }
-        Err(e) => core.error("Cannot show the file dialog", e.message),
+        Err(e) => core.error(tr!("Cannot show the file dialog"), e.message),
     }
 }
 
@@ -395,7 +410,7 @@ pub fn import_file(core: &Arc<Core>, file_id: FileId, path: PathBuf) {
             drop(state);
             core.notify(
                 NotifyLevel::Warning,
-                "The annotations of this slide are still loading.",
+                tr!("The annotations of this slide are still loading."),
             );
             return;
         };
@@ -414,7 +429,10 @@ pub fn import_file(core: &Arc<Core>, file_id: FileId, path: PathBuf) {
         .file_name()
         .map(|n| n.to_string_lossy().into_owned())
         .unwrap_or_default();
-    let job = core.host.start_job(format!("Importing {name}"), true).ok();
+    let job = core
+        .host
+        .start_job(tr!("Importing {}", i18n::isolate(&name)), true)
+        .ok();
     let cancel = Arc::new(AtomicBool::new(false));
     if let Some(job) = &job {
         core.state()
@@ -425,7 +443,8 @@ pub fn import_file(core: &Arc<Core>, file_id: FileId, path: PathBuf) {
         let result = (|| -> Result<Option<ImportPlan>, String> {
             let bytes = fileio::read_limited(&path)?;
             if let Some(job) = &job {
-                job.update(None, Some("Reading"));
+                // Translators: the step of an import that reads the file.
+                job.update(None, Some(&tr!("Reading")));
             }
             let doc = formats::parse(&bytes, &name)?;
             let mut doc = if doc.entries.is_empty() {
@@ -451,9 +470,9 @@ pub fn import_file(core: &Arc<Core>, file_id: FileId, path: PathBuf) {
                 .filter(|_| doc.slide.identity.is_none());
             let mut plan = prepare(doc, file_id, slide_id, &info, &existing, &name)?;
             if ndpa {
-                plan.match_text =
+                plan.match_text = tr!(
                     "NDP.view annotations, placed with this slide's offsets from the slide centre and its pixel size."
-                        .to_string();
+                );
                 plan.mismatch = false;
             }
             if let Some(reference) = dicom {
@@ -464,19 +483,18 @@ pub fn import_file(core: &Arc<Core>, file_id: FileId, path: PathBuf) {
                 // Exports of the pre-1.0 plugin carry the slide's SHA-256.
                 let digest = fileio::sha256_with_progress(Path::new(&info.path), &cancel, |f| {
                     if let Some(job) = &job {
-                        job.update(Some(f), Some("Checking the slide"));
+                        job.update(Some(f), Some(&tr!("Checking the slide")));
                     }
                 })
-                .map_err(|e| format!("cannot read the slide to check the import: {e}"))?;
+                .map_err(|e| tr!("cannot read the slide to check the import: {}", e))?;
                 let Some(digest) = digest else {
                     return Ok(None);
                 };
                 if fileio::hex(&digest).eq_ignore_ascii_case(expected.trim()) {
-                    plan.match_text = "Made for this slide (checked by content).".to_string();
+                    plan.match_text = tr!("Made for this slide (checked by content).");
                     plan.mismatch = false;
                 } else {
-                    plan.match_text =
-                        "Made for a different slide (its checksum does not match).".to_string();
+                    plan.match_text = tr!("Made for a different slide (its checksum does not match).");
                     plan.mismatch = true;
                 }
             }
@@ -500,8 +518,8 @@ pub fn import_file(core: &Arc<Core>, file_id: FileId, path: PathBuf) {
                 };
                 let _ = core.host.post(format!("{IMPORT_TOKEN_PREFIX}{id}"));
             }
-            Ok(None) => core.notify(NotifyLevel::Info, "Import cancelled."),
-            Err(e) => core.error(format!("Could not import {name}"), e),
+            Ok(None) => core.notify(NotifyLevel::Info, tr!("Import cancelled.")),
+            Err(e) => core.error(tr!("Could not import {}", i18n::isolate(&name)), e),
         }
     });
 }
@@ -536,8 +554,11 @@ fn pick_archive_entry(doc: ImportDoc, info: &FileInfo) -> Result<ImportDoc, Stri
         None => None,
     };
     let index = index.or_else(|| (entries.len() == 1).then_some(0)).ok_or_else(|| {
-        "This archive has no annotations for the current slide. Restore whole backups with \"Merge database\"."
-            .to_string()
+        // Translators: "Merge a database…" is the item of the Import and export
+        // menu: quote it as it is translated there.
+        tr!(
+            "This archive has no annotations for the current slide. Restore whole backups with \"Merge a database…\"."
+        )
     })?;
     let mut entry = entries.swap_remove(index);
     for class in classes {
@@ -549,13 +570,15 @@ fn pick_archive_entry(doc: ImportDoc, info: &FileInfo) -> Result<ImportDoc, Stri
 /// Applies a confirmed import in one transaction (one undo step).
 pub fn apply_import(core: &Arc<Core>, plan: ImportPlan, strategy: Strategy) {
     let file_id = plan.file_id;
-    let label = format!("Import {} annotation(s)", plan.annotation_count());
+    let label = label!(tr!(
+        "Import {n} annotation" | "Import {n} annotations" % plan.annotation_count()
+    ));
     core.submit(Op::new(label, Some(file_id), move |state| {
         state.writable()?;
         let slide = state
             .slide_of(file_id)
             .filter(|s| s.id() == plan.slide_id)
-            .ok_or("The slide this import was started on is not open any more.")?;
+            .ok_or_else(|| tr!("The slide this import was started on is not open any more."))?;
         let now = now_ms();
         let mut changes = Vec::new();
         // Classes by name: existing ones are reused, missing ones created.
@@ -621,14 +644,20 @@ pub fn apply_import(core: &Arc<Core>, plan: ImportPlan, strategy: Strategy) {
             let target = match (strategy, existing) {
                 (Strategy::Merge, Some(existing)) => {
                     if existing.locked {
-                        return Err(format!("Layer \"{}\" is locked.", existing.name));
+                        return Err(tr!(
+                            "Layer \"{}\" is locked.",
+                            i18n::isolate(&existing.name)
+                        ));
                     }
                     existing
                 }
                 (strategy, existing) => {
                     if let (Strategy::Replace, Some(existing)) = (strategy, &existing) {
                         if existing.locked {
-                            return Err(format!("Layer \"{}\" is locked.", existing.name));
+                            return Err(tr!(
+                                "Layer \"{}\" is locked.",
+                                i18n::isolate(&existing.name)
+                            ));
                         }
                         let contents: Vec<Arc<Annotation>> =
                             slide.in_layer(&existing.id).cloned().collect();
@@ -704,9 +733,10 @@ pub fn apply_import(core: &Arc<Core>, plan: ImportPlan, strategy: Strategy) {
         }
         Ok(Planned {
             changes,
-            notice: Some(format!(
-                "Imported {total} annotation(s) from {}.",
-                plan.source
+            notice: Some(tr!(
+                "Imported {n} annotation from {file}."
+                    | "Imported {n} annotations from {file}." % total,
+                file = i18n::isolate(&plan.source)
             )),
             ..Default::default()
         })
@@ -750,7 +780,7 @@ pub fn start_export(core: &Arc<Core>, file_id: FileId, format: ExportFormat) {
         ExportFormat::Eov => (
             format!("{}.annotations.json", stem(&filename)),
             FileFilter {
-                name: "eov annotations".into(),
+                name: tr!("eov annotations"),
                 extensions: vec!["json".into()],
             },
         ),
@@ -778,25 +808,25 @@ pub fn start_export(core: &Arc<Core>, file_id: FileId, format: ExportFormat) {
         ExportFormat::Dicom => (
             format!("{}.annotations.dcm", stem(&filename)),
             FileFilter {
-                name: "DICOM bulk annotations".into(),
+                name: tr!("DICOM bulk annotations"),
                 extensions: vec!["dcm".into()],
             },
         ),
         ExportFormat::Blinded => (
             format!("{}.blinded.json", stem(&filename)),
             FileFilter {
-                name: "eov annotations".into(),
+                name: tr!("eov annotations"),
                 extensions: vec!["json".into()],
             },
         ),
     };
     let title = match format {
-        ExportFormat::Blinded => "Export a blinded copy for another reader",
-        _ => "Export annotations",
+        ExportFormat::Blinded => tr!("Export a blinded copy for another reader"),
+        _ => tr!("Export annotations"),
     };
     save_dialog(
         core,
-        title,
+        &title,
         &default_name,
         filter,
         Pending::Export { file_id, format },
@@ -820,7 +850,7 @@ pub fn save_dialog(
         Ok(request) => {
             core.state().pending.insert(request, pending);
         }
-        Err(e) => core.error("Cannot show the file dialog", e.message),
+        Err(e) => core.error(tr!("Cannot show the file dialog"), e.message),
     }
 }
 
@@ -908,10 +938,14 @@ pub fn export_file(core: &Arc<Core>, file_id: FileId, format: ExportFormat, path
         match result {
             Ok(()) => core.notify_detail(
                 NotifyLevel::Success,
-                format!("Exported {count} annotation(s) to {name}."),
+                tr!(
+                    "Exported {n} annotation to {file}."
+                        | "Exported {n} annotations to {file}." % count,
+                    file = i18n::isolate(&name)
+                ),
                 note,
             ),
-            Err(e) => core.error(format!("Could not export to {name}"), e),
+            Err(e) => core.error(tr!("Could not export to {}", i18n::isolate(&name)), e),
         }
     });
 }
@@ -951,9 +985,9 @@ pub fn blind(slide: &mut eov::ExportSlide, options: &mut eov::ExportOptions) {
 /// Starts comparing the slide with another reader's annotations.
 pub fn start_compare(core: &Arc<Core>, file_id: FileId) {
     let args = FileDialogArgs {
-        title: Some("Compare with another reader's annotations".into()),
+        title: Some(tr!("Compare with another reader's annotations")),
         filters: vec![FileFilter {
-            name: "Annotations (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)".into(),
+            name: tr!("Annotations (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"),
             extensions: vec![
                 "json".into(),
                 "geojson".into(),
@@ -970,7 +1004,7 @@ pub fn start_compare(core: &Arc<Core>, file_id: FileId) {
                 .pending
                 .insert(request, Pending::Compare { file_id });
         }
-        Err(e) => core.error("Cannot show the file dialog", e.message),
+        Err(e) => core.error(tr!("Cannot show the file dialog"), e.message),
     }
 }
 
@@ -1057,22 +1091,13 @@ pub fn compare_file(core: &Arc<Core>, file_id: FileId, path: PathBuf) {
                 None => (MATCH_DISTANCE_PX, format!("{MATCH_DISTANCE_PX} px")),
             };
             let rows = crate::compare::compare(&ours, &theirs, &order, radius);
-            let mut note = format!(
-                "This slide's visible layers ({} annotations) against the {} in {name}, without HPF fields; counts are this slide's, then the other reader's. Points of a class match one to one within {radius_text} (F1 = 2 · matched / both counts); regions by their overlap (Dice = 2 · shared area / both areas).",
-                ours.len(),
-                match theirs.len() {
-                    1 => "1 annotation".to_string(),
-                    n => format!("{n} annotations"),
-                }
-            );
-            if plan.mismatch && !ndpa {
-                note.push_str(&format!(" Check the file: {}", plan.match_text));
-            }
             Ok(crate::state::Comparison {
                 file_id,
                 path: path.clone(),
-                title: format!("Compared with {name}"),
-                note,
+                name: name.clone(),
+                counts: (ours.len(), theirs.len()),
+                radius: radius_text,
+                mismatch: (plan.mismatch && !ndpa).then_some(plan.match_text),
                 rows,
             })
         })();
@@ -1086,14 +1111,17 @@ pub fn compare_file(core: &Arc<Core>, file_id: FileId, path: PathBuf) {
                     core.request_refresh();
                 }
             }
-            Err(e) => core.error(format!("Could not compare with {name}"), e),
+            Err(e) => core.error(tr!("Could not compare with {}", i18n::isolate(&name)), e),
         }
     });
 }
 
 /// Every slide in the database, as one archive.
 pub fn export_all(core: &Arc<Core>, path: PathBuf) {
-    let job = core.host.start_job("Exporting all annotations", false).ok();
+    let job = core
+        .host
+        .start_job(tr!("Exporting all annotations"), false)
+        .ok();
     core.db_run(move |core, ctx| {
         let Some(db) = ctx.db.as_mut() else {
             return;
@@ -1145,14 +1173,15 @@ pub fn export_all(core: &Arc<Core>, path: PathBuf) {
                 Ok(()) => {
                     core.notify(
                         NotifyLevel::Success,
-                        format!("Exported the annotations of {slides} slide(s)."),
+                        tr!("Exported the annotations of {n} slide."
+                            | "Exported the annotations of {n} slides." % slides),
                     );
                     if let Some(job) = job {
                         job.finish(None);
                     }
                 }
                 Err(e) => {
-                    core.error("Could not export all annotations", e.clone());
+                    core.error(tr!("Could not export all annotations"), e.clone());
                     if let Some(job) = job {
                         job.finish(Some(e));
                     }
@@ -1169,8 +1198,11 @@ pub fn backup(core: &Arc<Core>, path: PathBuf) {
             return;
         };
         match db.backup_to(&path) {
-            Ok(()) => core.notify(NotifyLevel::Success, "Annotation database backed up."),
-            Err(e) => core.error("Could not back up the annotation database", e.to_string()),
+            Ok(()) => core.notify(NotifyLevel::Success, tr!("Annotation database backed up.")),
+            Err(e) => core.error(
+                tr!("Could not back up the annotation database"),
+                e.to_string(),
+            ),
         }
     });
 }
@@ -1182,7 +1214,7 @@ pub fn backup(core: &Arc<Core>, path: PathBuf) {
 pub fn merge_database(core: &Arc<Core>, path: PathBuf, legacy: bool) {
     let job = core
         .host
-        .start_job("Merging annotation database", false)
+        .start_job(tr!("Merging annotation database"), false)
         .ok();
     core.db_run(move |core, ctx| {
         let scratch = core.paths.cache_dir.join("db");
@@ -1194,16 +1226,27 @@ pub fn merge_database(core: &Arc<Core>, path: PathBuf, legacy: bool) {
             Ok((slides, layers, annotations)) => {
                 core.notify(
                     NotifyLevel::Success,
-                    format!("Merged {annotations} annotation(s) in {layers} layer(s) ({slides} new slide(s))."),
+                    tr!(
+                        // Translators: {layers} is "in 1 layer" or "in 3 layers", {slides}
+                        // is "1 new slide" or "3 new slides" (each translated on its own).
+                        "Merged {n} annotation {layers} ({slides})."
+                            | "Merged {n} annotations {layers} ({slides})." % *annotations,
+                        layers = crate::sidebar::in_layers(*layers),
+                        slides = tr!(
+                            // Translators: {slides} in "Merged {n} annotations {layers} ({slides})."
+                            "{n} new slide" | "{n} new slides" % *slides
+                        )
+                    ),
                 );
                 if legacy {
                     if let Err(e) = db.set_setting(crate::core::LEGACY_SETTING, "merged") {
-                        core.host.warn(format!("cannot record the merge: {e}"));
+                        // Only means the merge is offered again: for the log.
+                        core.host.info(format!("cannot record the merge: {e}"));
                     }
                     core.state().legacy_db = None;
                 }
             }
-            Err(e) => core.error("Could not merge the database", e.to_string()),
+            Err(e) => core.error(tr!("Could not merge the database"), e.to_string()),
         }
         if let Some(job) = job {
             job.finish(result.as_ref().err().map(|e| e.to_string()));
@@ -1220,7 +1263,8 @@ pub fn decline_legacy(core: &Arc<Core>) {
         if let Some(db) = ctx.db.as_mut()
             && let Err(e) = db.set_setting(crate::core::LEGACY_SETTING, "declined")
         {
-            core.host.warn(format!("cannot record the answer: {e}"));
+            // Only means the merge is offered again: for the log.
+            core.host.info(format!("cannot record the answer: {e}"));
         }
     });
 }

@@ -176,7 +176,10 @@ fn the_pre_1_0_schema_is_migrated() {
     let (mut db, report) = Db::open(&path, dir.path()).unwrap();
     assert_eq!(report.migrated_from, Some(1));
     assert!(
-        report.notes.iter().any(|n| n.contains("1 unreadable")),
+        report
+            .notes
+            .iter()
+            .any(|n| n.text().contains("1 unreadable")),
         "{report:?}"
     );
     assert!(!db.is_read_only());
@@ -439,7 +442,7 @@ fn read_only_databases_open_read_only_and_old_ones_are_migrated_in_a_copy() {
     let scratch = dir.path().join("scratch");
     let (mut db, report) = Db::open(&path, &scratch).unwrap();
     assert!(db.is_read_only());
-    assert!(report.notes.iter().any(|n| n.contains("read-only")));
+    assert!(report.notes.iter().any(|n| n.text().contains("read-only")));
     let slide = db.find_slide(None, Some(&FP), None).unwrap().unwrap();
     assert_eq!(db.load_slide(slide.id).unwrap().annotations.len(), 2);
     assert!(matches!(db.apply(&[], None), Err(DbError::ReadOnly)));

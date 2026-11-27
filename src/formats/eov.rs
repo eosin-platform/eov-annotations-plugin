@@ -8,6 +8,7 @@
 
 use super::{ImportAnnotation, ImportDoc, ImportLayer, SlideHint, iso8601, num, parse_time};
 use crate::model::{Annotation, Class, Color, Geometry, Layer, LayerRole, SlideRecord, Status};
+use eov_plugin_api::i18n::tr;
 use eov_plugin_api::protocol::Rect;
 use serde_json::{Map, Value, json};
 use std::sync::Arc;
@@ -204,8 +205,10 @@ pub fn parse(value: &Value) -> Result<ImportDoc, String> {
                 .and_then(Value::as_i64)
                 .unwrap_or(0);
             if version > FORMAT_VERSION {
-                return Err(format!(
-                    "This file uses eov annotation format {version}; this plugin reads up to {FORMAT_VERSION}. Update the plugin."
+                return Err(tr!(
+                    "This file uses eov annotation format {version}; this plugin reads up to {supported}. Update the plugin.",
+                    version = version,
+                    supported = FORMAT_VERSION
                 ));
             }
             parse_v2(value)
@@ -255,7 +258,7 @@ fn parse_v2(value: &Value) -> Result<ImportDoc, String> {
         doc.note_class(&name, color);
     }
     let Some(layers) = value.get("layers").and_then(Value::as_array) else {
-        return Err("The file has no \"layers\".".to_string());
+        return Err(tr!("The file has no \"layers\"."));
     };
     for layer in layers {
         let mut out = ImportLayer {
@@ -270,7 +273,7 @@ fn parse_v2(value: &Value) -> Result<ImportDoc, String> {
             annotations: Vec::new(),
         };
         if layer.get("color").is_some() && out.color.is_none() {
-            doc.warnings.push(format!(
+            doc.warnings.push(tr!(
                 "Layer \"{}\" has an unreadable colour; a palette colour is used.",
                 out.name
             ));
@@ -285,7 +288,8 @@ fn parse_v2(value: &Value) -> Result<ImportDoc, String> {
                 .get("geometry")
                 .and_then(|g| serde_json::from_value::<Geometry>(g.clone()).ok())
             else {
-                doc.skip("unreadable geometry");
+                // Translators: a reason why an annotation of an imported file was skipped.
+                doc.skip(tr!("unreadable geometry"));
                 continue;
             };
             let mut ann = ImportAnnotation::new(geometry);
@@ -325,7 +329,7 @@ fn parse_v1(value: &Value) -> Result<ImportDoc, String> {
         .and_then(Value::as_str)
         .map(str::to_string);
     let Some(layers) = value.get("annotation_layers").and_then(Value::as_array) else {
-        return Err("The file has no \"annotation_layers\".".to_string());
+        return Err(tr!("The file has no \"annotation_layers\"."));
     };
     for layer in layers {
         let mut out = ImportLayer {
@@ -352,7 +356,7 @@ fn parse_v1(value: &Value) -> Result<ImportDoc, String> {
                 ) {
                     (Some(x), Some(y)) => Geometry::Point { x, y },
                     _ => {
-                        doc.skip("point without coordinates");
+                        doc.skip(tr!("point without coordinates"));
                         continue;
                     }
                 },
@@ -377,13 +381,13 @@ fn parse_v1(value: &Value) -> Result<ImportDoc, String> {
                             holes: Vec::new(),
                         },
                         None => {
-                            doc.skip("polygon with unreadable vertices");
+                            doc.skip(tr!("polygon with unreadable vertices"));
                             continue;
                         }
                     }
                 }
                 _ => {
-                    doc.skip("unknown annotation type");
+                    doc.skip(tr!("unknown annotation type"));
                     continue;
                 }
             };
@@ -419,13 +423,13 @@ fn parse_archive(value: &Value) -> Result<ImportDoc, String> {
     let slides = value
         .get("slides")
         .and_then(Value::as_array)
-        .ok_or("The archive has no \"slides\".")?;
+        .ok_or_else(|| tr!("The archive has no \"slides\"."))?;
     for slide in slides {
         match parse_v2(slide) {
             Ok(entry) => doc.entries.push(entry),
             Err(e) => doc
                 .warnings
-                .push(format!("An archive entry was skipped: {e}")),
+                .push(tr!("An archive entry was skipped: {}", e)),
         }
     }
     Ok(doc)

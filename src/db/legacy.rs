@@ -101,14 +101,15 @@ pub(super) fn migrate_v1(tx: &rusqlite::Transaction<'_>, report: &mut OpenReport
             let Some(slide_id) = slide_ids.get(fingerprint) else {
                 continue;
             };
-            let name = clean_name(name, "layer name", false).unwrap_or_else(|_| {
-                let trimmed: String = name.chars().take(200).collect();
-                if trimmed.trim().is_empty() {
-                    "Untitled".to_string()
-                } else {
-                    trimmed.trim().to_string()
-                }
-            });
+            let name =
+                clean_name(name, crate::model::Field::LayerName, false).unwrap_or_else(|_| {
+                    let trimmed: String = name.chars().take(200).collect();
+                    if trimmed.trim().is_empty() {
+                        "Untitled".to_string()
+                    } else {
+                        trimmed.trim().to_string()
+                    }
+                });
             // ANN-4: colours such as "##aébcd" passed the old CHECK.
             let color = Color::parse(color).unwrap_or_else(|| {
                 repaired_colors += 1;
@@ -130,9 +131,9 @@ pub(super) fn migrate_v1(tx: &rusqlite::Transaction<'_>, report: &mut OpenReport
             )?;
         }
         if repaired_colors > 0 {
-            report.notes.push(format!(
-                "{repaired_colors} layer colour(s) were unreadable and were replaced."
-            ));
+            report
+                .notes
+                .push(super::DbNote::ColoursReplaced(repaired_colors));
         }
     }
 
@@ -314,14 +315,10 @@ pub(super) fn migrate_v1(tx: &rusqlite::Transaction<'_>, report: &mut OpenReport
         }
     }
 
-    report.notes.push(format!(
-        "Upgraded the annotation database from the pre-1.0 format: {} slide(s), {migrated} annotation(s){}.",
-        slide_ids.len(),
-        if skipped > 0 {
-            format!(", {skipped} unreadable annotation(s) skipped")
-        } else {
-            String::new()
-        }
-    ));
+    report.notes.push(super::DbNote::Upgraded {
+        slides: slide_ids.len(),
+        annotations: migrated,
+        skipped,
+    });
     Ok(())
 }

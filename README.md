@@ -409,6 +409,23 @@ the first time they are opened (computed in the background) and linked to
 their eov identity from then on. Exports of the old plugin (format 1) can
 be imported as well.
 
+## Translations
+
+The plugin follows the language of eov's interface (eov 1.1 and later):
+the panel, the import dialog, tool names, tooltips, menus, messages and
+undo entries are translated, and they change with the language chosen in
+eov. What is written to files and to the database is not translated:
+exports, the audit trail, and the names given to new layers and classes
+stay English.
+
+The translations are gettext catalogs,
+`translations/<tag>/LC_MESSAGES/annotations.po`, one per language (`de`,
+`pt-BR`, `zh-Hant`, …; see `[i18n]` in `plugin.toml`); a text a catalog
+lacks shows in English. The eov repository's `tools/i18n/i18n.py` extracts
+the texts (`@tr` in `ui/*.slint`, `tr!` in the Rust code) and creates and
+updates the catalogs. Corrections of a translation are welcome as issues or
+pull requests.
+
 ## Building, testing and packaging
 
 The plugin builds on its own (it is not a member of eov's workspace) and
@@ -444,17 +461,18 @@ software renderer (the screenshots above). `tools/load-check` opens the
 release library with abi_stable's layout checks and the API version
 handshake, as eov does, and draws an annotation through it.
 
-To package (an `.eop` is a tar archive with `plugin.toml`, the library and
-`ui/` at its root; entries are sorted and dated `SOURCE_DATE_EPOCH`, so
-builds are reproducible):
+To package (an `.eop` is a tar archive with `plugin.toml`, the library,
+`ui/` and the translation catalogs (`translations/<tag>/LC_MESSAGES/*.po`)
+at its root; entries are sorted and dated `SOURCE_DATE_EPOCH`, so builds
+are reproducible):
 
 ```bash
 python3 scripts/package_eop.py --output dist/annotations-v1.0.0-linux-x86_64.eop
 eov plugin install --force dist/annotations-v1.0.0-linux-x86_64.eop
 ```
 
-`scripts/package_eop.py --check-only` validates the manifest and `ui/`
-without a library. In an eov checkout, `scripts/run-with-plugins.sh` of eov
+`scripts/package_eop.py --check-only` validates the manifest, `ui/` and the
+catalogs without a library. In an eov checkout, `scripts/run-with-plugins.sh` of eov
 starts a development build with the plugins in a separate eov home.
 
 CI (`.github/workflows/ci.yml`) runs formatting, clippy, the tests, the
@@ -492,7 +510,9 @@ src/
                     DICOM (with a small Part 10 reader and writer)
   db/               schema, migrations (also from before 1.0), queries
   tests.rs          end-to-end tests
+tests/language.rs   following eov's language (a test binary of its own)
 ui/                 the panel and the import dialog (Slint)
+translations/       gettext catalogs, <tag>/LC_MESSAGES/annotations.po
 tools/ui-check/     surface check and renderer (Slint 1.19.0)
 tools/load-check/   loads the built library like eov
 scripts/            packaging and release tooling

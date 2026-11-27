@@ -5,6 +5,7 @@
 use crate::change::Change;
 use crate::model::{Annotation, Class, Layer, LayerRole, SlideId, SlideRecord};
 use crate::stats::FieldSize;
+use eov_plugin_api::i18n::{self, tr};
 use eov_plugin_api::protocol::{FileId, FileInfo, PaneId};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, VecDeque};
@@ -291,7 +292,6 @@ pub enum Load {
     /// (exponential backoff, ANN-13).
     Failed {
         error: String,
-        attempts: u32,
         retry_at: Instant,
     },
 }
@@ -300,6 +300,13 @@ pub enum Load {
 pub struct OpenFile {
     pub info: FileInfo,
     pub load: Load,
+    /// Loads that failed since the last one that worked: the retries wait
+    /// longer each time (a retry sets `load` back to pending, so the count
+    /// is kept here).
+    pub failed_loads: u32,
+    /// The load error the user was told about: a retry that fails the same
+    /// way is not reported again.
+    pub reported_load_error: Option<String>,
     /// Selected annotation ids (host selection, mirrored).
     pub selection: Vec<String>,
     /// Panes in which the HUD button hid the slide's annotations.
@@ -320,6 +327,8 @@ impl OpenFile {
         Self {
             info,
             load: Load::Pending,
+            failed_loads: 0,
+            reported_load_error: None,
             selection: Vec::new(),
             hidden_panes: BTreeSet::new(),
             host_layers: BTreeSet::new(),
@@ -350,7 +359,7 @@ pub enum DbStatus {
 pub struct Record {
     pub slide: Option<SlideId>,
     pub file_id: Option<FileId>,
-    pub label: String,
+    pub label: crate::core::Label,
     pub changes: Vec<Change>,
     pub undone: bool,
 }
@@ -474,9 +483,46 @@ pub struct Comparison {
     pub file_id: FileId,
     /// The other reader's file (to compare again after edits).
     pub path: std::path::PathBuf,
-    pub title: String,
-    pub note: String,
+    /// Its file name.
+    pub name: String,
+    /// The annotations compared: this slide's, the other reader's.
+    pub counts: (usize, usize),
+    /// How close two points must be to match ("10 µm").
+    pub radius: String,
+    /// Why the file may not have been made for this slide, if it may not.
+    pub mismatch: Option<String>,
     pub rows: Vec<crate::compare::Row>,
+}
+
+impl Comparison {
+    /// The heading in the Data tab (worded when shown, so it follows the
+    /// language of the interface).
+    pub fn title(&self) -> String {
+        tr!("Compared with {}", i18n::isolate(&self.name))
+    }
+
+    /// What was compared, and how.
+    pub fn note(&self) -> String {
+        let (ours, theirs) = self.counts;
+        let note = tr!(
+            // Translators: {ours} is "1 annotation" or "5 annotations" (translated on its own).
+            "This slide's visible layers ({ours}) against the {n} annotation in {name}, without HPF fields; counts are this slide's, then the other reader's. Points of a class match one to one within {radius} (F1 = 2 · matched / both counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+                | "This slide's visible layers ({ours}) against the {n} annotations in {name}, without HPF fields; counts are this slide's, then the other reader's. Points of a class match one to one within {radius} (F1 = 2 · matched / both counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+                    % theirs,
+            ours = tr!(
+                // Translators: a number of annotations on its own, in two texts: {annotations} in
+                // "Upgraded the annotation database from the pre-1.0 format: {slides}, {annotations}, …"
+                // and {ours} in "This slide's visible layers ({ours}) against the {n} annotations in {name}, …".
+                "{n} annotation" | "{n} annotations" % ours
+            ),
+            name = i18n::isolate(&self.name),
+            radius = i18n::isolate(&self.radius)
+        );
+        match &self.mismatch {
+            Some(mismatch) => i18n::join_sentences([note, tr!("Check the file: {}", mismatch)]),
+            None => note,
+        }
+    }
 }
 
 /// A brush stroke in progress.
@@ -508,12 +554,33 @@ pub struct FieldPress {
     pub double: bool,
 }
 
+/// Why eov refused a class's hotkey, as eov said it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RefusedHotkey {
+    /// In English, as eov's log has it.
+    pub reason: String,
+    /// In the interface's language (from eov 1.1 on).
+    pub shown_reason: Option<String>,
+}
+
+impl RefusedHotkey {
+    /// The reason as the Classes tab shows it: eov's words in the
+    /// interface's language, or, from eov before 1.1, its English ones,
+    /// kept in their order inside right-to-left text.
+    pub fn shown(&self) -> String {
+        match &self.shown_reason {
+            Some(shown) => shown.clone(),
+            None => i18n::isolate(&self.reason),
+        }
+    }
+}
+
 /// Everything the plugin keeps in memory.
 #[derive(Debug)]
 pub struct State {
     pub db: DbStatus,
     /// Notes from opening the database (migration, read-only).
-    pub db_notes: Vec<String>,
+    pub db_notes: Vec<crate::db::DbNote>,
     pub classes: Vec<Class>,
     pub slides: HashMap<SlideId, SlideData>,
     /// Which loaded slide a layer belongs to.
@@ -541,8 +608,8 @@ pub struct State {
     /// The database of the plugin before eov 1.0, while it exists and has
     /// not been merged into this one.
     pub legacy_db: Option<std::path::PathBuf>,
-    /// Class hotkeys the host refused: class id → reason.
-    pub refused_hotkeys: HashMap<String, String>,
+    /// Class hotkeys the host refused: class id → why.
+    pub refused_hotkeys: HashMap<String, RefusedHotkey>,
     /// The field tool's current press.
     pub field_press: Option<FieldPress>,
     /// The brush stroke being painted.
@@ -594,10 +661,10 @@ impl State {
             } => Ok(()),
             DbStatus::Ready {
                 read_only: true, ..
-            } => Err("The annotation database is read-only.".to_string()),
-            DbStatus::Opening => Err("The annotation database is still opening.".to_string()),
+            } => Err(tr!("The annotation database is read-only.")),
+            DbStatus::Opening => Err(tr!("The annotation database is still opening.")),
             DbStatus::Failed { error } => {
-                Err(format!("The annotation database is unavailable: {error}"))
+                Err(tr!("The annotation database is unavailable: {}", error))
             }
         }
     }
@@ -878,7 +945,7 @@ mod tests {
                 Record {
                     slide: Some(i as i64 % 2),
                     file_id: None,
-                    label: String::new(),
+                    label: Default::default(),
                     changes: vec![],
                     undone: false,
                 },

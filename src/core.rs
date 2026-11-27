@@ -14,11 +14,12 @@
 //! payloads, and no handler waits for a worker.
 
 use crate::change::{self, Change};
-use crate::db::{Audit, Db, DbError, PURGE_AFTER_MS};
+use crate::db::{Audit, Db, DbError, DbNote, PURGE_AFTER_MS};
 use crate::fileio;
 use crate::model::{Class, Color, SlideId, SlideRecord, new_id, now_ms};
 use crate::overlay;
 use crate::state::{DbStatus, Load, OpenFile, Record, SlideData, State};
+use eov_plugin_api::i18n;
 use eov_plugin_api::prelude::*;
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -32,11 +33,47 @@ pub const REFRESH_TOKEN: &str = "refresh";
 /// Token asking the UI thread to sync the class hotkeys.
 pub const HOTKEYS_TOKEN: &str = "hotkeys";
 
+/// What an edit is called: in eov's undo history and in messages in the
+/// language of the interface (`shown`), and in the audit trail in English
+/// (`audit`): the database is not translated, whoever reads it.
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct Label {
+    pub shown: String,
+    pub audit: String,
+}
+
+/// A [`Label`] from a `tr!` text with positional arguments, read twice:
+/// translated, and in English. `label!(tr!("Rename annotation"))`,
+/// `label!(tr!("Delete layer \"{}\"", name))`, and with a number,
+/// `label!(tr!("Delete annotation" | "Delete {n} annotations" % count))`.
+macro_rules! label {
+    (tr!($one:literal | $many:literal % $n:expr $(, $arg:expr)* $(,)?)) => {{
+        let n = $n;
+        $crate::core::Label {
+            shown: ::eov_plugin_api::tr!($one | $many % n $(, $arg)*),
+            audit: ::eov_plugin_api::i18n::format(
+                if n == 1 { $one } else { $many },
+                &[$(("", &$arg as &dyn ::std::fmt::Display),)* ("n", &n as &dyn ::std::fmt::Display)],
+            ),
+        }
+    }};
+    (tr!($text:literal $(, $arg:expr)* $(,)?)) => {
+        $crate::core::Label {
+            shown: ::eov_plugin_api::tr!($text $(, $arg)*),
+            audit: ::eov_plugin_api::i18n::format(
+                $text,
+                &[$(("", &$arg as &dyn ::std::fmt::Display)),*],
+            ),
+        }
+    };
+}
+pub(crate) use label;
+
 /// A change to make, planned on the database thread against the state as
 /// it is after every earlier edit (so rapid edits never work from stale
 /// data).
 pub struct Op {
-    pub label: String,
+    pub label: Label,
     /// The file the edit came from (scopes Ctrl+Z to its slide).
     pub file_id: Option<FileId>,
     /// Push an undo entry.
@@ -50,12 +87,12 @@ pub type Plan = Box<dyn FnOnce(&State) -> Result<Planned, String> + Send>;
 
 impl Op {
     pub fn new(
-        label: impl Into<String>,
+        label: Label,
         file_id: Option<FileId>,
         plan: impl FnOnce(&State) -> Result<Planned, String> + Send + 'static,
     ) -> Self {
         Self {
-            label: label.into(),
+            label,
             file_id,
             record: true,
             plan: Box::new(plan),
@@ -79,7 +116,7 @@ pub struct Planned {
     /// Shown as an info toast after success.
     pub notice: Option<String>,
     /// Overrides the undo label.
-    pub label: Option<String>,
+    pub label: Option<Label>,
     /// Annotation ids whose host objects must be restored if nothing is
     /// saved (the host already showed an edit that was refused or failed).
     pub revert: Option<(SlideId, Vec<String>)>,
@@ -185,9 +222,13 @@ impl Core {
         for thread in [db_thread, io_thread] {
             match thread {
                 Ok(handle) => threads.push(handle),
-                Err(e) => core
-                    .host
-                    .error(format!("cannot start a worker thread: {e}")),
+                Err(e) => core.report(
+                    NotifyLevel::Error,
+                    // Translators: a part of the plugin that works in the background.
+                    tr!("Could not start a worker thread"),
+                    Some(e.to_string()),
+                    format!("cannot start a worker thread: {e}"),
+                ),
             }
         }
         drop(threads);
@@ -268,10 +309,11 @@ impl Core {
         }
     }
 
-    /// Performs host overlay calls; failures are logged.
+    /// Performs host overlay calls; failures are logged (they are mostly
+    /// races with slides that were just closed).
     pub fn exec(&self, ops: Vec<overlay::HostOp>) {
         for error in overlay::exec(&self.host, ops) {
-            self.host.warn(format!("overlay update failed: {error}"));
+            self.host.info(format!("overlay update failed: {error}"));
         }
     }
 
@@ -297,16 +339,33 @@ impl Core {
     pub fn error(&self, message: impl Into<String>, detail: impl Into<String>) {
         self.host.notify_error(message, detail);
     }
+
+    /// Tells the user about a problem in the language of the interface
+    /// (`detail`: eov's, SQLite's or the system's own words) and writes it
+    /// to eov's log in English (`log`). Not with `Host::warn` or
+    /// `Host::error`: eov shows their text to the user as it is (PLG-15),
+    /// and the log stays English, so the log line goes in as information.
+    pub fn report(
+        &self,
+        level: NotifyLevel,
+        message: impl Into<String>,
+        detail: Option<String>,
+        log: impl Into<String>,
+    ) {
+        self.host.info(log);
+        self.notify_detail(level, message, detail);
+    }
 }
 
-fn guarded(core: &Arc<Core>, what: &str, f: impl FnOnce()) {
+/// Runs `f`; a panic is reported with the message `what` makes.
+fn guarded(core: &Arc<Core>, what: impl FnOnce() -> String, f: impl FnOnce()) {
     if let Err(payload) = std::panic::catch_unwind(std::panic::AssertUnwindSafe(f)) {
         let message = payload
             .downcast_ref::<&str>()
             .map(|s| s.to_string())
             .or_else(|| payload.downcast_ref::<String>().cloned())
             .unwrap_or_else(|| "unknown error".to_string());
-        core.error(format!("Internal error while {what}"), message);
+        core.error(what(), message);
     }
 }
 
@@ -321,18 +380,34 @@ fn db_loop(core: Weak<Core>, rx: Receiver<DbJob>) {
             DbJob::Barrier(done) => {
                 let _ = done.send(());
             }
-            DbJob::Open => guarded(&core, "opening the database", || open_db(&core, &mut ctx)),
+            DbJob::Open => guarded(
+                &core,
+                || tr!("Internal error while opening the database"),
+                || open_db(&core, &mut ctx),
+            ),
             DbJob::Load {
                 file_id,
                 fingerprint,
-            } => guarded(&core, "loading annotations", || {
-                load_file(&core, &mut ctx, file_id, fingerprint)
-            }),
-            DbJob::Op(op) => guarded(&core, "saving annotations", || run_op(&core, &mut ctx, op)),
-            DbJob::History { entry_id, redo } => guarded(&core, "undoing", || {
-                run_history(&core, &mut ctx, &entry_id, redo)
-            }),
-            DbJob::Run(task) => guarded(&core, "working on the database", || task(&core, &mut ctx)),
+            } => guarded(
+                &core,
+                || tr!("Internal error while loading annotations"),
+                || load_file(&core, &mut ctx, file_id, fingerprint),
+            ),
+            DbJob::Op(op) => guarded(
+                &core,
+                || tr!("Internal error while saving annotations"),
+                || run_op(&core, &mut ctx, op),
+            ),
+            DbJob::History { entry_id, redo } => guarded(
+                &core,
+                || tr!("Internal error while undoing"),
+                || run_history(&core, &mut ctx, &entry_id, redo),
+            ),
+            DbJob::Run(task) => guarded(
+                &core,
+                || tr!("Internal error while working on the database"),
+                || task(&core, &mut ctx),
+            ),
         }
     }
 }
@@ -347,18 +422,18 @@ fn io_loop(core: Weak<Core>, rx: Receiver<IoJob>) {
             IoJob::Barrier(done) => {
                 let _ = done.send(());
             }
-            IoJob::Run(task) => guarded(&core, "reading or writing a file", || task(&core)),
+            IoJob::Run(task) => guarded(
+                &core,
+                || tr!("Internal error while reading or writing a file"),
+                || task(&core),
+            ),
         }
     }
 }
 
-/// Shown in the Data tab with a new, empty database when the host does not
-/// say where eov kept per-user files before 1.0.
-pub const LEGACY_DATABASE_HINT: &str = "New database. If you annotated with eov before 1.0, those annotations are \
-     in annotations.db in eov's old settings folder (~/.config/eov on Linux, ~/Library/Application Support/eov \
-     on macOS, %APPDATA%\\eov on Windows): bring them in with Merge… above.";
-
-/// The classes a new database starts with.
+/// The classes a new database starts with. Their names are data, in
+/// English like the classes of other tools (QuPath), whatever the language
+/// of the interface: imports and comparisons match classes by name.
 const DEFAULT_CLASSES: &[(&str, &str)] = &[
     ("Tumour", "#D55E00"),
     ("Stroma", "#56B4E9"),
@@ -403,8 +478,9 @@ fn open_db(core: &Arc<Core>, ctx: &mut DbCtx) {
                 }
             }
             if !read_only && let Err(e) = db.purge_deleted(now_ms() - PURGE_AFTER_MS) {
+                // Only old deleted rows stay longer: for the log.
                 core.host
-                    .warn(format!("cannot purge deleted annotations: {e}"));
+                    .info(format!("cannot purge deleted annotations: {e}"));
             }
             let legacy_export: Vec<(String, Option<String>)> =
                 ["author", "organization", "project", "license"]
@@ -425,7 +501,7 @@ fn open_db(core: &Arc<Core>, ctx: &mut DbCtx) {
                 if fresh && core.paths.legacy_db.is_none() {
                     // Without the host's legacy folder, say where the pre-1.0
                     // database usually is.
-                    state.db_notes.push(LEGACY_DATABASE_HINT.to_string());
+                    state.db_notes.push(DbNote::LegacyHint);
                 }
                 state.classes = classes;
                 state.sort_classes();
@@ -455,7 +531,7 @@ fn open_db(core: &Arc<Core>, ctx: &mut DbCtx) {
                     .collect()
             };
             for note in &report.notes {
-                core.notify(NotifyLevel::Info, note.clone());
+                core.notify(NotifyLevel::Info, note.text());
             }
             offer_legacy_merge(core, ctx);
             for file_id in pending {
@@ -474,15 +550,15 @@ fn open_db(core: &Arc<Core>, ctx: &mut DbCtx) {
                 };
                 for file in state.files.values_mut() {
                     if file.load == Load::Pending {
+                        file.failed_loads += 1;
                         file.load = Load::Failed {
                             error: error.clone(),
-                            attempts: 1,
                             retry_at: Instant::now() + Duration::from_secs(5),
                         };
                     }
                 }
             }
-            core.error("The annotation database could not be opened", error);
+            core.error(tr!("The annotation database could not be opened"), error);
         }
     }
     core.request_refresh();
@@ -511,15 +587,15 @@ fn offer_legacy_merge(core: &Arc<Core>, ctx: &mut DbCtx) {
         return;
     }
     let args = ConfirmArgs {
-        title: "Annotations from eov before 1.0".into(),
-        message: format!(
+        title: tr!("Annotations from eov before 1.0"),
+        message: tr!(
             "The annotations plugin of eov before 1.0 left a database at {}. Bring its annotations into \
              the current database? The old file is not changed. You can also do this later in the \
              Data tab of the annotations panel.",
-            path.display()
+            i18n::isolate(path.display())
         ),
-        confirm_label: "Bring them in".into(),
-        cancel_label: "Not now".into(),
+        confirm_label: tr!("Bring them in"),
+        cancel_label: tr!("Not now"),
         destructive: false,
     };
     match core.host.confirm(args) {
@@ -528,9 +604,15 @@ fn offer_legacy_merge(core: &Arc<Core>, ctx: &mut DbCtx) {
                 .pending
                 .insert(request, crate::state::Pending::LegacyMerge { path });
         }
-        Err(e) => core
-            .host
-            .warn(format!("cannot offer the pre-1.0 annotations: {e}")),
+        // The Data tab still offers them.
+        Err(e) => core.report(
+            NotifyLevel::Warning,
+            // Translators: the plugin could not ask whether to bring in the annotations made
+            // with eov before 1.0 (the title of that question is "Annotations from eov before 1.0").
+            tr!("Could not offer the annotations from eov before 1.0"),
+            Some(e.to_string()),
+            format!("cannot offer the pre-1.0 annotations: {e}"),
+        ),
     }
 }
 
@@ -540,34 +622,55 @@ fn fallback_key(info: &FileInfo) -> String {
     format!("file:{}:{}x{}", info.filename, info.width, info.height)
 }
 
-fn load_failed(core: &Arc<Core>, file_id: FileId, error: String) {
-    {
-        let mut state = core.state();
-        if let Some(file) = state.files.get_mut(&file_id) {
-            let attempts = match &file.load {
-                Load::Failed { attempts, .. } => attempts + 1,
-                _ => 1,
-            };
-            let backoff = Duration::from_secs((1u64 << attempts.min(6)).min(60));
-            file.load = Load::Failed {
-                error: error.clone(),
-                attempts,
-                retry_at: Instant::now() + backoff,
-            };
-        }
-    }
-    core.host.warn(format!(
-        "cannot load the annotations of this slide: {error}"
+/// A file's annotations could not be loaded: the panel says why, and the
+/// load is tried again later, waiting longer each time (ANN-13). The user
+/// is told once, not at each retry that fails the same way, and not when
+/// the database itself is unavailable (that was reported when it failed
+/// to open). The log has every failure, in English (`english`); the panel
+/// and the notification say it in the interface's language (`error`).
+fn load_failed(core: &Arc<Core>, file_id: FileId, error: String, english: String) {
+    core.host.info(format!(
+        "cannot load the annotations of this slide: {english}"
     ));
+    let report = {
+        let mut state = core.state();
+        let db_failed = matches!(state.db, DbStatus::Failed { .. });
+        let Some(file) = state.files.get_mut(&file_id) else {
+            return;
+        };
+        file.failed_loads += 1;
+        let backoff = Duration::from_secs((1u64 << file.failed_loads.min(6)).min(60));
+        file.load = Load::Failed {
+            error: error.clone(),
+            retry_at: Instant::now() + backoff,
+        };
+        let report = !db_failed && file.reported_load_error.as_ref() != Some(&error);
+        if report {
+            file.reported_load_error = Some(error.clone());
+        }
+        report
+    };
+    if report {
+        // The words of the panel's banner.
+        core.notify(
+            NotifyLevel::Warning,
+            tr!("Could not load this slide's annotations: {}", error),
+        );
+    }
     core.request_refresh();
 }
 
 /// Annotations follow a slide's content, so copies and renamed files of a
 /// slide share them (ANN-8): say so when that happens.
 fn shared_notice(annotated: &str, opened: &str) -> String {
-    format!(
+    tr!(
+        // Translators: a second read is an independent annotation of the slide by another person
+        // (as in a reader study), not a clinical second opinion. Data, Second reader and Blinded
+        // copy are the tab, section and button of the annotations panel: use their translations.
         "{opened} has the same content as {annotated}, so it shows and edits the same annotations. \
-         For an independent second read, use Data \u{2192} Second reader \u{2192} Blinded copy."
+         For an independent second read, use Data \u{2192} Second reader \u{2192} Blinded copy.",
+        opened = i18n::isolate(opened),
+        annotated = i18n::isolate(annotated)
     )
 }
 
@@ -612,11 +715,12 @@ fn load_file(core: &Arc<Core>, ctx: &mut DbCtx, file_id: FileId, fingerprint: Fi
         return;
     }
     let Some(db) = ctx.db.as_mut() else {
-        let error = match &core.state().db {
-            DbStatus::Failed { error } => error.clone(),
-            _ => "the database is not open".to_string(),
+        // The database's own error is English (SQLite's or the system's).
+        let (error, english) = match &core.state().db {
+            DbStatus::Failed { error } => (error.clone(), error.clone()),
+            _ => i18n::shown_and_english(|| tr!("the database is not open")),
         };
-        load_failed(core, file_id, error);
+        load_failed(core, file_id, error, english);
         return;
     };
     let need_fingerprint =
@@ -645,7 +749,7 @@ fn load_file(core: &Arc<Core>, ctx: &mut DbCtx, file_id: FileId, fingerprint: Fi
     ) {
         Ok(found) => found,
         Err(e) => {
-            load_failed(core, file_id, e.to_string());
+            load_failed(core, file_id, e.to_string(), e.to_string());
             return;
         }
     };
@@ -667,7 +771,7 @@ fn load_file(core: &Arc<Core>, ctx: &mut DbCtx, file_id: FileId, fingerprint: Fi
     let mut record = match db.upsert_slide(&record) {
         Ok(record) => record,
         Err(e) => {
-            load_failed(core, file_id, e.to_string());
+            load_failed(core, file_id, e.to_string(), e.to_string());
             return;
         }
     };
@@ -681,7 +785,7 @@ fn load_file(core: &Arc<Core>, ctx: &mut DbCtx, file_id: FileId, fingerprint: Fi
         match db.load_slide(record.id) {
             Ok(loaded) => loaded,
             Err(e) => {
-                load_failed(core, file_id, e.to_string());
+                load_failed(core, file_id, e.to_string(), e.to_string());
                 return;
             }
         }
@@ -701,9 +805,11 @@ fn load_file(core: &Arc<Core>, ctx: &mut DbCtx, file_id: FileId, fingerprint: Fi
     if loaded.skipped > 0 {
         core.notify(
             NotifyLevel::Warning,
-            format!(
-                "{} annotation(s) of {} could not be read and were skipped.",
-                loaded.skipped, info.filename
+            tr!(
+                "{n} annotation of {file} could not be read and was skipped."
+                    | "{n} annotations of {file} could not be read and were skipped."
+                        % loaded.skipped,
+                file = i18n::isolate(&info.filename)
             ),
         );
     }
@@ -736,6 +842,8 @@ fn attach(core: &Arc<Core>, file_id: FileId, slide_id: SlideId) {
             return;
         };
         file.load = Load::Loaded(slide_id);
+        file.failed_loads = 0;
+        file.reported_load_error = None;
         overlay::sync_file(&mut state, file_id)
     };
     let ops = batch.build();
@@ -758,6 +866,8 @@ pub fn reload_all(core: &Arc<Core>, ctx: &mut DbCtx) {
         .map(|s| (s.id(), s.record.clone()))
         .collect();
     let mut reloaded = Vec::new();
+    // What went wrong, for the user (once, however many slides).
+    let mut failures: Vec<String> = Vec::new();
     for (id, record) in slides {
         if id <= 0 {
             continue;
@@ -774,8 +884,22 @@ pub fn reload_all(core: &Arc<Core>, ctx: &mut DbCtx) {
                 slide.collapsed = loaded.collapsed;
                 reloaded.push(slide);
             }
-            Err(e) => core.host.warn(format!("cannot reload annotations: {e}")),
+            Err(e) => {
+                core.host.info(format!("cannot reload annotations: {e}"));
+                let failure = friendly(&e);
+                if !failures.contains(&failure) {
+                    failures.push(failure);
+                }
+            }
         }
+    }
+    if !failures.is_empty() {
+        // Those slides keep the annotations shown before.
+        core.notify_detail(
+            NotifyLevel::Warning,
+            tr!("Could not reload annotations"),
+            Some(failures.join("\n")),
+        );
     }
     let batch = {
         let mut state = core.state();
@@ -804,7 +928,7 @@ pub fn check_external(core: &Arc<Core>, ctx: &mut DbCtx) {
         reload_all(core, ctx);
         core.notify(
             NotifyLevel::Info,
-            "Annotations were changed by another eov window and have been reloaded.",
+            tr!("Annotations were changed by another eov window and have been reloaded."),
         );
     }
 }
@@ -830,15 +954,26 @@ fn apply_with_retry(
             other => return other,
         }
     }
-    Err(DbError::Failed("the database stayed locked".to_string()))
+    Err(DbError::Failed(tr!("the database stayed locked")))
 }
 
+/// What went wrong, for the user (the `Display` of [`DbError`] is for logs).
 fn friendly(error: &DbError) -> String {
     match error {
         DbError::Failed(m) if m.contains("UNIQUE") && m.contains("classes") => {
-            "a class with that name already exists".to_string()
+            tr!("a class with that name already exists")
         }
-        other => other.to_string(),
+        DbError::ReadOnly => tr!("the annotation database is read-only"),
+        DbError::Conflict(what) => match what.as_str() {
+            crate::db::CONFLICT_ANNOTATION => {
+                tr!("the annotation was changed elsewhere in the meantime")
+            }
+            crate::db::CONFLICT_LAYER => tr!("the layer was changed elsewhere in the meantime"),
+            crate::db::CONFLICT_CLASS => tr!("the class was changed elsewhere in the meantime"),
+            _ => tr!("a layer being moved was changed elsewhere in the meantime"),
+        },
+        // SQLite's own words.
+        DbError::Failed(message) => message.clone(),
     }
 }
 
@@ -859,7 +994,7 @@ pub fn run_op(core: &Arc<Core>, ctx: &mut DbCtx, op: Op) {
     };
     let label = planned.label.clone().unwrap_or(op.label);
     if planned.changes.is_empty() {
-        finish(core, &planned, None);
+        finish(core, &planned);
         return;
     }
     let author = core.state().settings.author.clone();
@@ -876,12 +1011,12 @@ pub fn run_op(core: &Arc<Core>, ctx: &mut DbCtx, op: Op) {
     let audit = Audit {
         author,
         slide_id: slide,
-        action: label.clone(),
+        action: label.audit.clone(),
         detail: change::summary(&planned.changes),
     };
     let result = match ctx.db.as_mut() {
         Some(db) => apply_with_retry(db, &planned.changes, &audit),
-        None => Err(DbError::Failed("the database is not open".to_string())),
+        None => Err(DbError::Failed(tr!("the database is not open"))),
     };
     match result {
         Ok(moved) => {
@@ -903,24 +1038,21 @@ pub fn run_op(core: &Arc<Core>, ctx: &mut DbCtx, op: Op) {
                     );
                     // Only for files still open (the host forgets closed ones).
                     let file_id = op.file_id.filter(|id| state.files.contains_key(id));
-                    let _ = core.host.push_undo(entry_id, file_id, label.clone());
+                    let _ = core.host.push_undo(entry_id, file_id, label.shown.clone());
                 }
                 batch
             };
             core.exec(batch.build());
-            finish(core, &planned, Some(&label));
+            finish(core, &planned);
         }
         Err(error) => {
             if let Some((slide, ids)) = &planned.revert {
                 let batch = overlay::for_annotations(&core.state(), *slide, ids);
                 core.exec(batch.build());
             }
-            match &error {
-                DbError::Conflict(_) => {
-                    core.error(format!("Could not save \"{label}\""), friendly(&error));
-                    check_external(core, ctx);
-                }
-                _ => core.error(format!("Could not save \"{label}\""), friendly(&error)),
+            core.error(tr!("Could not save \"{}\"", label.shown), friendly(&error));
+            if let DbError::Conflict(_) = &error {
+                check_external(core, ctx);
             }
             core.request_refresh();
         }
@@ -928,7 +1060,7 @@ pub fn run_op(core: &Arc<Core>, ctx: &mut DbCtx, op: Op) {
 }
 
 /// Follow-ups of a successful (or empty) edit.
-fn finish(core: &Arc<Core>, planned: &Planned, _label: Option<&str>) {
+fn finish(core: &Arc<Core>, planned: &Planned) {
     if planned.changes.is_empty()
         && let Some((slide, ids)) = &planned.revert
     {
@@ -957,8 +1089,9 @@ fn finish(core: &Arc<Core>, planned: &Planned, _label: Option<&str>) {
                     && let Err(e) = db.set_current_layer(slide, Some(&layer))
                     && e != DbError::ReadOnly
                 {
+                    // A convenience lost; for the log.
                     core.host
-                        .warn(format!("cannot remember the current layer: {e}"));
+                        .info(format!("cannot remember the current layer: {e}"));
                 }
             });
         }
@@ -987,7 +1120,7 @@ fn run_history(core: &Arc<Core>, ctx: &mut DbCtx, entry_id: &str, redo: bool) {
             drop(state);
             core.notify(
                 NotifyLevel::Warning,
-                "This annotation change can no longer be undone.",
+                tr!("This annotation change can no longer be undone."),
             );
             return;
         };
@@ -1001,7 +1134,7 @@ fn run_history(core: &Arc<Core>, ctx: &mut DbCtx, entry_id: &str, redo: bool) {
             drop(state);
             core.notify(
                 NotifyLevel::Warning,
-                "The slide of this change is not open any more.",
+                tr!("The slide of this change is not open any more."),
             );
             return;
         }
@@ -1015,12 +1148,12 @@ fn run_history(core: &Arc<Core>, ctx: &mut DbCtx, entry_id: &str, redo: bool) {
     let audit = Audit {
         author: core.state().settings.author.clone(),
         slide_id: slide,
-        action: format!("{} {label}", if redo { "Redo" } else { "Undo" }),
+        action: format!("{} {}", if redo { "Redo" } else { "Undo" }, label.audit),
         detail: change::summary(&changes),
     };
     let result = match ctx.db.as_mut() {
         Some(db) => apply_with_retry(db, &changes, &audit),
-        None => Err(DbError::Failed("the database is not open".to_string())),
+        None => Err(DbError::Failed(tr!("the database is not open"))),
     };
     match result {
         Ok(moved) => {
@@ -1039,10 +1172,11 @@ fn run_history(core: &Arc<Core>, ctx: &mut DbCtx, entry_id: &str, redo: bool) {
         Err(error) => {
             core.state().history.remove(entry_id);
             core.error(
-                format!(
-                    "Could not {} \"{label}\"",
-                    if redo { "redo" } else { "undo" }
-                ),
+                if redo {
+                    tr!("Could not redo \"{}\"", label.shown)
+                } else {
+                    tr!("Could not undo \"{}\"", label.shown)
+                },
                 friendly(&error),
             );
             if matches!(error, DbError::Conflict(_)) {
@@ -1070,7 +1204,8 @@ pub fn file_opened(core: &Arc<Core>, info: FileInfo) {
     core.request_refresh();
 }
 
-/// Retries a failed load once its backoff passed.
+/// Retries a failed load once its backoff passed, or now (`force`: the
+/// user asked, and is told how it went even when it fails as before).
 pub fn retry_if_due(core: &Arc<Core>, file_id: FileId, force: bool) {
     let due = {
         let mut state = core.state();
@@ -1078,6 +1213,9 @@ pub fn retry_if_due(core: &Arc<Core>, file_id: FileId, force: bool) {
         match state.files.get_mut(&file_id) {
             Some(file) => match &file.load {
                 Load::Failed { retry_at, .. } if force || Instant::now() >= *retry_at => {
+                    if force {
+                        file.reported_load_error = None;
+                    }
                     if !failed_db {
                         file.load = Load::Pending;
                     }

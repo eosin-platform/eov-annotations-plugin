@@ -21,10 +21,11 @@ use super::eov::ExportSlide;
 use super::{ImportAnnotation, ImportDoc, ImportLayer};
 use crate::geometry::point_in_ring;
 use crate::model::{Class, Color, Geometry};
+use eov_plugin_api::i18n::tr;
 use roxmltree::{Document, Node};
 
 pub fn parse(text: &str, stem: &str) -> Result<ImportDoc, String> {
-    let document = Document::parse(text).map_err(|e| format!("The XML is not well-formed: {e}"))?;
+    let document = Document::parse(text).map_err(|e| tr!("The XML is not well-formed: {}", e))?;
     let root = document.root_element();
     if super::ndpa::is_ndpa(root) {
         return Ok(super::ndpa::parse(root, stem));
@@ -32,8 +33,9 @@ pub fn parse(text: &str, stem: &str) -> Result<ImportDoc, String> {
     match root.tag_name().name() {
         "ASAP_Annotations" => Ok(parse_asap(root, stem)),
         "Annotations" => Ok(parse_imagescope(root, stem)),
-        other => Err(format!(
-            "Unsupported XML annotations (root element <{other}>); ASAP, Aperio ImageScope and Hamamatsu NDPA files are supported."
+        other => Err(tr!(
+            "Unsupported XML annotations (root element <{}>); ASAP, Aperio ImageScope and Hamamatsu NDPA files are supported.",
+            other
         )),
     }
 }
@@ -90,7 +92,8 @@ fn parse_asap(root: Node<'_, '_>, stem: &str) -> ImportDoc {
                 }
             }
             if bad || coordinates.is_empty() {
-                doc.skip("annotation with unreadable coordinates");
+                // Translators: a reason why an annotation of an imported file was skipped.
+                doc.skip(tr!("annotation with unreadable coordinates"));
                 continue;
             }
             coordinates.sort_by(|a, b| a.0.total_cmp(&b.0));
@@ -152,7 +155,7 @@ fn parse_asap(root: Node<'_, '_>, stem: &str) -> ImportDoc {
                         holes: vec![],
                     }],
                     _ => {
-                        doc.skip("unsupported ASAP annotation type");
+                        doc.skip(tr!("unsupported ASAP annotation type"));
                         continue;
                     }
                 },
@@ -192,9 +195,9 @@ fn parse_asap(root: Node<'_, '_>, stem: &str) -> ImportDoc {
         match ids.get(&parent).copied() {
             Some((layer, index)) => match &mut layers[layer].annotations[index].geometry {
                 Geometry::Polygon { holes, .. } => holes.push(ring),
-                _ => doc.skip("hole of a shape that is not a polygon"),
+                _ => doc.skip(tr!("hole of a shape that is not a polygon")),
             },
-            None => doc.skip("hole of a missing polygon"),
+            None => doc.skip(tr!("hole of a missing polygon")),
         }
     }
     doc.layers = layers
@@ -269,7 +272,7 @@ fn parse_imagescope(root: Node<'_, '_>, stem: &str) -> ImportDoc {
                     }
                 }
                 if bad || points.is_empty() {
-                    doc.skip("region with unreadable vertices");
+                    doc.skip(tr!("region with unreadable vertices"));
                     continue;
                 }
                 let negative = region.attribute("NegativeROA") == Some("1");
@@ -351,7 +354,7 @@ fn parse_imagescope(root: Node<'_, '_>, stem: &str) -> ImportDoc {
                     geometry: Geometry::Polygon { holes, .. },
                     ..
                 }) => holes.push(hole),
-                _ => doc.skip("negative region outside every region"),
+                _ => doc.skip(tr!("negative region outside every region")),
             }
         }
         layer.annotations = positives;

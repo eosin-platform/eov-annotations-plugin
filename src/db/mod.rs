@@ -20,6 +20,7 @@ use crate::model::{
     Annotation, Bounds, Class, Color, Comment, Geometry, Layer, LayerRole, SlideId, SlideRecord,
     Status,
 };
+use eov_plugin_api::i18n::tr;
 use rusqlite::{Connection, OpenFlags, OptionalExtension, Row, Transaction, params};
 use serde_json::Value;
 use std::collections::{BTreeMap, HashMap, HashSet};
@@ -35,7 +36,14 @@ const BUSY_TIMEOUT: Duration = Duration::from_secs(5);
 /// Soft-deleted rows older than this are purged at startup.
 pub const PURGE_AFTER_MS: i64 = 7 * 24 * 3600 * 1000;
 
-/// An error from a database operation.
+/// What [`DbError::Conflict`] says was changed elsewhere.
+pub const CONFLICT_ANNOTATION: &str = "the annotation";
+pub const CONFLICT_LAYER: &str = "the layer";
+pub const CONFLICT_CLASS: &str = "the class";
+pub const CONFLICT_MOVED_LAYER: &str = "a layer being moved";
+
+/// An error from a database operation. Its `Display` is for logs, in
+/// English (the plugin's messages say it to users in their language).
 #[derive(Debug, Clone, PartialEq)]
 pub enum DbError {
     /// The data changed since the change was prepared (another window).
@@ -77,9 +85,89 @@ pub type Restored = Vec<(Layer, Vec<Arc<Annotation>>)>;
 pub struct OpenReport {
     /// The schema was upgraded from this version.
     pub migrated_from: Option<i64>,
-    /// Human-readable notes (rows skipped during migration, read-only
+    /// Notes for the user (rows skipped during migration, read-only
     /// reason, …).
-    pub notes: Vec<String>,
+    pub notes: Vec<DbNote>,
+}
+
+/// A note about the database for the user. It is kept as what happened and
+/// worded when it is shown, so that it follows the language of the
+/// interface.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum DbNote {
+    /// The database cannot be written.
+    ReadOnly,
+    /// Unreadable layer colours of a pre-1.0 database were replaced.
+    ColoursReplaced(usize),
+    /// A pre-1.0 database was upgraded.
+    Upgraded {
+        slides: usize,
+        annotations: usize,
+        skipped: usize,
+    },
+    /// A new database: where the pre-1.0 one usually is.
+    LegacyHint,
+}
+
+impl DbNote {
+    pub fn text(&self) -> String {
+        match *self {
+            DbNote::ReadOnly => {
+                tr!("The annotation database is read-only; editing is disabled.")
+            }
+            DbNote::ColoursReplaced(n) => {
+                tr!("{n} layer colour was unreadable and was replaced."
+                    | "{n} layer colours were unreadable and were replaced." % n)
+            }
+            DbNote::Upgraded {
+                slides,
+                annotations,
+                skipped,
+            } => {
+                // Each number has a text of its own, so that its noun takes
+                // the plural form of that number in every language.
+                let slides = tr!(
+                    // Translators: {slides} in "Upgraded the annotation database from the pre-1.0 format: {slides}, …".
+                    "{n} slide" | "{n} slides" % slides
+                );
+                if skipped == 0 {
+                    tr!(
+                        // Translators: {slides} is "1 slide" or "3 slides" (translated on its own).
+                        "Upgraded the annotation database from the pre-1.0 format: {slides}, {n} annotation."
+                            | "Upgraded the annotation database from the pre-1.0 format: {slides}, {n} annotations."
+                                % annotations,
+                        slides = slides
+                    )
+                } else {
+                    tr!(
+                        // Translators: {slides} is "1 slide" or "3 slides", {annotations} is
+                        // "1 annotation" or "5 annotations" (each translated on its own).
+                        "Upgraded the annotation database from the pre-1.0 format: {slides}, {annotations}, {n} unreadable annotation skipped."
+                            | "Upgraded the annotation database from the pre-1.0 format: {slides}, {annotations}, {n} unreadable annotations skipped."
+                                % skipped,
+                        slides = slides,
+                        annotations = tr!(
+                            // Translators: a number of annotations on its own, in two texts: {annotations} in
+                            // "Upgraded the annotation database from the pre-1.0 format: {slides}, {annotations}, …"
+                            // and {ours} in "This slide's visible layers ({ours}) against the {n} annotations in {name}, …".
+                            "{n} annotation" | "{n} annotations" % annotations
+                        )
+                    )
+                }
+            }
+            DbNote::LegacyHint => tr!(
+                "New database. If you annotated with eov before 1.0, those annotations are \
+                 in annotations.db in eov's old settings folder (~/.config/eov on Linux, ~/Library/Application Support/eov \
+                 on macOS, %APPDATA%\\eov on Windows): bring them in with Merge… above."
+            ),
+        }
+    }
+}
+
+impl std::fmt::Display for DbNote {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&self.text())
+    }
 }
 
 pub struct Db {
@@ -142,9 +230,7 @@ impl Db {
             return Err(format!("cannot create {}", path.display()));
         }
         // Read-only.
-        report
-            .notes
-            .push("The annotation database is read-only; editing is disabled.".to_string());
+        report.notes.push(DbNote::ReadOnly);
         let conn = Connection::open_with_flags(
             path,
             OpenFlags::SQLITE_OPEN_READ_ONLY | OpenFlags::SQLITE_OPEN_NO_MUTEX,
@@ -1074,7 +1160,7 @@ fn apply_change(
                 tx,
                 "annotations",
                 &id,
-                "the annotation",
+                CONFLICT_ANNOTATION,
                 before.as_ref().map(|b| b.updated_at),
             )?;
             match after {
@@ -1092,7 +1178,7 @@ fn apply_change(
                 tx,
                 "layers",
                 &id,
-                "the layer",
+                CONFLICT_LAYER,
                 before.as_ref().map(|b| b.updated_at),
             )?;
             match after {
@@ -1101,11 +1187,17 @@ fn apply_change(
             }
         }
         Change::RemoveLayer { layer, .. } => {
-            expect(tx, "layers", &layer.id, "the layer", Some(layer.updated_at))?;
+            expect(
+                tx,
+                "layers",
+                &layer.id,
+                CONFLICT_LAYER,
+                Some(layer.updated_at),
+            )?;
             soft_delete(tx, "layers", &layer.id, now)?;
         }
         Change::RestoreLayer { layer, contents } => {
-            expect(tx, "layers", &layer.id, "the layer", None)?;
+            expect(tx, "layers", &layer.id, CONFLICT_LAYER, None)?;
             write_layer(tx, layer)?;
             for annotation in contents {
                 write_annotation(tx, annotation)?;
@@ -1121,7 +1213,7 @@ fn apply_change(
                 tx,
                 "classes",
                 &id,
-                "the class",
+                CONFLICT_CLASS,
                 before.as_ref().map(|b| b.updated_at),
             )?;
             match after {
@@ -1141,7 +1233,7 @@ fn apply_change(
                     )?
                     .execute(params![id, from, to])?;
                 if updated != 1 {
-                    return Err(DbError::Conflict("a layer being moved".to_string()));
+                    return Err(DbError::Conflict(CONFLICT_MOVED_LAYER.to_string()));
                 }
                 let layer = tx
                     .prepare_cached(

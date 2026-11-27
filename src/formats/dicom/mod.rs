@@ -71,6 +71,7 @@ use super::{ImportAnnotation, ImportDoc, ImportLayer};
 use crate::model::{
     Annotation, Bounds, Class, Color, Geometry, GeometryKind, Layer, LayerRole, Status,
 };
+use eov_plugin_api::i18n::{isolate, tr};
 use eov_plugin_api::protocol::PropertyMap;
 use part10::{DataSet, Tag, Vr};
 use serde::{Deserialize, Serialize};
@@ -601,7 +602,7 @@ fn group_item(number: usize, group: &Group<'_>, losses: &mut Losses) -> Result<D
         let start = u32::try_from(values.len() + 1)
             .ok()
             .filter(|s| *s < u32::MAX)
-            .ok_or("There are too many coordinates for one DICOM annotation group.")?;
+            .ok_or_else(|| tr!("There are too many coordinates for one DICOM annotation group."))?;
         starts.push(start);
         values.extend(points.iter().flat_map(|p| [p[0] as f32, p[1] as f32]));
         let mut entry = PrivateAnnotation {
@@ -670,7 +671,7 @@ fn group_item(number: usize, group: &Group<'_>, losses: &mut Losses) -> Result<D
     let mut item = DataSet::new();
     item.put_u16s(
         tag::ANNOTATION_GROUP_NUMBER,
-        &[u16::try_from(number).map_err(|_| "There are too many annotation groups.")?],
+        &[u16::try_from(number).map_err(|_| tr!("There are too many annotation groups."))?],
     );
     item.put_u16s(tag::RECOMMENDED_DISPLAY_CIELAB_VALUE, &rgb_to_lab(color));
     item.put_f32s(tag::POINT_COORDINATES_DATA, Vr::OF, &values);
@@ -691,7 +692,7 @@ fn group_item(number: usize, group: &Group<'_>, losses: &mut Losses) -> Result<D
     );
     item.put_u32(
         tag::NUMBER_OF_ANNOTATIONS,
-        u32::try_from(count).map_err(|_| "There are too many annotations in one group.")?,
+        u32::try_from(count).map_err(|_| tr!("There are too many annotations in one group."))?,
     );
     item.put_text(tag::ANNOTATION_APPLIES_TO_ALL_OPTICAL_PATHS, Vr::CS, "YES");
     item.put_text(tag::GRAPHIC_TYPE, Vr::CS, graphic_type(group.kind));
@@ -708,14 +709,6 @@ fn reference_item(source: &Source) -> DataSet {
         &source.sop_instance_uid,
     );
     item
-}
-
-fn plural(n: usize, one: &str, many: &str) -> String {
-    if n == 1 {
-        format!("1 {one}")
-    } else {
-        format!("{n} {many}")
-    }
 }
 
 /// A Microscopy Bulk Simple Annotations object of a slide (see the module
@@ -740,7 +733,7 @@ pub fn export(
         .filter_map(|i| i.uint(tag::NUMBER_OF_ANNOTATIONS))
         .sum::<u64>() as usize;
     if items.is_empty() {
-        return Err("The slide has no annotations to export.".to_string());
+        return Err(tr!("The slide has no annotations to export."));
     }
     let (date, time) = date_time(options.exported_at);
     let sop_instance_uid = new_uid();
@@ -872,65 +865,88 @@ pub fn export(
 }
 
 /// The export note: what the file refers to and what other viewers will
-/// not see.
+/// not see (in the language of the interface: eov shows it).
 fn notes(losses: &Losses, source: Option<&Source>) -> Vec<String> {
     let mut notes = vec![match source {
-        Some(s) => format!(
+        Some(s) => tr!(
             "It refers to this slide's DICOM image (series {}) and joins its study; the patient and study attributes are the slide's.",
-            s.series_instance_uid
+            isolate(&s.series_instance_uid)
         ),
-        None => "This slide is not a DICOM image, so the file refers to no image: it is a study of its own with empty patient attributes, and DICOM viewers cannot attach it to a slide by themselves.".to_string(),
+        None => tr!(
+            "This slide is not a DICOM image, so the file refers to no image: it is a study of its own with empty patient attributes, and DICOM viewers cannot attach it to a slide by themselves."
+        ),
     }];
+    // What DICOM bulk annotations cannot hold, as items of one list.
     let mut lost = Vec::new();
     if losses.holes > 0 {
-        lost.push(format!(
-            "{} in {} (drawn without them)",
-            plural(losses.holes, "hole", "holes"),
-            plural(losses.holed_regions, "region", "regions")
+        lost.push(tr!(
+            // Translators: an item of the list in "DICOM bulk annotations cannot
+            // hold {}: …"; {regions} is "in 1 region" or "in 2 regions"; "drawn
+            // without it/them": other viewers draw these regions without their holes.
+            "{n} hole {regions} (drawn without it)"
+                | "{n} holes {regions} (drawn without them)" % losses.holes,
+            regions = tr!(
+                // Translators: in "{n} holes {regions} (drawn without them)".
+                "in {n} region" | "in {n} regions" % losses.holed_regions
+            )
         ));
     }
     if losses.texts > 0 {
-        lost.push(format!(
-            "the text of {} (written as points)",
-            plural(losses.texts, "text label", "text labels")
+        lost.push(tr!(
+            // Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+            "the text of {n} text label (written as points)"
+                | "the text of {n} text labels (written as points)" % losses.texts
         ));
     }
     if losses.arrows > 0 {
-        lost.push(format!(
-            "the heads of {} (written as lines)",
-            plural(losses.arrows, "arrow", "arrows")
+        lost.push(tr!(
+            // Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+            "the heads of {n} arrow (written as lines)"
+                | "the heads of {n} arrows (written as lines)" % losses.arrows
         ));
     }
     if losses.named > 0 {
-        lost.push(format!(
-            "the names, descriptions and statuses of {}",
-            plural(losses.named, "annotation", "annotations")
+        lost.push(tr!(
+            // Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+            "the names, descriptions and statuses of {n} annotation"
+                | "the names, descriptions and statuses of {n} annotations" % losses.named
         ));
     }
     if !lost.is_empty() {
-        notes.push(format!(
-            "DICOM bulk annotations cannot hold {}: other viewers do not see them, eov reads them back from its private attributes.",
+        notes.push(tr!(
+            // Translators: {} lists what is lost, such as "the heads of 2 arrows (written
+            // as lines) and the text of 1 text label (written as points)".
+            "DICOM bulk annotations cannot hold {}: other viewers do not see them, but eov reads them back from its private attributes.",
             join_and(&lost)
         ));
     }
-    notes.push(
+    notes.push(tr!(
         "Each layer, class and kind of shape is a group labelled with its class (or its layer). Authors, comments, properties and times are not exported (eov JSON keeps everything)."
-            .to_string(),
-    );
+    ));
     if losses.skipped > 0 {
-        notes.push(format!(
-            "{} with too few points or unusable coordinates left out.",
-            plural(losses.skipped, "annotation was", "annotations were")
+        notes.push(tr!(
+            "{n} annotation with too few points or unusable coordinates was left out."
+                | "{n} annotations with too few points or unusable coordinates were left out."
+                    % losses.skipped
         ));
     }
     notes
 }
 
+/// Items as a list: "a, b and c".
 fn join_and(items: &[String]) -> String {
     match items {
         [] => String::new(),
         [one] => one.clone(),
-        [rest @ .., last] => format!("{} and {last}", rest.join(", ")),
+        [rest @ .., last] => tr!(
+            // Translators: the end of a list, "a, b and c": {first} is "a, b".
+            "{first} and {last}",
+            first = rest.join(&tr!(
+                // Translators: between the items of a list ("a, b and c").
+                ", "
+            )),
+            last = last
+        ),
     }
 }
 
@@ -958,8 +974,9 @@ pub fn match_slide(reference: &Reference, props: &PropertyMap) -> (String, bool)
     let (series, instance) = (get("dicom.SeriesInstanceUID"), get("dicom.SOPInstanceUID"));
     if series.is_none() && instance.is_none() {
         return (
-            "Made for a DICOM slide; this one is not a DICOM image, so whether the annotations belong to it cannot be checked. Coordinates are taken as level-0 pixels of this slide."
-                .to_string(),
+            tr!(
+                "Made for a DICOM slide; this one is not a DICOM image, so whether the annotations belong to it cannot be checked. Coordinates are taken as level-0 pixels of this slide."
+            ),
             true,
         );
     }
@@ -967,24 +984,25 @@ pub fn match_slide(reference: &Reference, props: &PropertyMap) -> (String, bool)
         .as_ref()
         .is_some_and(|i| reference.instances.contains(i))
     {
-        return ("Made for this slide (its DICOM image).".to_string(), false);
+        return (tr!("Made for this slide (its DICOM image)."), false);
     }
     if series
         .as_ref()
         .is_some_and(|s| reference.series.contains(s))
     {
         return if reference.instances.is_empty() {
-            ("Made for this slide (its DICOM series).".to_string(), false)
+            (tr!("Made for this slide (its DICOM series)."), false)
         } else {
             (
-                "Made for another image of this slide's DICOM series (another resolution level?), whose pixels may not be level-0 pixels."
-                    .to_string(),
+                tr!(
+                    "Made for another image of this slide's DICOM series (another resolution level?), whose pixels may not be level-0 pixels."
+                ),
                 true,
             )
         };
     }
     (
-        "Made for a different DICOM slide (it refers to other images).".to_string(),
+        tr!("Made for a different DICOM slide (it refers to other images)."),
         true,
     )
 }
@@ -992,14 +1010,19 @@ pub fn match_slide(reference: &Reference, props: &PropertyMap) -> (String, bool)
 /// Why a DICOM file that is not a bulk annotation object is not imported.
 fn not_annotations(sop_class: &str) -> String {
     if sop_class == WSI_SOP_CLASS_UID {
-        "This DICOM file is a slide image (VL Whole Slide Microscopy), not annotations: open it as a slide. Annotations are read from Microscopy Bulk Simple Annotations objects (modality ANN).".to_string()
+        tr!(
+            "This DICOM file is a slide image (VL Whole Slide Microscopy), not annotations: open it as a slide. Annotations are read from Microscopy Bulk Simple Annotations objects (modality ANN)."
+        )
     } else if sop_class.starts_with(SR_SOP_CLASS_PREFIX) {
-        "This DICOM file is a structured report (SR). eov reads DICOM annotations from Microscopy Bulk Simple Annotations objects (modality ANN), not from structured reports.".to_string()
+        tr!(
+            "This DICOM file is a structured report (SR). eov reads DICOM annotations from Microscopy Bulk Simple Annotations objects (modality ANN), not from structured reports."
+        )
     } else if sop_class.is_empty() {
-        "This DICOM file does not say what it holds (it has no SOP Class UID).".to_string()
+        tr!("This DICOM file does not say what it holds (it has no SOP Class UID).")
     } else {
-        format!(
-            "This DICOM file is not an annotation object (SOP class {sop_class}); eov reads Microscopy Bulk Simple Annotations (modality ANN)."
+        tr!(
+            "This DICOM file is not an annotation object (SOP class {}); eov reads Microscopy Bulk Simple Annotations (modality ANN).",
+            isolate(sop_class)
         )
     }
 }
@@ -1020,9 +1043,9 @@ fn slide_hint(ds: &DataSet, doc: &mut ImportDoc) {
                 doc.slide.mpp_x = slide.get("mpp_x").and_then(super::num);
                 doc.slide.mpp_y = slide.get("mpp_y").and_then(super::num);
             }
-            Err(_) => doc.warnings.push(
-                "eov's private description of the slide is unreadable and was ignored.".to_string(),
-            ),
+            Err(_) => doc.warnings.push(tr!(
+                "eov's private description of the slide is unreadable and was ignored."
+            )),
         }
     }
     let uid = |item: &DataSet, tag: Tag| item.text(tag).filter(|u| is_uid(u));
@@ -1052,7 +1075,10 @@ fn slide_hint(ds: &DataSet, doc: &mut ImportDoc) {
 
 /// Reads a DICOM file of bulk annotations.
 pub fn parse(bytes: &[u8], stem: &str) -> Result<ImportDoc, String> {
-    let file = part10::read(bytes).map_err(|e| format!("The DICOM file cannot be read: {e}."))?;
+    let file = part10::read(bytes).map_err(|e| {
+        // Translators: {} says what is wrong with the file, in English.
+        tr!("The DICOM file cannot be read: {}.", e)
+    })?;
     let ds = &file.dataset;
     let sop_class = ds
         .text(tag::SOP_CLASS_UID)
@@ -1069,14 +1095,19 @@ pub fn parse(bytes: &[u8], stem: &str) -> Result<ImportDoc, String> {
     {
         "2D" => {}
         "3D" => {
-            return Err("This file holds 3D annotations: their coordinates are millimetres in the slide's frame of reference (DICOM SCOORD3D), and eov places annotations by level-0 pixels. Only 2D (pixel) annotations can be imported.".to_string());
+            return Err(tr!(
+                "This file holds 3D annotations: their coordinates are millimetres in the slide's frame of reference (DICOM SCOORD3D), and eov places annotations by level-0 pixels. Only 2D (pixel) annotations can be imported."
+            ));
         }
         "" => {
-            return Err("The file does not say whether its coordinates are 2D or 3D (Annotation Coordinate Type is missing).".to_string());
+            return Err(tr!(
+                "The file does not say whether its coordinates are 2D or 3D (Annotation Coordinate Type is missing)."
+            ));
         }
         other => {
-            return Err(format!(
-                "The file's coordinates are of an unknown type (\"{other}\"); 2D annotations can be imported."
+            return Err(tr!(
+                "The file's coordinates are of an unknown type (\"{}\"); 2D annotations can be imported.",
+                isolate(other)
             ));
         }
     }
@@ -1091,15 +1122,18 @@ pub fn parse(bytes: &[u8], stem: &str) -> Result<ImportDoc, String> {
     {
         "" | "VOLUME" => {}
         "FRAME" => {
-            return Err("The annotations' pixel coordinates are relative to single frames (tiles) of the image (Pixel Origin Interpretation FRAME), which eov cannot place; coordinates relative to the whole image (VOLUME) can be imported.".to_string());
+            return Err(tr!(
+                "The annotations' pixel coordinates are relative to single frames (tiles) of the image (Pixel Origin Interpretation FRAME), which eov cannot place; coordinates relative to the whole image (VOLUME) can be imported."
+            ));
         }
-        other => doc.warnings.push(format!(
-            "Unknown pixel origin interpretation \"{other}\"; coordinates are taken relative to the whole image."
+        other => doc.warnings.push(tr!(
+            "Unknown pixel origin interpretation \"{}\"; coordinates are taken relative to the whole image.",
+            isolate(other)
         )),
     }
     let groups = ds.items(tag::ANNOTATION_GROUP_SEQUENCE);
     if groups.is_empty() {
-        return Err("The DICOM file has no annotation groups.".to_string());
+        return Err(tr!("The DICOM file has no annotation groups."));
     }
     slide_hint(ds, &mut doc);
     let mut total = 0usize;
@@ -1108,9 +1142,10 @@ pub fn parse(bytes: &[u8], stem: &str) -> Result<ImportDoc, String> {
         read_group(group, index, stem, &mut doc, &mut total, &mut rotated);
     }
     if rotated > 0 {
-        doc.warnings.push(format!(
-            "{} not aligned with the image axes became polygons.",
-            plural(rotated, "rectangle or ellipse", "rectangles and ellipses")
+        doc.warnings.push(tr!(
+            "{n} rectangle or ellipse not aligned with the image axes became a polygon."
+                | "{n} rectangles and ellipses not aligned with the image axes became polygons."
+                    % rotated
         ));
     }
     Ok(doc)
@@ -1127,7 +1162,8 @@ fn coordinate_values(item: &DataSet) -> Result<Option<Vec<f64>>, String> {
 /// The coordinate values of each line or polygon of a group, from its Long
 /// Primitive Point Index List: the 1-based index of each annotation's
 /// first coordinate value. A list that counts points instead is read as
-/// such (with a warning) when it cannot be meant as values.
+/// such (with a warning) when it cannot be meant as values. The error is
+/// why the group is skipped.
 fn primitive_ranges(
     item: &DataSet,
     values: usize,
@@ -1138,10 +1174,12 @@ fn primitive_ranges(
         return if item.uint(tag::NUMBER_OF_ANNOTATIONS) == Some(1) {
             Ok(std::iter::once(0..values).collect())
         } else {
-            Err("lines or polygons without a point index list".to_string())
+            Err(tr!(
+                "annotation group with lines or polygons without a point index list"
+            ))
         };
     };
-    let unreadable = |_| "an unreadable point index list".to_string();
+    let unreadable = |_| tr!("annotation group with an unreadable point index list");
     let starts: Vec<u64> = if matches!(element.vr, Vr::OV | Vr::UV) {
         item.u64s(tag::LONG_PRIMITIVE_POINT_INDEX_LIST)
             .map_err(unreadable)?
@@ -1155,7 +1193,9 @@ fn primitive_ranges(
             .collect()
     };
     if starts.is_empty() {
-        return Err("lines or polygons with an empty point index list".to_string());
+        return Err(tr!(
+            "annotation group with lines or polygons with an empty point index list"
+        ));
     }
     let fits = |limit: u64, step: u64| {
         starts.windows(2).all(|w| w[0] < w[1])
@@ -1167,12 +1207,15 @@ fn primitive_ranges(
     let scale = if fits(n, 2) {
         1
     } else if fits(n / 2, 1) {
-        warnings.push(format!(
-            "The point index list of \"{label}\" counts points rather than coordinate values; it was read that way."
+        warnings.push(tr!(
+            "The point index list of \"{}\" counts points rather than coordinate values; it was read that way.",
+            isolate(label)
         ));
         2
     } else {
-        return Err("a point index list that does not fit its coordinates".to_string());
+        return Err(tr!(
+            "annotation group with a point index list that does not fit its coordinates"
+        ));
     };
     let offsets: Vec<usize> = starts.iter().map(|&s| (s as usize - 1) * scale).collect();
     Ok(offsets
@@ -1286,14 +1329,15 @@ fn measurements(item: &DataSet, count: usize, doc: &mut ImportDoc) -> Vec<Vec<(S
             format!("{name} [{unit}]")
         };
         let Some(values_item) = m.items(tag::MEASUREMENT_VALUES_SEQUENCE).first() else {
-            doc.skip("measurement without values");
+            // Translators: a reason why a measurement of an imported file was skipped.
+            doc.skip(tr!("measurement without values"));
             continue;
         };
         let (Ok(Some(values)), Ok(indices)) = (
             values_item.f32s(tag::FLOATING_POINT_VALUES),
             values_item.u32s(tag::ANNOTATION_INDEX_LIST),
         ) else {
-            doc.skip("measurement with unreadable values");
+            doc.skip(tr!("measurement with unreadable values"));
             continue;
         };
         let pairs: Vec<(usize, f32)> = match indices {
@@ -1305,7 +1349,7 @@ fn measurements(item: &DataSet, count: usize, doc: &mut ImportDoc) -> Vec<Vec<(S
                 .collect(),
             None if values.len() == count => values.into_iter().enumerate().collect(),
             _ => {
-                doc.skip("measurement that does not match its annotations");
+                doc.skip(tr!("measurement that does not match its annotations"));
                 continue;
             }
         };
@@ -1350,16 +1394,19 @@ fn read_group(
     let values = match coordinate_values(item) {
         Ok(Some(values)) => values,
         Ok(None) => {
-            doc.skip("annotation group without coordinates");
+            // Translators: a reason why a group of an imported file was skipped.
+            doc.skip(tr!("annotation group without coordinates"));
             return;
         }
         Err(_) => {
-            doc.skip("annotation group with unreadable coordinates");
+            doc.skip(tr!("annotation group with unreadable coordinates"));
             return;
         }
     };
     if values.len() % 2 != 0 {
-        doc.skip("annotation group whose coordinates are not (column, row) pairs");
+        doc.skip(tr!(
+            "annotation group whose coordinates are not (column, row) pairs"
+        ));
         return;
     }
     let graphic = item
@@ -1376,41 +1423,45 @@ fn read_group(
         "POINT" => fixed(1),
         "RECTANGLE" | "ELLIPSE" if values.len() % 8 == 0 => fixed(4),
         "RECTANGLE" | "ELLIPSE" => {
-            doc.skip("rectangles or ellipses without four points each");
+            doc.skip(tr!("rectangles or ellipses without four points each"));
             return;
         }
         "POLYLINE" | "POLYGON" => {
             match primitive_ranges(item, values.len(), &name, &mut doc.warnings) {
                 Ok(ranges) => ranges,
                 Err(reason) => {
-                    doc.skip(format!("annotation group with {reason}"));
+                    doc.skip(reason);
                     return;
                 }
             }
         }
         "" => {
-            doc.skip("annotation group without a graphic type");
+            doc.skip(tr!("annotation group without a graphic type"));
             return;
         }
         other => {
-            doc.skip(format!("annotation group of graphic type {other}"));
+            doc.skip(tr!("annotation group of graphic type {}", isolate(other)));
             return;
         }
     };
     if let Some(declared) = item.uint(tag::NUMBER_OF_ANNOTATIONS)
         && declared != ranges.len() as u64
     {
-        doc.warnings.push(format!(
-            "\"{name}\" says it has {declared} annotation(s), but its coordinates hold {}; the coordinates were read.",
-            ranges.len()
+        doc.warnings.push(tr!(
+            "\"{name}\" says it has {n} annotation, but its coordinates hold {held}; the coordinates were read."
+                | "\"{name}\" says it has {n} annotations, but its coordinates hold {held}; the coordinates were read."
+                % declared,
+            name = isolate(&name),
+            held = ranges.len()
         ));
     }
     let private = match private_text(item, PRIVATE_GROUP) {
         Some(text) => match serde_json::from_str::<PrivateGroup>(&text) {
             Ok(p) if !p.layer.trim().is_empty() => Some(p),
             _ => {
-                doc.warnings.push(format!(
-                    "eov's private attributes of \"{name}\" are unreadable; the group was read from its DICOM attributes alone."
+                doc.warnings.push(tr!(
+                    "eov's private attributes of \"{}\" are unreadable; the group was read from its DICOM attributes alone.",
+                    isolate(&name)
                 ));
                 None
             }
@@ -1474,15 +1525,16 @@ fn read_group(
     for (i, range) in ranges.iter().enumerate() {
         if *total >= MAX_ANNOTATIONS {
             *doc.skipped
-                .entry(format!(
-                    "annotations beyond the limit of {MAX_ANNOTATIONS} per file"
+                .entry(tr!(
+                    "annotations beyond the limit of {} per file",
+                    MAX_ANNOTATIONS
                 ))
                 .or_default() += ranges.len() - i;
             return;
         }
         let coordinates = &values[range.clone()];
         if !coordinates.iter().all(|v| v.is_finite()) {
-            doc.skip("annotation with non-finite coordinates");
+            doc.skip(tr!("annotation with non-finite coordinates"));
             continue;
         }
         let mut points: Vec<[f64; 2]> = coordinates.as_chunks::<2>().0.to_vec();

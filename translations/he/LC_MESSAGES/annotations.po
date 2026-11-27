@@ -1,0 +1,3249 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: annotations\n"
+"Report-Msgid-Bugs-To: https://github.com/eosin-platform/eov-annotations-"
+"plugin/issues\n"
+"Language-Team: Hebrew\n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Review-Status: machine-translated; not yet reviewed by a native speaker\n"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid "Annotations"
+msgstr "סימונים"
+
+#: plugin.toml
+msgctxt "plugin.toml"
+msgid ""
+"Point, region, line and text annotations with reusable classes, cell "
+"counting, HPF fields and measurements; GeoJSON (QuPath) import and export, "
+"ASAP and Aperio ImageScope XML import."
+msgstr ""
+"סימוני נקודות, אזורים, קווים וטקסט עם קטגוריות לשימוש חוזר, ספירת תאים, שדות "
+"HPF ומדידות; ייבוא וייצוא של GeoJSON (QuPath), וייבוא XML של ASAP ושל Aperio "
+"ImageScope."
+
+#: src/actions.rs:23
+msgid "The annotations of this slide are still loading; try again in a moment."
+msgstr "הסימונים של שקופית זו עדיין בטעינה; יש לנסות שוב בעוד רגע."
+
+#: src/actions.rs:27 src/sidebar.rs:1390 src/sidebar.rs:1474
+msgid "That layer no longer exists."
+msgstr "שכבה זו כבר אינה קיימת."
+
+#: src/actions.rs:31
+msgid "That annotation no longer exists."
+msgstr "סימון זה כבר אינו קיים."
+
+#: src/actions.rs:35 src/sidebar.rs:1605
+msgid "That class no longer exists."
+msgstr "קטגוריה זו כבר אינה קיימת."
+
+#: src/actions.rs:39 src/transfer.rs:648 src/transfer.rs:658
+msgid "Layer \"{}\" is locked."
+msgstr "השכבה \"{}\" נעולה."
+
+#: src/actions.rs:43
+msgid "Parts outside the slide were cut off."
+msgstr "חלקים שמחוץ לשקופית נחתכו."
+
+#: src/actions.rs:62
+msgid "The slide is not open any more."
+msgstr "השקופית כבר אינה פתוחה."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:136
+msgid "The outline crossed itself and was split into {n} parts."
+msgid_plural "The outline crossed itself and was split into {n} parts."
+msgstr[0] "קו המתאר חצה את עצמו ופוצל לחלק אחד."
+msgstr[1] "קו המתאר חצה את עצמו ופוצל ל-{n} חלקים."
+
+#: src/actions.rs:140
+msgid "The outline crossed itself and was repaired."
+msgstr "קו המתאר חצה את עצמו ותוקן."
+
+#: src/actions.rs:156
+msgid "The HPF size is not valid; check it in the Count tab."
+msgstr "גודל שדה ה-HPF אינו תקין; יש לבדוק אותו בכרטיסייה \"ספירה\"."
+
+#: src/actions.rs:160
+msgid "This slide has no pixel size, so HPF fields cannot be sized."
+msgstr "לשקופית זו אין גודל פיקסל, ולכן לא ניתן לקבוע את גודלם של שדות HPF."
+
+#: src/actions.rs:207
+msgid "Count cell"
+msgstr "ספירת תא"
+
+#: src/actions.rs:218 src/lib.rs:613
+msgid "Add point"
+msgstr "הוספת נקודה"
+
+#: src/actions.rs:228
+msgid "Add line"
+msgstr "הוספת קו"
+
+#: src/actions.rs:242
+msgid "Add arrow"
+msgstr "הוספת חץ"
+
+#: src/actions.rs:258
+msgid "Add text"
+msgstr "הוספת טקסט"
+
+#: src/actions.rs:303
+msgid ""
+"To add the shape to a region (Shift) or cut it from a region (Alt), select "
+"exactly one region first. The shape was added as a new annotation."
+msgstr ""
+"כדי להוסיף את הצורה לאזור (Shift) או לחתוך אותה מאזור (Alt), יש לבחור תחילה "
+"אזור אחד בדיוק. הצורה נוספה כסימון חדש."
+
+#: src/actions.rs:314 src/actions.rs:325
+msgid "Add region"
+msgstr "הוספת אזור"
+
+#: src/actions.rs:378
+msgid "Place HPF field"
+msgstr "הצבת שדה HPF"
+
+#: src/actions.rs:399
+msgid "This field extends past the slide edge; its area includes empty canvas."
+msgstr "שדה זה חורג מעבר לקצה השקופית; שטחו כולל אזור ריק."
+
+#: src/actions.rs:429
+msgid "Add to region"
+msgstr "הוספה לאזור"
+
+#: src/actions.rs:431
+msgid "Cut from region"
+msgstr "חיתוך מאזור"
+
+#: src/actions.rs:439
+msgid "The selected region no longer exists."
+msgstr "האזור הנבחר כבר אינו קיים."
+
+#: src/actions.rs:441
+msgid "The selected region is locked."
+msgstr "האזור הנבחר נעול."
+
+#: src/actions.rs:452
+msgid "Only regions can be combined."
+msgstr "ניתן לשלב רק אזורים."
+
+#: src/actions.rs:460
+msgid "The cut removed the whole region."
+msgstr "החיתוך הסיר את האזור כולו."
+
+#: src/actions.rs:483
+msgid ""
+"The shapes do not touch; the new shape was added as a separate annotation."
+msgstr "הצורות אינן נוגעות זו בזו; הצורה החדשה נוספה כסימון נפרד."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:488
+msgid "The cut split the region into {n} parts."
+msgid_plural "The cut split the region into {n} parts."
+msgstr[0] "החיתוך פיצל את האזור לחלק אחד."
+msgstr[1] "החיתוך פיצל את האזור ל-{n} חלקים."
+
+#: src/actions.rs:522
+msgid "Edit shape"
+msgstr "עריכת צורה"
+
+#: src/actions.rs:544
+msgid "The annotation is locked."
+msgstr "הסימון נעול."
+
+#: src/actions.rs:560
+msgid "That edit would turn the arrow into another shape, so it was undone."
+msgstr "עריכה זו הייתה הופכת את החץ לצורה אחרת, ולכן היא בוטלה."
+
+#: src/actions.rs:564
+msgid "That edit was undone."
+msgstr "העריכה בוטלה."
+
+#: src/actions.rs:591
+msgid "The edit was undone: {}"
+msgstr "העריכה בוטלה: {}"
+
+#: src/actions.rs:596
+msgid "That edit would make the outline cross itself, so it was undone."
+msgstr "עריכה זו הייתה גורמת לקו המתאר לחצות את עצמו, ולכן היא בוטלה."
+
+#: src/actions.rs:629
+msgid "Delete annotation"
+msgid_plural "Delete {n} annotations"
+msgstr[0] "מחיקת סימון"
+msgstr[1] "מחיקת {n} סימונים"
+
+#: src/actions.rs:649
+msgid "{n} locked annotation was kept."
+msgid_plural "{n} locked annotations were kept."
+msgstr[0] "סימון נעול אחד לא נמחק."
+msgstr[1] "‏{n} סימונים נעולים לא נמחקו."
+
+#: src/actions.rs:703
+msgid "The target layer is locked or gone."
+msgstr "שכבת היעד נעולה או שאינה קיימת עוד."
+
+#: src/actions.rs:712
+msgid "{n} locked annotation was not changed."
+msgid_plural "{n} locked annotations were not changed."
+msgstr[0] "סימון נעול אחד לא שונה."
+msgstr[1] "‏{n} סימונים נעולים לא שונו."
+
+#: src/actions.rs:777
+msgid "Could not zoom to the annotation"
+msgstr "לא ניתן היה לבצע זום לסימון"
+
+#: src/actions.rs:790
+msgid "New layer"
+msgstr "יצירת שכבה"
+
+#: src/actions.rs:865
+msgid "Rename layer"
+msgstr "שינוי שם שכבה"
+
+#: src/actions.rs:877
+msgid "Delete layer"
+msgstr "מחיקת שכבה"
+
+#: src/actions.rs:887
+msgid "Delete layer \"{}\""
+msgstr "מחיקת השכבה \"{}\""
+
+#: src/actions.rs:897
+msgid "Choose layer"
+msgstr "בחירת שכבה"
+
+#: src/actions.rs:902
+msgid ""
+"New annotations go to a regular layer; count points and HPF fields have "
+"their own."
+msgstr ""
+"סימונים חדשים נוספים לשכבה רגילה; לנקודות ספירה ולשדות HPF יש שכבות משלהם."
+
+#. Translators: an undo step, shown by eov as "Undo {}".
+#: src/actions.rs:918
+msgid "Clear counts"
+msgstr "ניקוי הספירות"
+
+#: src/actions.rs:950
+msgid ""
+"There are no HPF fields on this slide yet. Use the HPF field tool (H) to "
+"place them."
+msgstr ""
+"עדיין אין שדות HPF בשקופית זו. ניתן להציב אותם בעזרת הכלי \"שדה HPF\" (H)."
+
+#: src/actions.rs:960
+msgid "Repair outline"
+msgstr "תיקון קו מתאר"
+
+#: src/actions.rs:975
+msgid "Nothing is left of the outline."
+msgstr "לא נותר דבר מקו המתאר."
+
+#. Translators: {n} is 2 or more.
+#: src/actions.rs:997
+msgid "The outline was split into {n} parts."
+msgid_plural "The outline was split into {n} parts."
+msgstr[0] "קו המתאר פוצל לחלק אחד."
+msgstr[1] "קו המתאר פוצל ל-{n} חלקים."
+
+#: src/actions.rs:1012
+msgid "Could not attach the annotations"
+msgstr "לא ניתן היה לצרף את הסימונים"
+
+#: src/actions.rs:1018
+msgid "Attach annotations of another slide"
+msgstr "צירוף סימונים של שקופית אחרת"
+
+#: src/actions.rs:1024
+msgid "Those annotations already belong to this slide."
+msgstr "סימונים אלה כבר שייכים לשקופית זו."
+
+#: src/actions.rs:1027
+msgid "That slide has no annotations left."
+msgstr "לשקופית ההיא לא נותרו סימונים."
+
+#: src/actions.rs:1035
+msgid "Attached {n} layer to this slide."
+msgid_plural "Attached {n} layers to this slide."
+msgstr[0] "שכבה אחת צורפה לשקופית זו."
+msgstr[1] "‏{n} שכבות צורפו לשקופית זו."
+
+#: src/actions.rs:1076
+msgid "New class"
+msgstr "יצירת קטגוריה"
+
+#: src/actions.rs:1138
+msgid "Rename class"
+msgstr "שינוי שם קטגוריה"
+
+#: src/actions.rs:1147
+msgid "A class named \"{}\" already exists."
+msgstr "כבר קיימת קטגוריה בשם \"{}\"."
+
+#: src/actions.rs:1161
+msgid "Set class hotkey"
+msgstr "הגדרת מקש קיצור לקטגוריה"
+
+#: src/actions.rs:1186
+msgid "Change class colour"
+msgstr "שינוי צבע קטגוריה"
+
+#: src/actions.rs:1190 src/sidebar.rs:1358
+msgid "\"{}\" is not a colour."
+msgstr "הערך \"{}\" אינו צבע."
+
+#: src/actions.rs:1197
+msgid "Delete class"
+msgstr "מחיקת קטגוריה"
+
+#: src/actions.rs:1201
+msgid "Delete class \"{}\""
+msgstr "מחיקת הקטגוריה \"{}\""
+
+#: src/actions.rs:1243 src/lib.rs:96 src/overlay.rs:164 src/sidebar.rs:151
+#: src/sidebar.rs:384
+msgid "Unclassified"
+msgstr "ללא קטגוריה"
+
+#: src/actions.rs:1244
+msgid "Class: {}"
+msgstr "קטגוריה: {}"
+
+#. Translators: on the slide, beside the HPF field that follows the
+#. pointer: its area and how many points (such as counted cells) lie in it.
+#: src/actions.rs:1274
+msgid "1 HPF · {area} mm² · {n} point"
+msgid_plural "1 HPF · {area} mm² · {n} points"
+msgstr[0] "שדה HPF אחד · ⁨{area} mm²⁩ · נקודה אחת"
+msgstr[1] "שדה HPF אחד · ⁨{area} mm²⁩ · {n} נקודות"
+
+#: src/actions.rs:1466
+msgid "Add comment"
+msgstr "הוספת הערה"
+
+#: src/actions.rs:1472
+msgid "Write the comment first."
+msgstr "יש לכתוב תחילה את ההערה."
+
+#: src/actions.rs:1481
+msgid "An annotation can have at most {n} comments."
+msgid_plural "An annotation can have at most {n} comments."
+msgstr[0] "לסימון יכולה להיות הערה אחת לכל היותר."
+msgstr[1] "לסימון יכולות להיות {n} הערות לכל היותר."
+
+#: src/actions.rs:1511
+msgid "Delete comment"
+msgstr "מחיקת הערה"
+
+#: src/actions.rs:1524
+msgid "That comment no longer exists."
+msgstr "הערה זו כבר אינה קיימת."
+
+#: src/actions.rs:1723
+msgid ""
+"Brush {} px, eraser: paint over a selected region to erase from it; [ and ] "
+"change the size"
+msgstr ""
+"מברשת ⁨{} px⁩, מחק: צביעה מעל אזור נבחר מוחקת ממנו; המקשים ⁨]⁩ ו-⁨[⁩ משנים את הגודל"
+
+#: src/actions.rs:1728
+msgid ""
+"Brush {} px: paint a region (over a selected region to extend it); Alt "
+"erases; [ and ] change the size"
+msgstr ""
+"מברשת ⁨{} px⁩: צביעת אזור (מעל אזור נבחר כדי להרחיב אותו); Alt למחיקה; המקשים "
+"⁨]⁩ ו-⁨[⁩ משנים את הגודל"
+
+#: src/actions.rs:1742
+msgid "Erase"
+msgstr "מחיקה במחק"
+
+#: src/actions.rs:1744
+msgid "Brush stroke"
+msgstr "משיכת מברשת"
+
+#: src/actions.rs:1768
+msgid "The stroke is outside the slide."
+msgstr "המשיכה נמצאת מחוץ לשקופית."
+
+#: src/actions.rs:1818
+msgid "Select the region to erase from."
+msgstr "יש לבחור את האזור שממנו יש למחוק."
+
+#: src/actions.rs:1843
+msgid "The eraser did not touch the selected region."
+msgstr "המחק לא נגע באזור הנבחר."
+
+#. Translators: a part of the plugin that works in the background.
+#: src/core.rs:228
+msgid "Could not start a worker thread"
+msgstr "לא ניתן היה להפעיל תהליכון עבודה"
+
+#: src/core.rs:385
+msgid "Internal error while opening the database"
+msgstr "שגיאה פנימית בעת פתיחת מסד הנתונים"
+
+#: src/core.rs:393
+msgid "Internal error while loading annotations"
+msgstr "שגיאה פנימית בעת טעינת הסימונים"
+
+#: src/core.rs:398
+msgid "Internal error while saving annotations"
+msgstr "שגיאה פנימית בעת שמירת הסימונים"
+
+#: src/core.rs:403
+msgid "Internal error while undoing"
+msgstr "שגיאה פנימית בעת ביטול פעולה"
+
+#: src/core.rs:408
+msgid "Internal error while working on the database"
+msgstr "שגיאה פנימית בעת עבודה עם מסד הנתונים"
+
+#: src/core.rs:427
+msgid "Internal error while reading or writing a file"
+msgstr "שגיאה פנימית בעת קריאה או כתיבה של קובץ"
+
+#: src/core.rs:561
+msgid "The annotation database could not be opened"
+msgstr "לא ניתן היה לפתוח את מסד נתוני הסימונים"
+
+#: src/core.rs:590
+msgid "Annotations from eov before 1.0"
+msgstr "סימונים מגרסאות eov שלפני 1.0"
+
+#: src/core.rs:592
+msgid ""
+"The annotations plugin of eov before 1.0 left a database at {}. Bring its "
+"annotations into the current database? The old file is not changed. You can "
+"also do this later in the Data tab of the annotations panel."
+msgstr ""
+"תוסף הסימונים של גרסאות eov שלפני 1.0 השאיר מסד נתונים בנתיב {}. לייבא את "
+"הסימונים שבו למסד הנתונים הנוכחי? הקובץ הישן לא ישתנה. ניתן לעשות זאת גם "
+"מאוחר יותר בכרטיסייה \"נתונים\" שבלוח הסימונים."
+
+#: src/core.rs:597
+msgid "Bring them in"
+msgstr "ייבוא הסימונים"
+
+#: src/core.rs:598
+msgid "Not now"
+msgstr "לא עכשיו"
+
+#. Translators: the plugin could not ask whether to bring in the annotations made
+#. with eov before 1.0 (the title of that question is "Annotations from eov before 1.0").
+#: src/core.rs:612
+msgid "Could not offer the annotations from eov before 1.0"
+msgstr "לא ניתן היה להציע ייבוא של הסימונים מגרסאות eov שלפני 1.0"
+
+#: src/core.rs:657 src/sidebar.rs:457
+msgid "Could not load this slide's annotations: {}"
+msgstr "לא ניתן היה לטעון את הסימונים של שקופית זו: {}"
+
+#. Translators: a second read is an independent annotation of the slide by another person
+#. (as in a reader study), not a clinical second opinion. Data, Second reader and Blinded
+#. copy are the tab, section and button of the annotations panel: use their translations.
+#: src/core.rs:670
+msgid ""
+"{opened} has the same content as {annotated}, so it shows and edits the same "
+"annotations. For an independent second read, use Data → Second reader → "
+"Blinded copy."
+msgstr ""
+"תוכן הקובץ {opened} זהה לתוכן של {annotated}, ולכן מוצגים ונערכים בו אותם "
+"סימונים. לקריאה שנייה בלתי תלויה, יש להשתמש באפשרות נתונים ← קורא שני ← עותק "
+"סמוי."
+
+#: src/core.rs:721 src/core.rs:1019 src/core.rs:1156
+msgid "the database is not open"
+msgstr "מסד הנתונים אינו פתוח"
+
+#: src/core.rs:809
+msgid "{n} annotation of {file} could not be read and was skipped."
+msgid_plural "{n} annotations of {file} could not be read and were skipped."
+msgstr[0] "לא ניתן היה לקרוא סימון אחד מהקובץ {file}, והוא דולג."
+msgstr[1] "לא ניתן היה לקרוא {n} סימונים מהקובץ {file}, והם דולגו."
+
+#: src/core.rs:900
+msgid "Could not reload annotations"
+msgstr "לא ניתן היה לטעון מחדש את הסימונים"
+
+#: src/core.rs:931
+msgid "Annotations were changed by another eov window and have been reloaded."
+msgstr "הסימונים שונו בחלון eov אחר ונטענו מחדש."
+
+#: src/core.rs:957
+msgid "the database stayed locked"
+msgstr "מסד הנתונים נשאר נעול"
+
+#: src/core.rs:964
+msgid "a class with that name already exists"
+msgstr "כבר קיימת קטגוריה בשם זה"
+
+#: src/core.rs:966
+msgid "the annotation database is read-only"
+msgstr "מסד נתוני הסימונים זמין לקריאה בלבד"
+
+#: src/core.rs:969
+msgid "the annotation was changed elsewhere in the meantime"
+msgstr "הסימון שונה במקום אחר בינתיים"
+
+#: src/core.rs:971
+msgid "the layer was changed elsewhere in the meantime"
+msgstr "השכבה שונתה במקום אחר בינתיים"
+
+#: src/core.rs:972
+msgid "the class was changed elsewhere in the meantime"
+msgstr "הקטגוריה שונתה במקום אחר בינתיים"
+
+#: src/core.rs:973
+msgid "a layer being moved was changed elsewhere in the meantime"
+msgstr "שכבה שהועברה שונתה במקום אחר בינתיים"
+
+#: src/core.rs:1053
+msgid "Could not save \"{}\""
+msgstr "לא ניתן היה לשמור את הפעולה \"{}\""
+
+#: src/core.rs:1123
+msgid "This annotation change can no longer be undone."
+msgstr "כבר לא ניתן לבטל שינוי זה בסימונים."
+
+#: src/core.rs:1137
+msgid "The slide of this change is not open any more."
+msgstr "השקופית של שינוי זה כבר אינה פתוחה."
+
+#: src/core.rs:1176
+msgid "Could not redo \"{}\""
+msgstr "לא ניתן היה לבצע שוב את הפעולה \"{}\""
+
+#: src/core.rs:1178
+msgid "Could not undo \"{}\""
+msgstr "לא ניתן היה לבטל את הפעולה \"{}\""
+
+#. Translators: cells per square millimetre, with the 95% confidence interval.
+#: src/counting.rs:185
+msgid "{density} /mm² (95% {low}–{high})"
+msgstr "‏{density} ל-mm² (רווח סמך 95%: ⁨{low}–{high}⁩)"
+
+#. Translators: cells per 10 high-power fields.
+#: src/counting.rs:194
+msgid "{} /10 HPF"
+msgstr "‏{} ל-⁨10 HPF⁩"
+
+#: src/counting.rs:222
+msgid "100 (capped; the ratio is higher)"
+msgstr "100 (ערך מרבי; היחס גבוה יותר)"
+
+#. Translators: CPS is the PD-L1 combined positive score; {positive},
+#. {negative} and {immune} are names of classes of cells.
+#: src/counting.rs:234
+msgid ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cell "
+"({positive} + {negative}) × 100."
+msgid_plural ""
+"CPS {score} — ({a} {positive} + {c} {immune}) per {n} tumour cells "
+"({positive} + {negative}) × 100."
+msgstr[0] ""
+"ציון CPS {score} — ({a} {positive} + {c} {immune}) לתא גידול אחד ({positive} "
+"+ {negative}) × 100."
+msgstr[1] ""
+"ציון CPS {score} — ({a} {positive} + {c} {immune}) ל-{n} תאי גידול "
+"({positive} + {negative}) × 100."
+
+#: src/counting.rs:248
+msgid "Fewer than {n} tumour cells: below the minimum for a valid score."
+msgid_plural ""
+"Fewer than {n} tumour cells: below the minimum for a valid score."
+msgstr[0] "פחות מתא גידול אחד: מתחת למינימום הנדרש לציון תקף."
+msgstr[1] "פחות מ-{n} תאי גידול: מתחת למינימום הנדרש לציון תקף."
+
+#. Translators: e.g. "Ki-67+ index: 25.0 % (95% 20.1–30.4 %) — 25 of 100 (Ki-67+ + Ki-67-)";
+#. {class} and {other} are names of classes of cells.
+#: src/counting.rs:263
+msgid ""
+"{class} index: {value} % (95% {low}–{high} %) — {k} of {total} ({class} + "
+"{other})"
+msgstr ""
+"מדד {class}: ⁨{value}%⁩ (רווח סמך 95%: ⁨{low}–{high}%⁩) — {k} מתוך {total} "
+"({class} + {other})"
+
+#: src/db/mod.rs:116
+msgid "The annotation database is read-only; editing is disabled."
+msgstr "מסד נתוני הסימונים זמין לקריאה בלבד; העריכה מושבתת."
+
+#: src/db/mod.rs:119
+msgid "{n} layer colour was unreadable and was replaced."
+msgid_plural "{n} layer colours were unreadable and were replaced."
+msgstr[0] "צבע שכבה אחד לא היה קריא והוחלף."
+msgstr[1] "‏{n} צבעי שכבות לא היו קריאים והוחלפו."
+
+#. Translators: {slides} in "Upgraded the annotation database from the pre-1.0 format: {slides}, …".
+#: src/db/mod.rs:131
+msgid "{n} slide"
+msgid_plural "{n} slides"
+msgstr[0] "שקופית אחת"
+msgstr[1] "‏{n} שקופיות"
+
+#. Translators: {slides} is "1 slide" or "3 slides" (translated on its own).
+#: src/db/mod.rs:136
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotation."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, {n} "
+"annotations."
+msgstr[0] ""
+"מסד נתוני הסימונים שודרג מהפורמט שקדם לגרסה 1.0: {slides}, סימון אחד."
+msgstr[1] ""
+"מסד נתוני הסימונים שודרג מהפורמט שקדם לגרסה 1.0: {slides}, {n} סימונים."
+
+#. Translators: {slides} is "1 slide" or "3 slides", {annotations} is
+#. "1 annotation" or "5 annotations" (each translated on its own).
+#: src/db/mod.rs:145
+msgid ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotation skipped."
+msgid_plural ""
+"Upgraded the annotation database from the pre-1.0 format: {slides}, "
+"{annotations}, {n} unreadable annotations skipped."
+msgstr[0] ""
+"מסד נתוני הסימונים שודרג מהפורמט שקדם לגרסה 1.0: {slides}, {annotations}, "
+"סימון לא קריא אחד דולג."
+msgstr[1] ""
+"מסד נתוני הסימונים שודרג מהפורמט שקדם לגרסה 1.0: {slides}, {annotations}, "
+"{n} סימונים לא קריאים דולגו."
+
+#. Translators: a number of annotations on its own, in two texts: {annotations} in
+#. "Upgraded the annotation database from the pre-1.0 format: {slides}, {annotations}, …"
+#. and {ours} in "This slide's visible layers ({ours}) against the {n} annotations in {name}, …".
+#: src/db/mod.rs:153 src/state.rs:516
+msgid "{n} annotation"
+msgid_plural "{n} annotations"
+msgstr[0] "סימון אחד"
+msgstr[1] "‏{n} סימונים"
+
+#: src/db/mod.rs:159
+msgid ""
+"New database. If you annotated with eov before 1.0, those annotations are in "
+"annotations.db in eov's old settings folder (~/.config/eov on Linux, ~/"
+"Library/Application Support/eov on macOS, %APPDATA%\\eov on Windows): bring "
+"them in with Merge… above."
+msgstr ""
+"מסד נתונים חדש. אם יצרת סימונים ב-eov לפני גרסה 1.0, הם נמצאים בקובץ "
+"annotations.db שבתיקיית ההגדרות הישנה של eov (⁨~/.config/eov⁩ ב-Linux, ⁨~/"
+"Library/Application Support/eov⁩ ב-macOS, ⁨%APPDATA%\\eov⁩ ב-Windows): ניתן "
+"להעביר אותם לכאן באמצעות \"מיזוג…\" שלמעלה."
+
+#: src/fileio.rs:105 src/fileio.rs:115
+msgid "cannot read {file}: {error}"
+msgstr "לא ניתן לקרוא את {file}: {error}"
+
+#: src/fileio.rs:109
+msgid "{file} is {size} MB; imports are limited to {limit} MB"
+msgstr "גודל הקובץ {file} הוא ⁨{size} MB⁩; הייבוא מוגבל ל-⁨{limit} MB⁩"
+
+#: src/formats/dicom/mod.rs:605
+msgid "There are too many coordinates for one DICOM annotation group."
+msgstr "יש יותר מדי קואורדינטות לקבוצת סימונים אחת של DICOM."
+
+#: src/formats/dicom/mod.rs:674
+msgid "There are too many annotation groups."
+msgstr "יש יותר מדי קבוצות סימונים."
+
+#: src/formats/dicom/mod.rs:695
+msgid "There are too many annotations in one group."
+msgstr "יש יותר מדי סימונים בקבוצה אחת."
+
+#: src/formats/dicom/mod.rs:736
+msgid "The slide has no annotations to export."
+msgstr "אין בשקופית סימונים לייצוא."
+
+#: src/formats/dicom/mod.rs:872
+msgid ""
+"It refers to this slide's DICOM image (series {}) and joins its study; the "
+"patient and study attributes are the slide's."
+msgstr ""
+"הקובץ מפנה לתמונת ה-DICOM של שקופית זו (סדרה {}) ומצטרף לבדיקה שלה; מאפייני "
+"המטופל והבדיקה נלקחים מהשקופית."
+
+#: src/formats/dicom/mod.rs:876
+msgid ""
+"This slide is not a DICOM image, so the file refers to no image: it is a "
+"study of its own with empty patient attributes, and DICOM viewers cannot "
+"attach it to a slide by themselves."
+msgstr ""
+"שקופית זו אינה תמונת DICOM, ולכן הקובץ אינו מפנה לשום תמונה: הוא מהווה בדיקה "
+"עצמאית עם מאפייני מטופל ריקים, ומציגי DICOM אינם יכולים לשייך אותו לשקופית "
+"בעצמם."
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot
+#. hold {}: …"; {regions} is "in 1 region" or "in 2 regions"; "drawn
+#. without it/them": other viewers draw these regions without their holes.
+#: src/formats/dicom/mod.rs:886
+msgid "{n} hole {regions} (drawn without it)"
+msgid_plural "{n} holes {regions} (drawn without them)"
+msgstr[0] "חור אחד {regions} (החור לא יוצג)"
+msgstr[1] "‏{n} חורים {regions} (החורים לא יוצגו)"
+
+#. Translators: in "{n} holes {regions} (drawn without them)".
+#: src/formats/dicom/mod.rs:890
+msgid "in {n} region"
+msgid_plural "in {n} regions"
+msgstr[0] "באזור אחד"
+msgstr[1] "ב-{n} אזורים"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:897
+msgid "the text of {n} text label (written as points)"
+msgid_plural "the text of {n} text labels (written as points)"
+msgstr[0] "הטקסט של תווית טקסט אחת (נכתבה כנקודה)"
+msgstr[1] "הטקסט של {n} תוויות טקסט (נכתבו כנקודות)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:904
+msgid "the heads of {n} arrow (written as lines)"
+msgid_plural "the heads of {n} arrows (written as lines)"
+msgstr[0] "ראש החץ של חץ אחד (נכתב כקו)"
+msgstr[1] "ראשי החצים של {n} חצים (נכתבו כקווים)"
+
+#. Translators: an item of the list in "DICOM bulk annotations cannot hold {}: …".
+#: src/formats/dicom/mod.rs:911
+msgid "the names, descriptions and statuses of {n} annotation"
+msgid_plural "the names, descriptions and statuses of {n} annotations"
+msgstr[0] "השם, התיאור והסטטוס של סימון אחד"
+msgstr[1] "השמות, התיאורים והסטטוסים של {n} סימונים"
+
+#. Translators: {} lists what is lost, such as "the heads of 2 arrows (written
+#. as lines) and the text of 1 text label (written as points)".
+#: src/formats/dicom/mod.rs:919
+msgid ""
+"DICOM bulk annotations cannot hold {}: other viewers do not see them, but "
+"eov reads them back from its private attributes."
+msgstr ""
+"סימוני DICOM מסוג Bulk אינם יכולים להכיל את {}: מציגים אחרים אינם רואים "
+"אותם, אך eov קורא אותם בחזרה מהמאפיינים הפרטיים שלו."
+
+#: src/formats/dicom/mod.rs:924
+msgid ""
+"Each layer, class and kind of shape is a group labelled with its class (or "
+"its layer). Authors, comments, properties and times are not exported (eov "
+"JSON keeps everything)."
+msgstr ""
+"כל צירוף של שכבה, קטגוריה וסוג צורה הופך לקבוצה המתויגת בשם הקטגוריה שלה (או "
+"השכבה שלה). מחברים, הערות, מאפיינים וזמנים אינם מיוצאים (הפורמט eov JSON "
+"שומר את הכול)."
+
+#: src/formats/dicom/mod.rs:928
+msgid ""
+"{n} annotation with too few points or unusable coordinates was left out."
+msgid_plural ""
+"{n} annotations with too few points or unusable coordinates were left out."
+msgstr[0] "סימון אחד עם מעט מדי נקודות או עם קואורדינטות לא שמישות לא נכלל."
+msgstr[1] "‏{n} סימונים עם מעט מדי נקודות או עם קואורדינטות לא שמישות לא נכללו."
+
+#. Translators: the end of a list, "a, b and c": {first} is "a, b".
+#: src/formats/dicom/mod.rs:943
+msgid "{first} and {last}"
+msgstr "‏{first} ו-{last}"
+
+#. Translators: between the items of a list ("a, b and c").
+#: src/formats/dicom/mod.rs:946
+msgid ", "
+msgstr ", "
+
+#: src/formats/dicom/mod.rs:978
+msgid ""
+"Made for a DICOM slide; this one is not a DICOM image, so whether the "
+"annotations belong to it cannot be checked. Coordinates are taken as level-0 "
+"pixels of this slide."
+msgstr ""
+"הקובץ נוצר עבור שקופית DICOM; שקופית זו אינה תמונת DICOM, ולכן לא ניתן לבדוק "
+"אם הסימונים שייכים לה. הקואורדינטות נלקחות כפיקסלים ברמה 0 של שקופית זו."
+
+#: src/formats/dicom/mod.rs:987
+msgid "Made for this slide (its DICOM image)."
+msgstr "הקובץ נוצר עבור שקופית זו (תמונת ה-DICOM שלה)."
+
+#: src/formats/dicom/mod.rs:994
+msgid "Made for this slide (its DICOM series)."
+msgstr "הקובץ נוצר עבור שקופית זו (סדרת ה-DICOM שלה)."
+
+#: src/formats/dicom/mod.rs:998
+msgid ""
+"Made for another image of this slide's DICOM series (another resolution "
+"level?), whose pixels may not be level-0 pixels."
+msgstr ""
+"הקובץ נוצר עבור תמונה אחרת בסדרת ה-DICOM של שקופית זו (רמת רזולוציה אחרת?), "
+"שייתכן שהפיקסלים שלה אינם פיקסלים ברמה 0."
+
+#: src/formats/dicom/mod.rs:1005
+msgid "Made for a different DICOM slide (it refers to other images)."
+msgstr "הקובץ נוצר עבור שקופית DICOM אחרת (הוא מפנה לתמונות אחרות)."
+
+#: src/formats/dicom/mod.rs:1014
+msgid ""
+"This DICOM file is a slide image (VL Whole Slide Microscopy), not "
+"annotations: open it as a slide. Annotations are read from Microscopy Bulk "
+"Simple Annotations objects (modality ANN)."
+msgstr ""
+"קובץ DICOM זה הוא תמונת שקופית (VL Whole Slide Microscopy), לא סימונים: יש "
+"לפתוח אותו כשקופית. סימונים נקראים מאובייקטים מסוג Microscopy Bulk Simple "
+"Annotations (מודליות ANN)."
+
+#: src/formats/dicom/mod.rs:1018
+msgid ""
+"This DICOM file is a structured report (SR). eov reads DICOM annotations "
+"from Microscopy Bulk Simple Annotations objects (modality ANN), not from "
+"structured reports."
+msgstr ""
+"קובץ DICOM זה הוא דוח מובנה (SR). eov קורא סימוני DICOM מאובייקטים מסוג "
+"Microscopy Bulk Simple Annotations (מודליות ANN), ולא מדוחות מובנים."
+
+#: src/formats/dicom/mod.rs:1021
+msgid "This DICOM file does not say what it holds (it has no SOP Class UID)."
+msgstr "קובץ DICOM זה אינו מציין מה הוא מכיל (אין בו SOP Class UID)."
+
+#: src/formats/dicom/mod.rs:1024
+msgid ""
+"This DICOM file is not an annotation object (SOP class {}); eov reads "
+"Microscopy Bulk Simple Annotations (modality ANN)."
+msgstr ""
+"קובץ DICOM זה אינו אובייקט סימונים (SOP Class {}); eov קורא אובייקטים מסוג "
+"Microscopy Bulk Simple Annotations (מודליות ANN)."
+
+#: src/formats/dicom/mod.rs:1047
+msgid "eov's private description of the slide is unreadable and was ignored."
+msgstr "התיאור הפרטי של eov לשקופית אינו קריא, ולכן לא נעשה בו שימוש."
+
+#. Translators: {} says what is wrong with the file, in English.
+#: src/formats/dicom/mod.rs:1080
+msgid "The DICOM file cannot be read: {}."
+msgstr "לא ניתן לקרוא את קובץ ה-DICOM: {}."
+
+#: src/formats/dicom/mod.rs:1099
+msgid ""
+"This file holds 3D annotations: their coordinates are millimetres in the "
+"slide's frame of reference (DICOM SCOORD3D), and eov places annotations by "
+"level-0 pixels. Only 2D (pixel) annotations can be imported."
+msgstr ""
+"קובץ זה מכיל סימונים תלת-ממדיים: הקואורדינטות שלהם הן מילימטרים במערכת "
+"הייחוס של השקופית (DICOM SCOORD3D), ואילו eov ממקם סימונים לפי פיקסלים ברמה "
+"0. ניתן לייבא רק סימונים דו-ממדיים (בפיקסלים)."
+
+#: src/formats/dicom/mod.rs:1104
+msgid ""
+"The file does not say whether its coordinates are 2D or 3D (Annotation "
+"Coordinate Type is missing)."
+msgstr ""
+"הקובץ אינו מציין אם הקואורדינטות שלו דו-ממדיות או תלת-ממדיות (חסר Annotation "
+"Coordinate Type)."
+
+#: src/formats/dicom/mod.rs:1109
+msgid ""
+"The file's coordinates are of an unknown type (\"{}\"); 2D annotations can "
+"be imported."
+msgstr ""
+"הקואורדינטות בקובץ הן מסוג לא ידוע (\"{}\"); ניתן לייבא רק סימונים דו-ממדיים."
+
+#: src/formats/dicom/mod.rs:1126
+msgid ""
+"The annotations' pixel coordinates are relative to single frames (tiles) of "
+"the image (Pixel Origin Interpretation FRAME), which eov cannot place; "
+"coordinates relative to the whole image (VOLUME) can be imported."
+msgstr ""
+"קואורדינטות הפיקסלים של הסימונים יחסיות למסגרות בודדות (אריחים) של התמונה "
+"(Pixel Origin Interpretation FRAME), ו-eov אינו יכול למקם אותן; ניתן לייבא "
+"קואורדינטות יחסיות לתמונה כולה (VOLUME)."
+
+#: src/formats/dicom/mod.rs:1130
+msgid ""
+"Unknown pixel origin interpretation \"{}\"; coordinates are taken relative "
+"to the whole image."
+msgstr ""
+"ערך לא ידוע של Pixel Origin Interpretation (\"{}\"); הקואורדינטות נלקחות "
+"ביחס לתמונה כולה."
+
+#: src/formats/dicom/mod.rs:1136
+msgid "The DICOM file has no annotation groups."
+msgstr "בקובץ ה-DICOM אין קבוצות סימונים."
+
+#: src/formats/dicom/mod.rs:1146
+msgid ""
+"{n} rectangle or ellipse not aligned with the image axes became a polygon."
+msgid_plural ""
+"{n} rectangles and ellipses not aligned with the image axes became polygons."
+msgstr[0] "צורה אחת (מלבן או אליפסה) שאינה מיושרת לצירי התמונה הומרה למצולע."
+msgstr[1] "‏{n} מלבנים ואליפסות שאינם מיושרים לצירי התמונה הומרו למצולעים."
+
+#: src/formats/dicom/mod.rs:1178
+msgid "annotation group with lines or polygons without a point index list"
+msgstr "קבוצת סימונים עם קווים או מצולעים ללא רשימת אינדקסים של נקודות"
+
+#: src/formats/dicom/mod.rs:1182
+msgid "annotation group with an unreadable point index list"
+msgstr "קבוצת סימונים עם רשימת אינדקסים של נקודות שאינה קריאה"
+
+#: src/formats/dicom/mod.rs:1197
+msgid "annotation group with lines or polygons with an empty point index list"
+msgstr "קבוצת סימונים עם קווים או מצולעים ורשימת אינדקסים ריקה של נקודות"
+
+#: src/formats/dicom/mod.rs:1211
+msgid ""
+"The point index list of \"{}\" counts points rather than coordinate values; "
+"it was read that way."
+msgstr ""
+"רשימת האינדקסים של הנקודות ב-\"{}\" סופרת נקודות ולא ערכי קואורדינטות; היא "
+"נקראה בהתאם."
+
+#: src/formats/dicom/mod.rs:1217
+msgid ""
+"annotation group with a point index list that does not fit its coordinates"
+msgstr ""
+"קבוצת סימונים עם רשימת אינדקסים של נקודות שאינה תואמת את הקואורדינטות שלה"
+
+#. Translators: a reason why a measurement of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1333
+msgid "measurement without values"
+msgstr "מדידה ללא ערכים"
+
+#: src/formats/dicom/mod.rs:1340
+msgid "measurement with unreadable values"
+msgstr "מדידה עם ערכים לא קריאים"
+
+#: src/formats/dicom/mod.rs:1352
+msgid "measurement that does not match its annotations"
+msgstr "מדידה שאינה תואמת את הסימונים שלה"
+
+#. Translators: a reason why a group of an imported file was skipped.
+#: src/formats/dicom/mod.rs:1398
+msgid "annotation group without coordinates"
+msgstr "קבוצת סימונים ללא קואורדינטות"
+
+#: src/formats/dicom/mod.rs:1402
+msgid "annotation group with unreadable coordinates"
+msgstr "קבוצת סימונים עם קואורדינטות לא קריאות"
+
+#: src/formats/dicom/mod.rs:1408
+msgid "annotation group whose coordinates are not (column, row) pairs"
+msgstr "קבוצת סימונים שהקואורדינטות שלה אינן זוגות (עמודה, שורה)"
+
+#: src/formats/dicom/mod.rs:1426
+msgid "rectangles or ellipses without four points each"
+msgstr "מלבנים או אליפסות שאין להם ארבע נקודות כל אחד"
+
+#: src/formats/dicom/mod.rs:1439
+msgid "annotation group without a graphic type"
+msgstr "קבוצת סימונים ללא סוג גרפי"
+
+#: src/formats/dicom/mod.rs:1443
+msgid "annotation group of graphic type {}"
+msgstr "קבוצת סימונים מסוג גרפי {}"
+
+#: src/formats/dicom/mod.rs:1451
+msgid ""
+"\"{name}\" says it has {n} annotation, but its coordinates hold {held}; the "
+"coordinates were read."
+msgid_plural ""
+"\"{name}\" says it has {n} annotations, but its coordinates hold {held}; the "
+"coordinates were read."
+msgstr[0] ""
+"הקבוצה \"{name}\" מציינת סימון אחד, אך הקואורדינטות שלה מכילות {held}; "
+"הסימונים נקראו לפי הקואורדינטות."
+msgstr[1] ""
+"הקבוצה \"{name}\" מציינת {n} סימונים, אך הקואורדינטות שלה מכילות {held}; "
+"הסימונים נקראו לפי הקואורדינטות."
+
+#: src/formats/dicom/mod.rs:1463
+msgid ""
+"eov's private attributes of \"{}\" are unreadable; the group was read from "
+"its DICOM attributes alone."
+msgstr ""
+"המאפיינים הפרטיים של eov בקבוצה \"{}\" אינם קריאים; הקבוצה נקראה ממאפייני "
+"ה-DICOM שלה בלבד."
+
+#: src/formats/dicom/mod.rs:1529
+msgid "annotations beyond the limit of {} per file"
+msgstr "סימונים מעבר למגבלה של {} לקובץ"
+
+#: src/formats/dicom/mod.rs:1537
+msgid "annotation with non-finite coordinates"
+msgstr "סימון עם קואורדינטות לא סופיות"
+
+#: src/formats/eov.rs:209
+msgid ""
+"This file uses eov annotation format {version}; this plugin reads up to "
+"{supported}. Update the plugin."
+msgstr ""
+"קובץ זה משתמש בפורמט הסימונים של eov בגרסה {version}; תוסף זה קורא עד גרסה "
+"{supported}. יש לעדכן את התוסף."
+
+#: src/formats/eov.rs:261
+msgid "The file has no \"layers\"."
+msgstr "בקובץ אין שדה \"layers\"."
+
+#: src/formats/eov.rs:277
+msgid "Layer \"{}\" has an unreadable colour; a palette colour is used."
+msgstr "לשכבה \"{}\" יש צבע לא קריא; נעשה שימוש בצבע מפלטת הצבעים."
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/eov.rs:292
+msgid "unreadable geometry"
+msgstr "גאומטריה לא קריאה"
+
+#: src/formats/eov.rs:332
+msgid "The file has no \"annotation_layers\"."
+msgstr "בקובץ אין שדה \"annotation_layers\"."
+
+#: src/formats/eov.rs:359
+msgid "point without coordinates"
+msgstr "נקודה ללא קואורדינטות"
+
+#: src/formats/eov.rs:384
+msgid "polygon with unreadable vertices"
+msgstr "מצולע עם קודקודים לא קריאים"
+
+#: src/formats/eov.rs:390
+msgid "unknown annotation type"
+msgstr "סוג סימון לא ידוע"
+
+#: src/formats/eov.rs:426
+msgid "The archive has no \"slides\"."
+msgstr "בארכיון אין שדה \"slides\"."
+
+#: src/formats/eov.rs:432
+msgid "An archive entry was skipped: {}"
+msgstr "פריט בארכיון דולג: {}"
+
+#. Translators: reasons why a shape of an imported file was skipped,
+#. listed as "2 × unreadable point".
+#: src/formats/geojson.rs:68
+msgid "unreadable point"
+msgstr "נקודה לא קריאה"
+
+#: src/formats/geojson.rs:69
+msgid "unreadable line"
+msgstr "קו לא קריא"
+
+#: src/formats/geojson.rs:70
+msgid "unreadable polygon"
+msgstr "מצולע לא קריא"
+
+#: src/formats/geojson.rs:74
+msgid "geometry without a type"
+msgstr "גאומטריה ללא סוג"
+
+#: src/formats/geojson.rs:84
+msgid "unreadable points"
+msgstr "נקודות לא קריאות"
+
+#: src/formats/geojson.rs:103
+msgid "unreadable lines"
+msgstr "קווים לא קריאים"
+
+#: src/formats/geojson.rs:119
+msgid "unreadable polygons"
+msgstr "מצולעים לא קריאים"
+
+#: src/formats/geojson.rs:128
+msgid "unreadable geometry collection"
+msgstr "אוסף גאומטריות לא קריא"
+
+#: src/formats/geojson.rs:133
+msgid "unsupported geometry type"
+msgstr "סוג גאומטריה לא נתמך"
+
+#: src/formats/geojson.rs:221
+msgid "The FeatureCollection has no features."
+msgstr "באוסף FeatureCollection אין אובייקטי Feature."
+
+#: src/formats/geojson.rs:224 src/formats/geojson.rs:226
+msgid "Not GeoJSON."
+msgstr "הקובץ אינו GeoJSON."
+
+#. Translators: a reason why an element of an imported file was skipped.
+#: src/formats/geojson.rs:242
+msgid "not a GeoJSON feature"
+msgstr "רכיב שאינו Feature של GeoJSON"
+
+#: src/formats/geojson.rs:259
+msgid "feature without geometry"
+msgstr "אובייקט Feature ללא גאומטריה"
+
+#: src/formats/geojson.rs:318
+msgid "properties beyond the limit of {} per annotation"
+msgstr "מאפיינים מעבר למגבלה של {} לסימון"
+
+#: src/formats/geojson.rs:351
+msgid "The GeoJSON file contains no features."
+msgstr "קובץ ה-GeoJSON אינו מכיל אובייקטי Feature."
+
+#: src/formats/mod.rs:240
+msgid "This .dcm file is not a DICOM file (\"DICM\" is missing at byte 128)."
+msgstr "קובץ ⁨.dcm⁩ זה אינו קובץ DICOM (המחרוזת \"DICM\" חסרה בבית 128)."
+
+#: src/formats/mod.rs:242
+msgid ""
+"The file is not UTF-8 text or DICOM, so it is not a supported annotation "
+"file."
+msgstr "הקובץ אינו טקסט UTF-8 או DICOM, ולכן אינו קובץ סימונים נתמך."
+
+#: src/formats/mod.rs:250
+msgid "The file is not valid JSON: {}"
+msgstr "הקובץ אינו JSON תקין: {}"
+
+#: src/formats/mod.rs:257
+msgid "This JSON file is neither GeoJSON nor an eov annotation export."
+msgstr "קובץ JSON זה אינו GeoJSON ואינו ייצוא סימונים של eov."
+
+#: src/formats/mod.rs:263
+msgid ""
+"Unsupported file: expected GeoJSON, eov JSON, ASAP XML, ImageScope XML, NDPA "
+"or DICOM bulk annotations."
+msgstr ""
+"קובץ לא נתמך: נדרש GeoJSON, eov JSON, ASAP XML, ImageScope XML, NDPA או "
+"סימוני DICOM מסוג Bulk."
+
+#: src/formats/ndpa.rs:62
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide is not one, so they cannot be placed on it."
+msgstr ""
+"קואורדינטות NDPA נמדדות ממרכז שקופית של Hamamatsu (NDPI), אך שקופית זו אינה "
+"כזו, ולכן לא ניתן למקם אותן עליה."
+
+#. Translators: {} is the vendor of the slide's format ("aperio").
+#: src/formats/ndpa.rs:68
+msgid ""
+"NDPA coordinates are measured from the centre of a Hamamatsu slide (NDPI), "
+"but this slide ({}) is not one, so they cannot be placed on it."
+msgstr ""
+"קואורדינטות NDPA נמדדות ממרכז שקופית של Hamamatsu (NDPI), אך שקופית זו ({}) "
+"אינה כזו, ולכן לא ניתן למקם אותן עליה."
+
+#: src/formats/ndpa.rs:79
+msgid ""
+"This NDPI does not give its offsets from the slide centre (hamamatsu."
+"XOffsetFromSlideCentre and YOffsetFromSlideCentre), so the NDPA coordinates "
+"cannot be placed on it."
+msgstr ""
+"קובץ NDPI זה אינו מציין את ההיסטים שלו ממרכז השקופית (hamamatsu."
+"XOffsetFromSlideCentre ו-YOffsetFromSlideCentre), ולכן לא ניתן למקם עליו את "
+"קואורדינטות ה-NDPA."
+
+#: src/formats/ndpa.rs:88
+msgid ""
+"This slide has no pixel size, so the NDPA's nanometre coordinates cannot be "
+"converted to pixels."
+msgstr ""
+"לשקופית זו אין גודל פיקסל, ולכן לא ניתן להמיר לפיקסלים את קואורדינטות "
+"הננומטרים של קובץ ה-NDPA."
+
+#: src/formats/ndpa.rs:92
+msgid "The slide's size is unknown."
+msgstr "גודל השקופית אינו ידוע."
+
+#. Translators: a reason why an annotation of an imported file was skipped; {} is
+#. its type in the file ("freehand", "circle", "pin", …).
+#: src/formats/ndpa.rs:211
+msgid "{} annotation with unreadable coordinates"
+msgstr "סימון מסוג {} עם קואורדינטות לא קריאות"
+
+#: src/formats/ndpa.rs:267
+msgid "unsupported NDPA annotation type '{}'"
+msgstr "סוג סימון NDPA לא נתמך: \"{}\""
+
+#: src/formats/ndpa.rs:296
+msgid "annotation in unsupported coordinates ({})"
+msgstr "סימון בקואורדינטות לא נתמכות ({})"
+
+#: src/formats/ndpa.rs:300
+msgid "view state without an annotation"
+msgstr "מצב תצוגה ללא סימון"
+
+#: src/formats/xml.rs:28
+msgid "The XML is not well-formed: {}"
+msgstr "מבנה ה-XML אינו תקין: {}"
+
+#: src/formats/xml.rs:37
+msgid ""
+"Unsupported XML annotations (root element <{}>); ASAP, Aperio ImageScope and "
+"Hamamatsu NDPA files are supported."
+msgstr ""
+"סימוני XML לא נתמכים (רכיב שורש <{}>); נתמכים קובצי ASAP, Aperio ImageScope "
+"ו-Hamamatsu NDPA."
+
+#. Translators: a reason why an annotation of an imported file was skipped.
+#: src/formats/xml.rs:96
+msgid "annotation with unreadable coordinates"
+msgstr "סימון עם קואורדינטות לא קריאות"
+
+#: src/formats/xml.rs:158
+msgid "unsupported ASAP annotation type"
+msgstr "סוג סימון ASAP לא נתמך"
+
+#: src/formats/xml.rs:198
+msgid "hole of a shape that is not a polygon"
+msgstr "חור של צורה שאינה מצולע"
+
+#: src/formats/xml.rs:200
+msgid "hole of a missing polygon"
+msgstr "חור של מצולע חסר"
+
+#: src/formats/xml.rs:275
+msgid "region with unreadable vertices"
+msgstr "אזור עם קודקודים לא קריאים"
+
+#: src/formats/xml.rs:357
+msgid "negative region outside every region"
+msgstr "אזור שלילי מחוץ לכל אזור"
+
+#: src/geometry.rs:252
+msgid "The shape has invalid (non-finite) coordinates."
+msgstr "לצורה יש קואורדינטות לא תקינות (לא סופיות)."
+
+#: src/geometry.rs:256
+msgid "The shape has {n} vertices; the limit is {limit}."
+msgid_plural "The shape has {n} vertices; the limit is {limit}."
+msgstr[0] "לצורה יש קודקוד אחד; המגבלה היא {limit}."
+msgstr[1] "לצורה יש {n} קודקודים; המגבלה היא {limit}."
+
+#: src/geometry.rs:266
+msgid "The point is outside the slide."
+msgstr "הנקודה נמצאת מחוץ לשקופית."
+
+#: src/geometry.rs:288
+msgid "An arrow needs two distinct points."
+msgstr "חץ דורש שתי נקודות שונות."
+
+#: src/geometry.rs:290
+msgid "A line needs at least two distinct points."
+msgstr "קו דורש לפחות שתי נקודות שונות."
+
+#: src/geometry.rs:317
+msgid "The rectangle is outside the slide."
+msgstr "המלבן נמצא מחוץ לשקופית."
+
+#: src/geometry.rs:325
+msgid "The rectangle has no area."
+msgstr "למלבן אין שטח."
+
+#: src/geometry.rs:337
+msgid "The ellipse has no area."
+msgstr "לאליפסה אין שטח."
+
+#: src/geometry.rs:340
+msgid "The ellipse is centred outside the slide."
+msgstr "מרכז האליפסה נמצא מחוץ לשקופית."
+
+#: src/geometry.rs:352
+msgid "A polygon needs at least three distinct corners."
+msgstr "מצולע דורש לפחות שלוש פינות שונות."
+
+#: src/geometry.rs:355 src/geometry.rs:393
+msgid "The polygon encloses no area."
+msgstr "המצולע אינו תוחם שטח."
+
+#: src/geometry.rs:391
+msgid "The polygon is outside the slide."
+msgstr "המצולע נמצא מחוץ לשקופית."
+
+#: src/lib.rs:80 src/lib.rs:202
+msgid "Annotations"
+msgstr "סימונים"
+
+#: src/lib.rs:85
+msgid "Show or hide annotations on this slide"
+msgstr "הצגה או הסתרה של הסימונים בשקופית זו"
+
+#: src/lib.rs:102
+msgid "Counting {}"
+msgstr "ספירה: {}"
+
+#: src/lib.rs:104
+msgid "Counting {class}, Shift+click: {alternate}"
+msgstr "ספירה: {class}, לחיצה עם Shift: {alternate}"
+
+#: src/lib.rs:109
+msgid "Counting {class}, Alt+click: {immune}"
+msgstr "ספירה: {class}, לחיצה עם Alt: {immune}"
+
+#: src/lib.rs:114
+msgid "Counting {class}, Shift+click: {alternate}, Alt+click: {immune}"
+msgstr "ספירה: {class}, לחיצה עם Shift: {alternate}, לחיצה עם Alt: {immune}"
+
+#. Translators: HPF is a high-power field.
+#: src/lib.rs:123
+msgid ""
+"The dashed circle is one HPF: click to place a field, drag to pan, Esc to "
+"leave"
+msgstr ""
+"העיגול המקווקו הוא שדה HPF אחד: לחיצה מציבה שדה, גרירה מזיזה את התצוגה, Esc "
+"ליציאה"
+
+#: src/lib.rs:125
+msgid "Click to select, drag to select several; drag handles to edit"
+msgstr "לחיצה לבחירה, גרירה לבחירת כמה סימונים; גרירת ידיות לעריכה"
+
+#: src/lib.rs:127
+msgid "Drawing {}"
+msgstr "שרטוט: {}"
+
+#. Translators: {} is the name of a file format ("GeoJSON").
+#: src/lib.rs:441
+msgid "{} · cannot be placed on this slide"
+msgstr "קובץ {} · לא ניתן למקם אותו על שקופית זו"
+
+#. Translators: {format} is the name of a file format ("GeoJSON");
+#. {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/lib.rs:448
+msgid "{format} · {n} annotation {layers}"
+msgid_plural "{format} · {n} annotations {layers}"
+msgstr[0] "קובץ {format} · סימון אחד {layers}"
+msgstr[1] "קובץ {format} · {n} סימונים {layers}"
+
+#: src/lib.rs:455
+msgid "{n} class"
+msgid_plural "{n} classes"
+msgstr[0] "קטגוריה אחת"
+msgstr[1] "‏{n} קטגוריות"
+
+#: src/lib.rs:465
+msgid "Layers with the same name already exist: {}"
+msgstr "כבר קיימות שכבות באותו שם: {}"
+
+#: src/lib.rs:497 src/transfer.rs:373
+msgid "Import annotations"
+msgstr "ייבוא סימונים"
+
+#: src/lib.rs:507
+msgid "Cannot show the import dialog"
+msgstr "לא ניתן להציג את תיבת הדו-שיח של הייבוא"
+
+#: src/lib.rs:641 src/sidebar.rs:1490
+msgid "Lock"
+msgstr "נעילה"
+
+#: src/lib.rs:643 src/sidebar.rs:1492
+msgid "Unlock"
+msgstr "ביטול נעילה"
+
+#: src/lib.rs:789
+msgid "Could not save the annotation settings"
+msgstr "לא ניתן היה לשמור את הגדרות הסימונים"
+
+#: src/lib.rs:1063
+msgid "Show in annotations panel"
+msgstr "הצגה בלוח הסימונים"
+
+#: src/lib.rs:1064
+msgid "Copy measurements"
+msgstr "העתקת המדידות"
+
+#: src/lib.rs:1066
+msgid "Unlock annotation"
+msgstr "ביטול נעילת הסימון"
+
+#: src/lib.rs:1068
+msgid "Lock annotation"
+msgstr "נעילת הסימון"
+
+#: src/lib.rs:1077
+msgctxt "Context menu"
+msgid "Delete annotation"
+msgstr "מחיקת סימון"
+
+#: src/lib.rs:1083
+msgid "Add point here"
+msgstr "הוספת נקודה כאן"
+
+#: src/lib.rs:1084
+msgid "Place HPF field here"
+msgstr "הצבת שדה HPF כאן"
+
+#: src/lib.rs:1085
+msgid "Annotations panel"
+msgstr "לוח הסימונים"
+
+#: src/measure.rs:276
+msgid "Area"
+msgstr "שטח"
+
+#: src/measure.rs:281
+msgid "Length"
+msgstr "אורך"
+
+#: src/measure.rs:283
+msgid "Perimeter"
+msgstr "היקף"
+
+#: src/measure.rs:289
+msgid "Max diameter (Feret)"
+msgstr "קוטר מרבי (Feret)"
+
+#: src/measure.rs:292
+msgid "Min diameter (Feret)"
+msgstr "קוטר מזערי (Feret)"
+
+#: src/measure.rs:297
+msgid "Centre (px)"
+msgstr "מרכז (px)"
+
+#: src/measure.rs:302 src/measure.rs:307
+msgid "Calibration"
+msgstr "כיול"
+
+#: src/measure.rs:303
+msgid "No pixel size: values in level-0 pixels"
+msgstr "אין גודל פיקסל: הערכים בפיקסלים ברמה 0"
+
+#: src/measure.rs:308
+msgid "One pixel axis missing; assumed square pixels"
+msgstr "חסר ציר פיקסל אחד; ההנחה היא שהפיקסלים ריבועיים"
+
+#: src/model.rs:49 ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Draft"
+msgstr "טיוטה"
+
+#: src/model.rs:50 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Verified"
+msgstr "מאומת"
+
+#: src/model.rs:51 ui/annotations-sidebar.slint:284
+#: ui/annotations-sidebar.slint:515
+msgctxt "Review status"
+msgid "Rejected"
+msgstr "נדחה"
+
+#: src/model.rs:118
+msgctxt "Annotation kind"
+msgid "Point"
+msgstr "נקודה"
+
+#: src/model.rs:119
+msgctxt "Annotation kind"
+msgid "Line"
+msgstr "קו"
+
+#: src/model.rs:120
+msgctxt "Annotation kind"
+msgid "Arrow"
+msgstr "חץ"
+
+#: src/model.rs:121
+msgctxt "Annotation kind"
+msgid "Polygon"
+msgstr "מצולע"
+
+#: src/model.rs:122
+msgctxt "Annotation kind"
+msgid "Rectangle"
+msgstr "מלבן"
+
+#: src/model.rs:123
+msgctxt "Annotation kind"
+msgid "Ellipse"
+msgstr "אליפסה"
+
+#: src/model.rs:124
+msgctxt "Annotation kind"
+msgid "Text"
+msgstr "טקסט"
+
+#: src/model.rs:750
+msgid "The layer name cannot be empty."
+msgstr "שם השכבה אינו יכול להיות ריק."
+
+#: src/model.rs:751
+msgid "The class name cannot be empty."
+msgstr "שם הקטגוריה אינו יכול להיות ריק."
+
+#: src/model.rs:752
+msgid "The name cannot be empty."
+msgstr "השם אינו יכול להיות ריק."
+
+#: src/model.rs:759
+msgid "The name is {n} characters long; the limit is {limit}."
+msgid_plural "The name is {n} characters long; the limit is {limit}."
+msgstr[0] "אורך השם הוא תו אחד; המגבלה היא {limit}."
+msgstr[1] "אורך השם הוא {n} תווים; המגבלה היא {limit}."
+
+#: src/model.rs:764
+msgid "The layer name is {n} characters long; the limit is {limit}."
+msgid_plural "The layer name is {n} characters long; the limit is {limit}."
+msgstr[0] "אורך שם השכבה הוא תו אחד; המגבלה היא {limit}."
+msgstr[1] "אורך שם השכבה הוא {n} תווים; המגבלה היא {limit}."
+
+#: src/model.rs:769
+msgid "The class name is {n} characters long; the limit is {limit}."
+msgid_plural "The class name is {n} characters long; the limit is {limit}."
+msgstr[0] "אורך שם הקטגוריה הוא תו אחד; המגבלה היא {limit}."
+msgstr[1] "אורך שם הקטגוריה הוא {n} תווים; המגבלה היא {limit}."
+
+#: src/model.rs:774
+msgid "The author is {n} characters long; the limit is {limit}."
+msgid_plural "The author is {n} characters long; the limit is {limit}."
+msgstr[0] "אורך שם המחבר הוא תו אחד; המגבלה היא {limit}."
+msgstr[1] "אורך שם המחבר הוא {n} תווים; המגבלה היא {limit}."
+
+#: src/model.rs:779
+msgid "The setting is {n} characters long; the limit is {limit}."
+msgid_plural "The setting is {n} characters long; the limit is {limit}."
+msgstr[0] "אורך ההגדרה הוא תו אחד; המגבלה היא {limit}."
+msgstr[1] "אורך ההגדרה הוא {n} תווים; המגבלה היא {limit}."
+
+#: src/model.rs:784
+msgid "The notes are {n} characters long; the limit is {limit}."
+msgid_plural "The notes are {n} characters long; the limit is {limit}."
+msgstr[0] "אורך ההערות הוא תו אחד; המגבלה היא {limit}."
+msgstr[1] "אורך ההערות הוא {n} תווים; המגבלה היא {limit}."
+
+#: src/model.rs:789
+msgid "The description is {n} characters long; the limit is {limit}."
+msgid_plural "The description is {n} characters long; the limit is {limit}."
+msgstr[0] "אורך התיאור הוא תו אחד; המגבלה היא {limit}."
+msgstr[1] "אורך התיאור הוא {n} תווים; המגבלה היא {limit}."
+
+#: src/model.rs:794
+msgid "The comment is {n} characters long; the limit is {limit}."
+msgid_plural "The comment is {n} characters long; the limit is {limit}."
+msgstr[0] "אורך ההערה הוא תו אחד; המגבלה היא {limit}."
+msgstr[1] "אורך ההערה הוא {n} תווים; המגבלה היא {limit}."
+
+#: src/model.rs:837
+msgid "An annotation can have at most {n} properties."
+msgid_plural "An annotation can have at most {n} properties."
+msgstr[0] "לסימון יכול להיות מאפיין אחד לכל היותר."
+msgstr[1] "לסימון יכולים להיות {n} מאפיינים לכל היותר."
+
+#: src/model.rs:851
+msgid "Property names are limited to {n} characters."
+msgid_plural "Property names are limited to {n} characters."
+msgstr[0] "שמות מאפיינים מוגבלים לתו אחד."
+msgstr[1] "שמות מאפיינים מוגבלים ל-{n} תווים."
+
+#: src/model.rs:856
+msgid "Property values are limited to {n} characters."
+msgid_plural "Property values are limited to {n} characters."
+msgstr[0] "ערכי מאפיינים מוגבלים לתו אחד."
+msgstr[1] "ערכי מאפיינים מוגבלים ל-{n} תווים."
+
+#: src/model.rs:884
+msgid "A hotkey is a single character (a letter or a symbol), not {}."
+msgstr "מקש קיצור הוא תו יחיד (אות או סמל), ולא {}."
+
+#: src/model.rs:889
+msgid "A hotkey must be a visible character."
+msgstr "מקש קיצור חייב להיות תו גלוי."
+
+#: src/model.rs:892
+msgid "eov already uses the '{}' key."
+msgstr "המקש \"{}\" כבר נמצא בשימוש של eov."
+
+#: src/model.rs:896
+msgid "'{}' is already used by an annotation tool or class."
+msgstr "המקש \"{}\" כבר נמצא בשימוש של כלי סימון או של קטגוריה."
+
+#. Translators: in the tooltip of a locked annotation, after its class and name.
+#: src/overlay.rs:171
+msgid "locked"
+msgstr "נעול"
+
+#. Translators: this slide's points against the other reader's; F1 is the F1 score.
+#: src/sidebar.rs:360
+msgid "Points {ours} vs {theirs} · {matched} matched · F1 {f1}"
+msgstr "נקודות {ours} מול {theirs} · תואמות: {matched} · F1 {f1}"
+
+#. Translators: this slide's regions and their area against the other reader's;
+#. Dice is the Dice coefficient of the areas.
+#: src/sidebar.rs:373
+msgid "Regions {ours} vs {theirs} · {our_area} vs {their_area} · Dice {dice}"
+msgstr "אזורים {ours} מול {theirs} · {our_area} מול {their_area} · Dice {dice}"
+
+#: src/sidebar.rs:385
+msgid "All regions"
+msgstr "כל האזורים"
+
+#. Translators: {layers} in texts such as "{n} annotations {layers}" ("12 annotations in 3 layers").
+#: src/sidebar.rs:431
+msgid "in {n} layer"
+msgid_plural "in {n} layers"
+msgstr[0] "בשכבה אחת"
+msgstr[1] "ב-{n} שכבות"
+
+#: src/sidebar.rs:447
+msgid "No slide open"
+msgstr "אין שקופית פתוחה"
+
+#: src/sidebar.rs:453
+msgid "Annotation database unavailable: {}"
+msgstr "מסד נתוני הסימונים אינו זמין: {}"
+
+#: src/sidebar.rs:455
+msgid "Opening the annotation database…"
+msgstr "פתיחת מסד נתוני הסימונים…"
+
+#: src/sidebar.rs:461
+msgid "Loading annotations…"
+msgstr "הסימונים בטעינה…"
+
+#: src/sidebar.rs:469
+msgid ""
+"The annotation database is read-only: annotations can be viewed and "
+"exported, not edited."
+msgstr ""
+"מסד נתוני הסימונים זמין לקריאה בלבד: ניתן להציג ולייצא סימונים, אך לא לערוך "
+"אותם."
+
+#: src/sidebar.rs:477
+msgid ""
+"This slide has no stable identity; its annotations are keyed by file name "
+"and size."
+msgstr "לשקופית זו אין זהות יציבה; הסימונים שלה משויכים לפי שם הקובץ וגודלו."
+
+#. Translators: beside a layer of count points: the number of points.
+#: src/sidebar.rs:526
+msgid "{} · counts"
+msgstr "‏{} · נקודות ספירה"
+
+#. Translators: beside the layer of HPF fields: the number of fields.
+#: src/sidebar.rs:528
+msgid "{} · HPF fields"
+msgstr "‏{} · שדות HPF"
+
+#: src/sidebar.rs:615
+msgid "{n} comment"
+msgid_plural "{n} comments"
+msgstr[0] "הערה אחת"
+msgstr[1] "‏{n} הערות"
+
+#: src/sidebar.rs:649
+msgid "Show more ({n} not shown)"
+msgid_plural "Show more ({n} not shown)"
+msgstr[0] "הצגת עוד (פריט אחד לא מוצג)"
+msgstr[1] "הצגת עוד ({n} לא מוצגים)"
+
+#: src/sidebar.rs:667
+msgid "{n} match"
+msgid_plural "{n} matches"
+msgstr[0] "התאמה אחת"
+msgstr[1] "‏{n} התאמות"
+
+#: src/sidebar.rs:670
+msgid ""
+"No annotations yet. Pick a tool in the toolbar (P polygon, . point, C count) "
+"and draw on the slide."
+msgstr ""
+"עדיין אין סימונים. יש לבחור כלי בסרגל הכלים (P מצולע, . נקודה, C ספירה) "
+"ולשרטט על השקופית."
+
+#: src/sidebar.rs:674
+msgid "Open a slide to see and draw its annotations."
+msgstr "יש לפתוח שקופית כדי לראות ולשרטט את הסימונים שלה."
+
+#: src/sidebar.rs:724
+msgid "created {created} · edited {edited}"
+msgstr "נוצר {created} · נערך {edited}"
+
+#: src/sidebar.rs:730
+msgid "By {author} · created {created} · edited {edited}"
+msgstr "מאת {author} · נוצר {created} · נערך {edited}"
+
+#: src/sidebar.rs:750
+msgid "Unknown author"
+msgstr "מחבר לא ידוע"
+
+#: src/sidebar.rs:769
+msgid ""
+"This outline crosses itself (it was drawn with an older version). Its area "
+"uses the even-odd rule, like the display; Repair turns it into simple parts."
+msgstr ""
+"קו מתאר זה חוצה את עצמו (הוא שורטט בגרסה ישנה יותר). השטח שלו מחושב לפי כלל "
+"זוגי-אי-זוגי (even-odd), כמו בתצוגה; \"תיקון\" מפרק אותו לחלקים פשוטים."
+
+#: src/sidebar.rs:775
+msgid "{n} annotation selected"
+msgid_plural "{n} annotations selected"
+msgstr[0] "נבחר סימון אחד"
+msgstr[1] "נבחרו {n} סימונים"
+
+#: src/sidebar.rs:778
+msgid "Mixed classes; changes apply to all selected."
+msgstr "קטגוריות מעורבות; השינויים חלים על כל הסימונים הנבחרים."
+
+#: src/sidebar.rs:780
+msgid "Changes apply to all selected."
+msgstr "השינויים חלים על כל הסימונים הנבחרים."
+
+#. Translators: under a class whose key does nothing; {} is
+#. eov's reason, a whole sentence such as "Hotkey 'q' of …
+#. was ignored: it is a key eov already uses."
+#: src/sidebar.rs:828
+msgid "eov refused the hotkey: {}"
+msgstr "מקש הקיצור נדחה על ידי eov: {}"
+
+#: src/sidebar.rs:861
+msgid ""
+"Whole slide. Select regions or HPF fields to count inside them and get "
+"densities."
+msgstr ""
+"השקופית כולה. ניתן לבחור אזורים או שדות HPF כדי לספור בתוכם ולקבל צפיפויות."
+
+#. Translators: {fields} is "1 HPF field" or "3 HPF fields"
+#. (translated on its own; HPF is a high-power field).
+#: src/sidebar.rs:873
+msgid "Inside {n} selected region ({fields}): {area}"
+msgid_plural "Inside {n} selected regions ({fields}): {area}"
+msgstr[0] "בתוך אזור נבחר אחד ({fields}): {area}"
+msgstr[1] "בתוך {n} אזורים נבחרים ({fields}): {area}"
+
+#. Translators: {fields} in "Inside {n} selected regions ({fields}): {area}".
+#: src/sidebar.rs:877
+msgid "{n} HPF field"
+msgid_plural "{n} HPF fields"
+msgstr[0] "שדה HPF אחד"
+msgstr[1] "‏{n} שדות HPF"
+
+#: src/sidebar.rs:883
+msgid "Inside {n} selected region: {area}"
+msgid_plural "Inside {n} selected regions: {area}"
+msgstr[0] "בתוך אזור נבחר אחד: {area}"
+msgstr[1] "בתוך {n} אזורים נבחרים: {area}"
+
+#: src/sidebar.rs:890
+msgid "Inside {n} selected region: {area} (no pixel size, so no density)"
+msgid_plural ""
+"Inside {n} selected regions: {area} (no pixel size, so no density)"
+msgstr[0] "בתוך אזור נבחר אחד: {area} (אין גודל פיקסל, ולכן אין צפיפות)"
+msgstr[1] "בתוך {n} אזורים נבחרים: {area} (אין גודל פיקסל, ולכן אין צפיפות)"
+
+#. Translators: cells per high-power field.
+#: src/sidebar.rs:905
+msgid "{} /HPF field"
+msgstr "‏{} לשדה HPF"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1000
+msgid "Read-only"
+msgstr "קריאה בלבד"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1003
+msgid "Ready"
+msgstr "מוכן"
+
+#. Translators: the state of the annotation database.
+#: src/sidebar.rs:1007
+msgid "Opening…"
+msgstr "בפתיחה…"
+
+#: src/sidebar.rs:1008
+msgid "Unavailable: {}"
+msgstr "לא זמין: {}"
+
+#. Translators: a slide whose file name an older eov did not record; {} is its number in the annotation database.
+#: src/sidebar.rs:1068
+msgid "Slide #{} (from an older version)"
+msgstr "שקופית מספר {} (מגרסה ישנה יותר)"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers" (translated on its own).
+#: src/sidebar.rs:1075
+msgid "{n} annotation {layers} · last opened {date}"
+msgid_plural "{n} annotations {layers} · last opened {date}"
+msgstr[0] "סימון אחד {layers} · נפתחה לאחרונה {date}"
+msgstr[1] "‏{n} סימונים {layers} · נפתחה לאחרונה {date}"
+
+#. Translators: "List" is the label of the button beside this text.
+#: src/sidebar.rs:1093
+msgid "Press \"List\" to see the other slides in the database."
+msgstr "יש ללחוץ על \"הצגת רשימה\" כדי לראות את שאר השקופיות במסד הנתונים."
+
+#: src/sidebar.rs:1094
+msgid "No other slides have annotations."
+msgstr "אין סימונים בשקופיות אחרות."
+
+#: src/sidebar.rs:1096
+msgid ""
+"If a slide was re-saved or de-identified, its annotations stay with the old "
+"file. Attach them to the open slide here."
+msgstr ""
+"אם שקופית נשמרה מחדש או עברה התממה, הסימונים שלה נשארים משויכים לקובץ הישן. "
+"כאן ניתן לצרף אותם לשקופית הפתוחה."
+
+#: src/sidebar.rs:1161
+msgid "Cannot ask for confirmation"
+msgstr "לא ניתן לבקש אישור"
+
+#: src/sidebar.rs:1173
+msgid "Open a slide first."
+msgstr "יש לפתוח תחילה שקופית."
+
+#: src/sidebar.rs:1213
+msgid "Compare with another reader's file first."
+msgstr "יש להשוות תחילה עם קובץ של קורא אחר."
+
+#: src/sidebar.rs:1219
+msgid "Export all annotations"
+msgstr "ייצוא כל הסימונים"
+
+#: src/sidebar.rs:1222
+msgid "eov annotation archive"
+msgstr "ארכיון סימונים של eov"
+
+#: src/sidebar.rs:1229
+msgid "Back up the annotation database"
+msgstr "גיבוי מסד נתוני הסימונים"
+
+#: src/sidebar.rs:1232 src/sidebar.rs:1242
+msgid "SQLite database"
+msgstr "מסד נתונים של SQLite"
+
+#: src/sidebar.rs:1239
+msgid ""
+"Merge an annotation database (a backup, or annotations.db of eov before 1.0)"
+msgstr ""
+"מיזוג מסד נתוני סימונים (גיבוי, או annotations.db מגרסאות eov שלפני 1.0)"
+
+#: src/sidebar.rs:1308
+msgid "Show or hide layer"
+msgstr "הצגה או הסתרה של השכבה"
+
+#: src/sidebar.rs:1322
+msgid "Layer opacity"
+msgstr "אטימות השכבה"
+
+#: src/sidebar.rs:1337
+msgid "Lock layer"
+msgstr "נעילת השכבה"
+
+#: src/sidebar.rs:1339
+msgid "Unlock layer"
+msgstr "ביטול נעילת השכבה"
+
+#: src/sidebar.rs:1354
+msgid "Change layer colour"
+msgstr "שינוי צבע השכבה"
+
+#: src/sidebar.rs:1370
+msgid "Edit layer notes"
+msgstr "עריכת הערות השכבה"
+
+#: src/sidebar.rs:1387
+msgid "The slide is still loading."
+msgstr "השקופית עדיין בטעינה."
+
+#: src/sidebar.rs:1396
+msgctxt "Dialog title"
+msgid "Delete layer"
+msgstr "מחיקת שכבה"
+
+#: src/sidebar.rs:1398
+msgid ""
+"Delete layer \"{name}\" and its {n} annotation? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgid_plural ""
+"Delete layer \"{name}\" and its {n} annotations? You can undo this with "
+"Ctrl+Z (⌘Z)."
+msgstr[0] ""
+"למחוק את השכבה \"{name}\" ואת הסימון היחיד שבה? ניתן לבטל פעולה זו באמצעות "
+"Ctrl+Z (⌘Z)."
+msgstr[1] ""
+"למחוק את השכבה \"{name}\" ואת {n} הסימונים שבה? ניתן לבטל פעולה זו באמצעות "
+"Ctrl+Z (⌘Z)."
+
+#: src/sidebar.rs:1403 src/sidebar.rs:1620
+msgid "Delete"
+msgstr "מחיקה"
+
+#: src/sidebar.rs:1404 src/sidebar.rs:1621 src/sidebar.rs:1679
+#: src/sidebar.rs:1772
+msgid "Cancel"
+msgstr "ביטול"
+
+#: src/sidebar.rs:1420
+msgid "Rename annotation"
+msgstr "שינוי שם הסימון"
+
+#: src/sidebar.rs:1432
+msgid "Edit description"
+msgstr "עריכת התיאור"
+
+#: src/sidebar.rs:1444
+msgid "Set class"
+msgstr "הגדרת קטגוריה"
+
+#: src/sidebar.rs:1458
+msgid "Mark draft"
+msgstr "הגדרה כטיוטה"
+
+#: src/sidebar.rs:1459
+msgid "Mark verified"
+msgstr "הגדרה כמאומת"
+
+#: src/sidebar.rs:1460
+msgid "Mark rejected"
+msgstr "הגדרה כנדחה"
+
+#: src/sidebar.rs:1476
+msgid "Move to layer"
+msgstr "העברה לשכבה"
+
+#: src/sidebar.rs:1529
+msgid "Edit properties"
+msgstr "עריכת מאפיינים"
+
+#: src/sidebar.rs:1553
+msgid "Select one annotation to comment on."
+msgstr "יש לבחור סימון אחד כדי להוסיף לו הערה."
+
+#: src/sidebar.rs:1566
+msgid "Measurements copied."
+msgstr "המדידות הועתקו."
+
+#: src/sidebar.rs:1578
+msgid "Show or hide class"
+msgstr "הצגה או הסתרה של הקטגוריה"
+
+#: src/sidebar.rs:1591
+msgid "Class opacity"
+msgstr "אטימות הקטגוריה"
+
+#: src/sidebar.rs:1611
+msgctxt "Dialog title"
+msgid "Delete class"
+msgstr "מחיקת קטגוריה"
+
+#: src/sidebar.rs:1613
+msgid ""
+"Delete class \"{name}\"? {n} annotation on open slides uses it; it will show "
+"as unclassified. You can undo this."
+msgid_plural ""
+"Delete class \"{name}\"? {n} annotations on open slides use it; they will "
+"show as unclassified. You can undo this."
+msgstr[0] ""
+"למחוק את הקטגוריה \"{name}\"? סימון אחד בשקופיות הפתוחות משתמש בה; הוא יוצג "
+"ללא קטגוריה. ניתן לבטל פעולה זו."
+msgstr[1] ""
+"למחוק את הקטגוריה \"{name}\"? {n} סימונים בשקופיות הפתוחות משתמשים בה; הם "
+"יוצגו ללא קטגוריה. ניתן לבטל פעולה זו."
+
+#: src/sidebar.rs:1668
+msgctxt "Dialog title"
+msgid "Clear counts"
+msgstr "ניקוי הספירות"
+
+#. Translators: the question of the "Clear counts" dialog, whose
+#. button is "Clear": use the same verb.
+#: src/sidebar.rs:1672
+msgid "Clear the {n} count point of this slide? You can undo this."
+msgid_plural "Clear all {n} count points of this slide? You can undo this."
+msgstr[0] "לנקות את נקודת הספירה היחידה של שקופית זו? ניתן לבטל פעולה זו."
+msgstr[1] "לנקות את כל {n} נקודות הספירה של שקופית זו? ניתן לבטל פעולה זו."
+
+#. Translators: the button that removes the count points, in the
+#. "Clear counts" dialog.
+#: src/sidebar.rs:1678
+msgid "Clear"
+msgstr "ניקוי"
+
+#: src/sidebar.rs:1694
+msgid "Enter the field area in mm², e.g. {}."
+msgstr "יש להזין את שטח השדה ב-mm², למשל {}."
+
+#: src/sidebar.rs:1702
+msgid "Enter the field number in mm, e.g. 22."
+msgstr "יש להזין את מספר השדה ב-mm, למשל 22."
+
+#: src/sidebar.rs:1704
+msgid "Enter the objective magnification, e.g. 40."
+msgstr "יש להזין את הגדלת העדשה האובייקטיבית, למשל 40."
+
+#: src/sidebar.rs:1708
+msgid "That field size is not usable."
+msgstr "לא ניתן להשתמש בגודל שדה זה."
+
+#: src/sidebar.rs:1720
+msgid "There is no database from before eov 1.0 to merge."
+msgstr "אין מסד נתונים מגרסאות eov שלפני 1.0 למיזוג."
+
+#: src/sidebar.rs:1737
+msgid "That slide is not listed any more."
+msgstr "שקופית זו כבר אינה מופיעה ברשימה."
+
+#: src/sidebar.rs:1748
+msgid ""
+"Attach the annotations of an older slide to the open slide? Use this when "
+"the slide file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"לצרף את הסימונים של שקופית ישנה יותר לשקופית הפתוחה? אפשרות זו מיועדת למקרים "
+"שבהם קובץ השקופית נשמר מחדש, הומר או עבר התממה. ניתן לבטל פעולה זו."
+
+#: src/sidebar.rs:1753
+msgid ""
+"Attach the annotations of \"{}\" to the open slide? Use this when the slide "
+"file was re-saved, converted or de-identified. You can undo this."
+msgstr ""
+"לצרף את הסימונים של \"{}\" לשקופית הפתוחה? אפשרות זו מיועדת למקרים שבהם קובץ "
+"השקופית נשמר מחדש, הומר או עבר התממה. ניתן לבטל פעולה זו."
+
+#: src/sidebar.rs:1762
+msgid ""
+"Warning: the two slides have different sizes, so the annotations may not "
+"line up."
+msgstr "אזהרה: גודלי שתי השקופיות שונים, ולכן ייתכן שהסימונים לא יתיישרו."
+
+#: src/sidebar.rs:1769
+msgid "Attach annotations"
+msgstr "צירוף סימונים"
+
+#: src/sidebar.rs:1771
+msgid "Attach"
+msgstr "צירוף"
+
+#: src/state.rs:501
+msgid "Compared with {}"
+msgstr "השוואה עם {}"
+
+#. Translators: {ours} is "1 annotation" or "5 annotations" (translated on its own).
+#: src/state.rs:509
+msgid ""
+"This slide's visible layers ({ours}) against the {n} annotation in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgid_plural ""
+"This slide's visible layers ({ours}) against the {n} annotations in {name}, "
+"without HPF fields; counts are this slide's, then the other reader's. Points "
+"of a class match one to one within {radius} (F1 = 2 · matched / both "
+"counts); regions by their overlap (Dice = 2 · shared area / both areas)."
+msgstr[0] ""
+"השכבות הגלויות של שקופית זו ({ours}) מול הסימון היחיד בקובץ {name}, ללא שדות "
+"HPF; הספירות הן של שקופית זו ואחריהן של הקורא האחר. נקודות של אותה קטגוריה "
+"מותאמות אחת לאחת בטווח של {radius} (F1 = 2 · תואמות / סכום שתי הספירות); "
+"אזורים מותאמים לפי החפיפה ביניהם (Dice = 2 · שטח משותף / סכום שני השטחים)."
+msgstr[1] ""
+"השכבות הגלויות של שקופית זו ({ours}) מול {n} הסימונים בקובץ {name}, ללא שדות "
+"HPF; הספירות הן של שקופית זו ואחריהן של הקורא האחר. נקודות של אותה קטגוריה "
+"מותאמות אחת לאחת בטווח של {radius} (F1 = 2 · תואמות / סכום שתי הספירות); "
+"אזורים מותאמים לפי החפיפה ביניהם (Dice = 2 · שטח משותף / סכום שני השטחים)."
+
+#: src/state.rs:522
+msgid "Check the file: {}"
+msgstr "יש לבדוק את הקובץ: {}"
+
+#: src/state.rs:664
+msgid "The annotation database is read-only."
+msgstr "מסד נתוני הסימונים זמין לקריאה בלבד."
+
+#: src/state.rs:665
+msgid "The annotation database is still opening."
+msgstr "מסד נתוני הסימונים עדיין בפתיחה."
+
+#: src/state.rs:667
+msgid "The annotation database is unavailable: {}"
+msgstr "מסד נתוני הסימונים אינו זמין: {}"
+
+#: src/stats.rs:97
+msgid "Invalid field size"
+msgstr "גודל שדה לא תקין"
+
+#. Translators: HPF is a high-power field; ⌀ its diameter.
+#: src/stats.rs:110
+msgid "1 HPF = {area} mm² (field number {number} at {objective}×, ⌀ {d} mm)"
+msgstr ""
+"שטח שדה HPF אחד: ⁨{area} mm²⁩ (מספר שדה {number} בעדשה אובייקטיבית ⁨{objective}"
+"×⁩, ⁨⌀ {d} mm⁩)"
+
+#: src/stats.rs:116
+msgid "1 HPF = {area} mm² (⌀ {d} mm)"
+msgstr "שטח שדה HPF אחד: ⁨{area} mm²⁩ (⁨⌀ {d} mm⁩)"
+
+#: src/tools.rs:63
+msgid "Select and edit annotations"
+msgstr "בחירה ועריכה של סימונים"
+
+#: src/tools.rs:64
+msgid "Point annotation"
+msgstr "סימון נקודה"
+
+#: src/tools.rs:65
+msgid "Count cells (Shift+click: second class)"
+msgstr "ספירת תאים (לחיצה עם Shift: קטגוריה שנייה)"
+
+#: src/tools.rs:66
+msgid "Polygon (Shift: add to selection, Alt: cut from it)"
+msgstr "מצולע (Shift: הוספה לאזור הנבחר, Alt: חיתוך ממנו)"
+
+#: src/tools.rs:67
+msgid "Freehand outline (Shift: add, Alt: cut)"
+msgstr "קו מתאר ביד חופשית (Shift: הוספה, Alt: חיתוך)"
+
+#: src/tools.rs:68
+msgid "Rectangle"
+msgstr "מלבן"
+
+#: src/tools.rs:69
+msgid "Ellipse"
+msgstr "אליפסה"
+
+#: src/tools.rs:70
+msgid "Line / path"
+msgstr "קו / מסלול"
+
+#: src/tools.rs:72
+msgid ""
+"Brush (paint a region, over a selected region to extend it; Alt or the "
+"eraser erases; [ and ] change the size)"
+msgstr ""
+"מברשת (צביעת אזור, או מעל אזור נבחר כדי להרחיב אותו; Alt או המחק מוחקים; "
+"המקשים ⁨]⁩ ו-⁨[⁩ משנים את הגודל)"
+
+#: src/tools.rs:74
+msgid "Arrow (click the tail, double-click the tip; more clicks bend it)"
+msgstr ""
+"חץ (לחיצה במקום הזנב, לחיצה כפולה במקום החוד; לחיצות נוספות יוצרות כיפוף)"
+
+#: src/tools.rs:75
+msgid "Text label"
+msgstr "תווית טקסט"
+
+#: src/tools.rs:77
+msgid ""
+"HPF field (a field of the configured size follows the pointer; click to "
+"place it, drag to pan)"
+msgstr ""
+"שדה HPF (שדה בגודל שהוגדר עוקב אחר מצביע העכבר; לחיצה מציבה אותו, גרירה "
+"מזיזה את התצוגה)"
+
+#: src/tools.rs:225
+msgid "Annotation class: {}"
+msgstr "קטגוריית סימון: {}"
+
+#. Translators: {} lists what was skipped, as "2 × reason; 1 × other reason".
+#: src/transfer.rs:249
+msgid "Skipped: {}."
+msgstr "דולגו: {}."
+
+#: src/transfer.rs:253
+msgid "{n} outline crossed itself and was repaired with the even-odd rule."
+msgid_plural ""
+"{n} outlines crossed themselves and were repaired with the even-odd rule."
+msgstr[0] "קו מתאר אחד חצה את עצמו ותוקן לפי כלל זוגי-אי-זוגי."
+msgstr[1] "‏{n} קווי מתאר חצו את עצמם ותוקנו לפי כלל זוגי-אי-זוגי."
+
+#: src/transfer.rs:260
+msgid "{n} shape extended past the slide and was cut at its edge."
+msgid_plural "{n} shapes extended past the slide and were cut at its edge."
+msgstr[0] "צורה אחת חרגה מהשקופית ונחתכה בקצה שלה."
+msgstr[1] "‏{n} צורות חרגו מהשקופית ונחתכו בקצה שלה."
+
+#: src/transfer.rs:265
+msgid "{n} over-long name or text was shortened."
+msgid_plural "{n} over-long names or texts were shortened."
+msgstr[0] "שם או טקסט ארוך מדי אחד קוצר."
+msgstr[1] "‏{n} שמות או טקסטים ארוכים מדי קוצרו."
+
+#: src/transfer.rs:270
+msgid "The file contains no annotations."
+msgstr "הקובץ אינו מכיל סימונים."
+
+#: src/transfer.rs:272
+msgid "Nothing could be imported. {}"
+msgstr "לא ניתן היה לייבא דבר. {}"
+
+#: src/transfer.rs:339
+msgid "Made for this slide."
+msgstr "הקובץ נוצר עבור שקופית זו."
+
+#: src/transfer.rs:342
+msgid "Made for a different slide (its identity does not match)."
+msgstr "הקובץ נוצר עבור שקופית אחרת (הזהות שלה אינה תואמת)."
+
+#: src/transfer.rs:352
+msgid "Made for a slide of {theirs}; this one is {ours}."
+msgstr "הקובץ נוצר עבור שקופית בגודל {theirs}; גודל שקופית זו הוא {ours}."
+
+#: src/transfer.rs:360
+msgid "Made for a slide of the same size."
+msgstr "הקובץ נוצר עבור שקופית באותו גודל."
+
+#: src/transfer.rs:364
+msgid ""
+"The file does not say which slide it belongs to; coordinates are taken as "
+"level-0 pixels of this slide."
+msgstr ""
+"הקובץ אינו מציין לאיזו שקופית הוא שייך; הקואורדינטות נלקחות כפיקסלים ברמה 0 "
+"של שקופית זו."
+
+#: src/transfer.rs:376
+msgid "Annotations (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "סימונים (GeoJSON, eov JSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:386
+msgid "All files"
+msgstr "כל הקבצים"
+
+#: src/transfer.rs:398 src/transfer.rs:853 src/transfer.rs:1007
+msgid "Cannot show the file dialog"
+msgstr "לא ניתן להציג את תיבת הדו-שיח של הקבצים"
+
+#: src/transfer.rs:413
+msgid "The annotations of this slide are still loading."
+msgstr "הסימונים של שקופית זו עדיין בטעינה."
+
+#: src/transfer.rs:434
+msgid "Importing {}"
+msgstr "ייבוא {}"
+
+#. Translators: the step of an import that reads the file.
+#: src/transfer.rs:447
+msgid "Reading"
+msgstr "קריאה"
+
+#: src/transfer.rs:474
+msgid ""
+"NDP.view annotations, placed with this slide's offsets from the slide centre "
+"and its pixel size."
+msgstr ""
+"סימוני NDP.view, הממוקמים לפי ההיסטים של שקופית זו ממרכז השקופית ולפי גודל "
+"הפיקסל שלה."
+
+#: src/transfer.rs:486
+msgid "Checking the slide"
+msgstr "בדיקת השקופית"
+
+#: src/transfer.rs:489
+msgid "cannot read the slide to check the import: {}"
+msgstr "לא ניתן לקרוא את השקופית כדי לבדוק את הייבוא: {}"
+
+#: src/transfer.rs:494
+msgid "Made for this slide (checked by content)."
+msgstr "הקובץ נוצר עבור שקופית זו (נבדק לפי התוכן)."
+
+#: src/transfer.rs:497
+msgid "Made for a different slide (its checksum does not match)."
+msgstr "הקובץ נוצר עבור שקופית אחרת (סכום הביקורת שלה אינו תואם)."
+
+#: src/transfer.rs:521
+msgid "Import cancelled."
+msgstr "הייבוא בוטל."
+
+#: src/transfer.rs:522
+msgid "Could not import {}"
+msgstr "לא ניתן היה לייבא את {}"
+
+#. Translators: "Merge a database…" is the item of the Import and export
+#. menu: quote it as it is translated there.
+#: src/transfer.rs:560
+msgid ""
+"This archive has no annotations for the current slide. Restore whole backups "
+"with \"Merge a database…\"."
+msgstr ""
+"בארכיון זה אין סימונים לשקופית הנוכחית. לשחזור גיבויים שלמים יש להשתמש "
+"באפשרות \"מיזוג מסד נתונים…\"."
+
+#: src/transfer.rs:574
+msgid "Import {n} annotation"
+msgid_plural "Import {n} annotations"
+msgstr[0] "ייבוא סימון אחד"
+msgstr[1] "ייבוא {n} סימונים"
+
+#: src/transfer.rs:581
+msgid "The slide this import was started on is not open any more."
+msgstr "השקופית שבה התחיל הייבוא כבר אינה פתוחה."
+
+#: src/transfer.rs:737
+msgid "Imported {n} annotation from {file}."
+msgid_plural "Imported {n} annotations from {file}."
+msgstr[0] "יובא סימון אחד מהקובץ {file}."
+msgstr[1] "יובאו {n} סימונים מהקובץ {file}."
+
+#: src/transfer.rs:783 src/transfer.rs:818
+msgid "eov annotations"
+msgstr "סימוני eov"
+
+#: src/transfer.rs:811
+msgid "DICOM bulk annotations"
+msgstr "סימוני DICOM מסוג Bulk"
+
+#: src/transfer.rs:824
+msgid "Export a blinded copy for another reader"
+msgstr "ייצוא עותק סמוי לקורא אחר"
+
+#: src/transfer.rs:825
+msgid "Export annotations"
+msgstr "ייצוא סימונים"
+
+#: src/transfer.rs:942
+msgid "Exported {n} annotation to {file}."
+msgid_plural "Exported {n} annotations to {file}."
+msgstr[0] "יוצא סימון אחד לקובץ {file}."
+msgstr[1] "יוצאו {n} סימונים לקובץ {file}."
+
+#: src/transfer.rs:948
+msgid "Could not export to {}"
+msgstr "לא ניתן היה לייצא אל {}"
+
+#: src/transfer.rs:988
+msgid "Compare with another reader's annotations"
+msgstr "השוואה עם הסימונים של קורא אחר"
+
+#: src/transfer.rs:990
+msgid "Annotations (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+msgstr "סימונים (eov JSON, GeoJSON, ASAP / ImageScope XML, NDPA, DICOM)"
+
+#: src/transfer.rs:1114
+msgid "Could not compare with {}"
+msgstr "לא ניתן היה להשוות עם {}"
+
+#: src/transfer.rs:1123
+msgid "Exporting all annotations"
+msgstr "ייצוא כל הסימונים"
+
+#: src/transfer.rs:1176
+msgid "Exported the annotations of {n} slide."
+msgid_plural "Exported the annotations of {n} slides."
+msgstr[0] "יוצאו הסימונים של שקופית אחת."
+msgstr[1] "יוצאו הסימונים של {n} שקופיות."
+
+#: src/transfer.rs:1184
+msgid "Could not export all annotations"
+msgstr "לא ניתן היה לייצא את כל הסימונים"
+
+#: src/transfer.rs:1201
+msgid "Annotation database backed up."
+msgstr "גיבוי מסד נתוני הסימונים הושלם."
+
+#: src/transfer.rs:1203
+msgid "Could not back up the annotation database"
+msgstr "לא ניתן היה לגבות את מסד נתוני הסימונים"
+
+#: src/transfer.rs:1217
+msgid "Merging annotation database"
+msgstr "מיזוג מסד נתוני הסימונים"
+
+#. Translators: {layers} is "in 1 layer" or "in 3 layers", {slides}
+#. is "1 new slide" or "3 new slides" (each translated on its own).
+#: src/transfer.rs:1232
+msgid "Merged {n} annotation {layers} ({slides})."
+msgid_plural "Merged {n} annotations {layers} ({slides})."
+msgstr[0] "מוזג סימון אחד {layers} ({slides})."
+msgstr[1] "מוזגו {n} סימונים {layers} ({slides})."
+
+#. Translators: {slides} in "Merged {n} annotations {layers} ({slides})."
+#: src/transfer.rs:1237
+msgid "{n} new slide"
+msgid_plural "{n} new slides"
+msgstr[0] "שקופית חדשה אחת"
+msgstr[1] "‏{n} שקופיות חדשות"
+
+#: src/transfer.rs:1249
+msgid "Could not merge the database"
+msgstr "לא ניתן היה למזג את מסד הנתונים"
+
+#. Translators: read out for the layer new annotations go into; {} is its
+#. number of annotations.
+#: ui/annotations-sidebar.slint:115
+msgctxt "TreeItem"
+msgid "{} · new annotations go here"
+msgstr "‏{} · סימונים חדשים נוספים לכאן"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Collapse layer"
+msgstr "כיווץ השכבה"
+
+#: ui/annotations-sidebar.slint:160
+msgctxt "TreeItem"
+msgid "Expand layer"
+msgstr "הרחבת השכבה"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Hide layer"
+msgstr "הסתרת השכבה"
+
+#: ui/annotations-sidebar.slint:203
+msgctxt "TreeItem"
+msgid "Show layer"
+msgstr "הצגת השכבה"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Lock layer"
+msgstr "נעילת השכבה"
+
+#: ui/annotations-sidebar.slint:212
+msgctxt "TreeItem"
+msgid "Unlock layer"
+msgstr "ביטול נעילת השכבה"
+
+#: ui/annotations-sidebar.slint:222
+msgctxt "TreeItem"
+msgid "Layer settings"
+msgstr "הגדרות השכבה"
+
+#: ui/annotations-sidebar.slint:292
+msgctxt "TreeItem"
+msgid "Locked"
+msgstr "נעול"
+
+#: ui/annotations-sidebar.slint:314
+msgctxt "AnnotationsSidebar"
+msgid "No slide open"
+msgstr "אין שקופית פתוחה"
+
+#: ui/annotations-sidebar.slint:321
+msgctxt "AnnotationsSidebar"
+msgid "Unclassified"
+msgstr "ללא קטגוריה"
+
+#: ui/annotations-sidebar.slint:488
+msgctxt "AnnotationsSidebar"
+msgid "Import annotations…"
+msgstr "ייבוא סימונים…"
+
+#: ui/annotations-sidebar.slint:489
+msgctxt "AnnotationsSidebar"
+msgid "Export as GeoJSON (QuPath)…"
+msgstr "ייצוא כ-GeoJSON (QuPath)…"
+
+#: ui/annotations-sidebar.slint:490
+msgctxt "AnnotationsSidebar"
+msgid "Export as eov JSON…"
+msgstr "ייצוא כ-eov JSON…"
+
+#: ui/annotations-sidebar.slint:491
+msgctxt "AnnotationsSidebar"
+msgid "Export as ASAP XML…"
+msgstr "ייצוא כ-ASAP XML…"
+
+#: ui/annotations-sidebar.slint:492
+msgctxt "AnnotationsSidebar"
+msgid "Export as ImageScope XML…"
+msgstr "ייצוא כ-ImageScope XML…"
+
+#: ui/annotations-sidebar.slint:493
+msgctxt "AnnotationsSidebar"
+msgid "Export as DICOM annotations…"
+msgstr "ייצוא כסימוני DICOM…"
+
+#: ui/annotations-sidebar.slint:494
+msgctxt "AnnotationsSidebar"
+msgid "Export measurements (CSV)…"
+msgstr "ייצוא מדידות (CSV)…"
+
+#: ui/annotations-sidebar.slint:495
+msgctxt "AnnotationsSidebar"
+msgid "Export a blinded copy…"
+msgstr "ייצוא עותק סמוי…"
+
+#: ui/annotations-sidebar.slint:496
+msgctxt "AnnotationsSidebar"
+msgid "Compare with another reader…"
+msgstr "השוואה עם קורא אחר…"
+
+#. Translators: exports the annotations of every slide in the database to one
+#. annotation archive (a JSON file), not the slide images.
+#: ui/annotations-sidebar.slint:497 ui/annotations-sidebar.slint:1986
+msgctxt "AnnotationsSidebar"
+msgid "Export all slides…"
+msgstr "ייצוא כל השקופיות…"
+
+#: ui/annotations-sidebar.slint:498
+msgctxt "AnnotationsSidebar"
+msgid "Back up the database…"
+msgstr "גיבוי מסד הנתונים…"
+
+#: ui/annotations-sidebar.slint:499
+msgctxt "AnnotationsSidebar"
+msgid "Merge a database…"
+msgstr "מיזוג מסד נתונים…"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field area"
+msgstr "שטח השדה"
+
+#: ui/annotations-sidebar.slint:516
+msgctxt "AnnotationsSidebar"
+msgid "Field number and objective"
+msgstr "מספר שדה ועדשה אובייקטיבית"
+
+#: ui/annotations-sidebar.slint:600
+msgctxt "AnnotationsSidebar"
+msgid "Annotations"
+msgstr "סימונים"
+
+#: ui/annotations-sidebar.slint:635
+msgctxt "AnnotationsSidebar"
+msgid "Import and export"
+msgstr "ייבוא וייצוא"
+
+#: ui/annotations-sidebar.slint:668
+msgctxt "AnnotationsSidebar"
+msgid "Retry"
+msgstr "ניסיון חוזר"
+
+#: ui/annotations-sidebar.slint:683
+msgctxt "AnnotationsSidebar"
+msgid "Layers"
+msgstr "שכבות"
+
+#: ui/annotations-sidebar.slint:691
+msgctxt "AnnotationsSidebar"
+msgid "Classes"
+msgstr "קטגוריות"
+
+#. Translators: the tab for counting cells.
+#: ui/annotations-sidebar.slint:700
+msgctxt "AnnotationsSidebar"
+msgid "Count"
+msgstr "ספירה"
+
+#: ui/annotations-sidebar.slint:708
+msgctxt "AnnotationsSidebar"
+msgid "Data"
+msgstr "נתונים"
+
+#: ui/annotations-sidebar.slint:747
+msgctxt "AnnotationsSidebar"
+msgid "Filter by name, class, kind or status"
+msgstr "סינון לפי שם, קטגוריה, סוג או סטטוס"
+
+#: ui/annotations-sidebar.slint:769
+msgctxt "AnnotationsSidebar"
+msgid "Filter annotations"
+msgstr "סינון סימונים"
+
+#: ui/annotations-sidebar.slint:786
+msgctxt "AnnotationsSidebar"
+msgid "New layer"
+msgstr "שכבה חדשה"
+
+#: ui/annotations-sidebar.slint:870 ui/annotations-sidebar.slint:1079
+#: ui/annotations-sidebar.slint:1500
+msgctxt "AnnotationsSidebar"
+msgid "Name"
+msgstr "שם"
+
+#: ui/annotations-sidebar.slint:876 ui/annotations-sidebar.slint:878
+msgctxt "AnnotationsSidebar"
+msgid "Layer name"
+msgstr "שם השכבה"
+
+#: ui/annotations-sidebar.slint:889
+msgctxt "AnnotationsSidebar"
+msgid "Colour"
+msgstr "צבע"
+
+#: ui/annotations-sidebar.slint:898
+msgctxt "AnnotationsSidebar"
+msgid "Layer colour"
+msgstr "צבע השכבה"
+
+#: ui/annotations-sidebar.slint:906 ui/annotations-sidebar.slint:1518
+msgctxt "AnnotationsSidebar"
+msgid "Opacity"
+msgstr "אטימות"
+
+#: ui/annotations-sidebar.slint:912
+msgctxt "AnnotationsSidebar"
+msgid "Layer opacity"
+msgstr "אטימות השכבה"
+
+#: ui/annotations-sidebar.slint:923 ui/annotations-sidebar.slint:1162
+msgctxt "AnnotationsSidebar"
+msgid "Notes"
+msgstr "הערות"
+
+#: ui/annotations-sidebar.slint:931
+msgctxt "AnnotationsSidebar"
+msgid "Notes about this layer"
+msgstr "הערות על שכבה זו"
+
+#: ui/annotations-sidebar.slint:933
+msgctxt "AnnotationsSidebar"
+msgid "Layer notes"
+msgstr "הערות השכבה"
+
+#: ui/annotations-sidebar.slint:941
+msgctxt "AnnotationsSidebar"
+msgid "Draw into this layer"
+msgstr "שרטוט בשכבה זו"
+
+#: ui/annotations-sidebar.slint:942
+msgctxt "AnnotationsSidebar"
+msgid "Delete layer…"
+msgstr "מחיקת השכבה…"
+
+#: ui/annotations-sidebar.slint:1020
+msgctxt "AnnotationsSidebar"
+msgid "Zoom to the annotation"
+msgstr "זום לסימון"
+
+#: ui/annotations-sidebar.slint:1028
+msgctxt "AnnotationsSidebar"
+msgid "Copy measurements"
+msgstr "העתקת המדידות"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the annotation"
+msgstr "מחיקת הסימון"
+
+#: ui/annotations-sidebar.slint:1036
+msgctxt "AnnotationsSidebar"
+msgid "Delete the selected annotations"
+msgstr "מחיקת הסימונים הנבחרים"
+
+#: ui/annotations-sidebar.slint:1065
+msgctxt "AnnotationsSidebar"
+msgid "Repair"
+msgstr "תיקון"
+
+#: ui/annotations-sidebar.slint:1085
+msgctxt "AnnotationsSidebar"
+msgid "Unnamed"
+msgstr "ללא שם"
+
+#: ui/annotations-sidebar.slint:1087
+msgctxt "AnnotationsSidebar"
+msgid "Annotation name"
+msgstr "שם הסימון"
+
+#: ui/annotations-sidebar.slint:1098
+msgctxt "AnnotationsSidebar"
+msgid "Class"
+msgstr "קטגוריה"
+
+#: ui/annotations-sidebar.slint:1104
+msgctxt "AnnotationsSidebar"
+msgid "Annotation class"
+msgstr "קטגוריית הסימון"
+
+#: ui/annotations-sidebar.slint:1115
+msgctxt "AnnotationsSidebar"
+msgid "Status"
+msgstr "סטטוס"
+
+#: ui/annotations-sidebar.slint:1121
+msgctxt "AnnotationsSidebar"
+msgid "Review status"
+msgstr "סטטוס סקירה"
+
+#: ui/annotations-sidebar.slint:1132
+msgctxt "AnnotationsSidebar"
+msgid "Layer"
+msgstr "שכבה"
+
+#: ui/annotations-sidebar.slint:1138
+msgctxt "AnnotationsSidebar"
+msgid "Annotation layer"
+msgstr "שכבת הסימון"
+
+#: ui/annotations-sidebar.slint:1149
+msgctxt "AnnotationsSidebar"
+msgid "Locked"
+msgstr "נעול"
+
+#: ui/annotations-sidebar.slint:1170 ui/annotations-sidebar.slint:1172
+msgctxt "AnnotationsSidebar"
+msgid "Description"
+msgstr "תיאור"
+
+#: ui/annotations-sidebar.slint:1183
+msgctxt "AnnotationsSidebar"
+msgid "MEASUREMENTS"
+msgstr "מדידות"
+
+#: ui/annotations-sidebar.slint:1213
+msgctxt "AnnotationsSidebar"
+msgid "PROPERTIES"
+msgstr "מאפיינים"
+
+#: ui/annotations-sidebar.slint:1224
+msgctxt "AnnotationsSidebar"
+msgid "Property name"
+msgstr "שם המאפיין"
+
+#: ui/annotations-sidebar.slint:1233
+msgctxt "AnnotationsSidebar"
+msgid "Value"
+msgstr "ערך"
+
+#: ui/annotations-sidebar.slint:1235
+msgctxt "AnnotationsSidebar"
+msgid "Property value"
+msgstr "ערך המאפיין"
+
+#: ui/annotations-sidebar.slint:1243
+msgctxt "AnnotationsSidebar"
+msgid "Remove property"
+msgstr "הסרת המאפיין"
+
+#: ui/annotations-sidebar.slint:1255
+msgctxt "AnnotationsSidebar"
+msgid "Add property"
+msgstr "הוספת מאפיין"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS"
+msgstr "הערות"
+
+#: ui/annotations-sidebar.slint:1268
+msgctxt "AnnotationsSidebar"
+msgid "COMMENTS ({})"
+msgstr "הערות ({})"
+
+#: ui/annotations-sidebar.slint:1294
+msgctxt "AnnotationsSidebar"
+msgid "Delete comment"
+msgstr "מחיקת ההערה"
+
+#: ui/annotations-sidebar.slint:1314
+msgctxt "AnnotationsSidebar"
+msgid "Add a comment"
+msgstr "הוספת הערה"
+
+#: ui/annotations-sidebar.slint:1316
+msgctxt "AnnotationsSidebar"
+msgid "New comment"
+msgstr "הערה חדשה"
+
+#. Translators: a button that adds the comment typed above.
+#: ui/annotations-sidebar.slint:1324
+msgctxt "AnnotationsSidebar"
+msgid "Comment"
+msgstr "הוספה"
+
+#: ui/annotations-sidebar.slint:1358
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Select an annotation on the slide or in the list to see its details. Double-"
+"click a row to zoom to it; Ctrl+click selects several."
+msgstr ""
+"יש לבחור סימון בשקופית או ברשימה כדי לראות את פרטיו. לחיצה כפולה על שורה "
+"מבצעת זום לסימון; לחיצה עם Ctrl בוחרת כמה סימונים."
+
+#: ui/annotations-sidebar.slint:1379
+msgctxt "AnnotationsSidebar"
+msgid ""
+"New annotations get the active class (●), and the Count tool counts it; "
+"Shift+click counts the second class (◐). Pressing a class's hotkey makes it "
+"active."
+msgstr ""
+"סימונים חדשים מקבלים את הקטגוריה הפעילה (●), וכלי הספירה סופר אותה; לחיצה עם "
+"Shift סופרת את הקטגוריה השנייה (◐). הקשה על מקש הקיצור של קטגוריה הופכת אותה "
+"לפעילה."
+
+#: ui/annotations-sidebar.slint:1418
+msgctxt "AnnotationsSidebar"
+msgid "Colour of {}"
+msgstr "הצבע של {}"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Hide {}"
+msgstr "הסתרת {}"
+
+#: ui/annotations-sidebar.slint:1457
+msgctxt "AnnotationsSidebar"
+msgid "Show {}"
+msgstr "הצגת {}"
+
+#: ui/annotations-sidebar.slint:1466
+msgctxt "AnnotationsSidebar"
+msgid "Class settings"
+msgstr "הגדרות הקטגוריה"
+
+#: ui/annotations-sidebar.slint:1506 ui/annotations-sidebar.slint:1507
+msgctxt "AnnotationsSidebar"
+msgid "Class name"
+msgstr "שם הקטגוריה"
+
+#: ui/annotations-sidebar.slint:1523
+msgctxt "AnnotationsSidebar"
+msgid "Class opacity"
+msgstr "אטימות הקטגוריה"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Count with Shift+click"
+msgstr "ספירה בלחיצה עם Shift"
+
+#: ui/annotations-sidebar.slint:1534
+msgctxt "AnnotationsSidebar"
+msgid "Stop counting with Shift+click"
+msgstr "הפסקת הספירה בלחיצה עם Shift"
+
+#: ui/annotations-sidebar.slint:1539
+msgctxt "AnnotationsSidebar"
+msgid "Delete…"
+msgstr "מחיקה…"
+
+#: ui/annotations-sidebar.slint:1558
+msgctxt "AnnotationsSidebar"
+msgid "New class"
+msgstr "קטגוריה חדשה"
+
+#: ui/annotations-sidebar.slint:1596
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Pick the Count tool (C) and click cells; Shift+click and Alt+click count the "
+"second and third class. Select regions or HPF fields to count inside them."
+msgstr ""
+"יש לבחור את כלי הספירה (C) וללחוץ על תאים; לחיצה עם Shift ולחיצה עם Alt "
+"סופרות את הקטגוריה השנייה והשלישית. ניתן לבחור אזורים או שדות HPF כדי לספור "
+"בתוכם."
+
+#: ui/annotations-sidebar.slint:1601
+msgctxt "AnnotationsSidebar"
+msgid "Count tool (C)"
+msgstr "כלי הספירה (C)"
+
+#: ui/annotations-sidebar.slint:1602
+msgctxt "AnnotationsSidebar"
+msgid "HPF field (H)"
+msgstr "שדה HPF (H)"
+
+#. Translators: the class a click with the Count tool counts.
+#: ui/annotations-sidebar.slint:1614
+msgctxt "AnnotationsSidebar"
+msgid "Click"
+msgstr "לחיצה"
+
+#: ui/annotations-sidebar.slint:1620
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by a click"
+msgstr "הקטגוריה הנספרת בלחיצה"
+
+#: ui/annotations-sidebar.slint:1631
+msgctxt "AnnotationsSidebar"
+msgid "Shift+click"
+msgstr "לחיצה עם Shift"
+
+#: ui/annotations-sidebar.slint:1636
+msgctxt "AnnotationsSidebar"
+msgid "(same as click)"
+msgstr "(כמו לחיצה)"
+
+#: ui/annotations-sidebar.slint:1637
+msgctxt "AnnotationsSidebar"
+msgid "Class counted by Shift+click"
+msgstr "הקטגוריה הנספרת בלחיצה עם Shift"
+
+#: ui/annotations-sidebar.slint:1648
+msgctxt "AnnotationsSidebar"
+msgid "Alt+click"
+msgstr "לחיצה עם Alt"
+
+#: ui/annotations-sidebar.slint:1653
+msgctxt "AnnotationsSidebar"
+msgid "(none)"
+msgstr "(ללא)"
+
+#: ui/annotations-sidebar.slint:1654
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Class counted by Alt+click: PD-L1-positive immune cells for the combined "
+"positive score"
+msgstr ""
+"הקטגוריה הנספרת בלחיצה עם Alt: תאי מערכת החיסון החיוביים ל-PD-L1, לחישוב "
+"ציון החיוביות המשולב (CPS)"
+
+#: ui/annotations-sidebar.slint:1662
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Combined positive score: the click and Alt+click classes (PD-L1-positive "
+"tumour cells and PD-L1-positive immune cells) per 100 tumour cells (the "
+"click and Shift+click classes)."
+msgstr ""
+"ציון החיוביות המשולב (CPS): הקטגוריות של לחיצה ושל לחיצה עם Alt (תאי גידול "
+"חיוביים ל-PD-L1 ותאי מערכת החיסון החיוביים ל-PD-L1) ל-100 תאי גידול "
+"(הקטגוריות של לחיצה ושל לחיצה עם Shift)."
+
+#: ui/annotations-sidebar.slint:1677
+msgctxt "AnnotationsSidebar"
+msgid "Nothing counted here yet."
+msgstr "עדיין לא נספר דבר כאן."
+
+#: ui/annotations-sidebar.slint:1748
+msgctxt "AnnotationsSidebar"
+msgid "Count points in hidden layers"
+msgstr "ספירת נקודות בשכבות מוסתרות"
+
+#: ui/annotations-sidebar.slint:1759
+msgctxt "AnnotationsSidebar"
+msgid "Clear counts…"
+msgstr "ניקוי הספירות…"
+
+#: ui/annotations-sidebar.slint:1771
+msgctxt "AnnotationsSidebar"
+msgid "HIGH-POWER FIELDS"
+msgstr "שדות בהגדלה גבוהה"
+
+#: ui/annotations-sidebar.slint:1785
+msgctxt "AnnotationsSidebar"
+msgid "How the field size is given"
+msgstr "אופן קביעת גודל השדה"
+
+#. Translators: FN is the eyepiece's field number, the diameter of the field
+#. of view.
+#: ui/annotations-sidebar.slint:1796
+msgctxt "AnnotationsSidebar"
+msgid "FN (mm)"
+msgstr "FN (mm)"
+
+#: ui/annotations-sidebar.slint:1803
+msgctxt "AnnotationsSidebar"
+msgid "Field number in mm"
+msgstr "מספר השדה ב-mm"
+
+#. Translators: the magnification of the objective, as in 40×.
+#: ui/annotations-sidebar.slint:1811
+msgctxt "AnnotationsSidebar"
+msgid "Objective ×"
+msgstr "אובייקטיב ×"
+
+#: ui/annotations-sidebar.slint:1821
+msgctxt "AnnotationsSidebar"
+msgid "Objective magnification"
+msgstr "הגדלת העדשה האובייקטיבית"
+
+#: ui/annotations-sidebar.slint:1828 ui/annotations-sidebar.slint:1853
+msgctxt "AnnotationsSidebar"
+msgid "Apply"
+msgstr "החלה"
+
+#: ui/annotations-sidebar.slint:1839
+msgctxt "AnnotationsSidebar"
+msgid "Area (mm²)"
+msgstr "שטח (mm²)"
+
+#: ui/annotations-sidebar.slint:1846
+msgctxt "AnnotationsSidebar"
+msgid "Field area in square millimetres"
+msgstr "שטח השדה במילימטרים רבועים"
+
+#: ui/annotations-sidebar.slint:1873
+msgctxt "AnnotationsSidebar"
+msgid "{n} field placed on this slide."
+msgid_plural "{n} fields placed on this slide."
+msgstr[0] "שדה אחד הוצב בשקופית זו."
+msgstr[1] "‏{n} שדות הוצבו בשקופית זו."
+
+#: ui/annotations-sidebar.slint:1885
+msgctxt "AnnotationsSidebar"
+msgid "Select all fields"
+msgstr "בחירת כל השדות"
+
+#: ui/annotations-sidebar.slint:1924
+msgctxt "AnnotationsSidebar"
+msgid "IMPORT AND EXPORT"
+msgstr "ייבוא וייצוא"
+
+#: ui/annotations-sidebar.slint:1928
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Imports: GeoJSON (QuPath and others), eov JSON, ASAP XML, Aperio ImageScope "
+"XML, Hamamatsu NDPA and DICOM bulk annotations. Coordinates are level-0 "
+"pixels with y pointing down."
+msgstr ""
+"ייבוא: GeoJSON (QuPath ואחרים), eov JSON, ASAP XML, Aperio ImageScope XML, "
+"Hamamatsu NDPA וסימוני DICOM מסוג Bulk. הקואורדינטות הן פיקסלים ברמה 0, וציר "
+"y מכוון כלפי מטה."
+
+#: ui/annotations-sidebar.slint:1935
+msgctxt "AnnotationsSidebar"
+msgid "Import…"
+msgstr "ייבוא…"
+
+#: ui/annotations-sidebar.slint:1991
+msgctxt "AnnotationsSidebar"
+msgid "Back up…"
+msgstr "גיבוי…"
+
+#: ui/annotations-sidebar.slint:1992
+msgctxt "AnnotationsSidebar"
+msgid "Merge…"
+msgstr "מיזוג…"
+
+#. Translators: a reader is a person who annotates slides; a second reader
+#. annotates a blinded copy independently so two readers can be compared (as
+#. in a reader study); use the word for an observer or annotator, not the
+#. clinical term for a second diagnostic opinion.
+#: ui/annotations-sidebar.slint:2009
+msgctxt "AnnotationsSidebar"
+msgid "SECOND READER"
+msgstr "קורא שני"
+
+#: ui/annotations-sidebar.slint:2013
+msgctxt "AnnotationsSidebar"
+msgid ""
+"A blinded copy holds the visible layers' shapes, classes and names, without "
+"authors, comments, statuses, descriptions or properties. Compare reads "
+"another reader's export and compares it with the visible layers: counts per "
+"class, matched points and overlapping regions."
+msgstr ""
+"עותק סמוי מכיל את הצורות, הקטגוריות והשמות של השכבות הגלויות, ללא מחברים, "
+"הערות, סטטוסים, תיאורים או מאפיינים. \"השוואה\" קוראת ייצוא של קורא אחר "
+"ומשווה אותו לשכבות הגלויות: ספירות לפי קטגוריה, נקודות תואמות ואזורים חופפים."
+
+#: ui/annotations-sidebar.slint:2018
+msgctxt "AnnotationsSidebar"
+msgid "Blinded copy…"
+msgstr "עותק סמוי…"
+
+#: ui/annotations-sidebar.slint:2019
+msgctxt "AnnotationsSidebar"
+msgid "Compare…"
+msgstr "השוואה…"
+
+#. Translators: a button: compare with the same file again.
+#: ui/annotations-sidebar.slint:2022
+msgctxt "AnnotationsSidebar"
+msgid "Again"
+msgstr "שוב"
+
+#. Translators: a button: remove the comparison.
+#: ui/annotations-sidebar.slint:2029
+msgctxt "AnnotationsSidebar"
+msgid "Clear"
+msgstr "ניקוי"
+
+#: ui/annotations-sidebar.slint:2066
+msgctxt "AnnotationsSidebar"
+msgid "Neither reader has points or regions in the compared layers."
+msgstr "לאף אחד מהקוראים אין נקודות או אזורים בשכבות שהושוו."
+
+#: ui/annotations-sidebar.slint:2126
+msgctxt "AnnotationsSidebar"
+msgid "DATABASE"
+msgstr "מסד נתונים"
+
+#: ui/annotations-sidebar.slint:2150
+msgctxt "AnnotationsSidebar"
+msgid "Database file"
+msgstr "קובץ מסד הנתונים"
+
+#. Translators: {} is the path of the old database file.
+#: ui/annotations-sidebar.slint:2167
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Annotations made with eov before 1.0 are in {}. Bring them into this "
+"database (the old file is not changed):"
+msgstr ""
+"סימונים שנוצרו בגרסאות eov שלפני 1.0 נמצאים בנתיב {}. ניתן לייבא אותם למסד "
+"נתונים זה (הקובץ הישן לא ישתנה):"
+
+#: ui/annotations-sidebar.slint:2179
+msgctxt "AnnotationsSidebar"
+msgid "Bring them in"
+msgstr "ייבוא הסימונים"
+
+#: ui/annotations-sidebar.slint:2195
+msgctxt "AnnotationsSidebar"
+msgid "OTHER SLIDES"
+msgstr "שקופיות אחרות"
+
+#. Translators: a button that lists the other slides in the database.
+#: ui/annotations-sidebar.slint:2202
+msgctxt "AnnotationsSidebar"
+msgid "List"
+msgstr "הצגת רשימה"
+
+#. Translators: a button: attach the annotations of this slide to the open
+#. slide.
+#: ui/annotations-sidebar.slint:2236
+msgctxt "AnnotationsSidebar"
+msgid "Attach"
+msgstr "צירוף"
+
+#: ui/annotations-sidebar.slint:2258
+msgctxt "AnnotationsSidebar"
+msgid "AUTHOR AND EXPORTS"
+msgstr "מחבר וייצוא"
+
+#: ui/annotations-sidebar.slint:2265 ui/annotations-sidebar.slint:2273
+msgctxt "AnnotationsSidebar"
+msgid "Author"
+msgstr "מחבר"
+
+#: ui/annotations-sidebar.slint:2272
+msgctxt "AnnotationsSidebar"
+msgid "Your name or initials"
+msgstr "השם או ראשי התיבות שלך"
+
+#: ui/annotations-sidebar.slint:2284 ui/annotations-sidebar.slint:2291
+msgctxt "AnnotationsSidebar"
+msgid "Organization"
+msgstr "ארגון"
+
+#: ui/annotations-sidebar.slint:2302 ui/annotations-sidebar.slint:2309
+msgctxt "AnnotationsSidebar"
+msgid "Project"
+msgstr "פרויקט"
+
+#: ui/annotations-sidebar.slint:2320 ui/annotations-sidebar.slint:2328
+msgctxt "AnnotationsSidebar"
+msgid "License"
+msgstr "רישיון"
+
+#: ui/annotations-sidebar.slint:2327
+msgctxt "AnnotationsSidebar"
+msgid "e.g. CC-BY-4.0"
+msgstr "למשל CC-BY-4.0"
+
+#: ui/annotations-sidebar.slint:2336
+msgctxt "AnnotationsSidebar"
+msgid "Include the slide's file name in exports"
+msgstr "הכללת שם קובץ השקופית בקובצי הייצוא"
+
+#: ui/annotations-sidebar.slint:2346
+msgctxt "AnnotationsSidebar"
+msgid "DISPLAY"
+msgstr "תצוגה"
+
+#: ui/annotations-sidebar.slint:2350
+msgctxt "AnnotationsSidebar"
+msgid "Show names on the slide"
+msgstr "הצגת שמות על השקופית"
+
+#: ui/annotations-sidebar.slint:2361 ui/annotations-sidebar.slint:2369
+msgctxt "AnnotationsSidebar"
+msgid "Point size"
+msgstr "גודל נקודה"
+
+#: ui/annotations-sidebar.slint:2380 ui/annotations-sidebar.slint:2386
+msgctxt "AnnotationsSidebar"
+msgid "Fill opacity"
+msgstr "אטימות המילוי"
+
+#. Translators: S is the brush tool's key.
+#: ui/annotations-sidebar.slint:2397
+msgctxt "AnnotationsSidebar"
+msgid "BRUSH (S)"
+msgstr "מברשת (S)"
+
+#. Translators: the size of the brush.
+#: ui/annotations-sidebar.slint:2405
+msgctxt "AnnotationsSidebar"
+msgid "Size"
+msgstr "גודל"
+
+#: ui/annotations-sidebar.slint:2413
+msgctxt "AnnotationsSidebar"
+msgid "Brush size"
+msgstr "גודל המברשת"
+
+#: ui/annotations-sidebar.slint:2429
+msgctxt "AnnotationsSidebar"
+msgid "Erase from the selected region"
+msgstr "מחיקה מהאזור הנבחר"
+
+#: ui/annotations-sidebar.slint:2437
+msgctxt "AnnotationsSidebar"
+msgid ""
+"Paint over a selected region to extend it, elsewhere to make a new one. Hold "
+"Alt to erase; [ and ] change the size."
+msgstr ""
+"צביעה מעל אזור נבחר מרחיבה אותו, וצביעה במקום אחר יוצרת אזור חדש. החזקת Alt "
+"מוחקת; המקשים ⁨]⁩ ו-⁨[⁩ משנים את הגודל."
+
+#: ui/annotations-sidebar.slint:2557
+msgctxt "AnnotationsSidebar"
+msgid "Colours"
+msgstr "צבעים"
+
+#: ui/import-dialog.slint:117 ui/import-dialog.slint:124
+msgctxt "ImportDialog"
+msgid "Import annotations"
+msgstr "ייבוא סימונים"
+
+#: ui/import-dialog.slint:186
+msgctxt "ImportDialog"
+msgid "NOTES"
+msgstr "הערות"
+
+#: ui/import-dialog.slint:214
+msgctxt "ImportDialog"
+msgid "Add to the existing layers"
+msgstr "הוספה לשכבות הקיימות"
+
+#: ui/import-dialog.slint:215
+msgctxt "ImportDialog"
+msgid "Imported annotations join the layer with the same name."
+msgstr "הסימונים המיובאים מצטרפים לשכבה בעלת אותו שם."
+
+#: ui/import-dialog.slint:223
+msgctxt "ImportDialog"
+msgid "Replace the existing layers"
+msgstr "החלפת השכבות הקיימות"
+
+#: ui/import-dialog.slint:224
+msgctxt "ImportDialog"
+msgid "The existing layers are deleted (this can be undone)."
+msgstr "השכבות הקיימות נמחקות (ניתן לבטל זאת)."
+
+#: ui/import-dialog.slint:232
+msgctxt "ImportDialog"
+msgid "Keep both"
+msgstr "שמירת שתיהן"
+
+#. Translators: "Tumour" is only an example of a layer name from the imported
+#. file: translate it, and keep the " (2)" that eov adds.
+#: ui/import-dialog.slint:234
+msgctxt "ImportDialog"
+msgid "Imported layers get a new name, such as \"Tumour (2)\"."
+msgstr "השכבות המיובאות מקבלות שם חדש, כגון \"Tumour (2)\"."
+
+#: ui/import-dialog.slint:243
+msgctxt "ImportDialog"
+msgid "The import is one step: Ctrl+Z (⌘Z) removes everything it added."
+msgstr "הייבוא הוא פעולה אחת: Ctrl+Z (⌘Z) מסיר את כל מה שנוסף בו."
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Cancel"
+msgstr "ביטול"
+
+#: ui/import-dialog.slint:266
+msgctxt "ImportDialog"
+msgid "Close"
+msgstr "סגירה"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import"
+msgstr "ייבוא"
+
+#: ui/import-dialog.slint:273
+msgctxt "ImportDialog"
+msgid "Import anyway"
+msgstr "ייבוא בכל זאת"
+
+#: ui/widgets.slint:655
+msgctxt "Swatch"
+msgid "Change colour"
+msgstr "שינוי צבע"
+
+#: ui/widgets.slint:694
+msgctxt "KeyField"
+msgid "Hotkey"
+msgstr "מקש קיצור"
+
+#: ui/widgets.slint:696
+msgctxt "KeyField"
+msgid "Click, then press a key. Backspace removes the hotkey."
+msgstr "יש ללחוץ כאן ואז להקיש על מקש. Backspace מסיר את מקש הקיצור."

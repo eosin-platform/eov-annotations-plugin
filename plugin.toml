@@ -14,3 +14,7 @@ data = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="#c
 
 [ui]
 slint = ">=1.19"
+
+[i18n]
+# translations/<tag>/LC_MESSAGES/annotations.po (the domain is the id)
+catalogs = "translations"

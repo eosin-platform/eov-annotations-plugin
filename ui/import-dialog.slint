@@ -3,6 +3,10 @@
 // names already exist. Nothing is written until "Import" is pressed.
 
 import { Theme } from "theme.slint";
+import { Locale } from "locale.slint";
+
+// For tools/ui-check, which checks that `eov-rtl` reaches it.
+export { Locale }
 import { TextButton, SectionTitle, Hint, Separator, ScrollBar } from "widgets.slint";
 
 component Choice inherits Rectangle {
@@ -60,6 +64,7 @@ component Choice inherits Rectangle {
                 text: root.text;
                 font-size: Theme.font-size;
                 color: Theme.text-primary;
+                horizontal-alignment: Locale.start;
                 horizontal-stretch: 1;
             }
         }
@@ -73,6 +78,7 @@ component Choice inherits Rectangle {
                 text: root.detail;
                 font-size: Theme.small-font-size;
                 color: Theme.text-secondary;
+                horizontal-alignment: Locale.start;
                 wrap: word-wrap;
                 height: self.preferred-height;
             }
@@ -89,6 +95,13 @@ export component ImportDialog inherits Rectangle {
     in property <string> conflicts;
     // Why nothing can be imported ("" when the file can be).
     in property <string> blocked;
+    // Set by eov: the interface is written from right to left.
+    in-out property <bool> eov-rtl <=> Locale.rtl;
+    // Set by eov: the language of the interface (a tag such as "pt-BR").
+    in property <string> eov-language;
+    changed eov-language => {
+        Locale.language = root.eov-language;
+    }
 
     // 0 merge, 1 replace, 2 keep both
     callback import-confirm(int /* strategy */);
@@ -101,17 +114,18 @@ export component ImportDialog inherits Rectangle {
     border-width: 1px;
     border-color: Theme.border;
     accessible-role: groupbox;
-    accessible-label: "Import annotations";
+    accessible-label: @tr("Import annotations");
 
     VerticalLayout {
         padding: 16px;
         spacing: 10px;
 
         Text {
-            text: "Import annotations";
+            text: @tr("Import annotations");
             font-size: 15px;
             font-weight: 600;
             color: Theme.text-primary;
+            horizontal-alignment: Locale.start;
         }
 
         Rectangle {
@@ -133,6 +147,7 @@ export component ImportDialog inherits Rectangle {
                         text: root.source;
                         font-size: Theme.font-size;
                         color: Theme.text-primary;
+                        horizontal-alignment: Locale.start;
                         wrap: word-wrap;
                         height: self.preferred-height;
                     }
@@ -141,6 +156,7 @@ export component ImportDialog inherits Rectangle {
                         text: root.summary;
                         font-size: Theme.font-size;
                         color: Theme.text-secondary;
+                        horizontal-alignment: Locale.start;
                         wrap: word-wrap;
                         height: self.preferred-height;
                     }
@@ -156,6 +172,7 @@ export component ImportDialog inherits Rectangle {
                                 text: root.match-text;
                                 font-size: Theme.font-size;
                                 color: root.mismatch ? #ffd88a : Theme.text-primary;
+                                horizontal-alignment: Locale.start;
                                 wrap: word-wrap;
                                 height: self.preferred-height;
                             }
@@ -166,13 +183,14 @@ export component ImportDialog inherits Rectangle {
                         spacing: 4px;
 
                         SectionTitle {
-                            text: "NOTES";
+                            text: @tr("NOTES");
                         }
 
                         Text {
                             text: root.notes;
                             font-size: Theme.small-font-size;
                             color: Theme.text-secondary;
+                            horizontal-alignment: Locale.start;
                             wrap: word-wrap;
                             height: self.preferred-height;
                         }
@@ -187,13 +205,14 @@ export component ImportDialog inherits Rectangle {
                             text: root.conflicts;
                             font-size: Theme.font-size;
                             color: Theme.text-primary;
+                            horizontal-alignment: Locale.start;
                             wrap: word-wrap;
                             height: self.preferred-height;
                         }
 
                         Choice {
-                            text: "Add to the existing layers";
-                            detail: "Imported annotations join the layer with the same name.";
+                            text: @tr("Add to the existing layers");
+                            detail: @tr("Imported annotations join the layer with the same name.");
                             selected: root.strategy == 0;
                             clicked => {
                                 root.strategy = 0;
@@ -201,8 +220,8 @@ export component ImportDialog inherits Rectangle {
                         }
 
                         Choice {
-                            text: "Replace the existing layers";
-                            detail: "The existing layers are deleted (this can be undone).";
+                            text: @tr("Replace the existing layers");
+                            detail: @tr("The existing layers are deleted (this can be undone).");
                             selected: root.strategy == 1;
                             clicked => {
                                 root.strategy = 1;
@@ -210,8 +229,9 @@ export component ImportDialog inherits Rectangle {
                         }
 
                         Choice {
-                            text: "Keep both";
-                            detail: "Imported layers get a new name, such as \"Tumour (2)\".";
+                            text: @tr("Keep both");
+                            // Translators: "Tumour" is only an example of a layer name from the imported file: translate it, and keep the " (2)" that eov adds.
+                            detail: @tr("Imported layers get a new name, such as \"Tumour (2)\".");
                             selected: root.strategy == 2;
                             clicked => {
                                 root.strategy = 2;
@@ -220,7 +240,7 @@ export component ImportDialog inherits Rectangle {
                     }
 
                     if root.blocked == "": Hint {
-                        text: "The import is one step: Ctrl+Z (⌘Z) removes everything it added.";
+                        text: @tr("The import is one step: Ctrl+Z (⌘Z) removes everything it added.");
                     }
                 }
             }
@@ -243,14 +263,14 @@ export component ImportDialog inherits Rectangle {
             alignment: end;
 
             TextButton {
-                text: root.blocked != "" ? "Close" : "Cancel";
+                text: root.blocked != "" ? @tr("Close") : @tr("Cancel");
                 clicked => {
                     root.import-cancel();
                 }
             }
 
             if root.blocked == "": TextButton {
-                text: root.mismatch ? "Import anyway" : "Import";
+                text: root.mismatch ? @tr("Import anyway") : @tr("Import");
                 primary: !root.mismatch;
                 danger: root.mismatch;
                 clicked => {

@@ -6,7 +6,10 @@ An .eop is a plain tar archive with, at its root:
 - plugin.toml        the manifest (validated here);
 - the library        lib<id>.so, lib<id>.dylib or <id>.dll;
 - ui/                the .slint surfaces and their icons;
-- assets/            other files the plugin reads at run time (if any).
+- assets/            other files the plugin reads at run time (if any);
+- translations/      the gettext catalogs eov reads, <tag>/LC_MESSAGES/*.po
+                     (the folder the manifest's [i18n] table names; the .pot
+                     template and other files there are left out).
 
 Entries are sorted, owned by root and dated SOURCE_DATE_EPOCH (or 0), so the
 same inputs give the same archive. Only regular files and directories are
@@ -38,6 +41,8 @@ SEMVER_RE = re.compile(
 # manifest that still has them was not ported.
 LEGACY_KEYS = ("entry_ui", "entry_component", "toolbar_buttons")
 CONTENT_DIRS = ("ui", "assets")
+# Where the manifest's [i18n] table keeps the catalogs unless it says.
+DEFAULT_CATALOGS = "translations"
 
 
 class PackageError(Exception):
@@ -107,6 +112,50 @@ def content_files(root: pathlib.Path) -> list[tuple[pathlib.Path, str]]:
     return files
 
 
+def catalogs_dir(root: pathlib.Path, manifest: dict[str, object]) -> pathlib.Path | None:
+    """The folder of the plugin's catalogs ([i18n] catalogs), if it is translated."""
+    i18n = manifest.get("i18n")
+    if i18n is None:
+        return None
+    if not isinstance(i18n, dict):
+        raise PackageError("plugin.toml: [i18n] must be a table")
+    catalogs = i18n.get("catalogs", DEFAULT_CATALOGS)
+    relative = pathlib.PurePosixPath(catalogs) if isinstance(catalogs, str) else None
+    if (
+        relative is None
+        or not catalogs
+        or relative.is_absolute()
+        or ".." in relative.parts
+        or "\\" in catalogs
+    ):
+        raise PackageError(
+            f"plugin.toml: i18n.catalogs must be a relative path inside the plugin, got {catalogs!r}"
+        )
+    return root / relative
+
+
+def translation_files(
+    root: pathlib.Path, manifest: dict[str, object]
+) -> list[tuple[pathlib.Path, str]]:
+    """The catalogs eov reads: <catalogs>/<tag>/LC_MESSAGES/*.po. The .pot
+    template is for translators, not for eov, and is left out; so is a
+    folder that holds nothing else yet (only .gitkeep)."""
+    directory = catalogs_dir(root, manifest)
+    if directory is None or not directory.is_dir():
+        return []
+    files: list[tuple[pathlib.Path, str]] = []
+    for path in sorted(directory.glob("*/LC_MESSAGES/*.po")):
+        relative = path.relative_to(root)
+        for part in [path, *path.parents]:
+            if part == root:
+                break
+            if part.is_symlink():
+                raise PackageError(f"links are not allowed in packages: {part}")
+        if path.is_file():
+            files.append((path, relative.as_posix()))
+    return files
+
+
 def tar_info(name: str, size: int, mtime: int, mode: int, directory: bool = False) -> tarfile.TarInfo:
     info = tarfile.TarInfo(name)
     info.size = 0 if directory else size
@@ -135,6 +184,7 @@ def build_package(
         (library.name, library.read_bytes(), 0o755),
     ]
     entries += [(name, path.read_bytes(), 0o644) for path, name in content_files(root)]
+    entries += [(name, path.read_bytes(), 0o644) for path, name in translation_files(root, manifest)]
     mtime = int(os.environ.get("SOURCE_DATE_EPOCH", "0"))
     directories = sorted(
         {"/".join(name.split("/")[:i]) for name, _, _ in entries for i in range(1, name.count("/") + 1)}
@@ -173,8 +223,12 @@ def main(argv: list[str] | None = None) -> int:
     try:
         manifest = validate_manifest(root)
         content_files(root)
+        catalogs = translation_files(root, manifest)
         if args.check_only:
-            print(f"{manifest['id']} {manifest['version']}: manifest and ui/ are valid")
+            print(
+                f"{manifest['id']} {manifest['version']}: manifest and ui/ are valid, "
+                f"{len(catalogs)} translation catalog(s)"
+            )
             return 0
         library = (args.library or default_library(root, manifest["id"])).resolve()
         output = args.output or root / "dist" / f"{manifest['id']}-v{manifest['version']}.eop"

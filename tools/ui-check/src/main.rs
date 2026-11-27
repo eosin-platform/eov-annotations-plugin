@@ -9,7 +9,9 @@
 //!    produced through the SDK's mock host, exists as a public input of the
 //!    right type (struct fields included), and every input is pushed;
 //! 4. a few controls, found through the accessibility tree, invoke the
-//!    callbacks they should.
+//!    callbacks they should;
+//! 5. the writing direction eov sets (`eov-rtl`) reaches the surfaces'
+//!    `Locale` global, which aligns their texts.
 //!
 //! Run: `cargo run --release --manifest-path tools/ui-check/Cargo.toml`
 //! (exit status 1 on any problem).
@@ -362,6 +364,34 @@ fn import_interactions(
     }
 }
 
+/// Inputs eov sets on every surface that declares them (the language of the
+/// interface); the plugin does not push them.
+const HOST_INPUTS: &[&str] = &["eov-rtl", "eov-language"];
+
+/// Setting `eov-rtl`, as eov does for Arabic, Persian and Hebrew, makes the
+/// surface's `Locale` global right-to-left.
+fn check_direction(file: &str, definition: &ComponentDefinition, report: &mut Report) {
+    let instance = match definition.create() {
+        Ok(instance) => instance,
+        Err(e) => {
+            report.fail(format!("{file}: cannot instantiate: {e}"));
+            return;
+        }
+    };
+    for rtl in [true, false] {
+        if let Err(e) = instance.set_property("eov-rtl", Value::Bool(rtl)) {
+            report.fail(format!("{file}: cannot set 'eov-rtl': {e}"));
+            return;
+        }
+        match instance.get_global_property("Locale", "rtl") {
+            Ok(Value::Bool(value)) if value == rtl => {}
+            other => report.fail(format!(
+                "{file}: eov-rtl = {rtl}, but Locale.rtl is {other:?}"
+            )),
+        }
+    }
+}
+
 fn check_surface(
     file: &str,
     definition: &ComponentDefinition,
@@ -375,6 +405,17 @@ fn check_surface(
         apply(file, label, definition, contract, properties, report);
     }
     for name in contract.inputs.keys() {
+        if HOST_INPUTS.contains(&name.as_str()) {
+            let expected = if name == "eov-rtl" {
+                Type::Bool
+            } else {
+                Type::String
+            };
+            if contract.inputs.get(name) != Some(&expected) {
+                report.fail(format!("{file}: eov sets '{name}' as {expected}"));
+            }
+            continue;
+        }
         if !pushed.contains(name) {
             report.fail(format!(
                 "{file}: input property '{name}' is never pushed by the plugin"
@@ -430,6 +471,7 @@ fn main() -> ExitCode {
                 &samples.sidebar,
                 &mut report,
             );
+            check_direction(sidebar::SIDEBAR_UI, definition, &mut report);
             if let Some((_, properties)) = samples
                 .sidebar
                 .iter()
@@ -455,6 +497,7 @@ fn main() -> ExitCode {
                 &samples.import,
                 &mut report,
             );
+            check_direction(sidebar::IMPORT_UI, definition, &mut report);
             if let Some((_, properties)) = samples.import.first() {
                 import_interactions(definition, &contract, properties, &mut report);
             }

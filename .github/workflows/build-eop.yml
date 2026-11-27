@@ -1,8 +1,9 @@
 name: Build .eop packages
 
 # Builds the plugin for every platform eov is released for and packages each
-# library with plugin.toml and ui/ (scripts/package_eop.py). The plugin only
-# needs eov's plugin_api crate; no OpenSlide or other native libraries.
+# library with plugin.toml, ui/ and the translation catalogs
+# (scripts/package_eop.py). The plugin only needs eov's plugin_api crate; no
+# OpenSlide or other native libraries.
 #
 # Inputs reach shell steps through the environment, never through `${{ }}`
 # inside scripts.
